@@ -48,7 +48,7 @@ const TOOLS = [
   { id: "personality", cat: "me", path: "/me/personality/", icon: "🧩", title: "16유형 성격 테스트", h1: "16유형 성격 테스트 — 20문항으로 보는 나의 성향", desc: "20개 문항에 답하면 4가지 축의 비율과 16유형 중 나와 가까운 유형을 알려 드려요.", hook: "20문항이면 네 가지 축이 몇 대 몇인지까지 나와요.", meta: "20문항 · 3분" },
   { id: "namematch", cat: "love", path: "/love/name-match/", icon: "💌", title: "이름 궁합 테스트", h1: "이름 궁합 테스트 — 획수로 보는 두 사람의 케미", desc: "두 사람의 이름 획수를 더해 가며 궁합 점수를 계산하는 추억의 이름 궁합 놀이예요.", hook: "공책 귀퉁이에 획수 적어 가며 하던 그 궁합, 기억나요?", meta: "이름 두 개" },
   { id: "today", cat: "luck", path: "/luck/today/", icon: "", title: "오늘의 띠별 운세", h1: "오늘의 띠별 운세 — 매일 자정에 바뀌는 12띠 하루 운세", desc: "열두 띠의 오늘 하루 흐름과 일·관계 팁, 행운의 색·숫자를 매일 새로 정리해요.", hook: "매일 자정에 바뀌어요. 내 띠의 오늘 하루는?", meta: "매일 업데이트" },
-  { id: "reaction", cat: "arcade", path: "/arcade/reaction/", icon: "⚡", title: "반응속도로 보는 성격", h1: "반응속도로 보는 성격 — 5번의 터치로 알아보는 반응 스타일", desc: "초록색으로 바뀌는 순간을 5번 잡아 보세요. 평균 속도와 일정함으로 나의 반응 스타일을 알려 드려요.", hook: "초록색으로 바뀌는 순간 누르기. 다섯 번이면 내 반응 스타일이 나와요.", meta: "터치 5번" },
+  { id: "reaction", cat: "arcade", path: "/arcade/reaction/", icon: "⚡", title: "반응속도 게임", h1: "반응속도 게임 — 초록색이 되는 순간 터치!", desc: "빨간 화면이 초록색으로 바뀌는 순간을 다섯 번 잡아 보세요. 평균 기록과 등급, 내 최고 기록을 알려 드려요.", hook: "초록색 되는 순간 누르기. 다섯 번 평균으로 등급이 매겨져요.", meta: "터치 5번" },
   { id: "life", cat: "story", path: "/story/life/", icon: "", title: "1분 인생", h1: "1분 인생 — 60초 동안 한 사람의 일생 살아 보기", desc: "오늘 태어난 한 사람이 되어 일생을 1분 동안 살아 보는 이야기 게임. 3초 안에 갈림길을 고르면 마지막에 나만의 인생 연표와 묘비명이 나와요.", hook: "오늘 태어난 한 사람으로 1분 살기. 고민할 시간은 3초뿐.", meta: "1분 · 선택 10번" },
 ];
 // 카드 그림(인라인 SVG). 이모지 대신 사이트 고유 그림을 씁니다.
@@ -264,6 +264,14 @@ fs.cpSync(path.join(ROOT, "src", "assets"), path.join(DIST, "assets"), { recursi
     .join("")}</div>
 </section>
 
+<section class="home-block home-about">
+  <div class="about-head">
+    <h2 class="home-h">${esc(cfg.siteName)}는 이런 곳이에요</h2>
+    <ul class="about-points"><li><b>매일 자정</b>새 운세로 바뀌어요</li><li><b>저장 0건</b>입력값은 브라우저 안에서만</li><li><b>직접 쓴 글</b>계산 방식까지 공개해요</li></ul>
+  </div>
+  <div class="about-body">${fill(pages.home.intro).split(/\n+/).map((p) => `<p>${esc(p)}</p>`).join("")}</div>
+</section>
+
 <section class="home-block band band-red">
   <div class="band-head">
     <h2 class="home-h">오늘, 내 띠는?</h2>
@@ -279,8 +287,7 @@ fs.cpSync(path.join(ROOT, "src", "assets"), path.join(DIST, "assets"), { recursi
   </div>
   <div class="types">${TYPE_KEYS.map((k) => `<a class="type c-${GROUP[groupOf(k)]}" href="${u(`/me/personality/${k.toLowerCase()}/`)}"><b>${k}</b><span>${esc(personality[k].name)}</span></a>`).join("")}</div>
 </section>
-${adSlot("home")}
-<section class="prose home-about"><h2>${esc(cfg.siteName)}는 이런 곳이에요</h2>${fill(pages.home.intro).split(/\n+/).map((p) => `<p>${esc(p)}</p>`).join("")}</section>`;
+${adSlot("home")}`;
   write("/", layout({ title: `${cfg.siteName} — ${cfg.tagline}`, fullTitle: true, wide: true, scripts: ["home.js"], desc: "오늘의 띠별 운세, 만 나이·띠·별자리 계산, 16유형 성격 테스트, 이름 궁합, 1분 인생과 반응속도 게임까지. 나를 알아보는 재미있는 테스트를 한곳에서 즐겨 보세요.", path: "/", body }));
 }
 
@@ -291,7 +298,7 @@ const CAT_EXTRA = {
 <section class="cat-block"><div class="cat-head"><h2>16유형 해설</h2></div><div class="chips">${TYPE_KEYS.map((k) => `<a class="chip" href="${u(`/me/personality/${k.toLowerCase()}/`)}">${esc(personality[k].name)}</a>`).join("")}</div></section>`,
   luck: () => `<section class="cat-block"><div class="cat-head"><h2>띠별 오늘의 운세 바로가기</h2></div><div class="chips">${TTI_KEYS.map((k) => `<a class="chip" href="${u(`/luck/today/#${k}`)}">${TTI_EMOJI[k]} ${esc(tti[k].name)}</a>`).join("")}</div></section>`,
   story: () => `<section class="cat-block"><div class="cat-head"><h2>1분 인생 엔딩 5가지</h2></div><div class="chips">${LIFE_KEYS.map((k) => `<a class="chip" href="${u(`/story/life/${LIFE_SLUG[k]}/`)}">${esc(guides.lifeTypes[k].name)}</a>`).join("")}</div></section>`,
-  arcade: () => `<section class="cat-block"><div class="cat-head"><h2>반응 스타일 4가지</h2></div><div class="chips">${REACTION_KEYS.map((k) => `<a class="chip" href="${u(`/arcade/reaction/${REACTION_SLUG[k]}/`)}">${esc(guides.reactionTypes[k].name)}</a>`).join("")}</div></section>`,
+  arcade: () => "",
   love: () => "",
 };
 for (const [k, c] of Object.entries(CATS)) {
@@ -466,31 +473,11 @@ ZODIAC_KEYS.forEach((k, i) => {
   <div class="rt-inner"><strong>여기를 눌러 시작</strong><span>빨간 화면이 초록색으로 바뀌는 순간 최대한 빨리 터치하세요. 총 5번 측정해요.</span></div>
 </div>
 <div class="rt-progress" id="rt-progress" aria-hidden="true"></div>
+<div class="result" id="rt-result" hidden aria-live="polite"></div>
 <p class="hint">결과는 기기와 화면, 입력 방식에 따라 수십 ms까지 달라질 수 있어요. 같은 기기로 여러 번 해 보면 나만의 기록을 비교할 수 있어요.</p>`;
-  toolPage(toolById.reaction, html, { scripts: ["reaction.js"], dataJson: { slugs: REACTION_SLUG, names: Object.fromEntries(REACTION_KEYS.map((k) => [k, fill(guides.reactionTypes[k].name)])) } });
+  toolPage(toolById.reaction, html, { scripts: ["reaction.js"] });
 
-  REACTION_KEYS.forEach((k) => {
-    const d = guides.reactionTypes[k];
-    const p = `/arcade/reaction/${REACTION_SLUG[k]}/`;
-    const items = [["홈", "/"], ["순발력 게임", "/arcade/"], ["반응속도로 보는 성격", "/arcade/reaction/"], [fill(d.name), p]];
-    const len = fill(d.text).trim().length;
-    if (len < 300) warnings.push(`${p} 본문 ${len}자 (<300, noindex)`);
-    const body = `${crumbHtml(items)}
-<article class="result-page">
-  <header class="page-head"><span class="eyebrow">나의 반응 스타일</span><h1>${t(d.name)}</h1><p class="lead">${t(d.summary)}</p><p class="fun-badge">재미로 보는 콘텐츠예요</p></header>
-  <div class="result-card" data-card-title="나의 반응 스타일" data-card-main="${t(d.name)}" data-card-sub="${t(d.summary)}">
-    <div class="rc-emoji">${ART.reaction}</div><div class="rc-main">${t(d.name)}</div><p>${t(d.summary)}</p>
-    <dl class="rc-meta" id="my-rt" hidden></dl>
-  </div>
-  ${shareBar({ title: `나의 반응 스타일: ${fill(d.name)}`, text: fill(d.summary), path: p })}
-  <p class="center"><a class="btn ghost" href="${u("/arcade/reaction/")}">다시 도전하기</a></p>
-  <section class="prose">${fill(d.text).split(/\n+/).map((x) => `<p>${esc(x)}</p>`).join("")}
-  <h2>4가지 반응 스타일</h2><ul>${REACTION_KEYS.map((x) => `<li><a href="${u(`/arcade/reaction/${REACTION_SLUG[x]}/`)}">${t(guides.reactionTypes[x].name)}</a> — ${t(guides.reactionTypes[x].summary)}</li>`).join("")}</ul>
-  <p class="hint">평균 300ms 미만이면 「빠름」, 5번 기록의 흩어짐(표준편차)이 40ms 미만이면 「일정함」으로 나눠요. 과학적인 진단이 아니라 재미로 보는 반응 스타일이에요.</p></section>
-  ${recoHtml(["personality", "birthday", "namematch"])}
-</article>`;
-    write(p, layout({ title: `반응 스타일: ${fill(d.name)}`, desc: `반응속도 게임 결과 ${fill(d.name)}: ${fill(d.summary)}`, path: p, body, scripts: ["reaction-result.js"], ogType: "article", noindex: len < 300, jsonld: [crumbs(items)] }));
-  });
+
 }
 
 // ⑥ 1분 인생 + 엔딩 5개
@@ -498,13 +485,14 @@ ZODIAC_KEYS.forEach((k, i) => {
   const html = `
 <div id="life" class="life">
   <div class="life-start">
+    <canvas class="life-pix" id="life-intro" width="64" height="40" role="img" aria-label="갓 태어난 아기가 있는 방"></canvas>
     <p>오늘, 한 사람이 태어났어요. 그 사람이 되어 일생을 <strong>1분 동안</strong> 살아 보세요.</p>
     <p>나이는 저절로 흘러가요. 갈림길이 나타나면 <strong>3초 안에</strong> 고르세요. 안 고르면 인생이 대신 골라요.</p>
     <button class="btn big" type="button" data-act="start">태어나기</button>
   </div>
 </div>`;
   const types = Object.fromEntries(LIFE_KEYS.map((k) => [k, { name: fill(guides.lifeTypes[k].name), epitaph: fill(guides.lifeTypes[k].epitaph) }]));
-  toolPage(toolById.life, html, { scripts: ["life.js"], dataJson: { types, slugs: LIFE_SLUG } });
+  toolPage(toolById.life, html, { scripts: ["pixel.js", "life-data.js", "life.js"], dataJson: { types, slugs: LIFE_SLUG } });
 
   LIFE_KEYS.forEach((k) => {
     const d = guides.lifeTypes[k];
@@ -528,9 +516,9 @@ ZODIAC_KEYS.forEach((k, i) => {
   });
 }
 
-// 옛 주소(/brain/…) → 새 주소로 이동 (색인 제외)
+// 옛 주소(/brain/…, 폐지된 반응 스타일 결과 페이지) → 새 주소로 이동 (색인 제외)
 {
-  const moved = [["/brain/", "/arcade/"], ["/brain/reaction/", "/arcade/reaction/"], ...REACTION_KEYS.map((k) => [`/brain/reaction/${REACTION_SLUG[k]}/`, `/arcade/reaction/${REACTION_SLUG[k]}/`])];
+  const moved = [["/brain/", "/arcade/"], ["/brain/reaction/", "/arcade/reaction/"], ...REACTION_KEYS.flatMap((k) => [[`/brain/reaction/${REACTION_SLUG[k]}/`, "/arcade/reaction/"], [`/arcade/reaction/${REACTION_SLUG[k]}/`, "/arcade/reaction/"]])];
   for (const [from, to] of moved) {
     const file = path.join(DIST, from, "index.html");
     fs.mkdirSync(path.dirname(file), { recursive: true });

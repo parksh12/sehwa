@@ -124,9 +124,14 @@ h3{font-size:17px;margin:1.4em 0 .4em}
 .type span{font-size:13px;font-weight:700;opacity:.9}
 .type:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--ink)}
 .type.c-arcade:hover{box-shadow:4px 4px 0 var(--hwang)}
-.home-about{margin-top:48px;max-width:720px;font-size:15px}
-.home-about h2{font-size:18px}
-.home-about p{color:var(--ink-2)}
+.home-about{display:grid;gap:18px 32px;border:var(--bd);border-radius:20px;padding:26px 24px;background:var(--hwang);box-shadow:var(--drop)}
+@media(min-width:880px){.home-about{grid-template-columns:.9fr 1.1fr;padding:32px}}
+.about-head .home-h{margin-bottom:16px}
+.about-points{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.about-points li{background:var(--white);border:2px solid var(--ink);border-radius:10px;padding:8px 12px;font-size:15px;font-weight:600}
+.about-points b{font-family:var(--display);font-weight:400;font-size:19px;margin-right:8px}
+.about-body p{margin:0 0 10px;font-size:16px;line-height:1.8;color:var(--ink)}
+.about-body p:last-child{margin:0;font-size:14px;color:var(--ink-2)}
 
 /* tool box & forms */
 .tool-box{background:var(--white);border:var(--bd);border-radius:18px;padding:20px;box-shadow:var(--drop);margin:8px 0 18px}
@@ -271,9 +276,21 @@ details.opt summary{cursor:pointer;color:var(--cheong);font-weight:700;font-size
 .today-detail div{display:grid;grid-template-columns:64px 1fr;gap:8px;font-size:15px}
 .today-detail dt{font-weight:800}
 .today-detail dd{margin:0;color:var(--ink-2)}
+.today-years{list-style:none;padding:10px 12px;margin:10px 0;background:var(--soft);border-radius:10px;display:grid;gap:4px}
+.today-years li{display:grid;grid-template-columns:4.6em 1fr;gap:8px;font-size:15px}
+.today-years b{color:var(--jeok)}
 .today-lucky{font-size:14px;color:var(--ink-2);border-top:2px dashed var(--ink);padding-top:8px}
 
 /* 1분 인생 */
+.life-pix{display:block;width:100%;max-width:520px;margin:0 auto 12px;aspect-ratio:64/40;image-rendering:pixelated;image-rendering:crisp-edges;border:var(--bd);border-radius:10px;background:#000}
+.life-pix.end{max-width:360px;margin-bottom:14px}
+/* 반응속도 결과 */
+.rt-bars{display:grid;gap:6px;margin:12px 0}
+.rt-bars div{display:grid;grid-template-columns:3.2em 1fr 4.4em;align-items:center;gap:8px;font-size:14px;font-weight:700}
+.rt-bars i{display:block;height:12px;border:2px solid var(--ink);border-radius:99px;background:var(--hwang)}
+.rt-bars div.best i{background:var(--nok)}
+.rt-new{display:inline-block;background:var(--jeok);color:#fff;border-radius:6px;padding:0 8px;font-size:13px;font-weight:800;margin-left:6px}
+
 .life-start p{margin:0 0 10px}
 .life-start .btn{margin-top:8px}
 .life-run{min-height:420px;display:flex;flex-direction:column}

@@ -83,6 +83,17 @@ const ITEMS = ["텀블러", "볼펜", "이어폰", "손수건", "운동화", "�
 const TIMES = ["아침 7~9시", "오전 9~11시", "점심 11~13시", "오후 1~3시", "오후 3~5시", "저녁 5~7시", "저녁 7~9시", "밤 9~11시"];
 const STARS = [5, 5, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3];
 
+// 연도별(출생 연도) 한마디: 세대마다 관심사가 달라서 문장 풀을 따로 둡니다.
+const GEN = [
+  [19, "10대", ["공부보다 쉬는 시간 대화에서 힌트를 얻어요.", "친구의 한마디가 오늘 기분을 좌우해요. 좋은 말만 담아 두세요.", "미뤄 둔 숙제 하나를 끝내면 저녁이 가벼워요.", "새로 산 물건이 오늘따라 잘 어울려요.", "단톡방 답장은 천천히 해도 괜찮아요.", "운동할 때 몸이 가볍게 움직여요.", "부모님께 먼저 말을 걸면 부탁이 수월해져요.", "좋아하는 노래 한 곡이 집중력을 올려 줘요.", "처음 보는 친구와 의외로 말이 잘 통해요.", "일찍 자는 게 내일의 운을 지켜 줘요."]],
+  [29, "20대", ["지원서나 메일은 오전에 보내면 반응이 좋아요.", "지갑을 열기 전 장바구니를 한 번 더 확인하세요.", "오래 연락 안 한 친구에게 먼저 안부를 건네 보세요.", "새로운 모임에서 좋은 인연을 만날 수 있어요.", "일 잘한다는 말을 듣기 좋은 날이에요.", "점심 메뉴는 처음 가 보는 집이 정답이에요.", "자기 계발은 욕심내지 말고 딱 30분만.", "마음에 둔 사람이 있다면 표현은 짧고 솔직하게.", "정리를 계획 중이라면 목록부터 써 보세요.", "피곤함이 쌓였다면 오늘은 일찍 귀가하세요."]],
+  [39, "30대", ["맡은 일에서 내 역할이 커지는 흐름이에요.", "가족과의 짧은 통화가 마음을 든든하게 해요.", "큰 지출은 하루만 미뤄도 더 나은 선택이 보여요.", "동료의 고민을 들어 주면 나에게도 힌트가 돌아와요.", "미뤄 둔 건강검진이나 병원 예약을 챙겨 보세요.", "집 안 정리 하나가 머릿속까지 맑게 해 줘요.", "주말 계획을 미리 세워 두면 평일이 덜 지쳐요.", "오랜 취미를 다시 꺼내면 기분 전환이 돼요.", "회의에서는 핵심만 말하면 신뢰가 쌓여요.", "떠오른 아이디어를 메모해 두면 곧 쓸 곳이 생겨요."]],
+  [49, "40대", ["경험에서 나온 조언이 주변에 큰 도움이 돼요.", "빠듯한 일정은 한 가지만 덜어 내세요.", "오랜 친구와 식사 약속을 잡기 좋은 날이에요.", "서류를 한 번 훑어보면 놓친 걸 찾게 돼요.", "가족의 작은 부탁을 들어주면 웃음이 늘어요.", "가벼운 스트레칭이 오후 컨디션을 살려요.", "새 앱이나 기술을 배워 두면 쓸모가 있어요.", "결정할 일은 오전에, 쉬는 건 저녁에.", "칭찬 한마디로 팀 분위기를 바꿀 수 있어요.", "미뤄 둔 연락을 오늘 처리하면 마음이 편해져요."]],
+  [59, "50대", ["서두르지 않는 태도가 오히려 일을 빨리 풀어 줘요.", "오랜 인연에게서 반가운 소식이 와요.", "오늘은 걷는 시간을 조금만 늘려 보세요.", "자녀나 후배와의 대화에서 새로운 걸 배워요.", "계획해 둔 여행 이야기를 꺼내기 좋은 날이에요.", "서랍 하나만 비워도 마음이 가벼워져요.", "나를 위한 작은 선물이 기분을 끌어올려요.", "모임에서 분위기를 이끄는 역할이 잘 어울려요.", "몸이 보내는 신호에 귀 기울이고 쉬어 가세요.", "오래 고민한 일에 실마리가 보여요."]],
+  [69, "60대", ["아침 산책이 하루의 운을 열어 줘요.", "손주나 어린 가족과의 연락이 큰 기쁨이 돼요.", "오래된 사진을 정리하면 반가운 추억이 떠올라요.", "새로 배우는 취미에서 즐거움을 찾는 날이에요.", "무거운 물건은 나눠서 들고 무리하지 마세요.", "이웃과의 짧은 인사가 좋은 소식으로 이어져요.", "화분이나 텃밭을 돌보면 마음이 편안해져요.", "오랜 친구와 통화하며 웃을 일이 생겨요.", "식사는 천천히, 물은 자주 챙겨 드세요.", "가족 모임 계획을 세우기 좋은 날이에요."]],
+  [999, "70대 이상", ["따뜻한 차 한 잔과 함께 여유로운 하루를 보내요.", "반가운 얼굴이 찾아오거나 연락이 와요.", "낮에 햇볕을 쬐며 걷는 게 보약이에요.", "옛이야기를 들려주면 주변이 귀를 기울여요.", "계단과 미끄러운 길은 천천히 조심하세요.", "좋아하는 음악을 틀어 두면 기분이 맑아져요.", "가족에게 하고 싶은 말을 전하기 좋은 날이에요.", "작은 정리 하나가 하루를 개운하게 해요.", "이웃과 나눈 음식이 기쁨으로 돌아와요.", "푹 쉬는 것도 오늘의 할 일이에요."]],
+];
+
 // 한국 시간 기준 날짜(YYYY-MM-DD)
 export function kstDate(now = new Date()) {
   return new Date(now.getTime() + 9 * 3600e3).toISOString().slice(0, 10);
@@ -106,10 +117,18 @@ export function dayFortune(date) {
   const head = pool("head", HEAD), body = pool("body", BODY), work = pool("work", WORK), love = pool("love", LOVE), care = pool("care", CARE);
   const color = pool("color", COLORS), item = pool("item", ITEMS), stars = pool("stars", STARS), nums = pool("num", [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 7]);
   const time = pool("time", [...TIMES, ...TIMES]);
-  const list = TTI.map(([key, name, hanja], i) => ({
-    key, name, hanja, stars: stars[i], head: head[i], body: body[i], work: work[i], love: love[i], care: care[i],
-    color: color[i], item: item[i], number: nums[i], time: time[i],
-  }));
+  const cur = +date.slice(0, 4);
+  // 출생 연도별 한마디: 만 10세~90세, 같은 띠·같은 세대 안에서는 문장이 겹치지 않게 나눔
+  const yearsOf = (i) => { const out = []; for (let y = cur - 10; y >= cur - 90; y--) if ((((y - 4) % 12) + 12) % 12 === i) out.push(y); return out; };
+  const list = TTI.map(([key, name, hanja], i) => {
+    const used = {};
+    const years = yearsOf(i).map((y) => {
+      const g = GEN.findIndex(([max]) => cur - y <= max);
+      const n = (used[g] = (used[g] ?? -1) + 1);
+      return { year: y, gen: GEN[g][1], text: shuffled(GEN[g][2], seeded(`${date}:${key}:${g}`))[n % GEN[g][2].length] };
+    });
+    return { key, name, hanja, stars: stars[i], head: head[i], body: body[i], work: work[i], love: love[i], care: care[i], color: color[i], item: item[i], number: nums[i], time: time[i], years };
+  });
   const rank = list.slice().sort((a, b) => b.stars - a.stars || TTI.findIndex((t) => t[0] === a.key) - TTI.findIndex((t) => t[0] === b.key));
   return { date, list, top: rank.slice(0, 3) };
 }
@@ -134,6 +153,7 @@ export function renderDay(date) {
   <p class="today-head">${esc(t.head)}</p>
   <p>${esc(t.body)}</p>
   <dl class="today-detail"><div><dt>일·공부</dt><dd>${esc(t.work)}</dd></div><div><dt>관계</dt><dd>${esc(t.love)}</dd></div><div><dt>조심</dt><dd>${esc(t.care)}</dd></div></dl>
+  <ul class="today-years">${t.years.map((y) => `<li><b>${String(y.year).slice(2)}년생</b>${esc(y.text)}</li>`).join("")}</ul>
   <p class="today-lucky">행운의 색 <b>${esc(t.color)}</b> · 숫자 <b>${t.number}</b> · 물건 <b>${esc(t.item)}</b> · 시간 <b>${esc(t.time)}</b></p>
 </article>`).join("")}</div>`;
 }
