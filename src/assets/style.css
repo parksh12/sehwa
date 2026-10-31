@@ -66,8 +66,9 @@ h3{font-size:17px;margin:1.4em 0 .4em}
 .c-me{background:var(--cheong);color:#fff}
 .c-love{background:var(--jeok);color:#fff}
 .c-luck{background:var(--hwang);color:var(--ink)}
-.c-brain{background:var(--heuk);color:#fff}
-.c-brain:hover{box-shadow:7px 7px 0 var(--hwang)}
+.c-arcade{background:var(--heuk);color:#fff}
+.c-story{background:var(--nok);color:#fff}
+.c-arcade:hover{box-shadow:7px 7px 0 var(--hwang)}
 
 /* chips */
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
@@ -122,7 +123,7 @@ h3{font-size:17px;margin:1.4em 0 .4em}
 .type b{font-family:var(--display);font-weight:400;font-size:28px;line-height:1.1;letter-spacing:.02em}
 .type span{font-size:13px;font-weight:700;opacity:.9}
 .type:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--ink)}
-.type.c-brain:hover{box-shadow:4px 4px 0 var(--hwang)}
+.type.c-arcade:hover{box-shadow:4px 4px 0 var(--hwang)}
 .home-about{margin-top:48px;max-width:720px;font-size:15px}
 .home-about h2{font-size:18px}
 .home-about p{color:var(--ink-2)}
@@ -271,3 +272,32 @@ details.opt summary{cursor:pointer;color:var(--cheong);font-weight:700;font-size
 .today-detail dt{font-weight:800}
 .today-detail dd{margin:0;color:var(--ink-2)}
 .today-lucky{font-size:14px;color:var(--ink-2);border-top:2px dashed var(--ink);padding-top:8px}
+
+/* 1분 인생 */
+.life-start p{margin:0 0 10px}
+.life-start .btn{margin-top:8px}
+.life-run{min-height:420px;display:flex;flex-direction:column}
+.life-age{font-family:var(--display);font-size:22px;text-align:center}
+.life-age b{font-weight:400;font-size:clamp(72px,16vw,110px);line-height:1;display:inline-block;min-width:1.4em}
+.life-bar{height:10px;border:2px solid var(--ink);border-radius:99px;overflow:hidden;margin:10px 0 14px;background:var(--soft)}
+.life-bar i{display:block;height:100%;width:0;background:var(--nok)}
+.life-log{list-style:none;padding:0;margin:0;display:grid;gap:4px;min-height:120px}
+.life-log li{font-size:15px;color:var(--ink-2);animation:pop .3s ease}
+.life-log li:nth-child(n+3){opacity:.45}
+.life-log li b{display:inline-block;min-width:3.2em;color:var(--ink)}
+.life-log li.pick{color:var(--ink);font-weight:700}
+.life-event{margin-top:14px;border:var(--bd);border-radius:14px;padding:16px;background:var(--hwang);box-shadow:var(--drop);animation:pop .2s ease}
+.life-scene{font-weight:800;font-size:19px;margin:0 0 12px}
+.life-choices{display:grid;gap:10px}
+@media(min-width:620px){.life-choices{grid-template-columns:1fr 1fr}}
+.life-timer{height:8px;border:2px solid var(--ink);border-radius:99px;overflow:hidden;margin-top:14px;background:var(--white)}
+.life-timer i{display:block;height:100%;width:100%;background:var(--jeok)}
+.life-card{background:var(--nok)}
+.life-years{font-weight:800;letter-spacing:.08em;margin:0 0 4px;opacity:.9}
+.life-timeline{list-style:none;padding:0;margin:0 0 16px 8px;border-left:3px solid var(--ink)}
+.life-timeline li{position:relative;padding:6px 0 6px 18px;display:grid;grid-template-columns:3.4em 1fr;gap:2px 8px;font-size:15px}
+.life-timeline li::before{content:"";position:absolute;left:-8.5px;top:13px;width:12px;height:12px;border-radius:50%;background:var(--white);border:2.5px solid var(--ink)}
+.life-timeline li span{color:var(--ink-2)}
+.life-timeline li strong{grid-column:2}
+.life-timeline em{font-style:normal;font-size:12px;font-weight:700;color:var(--ink-3);border:1.5px solid var(--ink-3);border-radius:5px;padding:0 5px;margin-left:4px}
+@media(prefers-reduced-motion:reduce){.life-log li,.life-event{animation:none}}

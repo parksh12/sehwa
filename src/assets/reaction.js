@@ -18,7 +18,7 @@
     const key = (avg < 300 ? "fast" : "slow") + (sd < 40 ? "Steady" : "Varied");
     set("", `평균 ${Math.round(avg)}ms`, `${D.names[key]} — 결과 페이지로 이동해요`);
     state = "done";
-    setTimeout(() => { location.href = NALGI.url(`/brain/reaction/${D.slugs[key]}/`) + `?a=${Math.round(avg)}&s=${Math.round(sd)}&b=${Math.round(best)}`; }, 900);
+    setTimeout(() => { location.href = NALGI.url(`/arcade/reaction/${D.slugs[key]}/`) + `?a=${Math.round(avg)}&s=${Math.round(sd)}&b=${Math.round(best)}`; }, 900);
   }
   function hit(e) {
     if (e) e.preventDefault();
