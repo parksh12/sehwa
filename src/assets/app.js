@@ -42,11 +42,13 @@
     try { await document.fonts.ready; } catch (e) {}
     const S = 1080, c = document.createElement("canvas"); c.width = S; c.height = S;
     const ctx = c.getContext("2d");
-    const g = ctx.createLinearGradient(0, 0, S, S);
-    g.addColorStop(0, "#6c5ce7"); g.addColorStop(0.55, "#a66cff"); g.addColorStop(1, "#ff7a90");
-    ctx.fillStyle = g; ctx.fillRect(0, 0, S, S);
-    ctx.fillStyle = "rgba(255,255,255,.12)"; ctx.beginPath(); ctx.arc(S * 0.85, S * 0.12, 260, 0, Math.PI * 2); ctx.fill();
-    ctx.beginPath(); ctx.arc(S * 0.1, S * 0.95, 200, 0, Math.PI * 2); ctx.fill();
+    // 카드 한 장 느낌: 흰 바탕 + 검은 테두리 + 청색 면 + 붉은 도장
+    ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, S, S);
+    ctx.fillStyle = "#141414"; ctx.fillRect(84, 84, S - 140, S - 140);
+    ctx.fillStyle = "#2346d8"; ctx.fillRect(60, 60, S - 140, S - 140);
+    ctx.lineWidth = 8; ctx.strokeStyle = "#141414"; ctx.strokeRect(60, 60, S - 140, S - 140);
+    ctx.fillStyle = "#e5372b"; ctx.beginPath(); ctx.arc(S - 170, 190, 62, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#fff"; ctx.font = `700 64px "Black Han Sans", sans-serif`; ctx.textAlign = "center"; ctx.fillText("나", S - 170, 212);
     const font = getComputedStyle(document.body).fontFamily;
     ctx.fillStyle = "#fff"; ctx.textAlign = "center";
     ctx.font = `700 44px ${font}`; ctx.globalAlpha = 0.9; ctx.fillText(title || "", S / 2, 250); ctx.globalAlpha = 1;

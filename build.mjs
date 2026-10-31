@@ -5,6 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import cfg from "./config.mjs";
 import questions from "./content/questions.mjs";
+import { renderDay, kstDate } from "./src/assets/daily.mjs";
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const DIST = path.join(ROOT, "dist");
@@ -38,23 +39,37 @@ const CATS = {
   luck: { name: "나의 운", icon: "🍀", desc: "전통 상징을 바탕으로 한 해의 흐름을 재미로 읽어 봐요." },
   brain: { name: "나의 두뇌", icon: "⚡", desc: "짧은 미니게임으로 나의 반응 스타일을 알아봐요." },
 };
+// hook: 홈·추천 카드에 쓰는 짧은 한 줄 / meta: 소요 시간·분량
+// 노출 순위(RANK): 홈 「인기」 탭과 뽑기 덱 순서. 지금은 운영진 추정치이고, GA4·서치콘솔 데이터가 쌓이면 실측 노출 순으로 바꿉니다.
+const RANK = ["today", "personality", "birthday", "namematch", "reaction"];
 const TOOLS = [
-  { id: "birthday", cat: "me", path: "/me/birthday/", icon: "🎂", title: "생일로 보는 나", h1: "생일로 보는 나 — 만 나이·띠·별자리 한 번에", desc: "생년월일만 넣으면 만 나이, 띠, 별자리, 다음 생일 D-day까지 한 번에 알려 드려요." },
-  { id: "personality", cat: "me", path: "/me/personality/", icon: "🧩", title: "16유형 성격 테스트", h1: "16유형 성격 테스트 — 20문항으로 보는 나의 성향", desc: "20개 문항에 답하면 4가지 축의 비율과 16유형 중 나와 가까운 유형을 알려 드려요." },
-  { id: "namematch", cat: "love", path: "/love/name-match/", icon: "💌", title: "이름 궁합 테스트", h1: "이름 궁합 테스트 — 획수로 보는 두 사람의 케미", desc: "두 사람의 이름 획수를 더해 가며 궁합 점수를 계산하는 추억의 이름 궁합 놀이예요." },
-  { id: "fortune2027", cat: "luck", path: "/luck/2027/", icon: "🐑", title: "2027 띠별 신년운세", h1: "2027 띠별 신년운세 — 정미년 붉은 양의 해", desc: "2027년 정미년, 12띠별로 한 해의 흐름과 마음 관리 팁을 재미로 읽어 보세요." },
-  { id: "reaction", cat: "brain", path: "/brain/reaction/", icon: "⚡", title: "반응속도로 보는 성격", h1: "반응속도로 보는 성격 — 5번의 터치로 알아보는 반응 스타일", desc: "초록색으로 바뀌는 순간을 5번 잡아 보세요. 평균 속도와 일정함으로 나의 반응 스타일을 알려 드려요." },
+  { id: "birthday", cat: "me", path: "/me/birthday/", icon: "🎂", title: "생일로 보는 나", h1: "생일로 보는 나 — 만 나이·띠·별자리 한 번에", desc: "생년월일만 넣으면 만 나이, 띠, 별자리, 다음 생일 D-day까지 한 번에 알려 드려요.", hook: "만 나이, 띠, 별자리, 다음 생일까지 며칠 남았는지. 생일만 넣으면 끝.", meta: "10초" },
+  { id: "personality", cat: "me", path: "/me/personality/", icon: "🧩", title: "16유형 성격 테스트", h1: "16유형 성격 테스트 — 20문항으로 보는 나의 성향", desc: "20개 문항에 답하면 4가지 축의 비율과 16유형 중 나와 가까운 유형을 알려 드려요.", hook: "20문항이면 네 가지 축이 몇 대 몇인지까지 나와요.", meta: "20문항 · 3분" },
+  { id: "namematch", cat: "love", path: "/love/name-match/", icon: "💌", title: "이름 궁합 테스트", h1: "이름 궁합 테스트 — 획수로 보는 두 사람의 케미", desc: "두 사람의 이름 획수를 더해 가며 궁합 점수를 계산하는 추억의 이름 궁합 놀이예요.", hook: "공책 귀퉁이에 획수 적어 가며 하던 그 궁합, 기억나요?", meta: "이름 두 개" },
+  { id: "today", cat: "luck", path: "/luck/today/", icon: "", title: "오늘의 띠별 운세", h1: "오늘의 띠별 운세 — 매일 자정에 바뀌는 12띠 하루 운세", desc: "열두 띠의 오늘 하루 흐름과 일·관계 팁, 행운의 색·숫자를 매일 새로 정리해요.", hook: "매일 자정에 바뀌어요. 내 띠의 오늘 하루는?", meta: "매일 업데이트" },
+  { id: "reaction", cat: "brain", path: "/brain/reaction/", icon: "⚡", title: "반응속도로 보는 성격", h1: "반응속도로 보는 성격 — 5번의 터치로 알아보는 반응 스타일", desc: "초록색으로 바뀌는 순간을 5번 잡아 보세요. 평균 속도와 일정함으로 나의 반응 스타일을 알려 드려요.", hook: "초록색으로 바뀌는 순간 누르기. 다섯 번이면 내 반응 스타일이 나와요.", meta: "터치 5번" },
 ];
+// 카드 그림(인라인 SVG). 이모지 대신 사이트 고유 그림을 씁니다.
+const K = "#141414", W = "#fff", RED = "#e5372b", YEL = "#ffc21a", GRN = "#1e9e5a";
+const sv = (inner) => `<svg viewBox="0 0 120 120" aria-hidden="true" focusable="false">${inner}</svg>`;
+const ART = {
+  birthday: sv(`<rect x="18" y="24" width="84" height="80" rx="8" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M18 32a8 8 0 0 1 8-8h68a8 8 0 0 1 8 8v14H18z" fill="${RED}" stroke="${K}" stroke-width="4"/><rect x="36" y="14" width="8" height="20" rx="4" fill="${K}"/><rect x="76" y="14" width="8" height="20" rx="4" fill="${K}"/><g fill="${K}">${[30, 48, 66, 84].flatMap((x) => [58, 74, 90].map((y) => `<rect x="${x - 4}" y="${y - 4}" width="8" height="8" rx="2"/>`)).join("")}</g><circle cx="66" cy="74" r="11" fill="none" stroke="${RED}" stroke-width="4"/>`),
+  personality: sv(`<rect x="18" y="18" width="40" height="40" rx="6" fill="${YEL}" stroke="${K}" stroke-width="4"/><circle cx="82" cy="38" r="20" fill="${W}" stroke="${K}" stroke-width="4"/><rect x="18" y="62" width="40" height="40" rx="6" fill="${K}" stroke="${K}" stroke-width="4"/><path d="M62 102 82 62l20 40z" fill="${RED}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/>`),
+  namematch: sv(`<circle cx="47" cy="60" r="28" fill="${W}"/><circle cx="73" cy="60" r="28" fill="${YEL}"/><path d="M60 35.2A28 28 0 0 1 60 84.8 28 28 0 0 1 60 35.2z" fill="${K}"/><circle cx="47" cy="60" r="28" fill="none" stroke="${K}" stroke-width="4"/><circle cx="73" cy="60" r="28" fill="none" stroke="${K}" stroke-width="4"/>`),
+  today: sv(`<path d="M30 84a30 30 0 0 1 60 0z" fill="${YEL}" stroke="${K}" stroke-width="4"/><path d="M22.4 70.3 11.1 66.2M37.1 51.2l-6.9-9.8M60 44V32M82.9 51.2l6.9-9.8M97.6 70.3l11.3-4.1" stroke="${RED}" stroke-width="6" stroke-linecap="round"/><path d="M12 84h96M30 96h22M68 96h22M44 107h32" stroke="${K}" stroke-width="4" stroke-linecap="round"/>`),
+  reaction: sv(`<rect x="51" y="10" width="18" height="10" rx="3" fill="${YEL}"/><rect x="57" y="18" width="6" height="10" fill="${W}"/><circle cx="60" cy="68" r="38" fill="${W}"/><path d="M60 68V38a30 30 0 0 1 21.2 8.8z" fill="${GRN}"/><circle cx="60" cy="68" r="30" fill="none" stroke="${K}" stroke-width="3" stroke-dasharray="2 13.7"/><path d="M60 68 78 50" stroke="${RED}" stroke-width="6" stroke-linecap="round"/><circle cx="60" cy="68" r="5" fill="${K}"/>`),
+};
 const toolById = Object.fromEntries(TOOLS.map((x) => [x.id, x]));
+const byRank = RANK.map((id) => toolById[id]).concat(TOOLS.filter((x) => !RANK.includes(x.id)));
 const RECO = {
-  birthday: ["fortune2027", "personality", "reaction"],
+  birthday: ["today", "personality", "reaction"],
   personality: ["birthday", "namematch", "reaction"],
-  namematch: ["birthday", "personality", "fortune2027"],
-  fortune2027: ["birthday", "namematch", "personality"],
+  namematch: ["birthday", "personality", "today"],
+  today: ["birthday", "namematch", "personality"],
   reaction: ["personality", "birthday", "namematch"],
 };
 const TTI_KEYS = ["rat", "ox", "tiger", "rabbit", "dragon", "snake", "horse", "goat", "monkey", "rooster", "dog", "pig"];
-const TTI_EMOJI = { rat: "🐭", ox: "🐮", tiger: "🐯", rabbit: "🐰", dragon: "🐲", snake: "🐍", horse: "🐴", goat: "🐑", monkey: "🐵", rooster: "🐔", dog: "🐶", pig: "🐷" };
+const TTI_EMOJI = Object.fromEntries(TTI_KEYS.map((k) => [k, tti[k].hanja])); // 이모지 대신 지지 한자
 const ZODIAC_KEYS = ["aries", "taurus", "gemini", "cancer", "leo", "virgo", "libra", "scorpio", "sagittarius", "capricorn", "aquarius", "pisces"];
 const TYPE_KEYS = ["ISTJ", "ISFJ", "INFJ", "INTJ", "ISTP", "ISFP", "INFP", "INTP", "ESTP", "ESFP", "ENFP", "ENTP", "ESTJ", "ESFJ", "ENFJ", "ENTJ"];
 const REACTION_KEYS = ["fastSteady", "fastVaried", "slowSteady", "slowVaried"];
@@ -88,8 +103,8 @@ const crumbs = (items) => ({
 const crumbHtml = (items) =>
   `<nav class="crumbs" aria-label="현재 위치">${items.map((it, i) => (i < items.length - 1 ? `<a href="${u(it[1])}">${esc(it[0])}</a>` : `<span>${esc(it[0])}</span>`)).join(" › ")}</nav>`;
 
-const toolCard = (tool) =>
-  `<a class="card" href="${u(tool.path)}"><span class="card-icon">${tool.icon}</span><span class="card-body"><strong>${esc(tool.title)}</strong><small>${esc(tool.desc)}</small></span></a>`;
+const toolCard = (tool, rank) =>
+  `<a class="card c-${tool.cat}" href="${u(tool.path)}">${rank ? `<span class="rank">${rank}</span>` : ""}<span class="card-art">${ART[tool.id]}</span><span class="card-body"><span class="card-cat">${esc(CATS[tool.cat].name)}</span><strong>${esc(tool.title)}</strong><small>${esc(tool.hook)}</small><span class="card-meta">${esc(tool.meta)}</span></span></a>`;
 
 const recoHtml = (ids, heading = "이것도 해 보세요") =>
   `<section class="reco"><h2>${heading}</h2><div class="cards">${ids.map((id) => toolCard(toolById[id])).join("")}</div></section>`;
@@ -101,7 +116,7 @@ const shareBar = (opts = {}) =>
   <button type="button" class="btn ghost" data-act="image">결과 이미지 저장</button>
 </div>`;
 
-function layout({ title, desc, path: p, body, scripts = [], jsonld = [], noindex = false, ogType = "website", fullTitle = false }) {
+function layout({ title, desc, path: p, body, scripts = [], jsonld = [], noindex = false, ogType = "website", fullTitle = false, wide = false }) {
   const pageTitle = fullTitle ? title : `${title} | ${cfg.siteName}`;
   if (!noindex) sitemap.push(p);
   const ld = [
@@ -125,13 +140,15 @@ ${noindex ? '<meta name="robots" content="noindex,follow">' : ""}
 <meta property="og:image" content="${abs("/assets/og.png")}">
 <meta property="og:locale" content="ko_KR">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#6c5ce7">
+<meta name="theme-color" content="#ffffff">
 ${cfg.googleVerification ? `<meta name="google-site-verification" content="${esc(cfg.googleVerification)}">` : ""}
 ${cfg.naverVerification ? `<meta name="naver-site-verification" content="${esc(cfg.naverVerification)}">` : ""}
 <link rel="icon" href="${u("/assets/favicon.svg")}" type="image/svg+xml">
 <link rel="alternate" type="application/rss+xml" title="${esc(cfg.siteName)}" href="${abs("/rss.xml")}">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap">
 <link rel="stylesheet" href="${u("/assets/style.css")}">
 ${cfg.adsenseClient ? `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${esc(cfg.adsenseClient)}" crossorigin="anonymous"></script>` : ""}
 ${cfg.gaId ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${esc(cfg.gaId)}"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${esc(cfg.gaId)}');</script>` : ""}
@@ -141,13 +158,13 @@ ${cfg.gaId ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${e
 <a class="skip" href="#main">본문으로 건너뛰기</a>
 <header class="site-header">
   <div class="wrap header-inner">
-    <a class="logo" href="${u("/")}"><span class="logo-mark">●</span>${esc(cfg.siteName)}</a>
+    <a class="logo" href="${u("/")}"><span class="logo-mark" aria-hidden="true">나</span>${esc(cfg.siteName)}</a>
     <nav class="nav" aria-label="카테고리">
       ${Object.entries(CATS).map(([k, c]) => `<a href="${u(`/${k}/`)}">${esc(c.name)}</a>`).join("")}
     </nav>
   </div>
 </header>
-<main id="main" class="wrap">
+<main id="main" class="wrap${wide ? " wide" : ""}">
 ${body}
 </main>
 <footer class="site-footer">
@@ -175,7 +192,7 @@ function toolPage(tool, toolHtml, { scripts = [], extraBelow = "", dataJson = nu
 ${crumbHtml(items)}
 <article class="tool">
   <header class="page-head">
-    <span class="eyebrow">${cat.icon} ${esc(cat.name)}</span>
+    <span class="eyebrow">${esc(cat.name)}</span>
     <h1>${esc(tool.h1)}</h1>
     <p class="lead">${esc(tool.desc)}</p>
     <p class="fun-badge">재미로 보는 콘텐츠예요</p>
@@ -207,32 +224,58 @@ fs.rmSync(DIST, { recursive: true, force: true });
 fs.mkdirSync(DIST, { recursive: true });
 fs.cpSync(path.join(ROOT, "src", "assets"), path.join(DIST, "assets"), { recursive: true });
 
-// 홈
+// 홈 — 「한 장 뽑기」 카드 덱 + 테스트 카드 + 12띠 도장 + 16유형 판
 {
+  const fan = [-15, -7, 0, 7, 15];
+  const deck = byRank.slice(0, 5).map((tool, i) => `<a class="deck-card c-${tool.cat}" href="${u(tool.path)}" style="--r:${fan[i]}deg;--x:${(i - 2) * 54}px;--i:${i}"><span class="card-art">${ART[tool.id]}</span><strong>${esc(tool.title)}</strong></a>`).join("");
+  const GROUP = { NT: "me", NF: "love", SJ: "luck", SP: "brain" };
+  const groupOf = (k) => (k[1] === "N" ? (k[2] === "T" ? "NT" : "NF") : k[3] === "J" ? "SJ" : "SP");
   const body = `
 <section class="hero">
-  <p class="eyebrow">나를 알아보는 재미있는 테스트</p>
-  <h1>오늘은 어떤 나를<br>만나 볼까요?</h1>
-  <p class="lead">생일 하나로 보는 띠와 별자리, 20문항 성격 테스트, 이름 궁합, 반응속도 게임까지. 결과를 확인하고, 친구와 나누고, 다음 테스트로 이어 가 보세요.</p>
-  <a class="btn big" href="${u("/me/birthday/")}">생일로 나 알아보기 →</a>
+  <div class="hero-text">
+    <p class="hero-kicker">생일 · 이름 · 성격 · 운세 테스트</p>
+    <h1>생일 하나 넣었는데<br>이렇게까지 나온다고?</h1>
+    <p class="lead">띠, 별자리, 16유형, 이름 궁합, 반응속도까지. 가입은 필요 없고, 입력한 건 어디에도 저장하지 않아요.</p>
+    <div class="hero-actions">
+      <button class="btn big" type="button" data-act="draw">아무거나 한 장 뽑기</button>
+      <a class="text-link" href="${u("/me/birthday/")}">생일부터 넣어 볼래요</a>
+    </div>
+  </div>
+  <div class="deck" aria-label="테스트 카드">${deck}</div>
 </section>
-${Object.entries(CATS)
-  .map(([k, c]) => {
-    const list = TOOLS.filter((x) => x.cat === k);
-    return `<section class="cat-block"><div class="cat-head"><h2>${c.icon} ${esc(c.name)}</h2><a href="${u(`/${k}/`)}">더 보기</a></div><div class="cards">${list.map(toolCard).join("")}</div></section>`;
-  })
-  .join("")}
-<section class="cat-block">
-  <div class="cat-head"><h2>🐑 2027 띠별 신년운세 바로가기</h2></div>
-  <div class="chips">${TTI_KEYS.map((k) => `<a class="chip" href="${u(`/luck/2027/${k}/`)}">${TTI_EMOJI[k]} ${esc(tti[k].name)}</a>`).join("")}</div>
+
+<section class="home-block">
+  <div class="tabs" role="tablist" aria-label="테스트 목록">
+    <button type="button" role="tab" id="tab-pop" aria-controls="panel-pop" aria-selected="true" data-tab="pop">인기</button>
+    <button type="button" role="tab" id="tab-all" aria-controls="panel-all" aria-selected="false" tabindex="-1" data-tab="all">전체 <small>${TOOLS.length}</small></button>
+  </div>
+  <div class="tab-panel" role="tabpanel" id="panel-pop" aria-labelledby="tab-pop"><div class="cards cards-home">${byRank.slice(0, 6).map((x, i) => toolCard(x, i + 1)).join("")}</div></div>
+  <div class="tab-panel" role="tabpanel" id="panel-all" aria-labelledby="tab-all" hidden>${Object.entries(CATS)
+    .map(([k, c]) => {
+      const list = TOOLS.filter((x) => x.cat === k);
+      return list.length ? `<div class="tab-cat"><h3><a href="${u(`/${k}/`)}">${esc(c.name)}</a> <small>${list.length}</small></h3><div class="cards cards-home">${list.map((x) => toolCard(x)).join("")}</div></div>` : "";
+    })
+    .join("")}</div>
 </section>
-<section class="cat-block">
-  <div class="cat-head"><h2>🧩 16유형 성격 해설</h2></div>
-  <div class="chips">${TYPE_KEYS.map((k) => `<a class="chip" href="${u(`/me/personality/${k.toLowerCase()}/`)}">${esc(personality[k].name)}</a>`).join("")}</div>
+
+<section class="home-block band band-red">
+  <div class="band-head">
+    <h2 class="home-h">오늘, 내 띠는?</h2>
+    <p>매일 자정에 바뀌어요. 띠를 누르면 오늘 운세가 바로 열려요.</p>
+  </div>
+  <div class="stamps">${TTI_KEYS.map((k) => `<a class="stamp" href="${u(`/luck/today/#${k}`)}"><span class="stamp-hanja">${esc(tti[k].hanja)}</span><span class="stamp-name">${esc(tti[k].name)}</span></a>`).join("")}</div>
+</section>
+
+<section class="home-block">
+  <div class="band-head">
+    <h2 class="home-h">열여섯 가지 중에 나는 어디쯤</h2>
+    <p>코드를 누르면 해설이 열려요. 모르겠으면 <a href="${u("/me/personality/")}">20문항 테스트</a>부터.</p>
+  </div>
+  <div class="types">${TYPE_KEYS.map((k) => `<a class="type c-${GROUP[groupOf(k)]}" href="${u(`/me/personality/${k.toLowerCase()}/`)}"><b>${k}</b><span>${esc(personality[k].name)}</span></a>`).join("")}</div>
 </section>
 ${adSlot("home")}
-<section class="prose"><h2>${esc(cfg.siteName)}는 이런 곳이에요</h2>${fill(pages.home.intro).split(/\n+/).map((p) => `<p>${esc(p)}</p>`).join("")}</section>`;
-  write("/", layout({ title: `${cfg.siteName} — ${cfg.tagline}`, fullTitle: true, desc: "만 나이·띠·별자리 계산, 16유형 성격 테스트, 2027 띠별 신년운세, 이름 궁합, 반응속도 게임까지. 나를 알아보는 재미있는 테스트를 한곳에서 즐겨 보세요.", path: "/", body }));
+<section class="prose home-about"><h2>${esc(cfg.siteName)}는 이런 곳이에요</h2>${fill(pages.home.intro).split(/\n+/).map((p) => `<p>${esc(p)}</p>`).join("")}</section>`;
+  write("/", layout({ title: `${cfg.siteName} — ${cfg.tagline}`, fullTitle: true, wide: true, scripts: ["home.js"], desc: "오늘의 띠별 운세, 만 나이·띠·별자리 계산, 16유형 성격 테스트, 이름 궁합, 반응속도 게임까지. 나를 알아보는 재미있는 테스트를 한곳에서 즐겨 보세요.", path: "/", body }));
 }
 
 // 카테고리 페이지
@@ -240,7 +283,7 @@ const CAT_EXTRA = {
   me: () => `<section class="cat-block"><div class="cat-head"><h2>띠별 성격</h2></div><div class="chips">${TTI_KEYS.map((k) => `<a class="chip" href="${u(`/me/tti/${k}/`)}">${TTI_EMOJI[k]} ${esc(tti[k].name)}</a>`).join("")}</div></section>
 <section class="cat-block"><div class="cat-head"><h2>별자리별 성향</h2></div><div class="chips">${ZODIAC_KEYS.map((k) => `<a class="chip" href="${u(`/me/zodiac/${k}/`)}">${zodiac[k].symbol} ${esc(zodiac[k].name)}</a>`).join("")}</div></section>
 <section class="cat-block"><div class="cat-head"><h2>16유형 해설</h2></div><div class="chips">${TYPE_KEYS.map((k) => `<a class="chip" href="${u(`/me/personality/${k.toLowerCase()}/`)}">${esc(personality[k].name)}</a>`).join("")}</div></section>`,
-  luck: () => `<section class="cat-block"><div class="cat-head"><h2>2027 띠별 신년운세</h2></div><div class="chips">${TTI_KEYS.map((k) => `<a class="chip" href="${u(`/luck/2027/${k}/`)}">${TTI_EMOJI[k]} ${esc(tti[k].name)}</a>`).join("")}</div></section>`,
+  luck: () => `<section class="cat-block"><div class="cat-head"><h2>띠별 오늘의 운세 바로가기</h2></div><div class="chips">${TTI_KEYS.map((k) => `<a class="chip" href="${u(`/luck/today/#${k}`)}">${TTI_EMOJI[k]} ${esc(tti[k].name)}</a>`).join("")}</div></section>`,
   brain: () => `<section class="cat-block"><div class="cat-head"><h2>반응 스타일 4가지</h2></div><div class="chips">${REACTION_KEYS.map((k) => `<a class="chip" href="${u(`/brain/reaction/${REACTION_SLUG[k]}/`)}">${esc(guides.reactionTypes[k].name)}</a>`).join("")}</div></section>`,
   love: () => "",
 };
@@ -248,7 +291,7 @@ for (const [k, c] of Object.entries(CATS)) {
   const list = TOOLS.filter((x) => x.cat === k);
   const items = [["홈", "/"], [c.name, `/${k}/`]];
   const body = `${crumbHtml(items)}
-<header class="page-head"><span class="eyebrow">${c.icon}</span><h1>${esc(c.name)}</h1><p class="lead">${esc(c.desc)}</p></header>
+<header class="page-head"><span class="eyebrow">카테고리</span><h1>${esc(c.name)}</h1><p class="lead">${esc(c.desc)}</p></header>
 <div class="cards">${list.map(toolCard).join("")}</div>
 ${CAT_EXTRA[k]()}
 ${recoHtml(TOOLS.filter((x) => x.cat !== k).slice(0, 3).map((x) => x.id), "다른 카테고리도 둘러보세요")}`;
@@ -280,63 +323,21 @@ ${recoHtml(TOOLS.filter((x) => x.cat !== k).slice(0, 3).map((x) => x.id), "다�
   });
 }
 
-// ② 2027 신년운세 (메인 + 12띠)
+// ② 오늘의 띠별 운세 — 빌드 시점(한국 시간) 운세를 미리 그려 두고, 브라우저에서 날짜가 바뀌었으면 다시 그림. 매일 자정 GitHub Actions가 다시 빌드.
 {
   const years = [];
-  for (let y = 2027; y >= 1930; y--) years.push(y);
+  for (let y = new Date().getFullYear(); y >= 1930; y--) years.push(y);
   const html = `
-<form class="form" id="fortune-form" autocomplete="off">
-  <fieldset class="row3">
-    <legend>태어난 해와 달</legend>
-    <label><span class="sr">년</span><select name="y" required><option value="">년</option>${years.map((y) => `<option>${y}</option>`).join("")}</select></label>
-    <label><span class="sr">월</span><select name="m"><option value="">월(선택)</option>${Array.from({ length: 12 }, (_, i) => `<option>${i + 1}</option>`).join("")}</select></label>
-    <label><span class="sr">일</span><select name="d"><option value="">일(선택)</option>${Array.from({ length: 31 }, (_, i) => `<option>${i + 1}</option>`).join("")}</select></label>
-  </fieldset>
-  <button class="btn big" type="submit">내 띠 운세 보기</button>
-  <p class="hint">1월~2월 초에 태어났다면 월·일도 넣어 주세요. 띠는 입춘(2월 4일 무렵)을 기준으로 바뀌어요.</p>
+<form class="today-find" id="today-find" autocomplete="off">
+  <label><span class="sr">출생 연도</span><select name="y" required><option value="">출생 연도로 내 띠 찾기</option>${years.map((y) => `<option>${y}</option>`).join("")}</select></label>
+  <button class="btn" type="submit">내 띠로 이동</button>
 </form>
-<div class="result" id="fortune-result" hidden aria-live="polite"></div>
-<h2 class="sub">띠를 알고 있다면 바로 골라 보세요</h2>
-<div class="tti-grid">${TTI_KEYS.map((k) => `<a href="${u(`/luck/2027/${k}/`)}"><span>${TTI_EMOJI[k]}</span>${esc(tti[k].name)}</a>`).join("")}</div>`;
-  toolPage(toolById.fortune2027, html, { scripts: ["fortune.js"], dataJson: { names: Object.fromEntries(TTI_KEYS.map((k) => [k, tti[k].name])) } });
-
-  TTI_KEYS.forEach((k, i) => {
-    const d = tti[k];
-    const f = d.fortune2027;
-    const p = `/luck/2027/${k}/`;
-    const items = [["홈", "/"], ["나의 운", "/luck/"], ["2027 띠별 신년운세", "/luck/2027/"], [`${d.name} 2027`, p]];
-    const prev = TTI_KEYS[(i + 11) % 12], next = TTI_KEYS[(i + 1) % 12];
-    const born = d.years.filter((y) => y >= 1936 && y <= 2027);
-    const len = textLen(f.sections);
-    if (len < 800) warnings.push(`${p} 본문 ${len}자 (<800, noindex)`);
-    const body = `${crumbHtml(items)}
-<article class="result-page">
-  <header class="page-head">
-    <span class="eyebrow">🐑 2027 정미년 신년운세</span>
-    <h1>${TTI_EMOJI[k]} ${esc(d.name)} 2027년 운세</h1>
-    <p class="lead">${t(f.summary)}</p>
-    <p class="fun-badge">재미로 보는 콘텐츠예요</p>
-  </header>
-  <div class="result-card" data-card-title="2027 ${esc(d.name)} 운세" data-card-main="${esc(d.name)}" data-card-sub="${t(f.summary)}">
-    <div class="rc-emoji">${TTI_EMOJI[k]}</div>
-    <div class="rc-main">${esc(d.name)} <small>${esc(d.hanja)}</small></div>
-    <p>${t(f.summary)}</p>
-    <dl class="rc-meta"><div><dt>행운의 색</dt><dd>${t(f.luckyColor)}</dd></div><div><dt>행운의 숫자</dt><dd>${esc(f.luckyNumber)}</dd></div></dl>
-  </div>
-  ${shareBar({ title: `2027 ${d.name} 운세`, text: fill(f.summary), path: p })}
-  <section class="prose">${blocks(f.sections, "h2")}</section>
-  ${adSlot("mid")}
-  <section class="prose">
-    <h2>${esc(d.name)}에 해당하는 출생연도</h2>
-    <p>${born.map((y) => `${y}년`).join(" · ")}생</p>
-    <p class="hint">띠는 양력 1월 1일이 아니라 입춘(해마다 2월 3~5일 무렵)을 기준으로 바뀌어요. 1월~2월 초에 태어났다면 앞 해의 띠일 수 있으니 <a href="${u("/me/birthday/")}">생일로 보는 나</a>에서 확인해 보세요.</p>
-    <p><a href="${u(`/me/tti/${k}/`)}">${esc(d.name)} 성격 더 알아보기 →</a></p>
-  </section>
-  <nav class="pager"><a href="${u(`/luck/2027/${prev}/`)}">← ${esc(tti[prev].name)}</a><a href="${u("/luck/2027/")}">12띠 전체</a><a href="${u(`/luck/2027/${next}/`)}">${esc(tti[next].name)} →</a></nav>
-  ${recoHtml(["birthday", "namematch", "personality"])}
-</article>`;
-    write(p, layout({ title: `${d.name} 2027년 신년운세 (정미년)`, desc: `${d.name} 2027년 정미년 운세: ${fill(f.summary)} 한 해의 흐름, 일·공부, 관계, 마음 관리 팁을 재미로 읽어 보세요.`, path: p, body, ogType: "article", noindex: len < 800, jsonld: [crumbs(items)] }));
-  });
+<p class="hint">1월~2월 초에 태어났다면 앞 해의 띠일 수 있어요. 띠는 입춘을 기준으로 바뀌어요.</p>
+<div id="today" aria-live="polite">${renderDay(kstDate())}</div>
+<div class="share"><button type="button" class="btn" data-act="threads">오늘의 운세 이미지 저장</button></div>
+${shareBar({ title: "오늘의 띠별 운세", text: "매일 자정에 바뀌는 12띠 오늘의 운세", path: "/luck/today/" })}
+<script type="module" src="${u("/assets/today.js")}"></script>`;
+  toolPage(toolById.today, html);
 }
 
 // 띠별 성격 페이지
@@ -348,15 +349,15 @@ TTI_KEYS.forEach((k) => {
   const born = d.years.filter((y) => y >= 1936 && y <= 2031);
   const body = `${crumbHtml(items)}
 <article class="result-page">
-  <header class="page-head"><span class="eyebrow">🪞 띠별 성격</span><h1>${TTI_EMOJI[k]} ${esc(d.name)} 성격과 특징</h1><p class="lead">${t(d.summary)}</p><p class="fun-badge">재미로 보는 콘텐츠예요</p></header>
+  <header class="page-head"><span class="eyebrow">띠별 성격</span><h1>${TTI_EMOJI[k]} ${esc(d.name)} 성격과 특징</h1><p class="lead">${t(d.summary)}</p><p class="fun-badge">재미로 보는 콘텐츠예요</p></header>
   <section class="prose">${blocks(d.personality, "h2")}
   <h2>${esc(d.name)} 출생연도</h2><p>${born.map((y) => `${y}년`).join(" · ")}생 (입춘 기준)</p></section>
   ${shareBar({ title: `${d.name} 성격`, text: fill(d.summary), path: p })}
-  <section class="prose"><p><a href="${u(`/luck/2027/${k}/`)}">${esc(d.name)} 2027년 운세 보기 →</a></p></section>
+  <section class="prose"><p><a href="${u(`/luck/today/#${k}`)}">${esc(d.name)} 오늘의 운세 보기</a></p></section>
   <div class="chips">${TTI_KEYS.filter((x) => x !== k).map((x) => `<a class="chip" href="${u(`/me/tti/${x}/`)}">${TTI_EMOJI[x]} ${esc(tti[x].name)}</a>`).join("")}</div>
-  ${recoHtml(["birthday", "fortune2027", "personality"])}
+  ${recoHtml(["birthday", "today", "personality"])}
 </article>`;
-  write(p, layout({ title: `${d.name} 성격과 특징`, desc: `${d.name} 성격: ${fill(d.summary)} ${d.name} 출생연도와 2027년 운세까지 함께 확인해 보세요.`, path: p, body, ogType: "article", noindex: len < 300, jsonld: [crumbs(items)] }));
+  write(p, layout({ title: `${d.name} 성격과 특징`, desc: `${d.name} 성격: ${fill(d.summary)} ${d.name} 출생연도와 오늘의 운세까지 함께 확인해 보세요.`, path: p, body, ogType: "article", noindex: len < 300, jsonld: [crumbs(items)] }));
 });
 
 // 별자리 페이지
@@ -368,7 +369,7 @@ ZODIAC_KEYS.forEach((k, i) => {
   const same = ZODIAC_KEYS.filter((x) => x !== k && zodiac[x].element === d.element);
   const body = `${crumbHtml(items)}
 <article class="result-page">
-  <header class="page-head"><span class="eyebrow">🪞 별자리별 성향</span><h1>${d.symbol} ${esc(d.name)} 성격과 특징 <small>(${esc(d.dates)})</small></h1><p class="lead">${t(d.summary)}</p><p class="fun-badge">재미로 보는 콘텐츠예요</p></header>
+  <header class="page-head"><span class="eyebrow">별자리별 성향</span><h1>${d.symbol} ${esc(d.name)} 성격과 특징 <small>(${esc(d.dates)})</small></h1><p class="lead">${t(d.summary)}</p><p class="fun-badge">재미로 보는 콘텐츠예요</p></header>
   <div class="result-card" data-card-title="나의 별자리" data-card-main="${esc(d.name)}" data-card-sub="${t(d.summary)}">
     <div class="rc-emoji">${d.symbol}</div><div class="rc-main">${esc(d.name)} <small>${esc(d.en)}</small></div><p>${t(d.summary)}</p>
     <dl class="rc-meta"><div><dt>기간</dt><dd>${esc(d.dates)}</dd></div><div><dt>원소</dt><dd>${esc(d.element)}</dd></div></dl>
@@ -405,9 +406,9 @@ ZODIAC_KEYS.forEach((k, i) => {
     const g = d.match?.good;
     const body = `${crumbHtml(items)}
 <article class="result-page">
-  <header class="page-head"><span class="eyebrow">🧩 16유형 성격 해설</span><h1>${esc(d.name)} <small>(${k})</small></h1><p class="lead">${t(d.summary)}</p><p class="fun-badge">재미로 보는 콘텐츠예요</p></header>
+  <header class="page-head"><span class="eyebrow">16유형 성격 해설</span><h1>${esc(d.name)} <small>(${k})</small></h1><p class="lead">${t(d.summary)}</p><p class="fun-badge">재미로 보는 콘텐츠예요</p></header>
   <div class="result-card" data-card-title="나의 16유형" data-card-main="${esc(d.name)}" data-card-sub="${k} · ${t(d.summary)}">
-    <div class="rc-emoji">🧩</div><div class="rc-main">${esc(d.name)}</div><div class="rc-code">${k} · ${k.split("").map((c) => AXES[c]).join("·")}</div>
+    <div class="rc-emoji">${ART.personality}</div><div class="rc-main">${esc(d.name)}</div><div class="rc-code">${k} · ${k.split("").map((c) => AXES[c]).join("·")}</div>
     <p>${t(d.summary)}</p>
     <div id="my-axes" class="axes" hidden></div>
     <div class="tags">${(d.keywords || []).map((x) => `<span>#${t(x)}</span>`).join("")}</div>
@@ -469,9 +470,9 @@ ZODIAC_KEYS.forEach((k, i) => {
     if (len < 300) warnings.push(`${p} 본문 ${len}자 (<300, noindex)`);
     const body = `${crumbHtml(items)}
 <article class="result-page">
-  <header class="page-head"><span class="eyebrow">⚡ 나의 반응 스타일</span><h1>${t(d.name)}</h1><p class="lead">${t(d.summary)}</p><p class="fun-badge">재미로 보는 콘텐츠예요</p></header>
+  <header class="page-head"><span class="eyebrow">나의 반응 스타일</span><h1>${t(d.name)}</h1><p class="lead">${t(d.summary)}</p><p class="fun-badge">재미로 보는 콘텐츠예요</p></header>
   <div class="result-card" data-card-title="나의 반응 스타일" data-card-main="${t(d.name)}" data-card-sub="${t(d.summary)}">
-    <div class="rc-emoji">⚡</div><div class="rc-main">${t(d.name)}</div><p>${t(d.summary)}</p>
+    <div class="rc-emoji">${ART.reaction}</div><div class="rc-main">${t(d.name)}</div><p>${t(d.summary)}</p>
     <dl class="rc-meta" id="my-rt" hidden></dl>
   </div>
   ${shareBar({ title: `나의 반응 스타일: ${fill(d.name)}`, text: fill(d.summary), path: p })}
@@ -510,13 +511,13 @@ for (const k of INFO) {
 }
 
 // 404
-write("/404.html", layout({ title: "페이지를 찾을 수 없어요", desc: "요청하신 페이지를 찾을 수 없어요.", path: "/404.html", noindex: true, body: `<section class="hero"><h1>앗, 길을 잃었어요</h1><p class="lead">주소가 바뀌었거나 없는 페이지예요. 대신 이런 테스트는 어떠세요?</p></section>${recoHtml(["birthday", "personality", "fortune2027"], "인기 테스트")}` }));
+write("/404.html", layout({ title: "페이지를 찾을 수 없어요", desc: "요청하신 페이지를 찾을 수 없어요.", path: "/404.html", noindex: true, body: `<section class="hero"><h1>앗, 길을 잃었어요</h1><p class="lead">주소가 바뀌었거나 없는 페이지예요. 대신 이런 테스트는 어떠세요?</p></section>${recoHtml(["today", "birthday", "personality"], "인기 테스트")}` }));
 
 // sitemap / robots / rss
 const today = new Date().toISOString().slice(0, 10);
 fs.writeFileSync(path.join(DIST, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemap.map((p) => `  <url><loc>${abs(p)}</loc><lastmod>${today}</lastmod></url>`).join("\n")}\n</urlset>\n`);
 fs.writeFileSync(path.join(DIST, "robots.txt"), `User-agent: *\nAllow: /\n\nSitemap: ${abs("/sitemap.xml")}\n`);
-const rssItems = [...TOOLS.map((x) => [x.title, x.path, x.desc]), ...TTI_KEYS.map((k) => [`${tti[k].name} 2027년 신년운세`, `/luck/2027/${k}/`, fill(tti[k].fortune2027.summary)]), ...TYPE_KEYS.map((k) => [`${personality[k].name}(${k}) 성격 특징`, `/me/personality/${k.toLowerCase()}/`, fill(personality[k].summary)])];
+const rssItems = [...TOOLS.map((x) => [x.title, x.path, x.desc]), ...TYPE_KEYS.map((k) => [`${personality[k].name}(${k}) 성격 특징`, `/me/personality/${k.toLowerCase()}/`, fill(personality[k].summary)])];
 fs.writeFileSync(path.join(DIST, "rss.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"><channel><title>${esc(cfg.siteName)}</title><link>${abs("/")}</link><description>${esc(cfg.tagline)}</description><language>ko</language>\n${rssItems.map(([ti, p, d]) => `<item><title>${esc(ti)}</title><link>${abs(p)}</link><guid>${abs(p)}</guid><description>${esc(d)}</description><pubDate>${new Date().toUTCString()}</pubDate></item>`).join("\n")}\n</channel></rss>\n`);
 if (cfg.adsenseClient) fs.writeFileSync(path.join(DIST, "ads.txt"), `google.com, ${cfg.adsenseClient.replace("ca-", "")}, DIRECT, f08c47fec0942fa0\n`);
 
