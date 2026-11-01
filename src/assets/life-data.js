@@ -1,11 +1,11 @@
-// 1분 인생 데이터 — 시기 10개 × 장면 10개 = 갈림길 100개, 시기별 스쳐 가는 장면 5개씩.
+// 인생 게임 데이터 — 터닝포인트(TURNS) + 그 사이 작은 사건(SLOTS 100개, NEEDS로 선택 결과와 맞는 것만) + 스쳐 가는 장면.
 // 갈림길: [장면, 선택 A, 결 A, 선택 B, 결 B, 도트 장면 키]   결: a 모험 / l 사랑 / s 안정 / f 재미
 // 장면 키는 시기마다 배경이 3종 이상이어야 하고, build.mjs가 빌드 때 검사합니다.
 (function () {
   const SLOTS = [
     [[4, 7], [
       ["유치원 장기자랑 날", "무대 한가운데로", "f", "맨 뒷줄에서 율동", "s", "k-talent"],
-      ["놀이터에 처음 보는 아이가 있다", "같이 놀자고 한다", "l", "그네만 탄다", "s", "k-playground"],
+      ["오락실에 처음 보는 아이가 있다", "같이 놀자고 한다", "l", "그네만 탄다", "s", "k-playground"],
       ["마트에서 과자를 하나만 고르라고 한다", "처음 보는 과자", "a", "늘 먹던 과자", "s", "k-snack"],
       ["크리스마스 선물을 고른다", "로봇 장난감", "f", "그림책 세트", "s", "k-gift"],
       ["소풍 날 비가 온다", "우비 입고 물웅덩이로", "f", "창가에서 구경", "s", "k-rain"],
@@ -271,18 +271,175 @@
     ending: S("village", { tod: "sunset", who: false, props: [["stone", 42], ["flowers", 32], ["flowers", 55]] }), // 마지막 날
   };
 
-  // 인생 이정표: [[나이 범위], 문장(또는 태어난 곳별 문장), 장면 키, 확률, 앞서 있어야 할 이정표]  {born} → city/sea/mountain
+  // 인생 이정표(어린 시절만): [[나이 범위], 문장(또는 태어난 곳별 문장), 장면 키]  {born} → city/sea/mountain
+  // 수능·첫 출근·결혼·출산은 이제 플레이어가 고르는 터닝포인트(TURNS)가 맡습니다.
   const MILESTONES = [
     [[0, 0], "응애. 세상에 나왔다", "born", 1],
     [[1, 1], "처음으로 두 발로 섰다", "step-{born}", 1],
-    [[5, 5], { city: "골목길이 놀이터였다", sea: "바닷가 모래밭이 놀이터였다", mountain: "뒷산 개울이 놀이터였다" }, "town-{born}", 1],
+    [[5, 5], { city: "골목길이 오락실였다", sea: "바닷가 모래밭이 오락실였다", mountain: "뒷산 개울이 오락실였다" }, "town-{born}", 1],
     [[7, 7], "초등학교 입학식. 교문 앞에서 사진을 찍었다", "enter", 1],
-    [[18, 18], "수능 날. 시험지를 받았다", "exam", 1],
-    [[26, 27], "첫 출근. 사원증을 목에 걸었다", "work", 1],
-    [[29, 34], "결혼식. 꽃 아치 아래에 섰다", "wedding", 0.8],
-    [[35, 38], "아이가 태어났다", "baby", 0.7, "wedding"],
   ];
   const BORN = { city: "도시", sea: "바닷가", mountain: "산골" };
 
-  NALGI.lifeData = { SLOTS, MOMENTS, SCENES, MILESTONES, BORN };
+  // ===================== P2-21 터닝포인트 선택형 =====================
+  // 작은 사건(SLOTS)이 나오려면 맞아야 하는 조건. 키 = 장면 키. 조건이 없는 사건은 누구에게나 나옴
+  //   married true/false · kids(아이를 낳았거나 입양) · employed(회사원·공무원·전문직으로 일하는 중) · edu/job/notJob/notHome 목록 · retired(제2의 일을 고르지 않은 은퇴)
+  //   skip: 터닝포인트와 겹쳐 더는 쓰지 않음 / stranger: 그림 속 아이가 내 아이가 아님(동네 아이)
+  const NEEDS = {
+    "s-apply": { skip: true },                                    // 대학 원서 → 진학 터닝포인트가 대신함
+    "a-exchange": { edu: ["univ"] }, "a-mt": { edu: ["univ"] }, "a-campus": { edu: ["univ", "abroad"] },
+    "w-startup": { notJob: ["startup"] },
+    "w-dinner": { employed: true }, "w-offer": { employed: true }, "w-colleague": { employed: true }, "w-talent": { employed: true },
+    "m-confess": { married: false },
+    "m-abroad": { employed: true, married: true }, "m-news": { married: true }, "m-house": { married: true },
+    "m-leader": { employed: true }, "m-burnout": { employed: true },
+    "f-relay": { kids: true }, "f-promo": { employed: true }, "f-photo": { married: true, kids: true }, "f-rep": { notHome: ["country", "sea"] },
+    "g-leave": { kids: true }, "g-retire": { employed: true, job: ["company", "public", "pro"] }, "g-anniv": { married: true },
+    "e-grandkid": { kids: true }, "e-trip": { married: true }, "e-retire": { retired: true }, "e-guide": { stranger: true },
+  };
+  // 스쳐 가는 장면 중 조건이 필요한 문장
+  const MOMENT_NEEDS = [[/손주|증손주/, { kids: true }], [/정장/, { notJob: ["art"] }]];
+
+  // 직업 복장(어른 단계 옷 색). pixel.js 사람 그림의 top·top2·bot을 바꿔 그림
+  const OUTFIT = {
+    company: ["#2b3a6b", "#ffffff", "#2a2f3a"], public: ["#4a5560", "#e9eef2", "#30363d"], startup: ["#1e9e5a", "#141414", "#3a4a5a"],
+    art: ["#e5372b", "#ffc21a", "#2a2a2a"], pro: ["#f4f4f4", "#7aa0d8", "#3a3f4a"], craft: ["#8a5a2b", "#d9b38c", "#3a2a1a"], shop: ["#ffc21a", "#e5372b", "#4a3a2a"],
+  };
+  const JOB_NAME = { company: "회사원", public: "공무원", startup: "창업가", art: "예술가", pro: "전문직", craft: "기술자", shop: "가게 사장" };
+  const HOME_VIEW = { city: "city", sea: "sea", country: "mountain", abroad: "city" };
+
+  // 터닝포인트 장면(새로 그림)
+  Object.assign(SCENES, {
+    "tp-counsel": S("class", { pose: "stand", with: [["teacher", 60, "stand"]], props: [["paper", 52, 42], ["books", 26]] }),
+    "tp-univ": S("gate", { pose: "act", with: [["friend", 24, "act"], ["friend2", 62, "stand"]], fx: ["bunting"] }),
+    "tp-earlywork": S("street", { pose: "walk", props: [["brief", 52, 47]] }),
+    "tp-skill": S("street", { pose: "act", props: [["box", 56], ["bulb", 30, 22]] }),
+    "tp-jobboard": S("street", { pose: "stand", props: [["paper", 53, 40], ["phone", 30, 41]] }),
+    "tp-public": S("office", { pose: "stand", props: [["ballot", 56], ["paper", 28, 40]] }),
+    "tp-art": S("home", { pose: "act", back: [["easel", 58]], props: [["note", 28, 12], ["guitar", 22]] }),
+    "tp-pro": S("hosp", { pose: "stand", props: [["paper", 54, 42], ["books", 26]] }),
+    "tp-craft": S("street", { pose: "act", props: [["box", 56], ["box", 24], ["key", 46, 30]] }),
+    "tp-propose": S("park", { tod: "sunset", pose: "stand", with: [["lover", 56, "stand"]], props: [["heart", 50, 24]] }),
+    "tp-alone": S("home", { pose: "act", props: [["cup", 52, 44], ["flowers", 26]] }),
+    "tp-later": S("street", { tod: "sunset", pose: "walk", props: [["brief", 52, 47]] }),
+    "tp-family": S("home", { tod: "sunset", pose: "stand", props: [["heart", 50, 22]], family: true }),
+    "tp-nokids": S("park", { tod: "sunset", pose: "walk", family: true }),
+    "tp-adopt": S("home", { pose: "act", with: [["kid", 30, "act"]], props: [["heart", 46, 20]], fx: ["sparkle"], family: true }),
+    "tp-pet": S("park", { pose: "act", props: [["dog", 56]], family: true }),
+    "tp-career": S("office", { tod: "sunset", pose: "stand", props: [["envelope", 54, 40], ["clock", 26, 24]] }),
+    "tp-rest": S("beach", { tod: "sunset", pose: "stand", props: [["cup", 54, 44]] }),
+    "tp-grow": S("office", { pose: "act", with: [["friend", 22, "stand"], ["friend2", 64, "stand"]], props: [["trophy", 46, 18]], fx: ["sparkle"] }),
+    "tp-move": S("home", { pose: "walk", props: [["box", 56], ["box", 24], ["house", 42, 18]], family: true }),
+    "tp-city": S("street", { tod: "night", pose: "walk", back: [["neon", 60, 12]], family: true }),
+    "tp-sea": S("beach", { tod: "sunset", pose: "walk", family: true }),
+    "tp-country": S("village", { pose: "walk", props: [["sprout", 30]], family: true }),
+    "tp-abroad": S("airport", { pose: "walk", props: [["suitcase", 30]], family: true }),
+    "tp-sick": S("hosp", { pose: "stand", with: [["teacher", 60, "stand"]], props: [["paper", 54, 42]] }),
+    "tp-jobloss": S("office", { tod: "night", pose: "walk", props: [["box", 50, 44]] }),
+    "tp-bizdown": S("office", { tod: "night", pose: "stand", props: [["coins", 54], ["zz", 30, 30]] }),
+    "tp-accident": S("street", { tod: "night", pose: "stand", back: [["car", 56]] }),
+    "tp-endure": S("home", { tod: "night", pose: "stand", props: [["lamp", 30, 45], ["clock", 54, 26]] }),
+    "tp-help": S("home", { pose: "act", with: [["friend", 22, "stand"]], props: [["cup", 50, 44]], family: true }),
+    "tp-newstart": S("street", { pose: "walk", props: [["pack", 52, 41]], fx: ["sparkle"] }),
+    "tp-shop": S("street", { pose: "act", props: [["bread", 54, 42], ["coins", 26]], fx: ["sparkle"] }),
+    "tp-retire": S("office", { tod: "sunset", pose: "stand", props: [["bouquet", 52, 40], ["trophy", 26]] }),
+    "tp-travel": S("airport", { tod: "sunset", pose: "walk", props: [["suitcase", 30]], family: true }),
+    "tp-garden": S("village", { pose: "act", props: [["sprout", 56], ["can", 28]], family: true }),
+    "tp-learn": S("class", { pose: "stand", props: [["books", 54], ["heart", 30, 24]] }),
+    "tp-work2": S("street", { pose: "act", props: [["bread", 54, 42], ["cup", 28, 44]] }),
+    // 엔딩 장면
+    "end-world": S("airport", { tod: "sunset", who: false, props: [["suitcase", 40], ["flowers", 60]] }),
+    "end-sea": S("beach", { tod: "sunset", who: false, props: [["stone", 42], ["flowers", 32], ["flowers", 55]] }),
+    "end-city": S("street", { tod: "sunset", who: false, props: [["stone", 42], ["flowers", 32], ["flowers", 55]] }),
+    "end-park": S("park", { tod: "sunset", who: false, props: [["stone", 42], ["flowers", 32], ["dog", 60]] }),
+  });
+
+  // 터닝포인트: id, 나이, 조건(when), 질문, 질문 장면, 선택지 [이름, 바뀌는 값(set), 결과 문장, 결과 장면, 결, 선택지 조건(if)]
+  // 문장·장면은 함수로 줄 수 있음(f = 지금까지 고른 값). family: true 장면에는 배우자·자녀·반려동물이 고른 대로 함께 그려짐
+  const T = (label, set, text, art, kind, cond) => ({ label, set, text, art, kind, if: cond });
+  const employed = (f) => ["company", "public", "pro"].includes(f.job) && !f.quit;
+  const TURNS = [
+    { id: "edu", age: 19, q: "고등학교 졸업을 앞두고 진로를 정한다", art: "tp-counsel", opts: [
+      T("대학에 간다", { edu: "univ" }, "대학 입학식. 새 학생증을 받았다", "tp-univ", "stable"),
+      T("바로 취업한다", { edu: "work" }, "열아홉 살, 남들보다 먼저 일을 시작했다", "tp-earlywork", "adventure"),
+      T("기술을 배운다", { edu: "skill" }, "기술 학원에 등록해 손에 익을 때까지 연습했다", "tp-skill", "stable"),
+      T("유학을 떠난다", { edu: "abroad" }, "비행기를 타고 낯선 나라로 공부하러 떠났다", "a-exchange", "adventure"),
+    ] },
+    { id: "job", age: 25, q: "첫 직업을 정할 때가 왔다", art: "tp-jobboard", opts: [
+      T("회사원", { job: "company" }, "사원증을 목에 걸고 첫 출근을 했다", "work", "stable"),
+      T("공무원", { job: "public" }, "시험에 붙어 구청으로 첫 출근을 했다", "tp-public", "stable"),
+      T("창업", { job: "startup" }, "작은 사무실을 얻어 내 회사를 차렸다", "w-startup", "adventure"),
+      T("예술가(그림·음악)", { job: "art" }, "그림과 노래로 먹고살아 보기로 했다", "tp-art", "fun"),
+      T("전문직(긴 공부 끝 자격증)", { job: "pro" }, "자격증을 따고 전문직으로 일을 시작했다", "tp-pro", "stable", (f) => f.edu === "univ" || f.edu === "abroad"),
+      T("기술자(배운 기술로)", { job: "craft" }, "작업장에서 기술자로 일을 시작했다", "tp-craft", "stable", (f) => f.edu === "skill"),
+    ] },
+    { id: "marry", age: 30, q: "오래 만난 사람이 결혼 이야기를 꺼냈다", art: "tp-propose", opts: [
+      T("결혼한다", { married: true }, "꽃 아치 아래에서 결혼식을 올렸다", "wedding", "love"),
+      T("결혼하지 않는다", { married: false, single: true }, "결혼 대신 각자의 길을 걷기로 했다. 혼자 사는 집을 꾸몄다", "tp-alone", "adventure"),
+      T("나중에 생각한다", { married: false, later: true }, "지금은 일이 먼저. 결혼은 나중에 다시 생각하기로 했다", "tp-later", "stable"),
+    ] },
+    { id: "marry2", age: 37, when: (f) => f.later, q: "다시 결혼 이야기가 나왔다", art: "tp-propose", opts: [
+      T("결혼한다", { married: true, later: false }, "조금 늦게, 그래서 더 단단하게 결혼했다", "wedding", "love"),
+      T("혼자의 삶을 택한다", { married: false, later: false, single: true }, "혼자의 삶이 잘 맞는다는 걸 알았다", "tp-alone", "adventure"),
+    ] },
+    { id: "kids", age: 38, q: (f) => (f.married ? "둘이서 아이 이야기를 할 때가 됐다" : "가족을 꾸리는 방법을 생각해 본다"), art: "tp-family", opts: [
+      T("아이를 낳는다", { kids: "bio" }, "아이가 태어났다", "baby", "love", (f) => f.married),
+      T("아이를 낳지 않는다", { kids: "none" }, (f) => (f.married ? "아이 없이 둘이서 살기로 했다" : "지금의 생활을 지키기로 했다"), "tp-nokids", "stable"),
+      T("입양한다", { kids: "adopt" }, "입양으로 새 가족을 맞았다", "tp-adopt", "love"),
+      T("반려동물과 산다", { kids: "none", pet: true }, "강아지 한 마리가 가족이 됐다", "tp-pet", "fun"),
+    ] },
+    { id: "career", age: 42, q: (f) => `${f.jobName}로 일한 지 십수 년, 다음 길을 정한다`, art: "tp-career", opts: [
+      T("더 맞는 곳으로 옮긴다", {}, "더 맞는 곳으로 자리를 옮겼다", "w-offer", "adventure", employed),
+      T("창업한다", { job: "startup", quit: false }, "모아 둔 돈으로 내 회사를 차렸다", "w-startup", "adventure", (f) => f.job !== "startup"),
+      T("회사를 키운다", { grew: true }, "직원이 열 명이 넘는 회사가 됐다", "tp-grow", "adventure", (f) => f.job === "startup"),
+      T("그만두고 쉰다", { quit: true }, "일을 내려놓고 한동안 푹 쉬었다", "tp-rest", "fun"),
+      T("지금 자리를 지킨다", { stay: true }, "하던 일을 계속했다. 어느새 후배들이 따르는 자리가 됐다", "f-promo", "stable"),
+    ] },
+    { id: "move", age: 46, q: "이제 어디에서 살까", art: "tp-move", opts: [
+      T("도시", { home: "city" }, "도시 한가운데로 이사했다", "tp-city", "fun"),
+      T("바닷가", { home: "sea" }, "파도 소리가 들리는 바닷가 마을로 이사했다", "tp-sea", "love"),
+      T("시골", { home: "country" }, "마당 있는 시골집으로 이사했다", "tp-country", "stable"),
+      T("해외", { home: "abroad" }, "짐을 싸서 다른 나라로 이사했다", "tp-abroad", "adventure"),
+    ] },
+    { id: "crisis", age: 53, crisis: true, opts: [
+      T("버틴다", { crisisWay: "endure" }, null, "tp-endure", "stable"),
+      T("도움을 청한다", { crisisWay: "help" }, null, "tp-help", "love"),
+      T("새로 출발한다", { crisisWay: "new" }, null, "tp-newstart", "adventure"),
+    ] },
+    { id: "retire", age: 63, q: "일에서 한 걸음 물러날 나이가 됐다. 이제 무엇을 할까", art: "tp-retire", opts: [
+      T("여행을 다닌다", { retire: "travel" }, "지도에 가 보고 싶던 곳을 표시하고 하나씩 떠났다", "tp-travel", "adventure"),
+      T("텃밭을 가꾼다", { retire: "garden" }, "텃밭에 상추와 고추를 심었다", "tp-garden", "stable"),
+      T("배우고 봉사한다", { retire: "learn" }, "평생 학습관에 등록하고 주말마다 봉사를 다녔다", "tp-learn", "love"),
+      T("제2의 일을 시작한다", { retire: "work" }, "작은 가게를 열어 제2의 일을 시작했다", "tp-work2", "fun"),
+    ] },
+  ];
+  // 위기(53세 무렵 무작위). 조건에 맞는 것만 나옴. text[way] = 고른 대응의 결과
+  const CRISES = [
+    { id: "sick", q: "건강검진에서 큰 병이 발견됐다", art: "tp-sick", text: { endure: "길고 힘든 치료를 끝까지 버텨 냈다", help: "가족과 친구들의 도움으로 치료를 마쳤다", new: "병을 이겨 낸 뒤 생활을 통째로 바꿨다" } },
+    { id: "jobloss", q: "다니던 직장에서 갑자기 일자리를 잃었다", art: "tp-jobloss", when: employed, text: { endure: "몇 달을 버틴 끝에 새 직장을 구했다", help: "옛 동료의 소개로 다시 일을 시작했다", new: "평생 하고 싶던 가게를 열었다" }, after: { new: { job: "shop", quit: false } } },
+    { id: "bizdown", q: "회사가 크게 흔들렸다", art: "tp-bizdown", when: (f) => f.job === "startup" && !f.quit, text: { endure: "허리띠를 졸라매고 회사를 지켜 냈다", help: "투자자와 직원들의 도움으로 위기를 넘겼다", new: "회사를 정리하고 작은 가게로 새로 시작했다" }, after: { new: { job: "shop" } } },
+    { id: "accident", q: "큰 교통사고를 당했다", art: "tp-accident", text: { endure: "재활 운동을 하루도 빼먹지 않았다", help: "주변의 도움으로 천천히 일상을 되찾았다", new: "다시 걸을 수 있게 된 날, 하고 싶던 일을 하기로 했다" } },
+  ];
+
+  // 엔딩: 위에서부터 처음 맞는 것. key·이름·묘비명·한 줄 요약·장면
+  const ENDINGS = [
+    { key: "world", name: "세계를 집으로 삼은 사람", epitaph: "지도에 꽂은 핀이 별처럼 많았다", sum: "해외에서 살거나 공부하며 세상을 넓게 쓴 인생", art: "end-world", if: (f) => f.home === "abroad" || (f.edu === "abroad" && f.retire === "travel") },
+    { key: "phoenix", name: "다시 일어선 사람", epitaph: "넘어진 자리에서 새로 시작했다", sum: "위기에서 새 출발을 고른 인생", art: "ending", if: (f) => f.crisisWay === "new" },
+    { key: "boss", name: "작은 회사의 큰 사장", epitaph: "남의 꿈 대신 내 꿈에 출근했다", sum: "내 회사를 차리고 끝까지 꾸린 인생", art: "end-city", if: (f) => f.job === "startup" },
+    { key: "artist", name: "무대 위의 평생", epitaph: "그리고 노래하다 보니 한평생이었다", sum: "그림과 음악으로 살아간 인생", art: "end-city", if: (f) => f.job === "art" },
+    { key: "craft", name: "손끝의 장인", epitaph: "손이 기억하는 일을 평생 했다", sum: "배운 기술로 한 우물을 판 인생", art: "ending", if: (f) => f.job === "craft" },
+    { key: "public", name: "동네의 든든한 일꾼", epitaph: "누군가의 하루를 묵묵히 지켰다", sum: "공무원으로 마을 살림을 챙긴 인생", art: "end-city", if: (f) => f.job === "public" && !f.quit },
+    { key: "sea", name: "바닷가 오두막지기", epitaph: "파도 소리를 자장가 삼았다", sum: "바닷가에 자리 잡고 느긋하게 산 인생", art: "end-sea", if: (f) => f.home === "sea" },
+    { key: "farm", name: "시골 텃밭 박사", epitaph: "심은 대로 거두며 살았다", sum: "시골과 텃밭에서 계절을 즐긴 인생", art: "ending", if: (f) => f.home === "country" || f.retire === "garden" },
+    { key: "student", name: "평생 학생", epitaph: "배울 것이 있어서 늘 설렜다", sum: "나이 들어서도 배우고 나눈 인생", art: "end-city", if: (f) => f.retire === "learn" },
+    { key: "family", name: "대가족의 중심", epitaph: "식탁이 늘 북적였다", sum: "결혼해 아이를 키우며 집을 채운 인생", art: "ending", if: (f) => f.married && (f.kids === "bio" || f.kids === "adopt") },
+    { key: "couple", name: "오래된 연인", epitaph: "둘이서 오래오래 걸었다", sum: "결혼해 둘이서 서로를 지킨 인생", art: "end-park", if: (f) => f.married },
+    { key: "petpal", name: "강아지와 산책하는 사람", epitaph: "산책길의 모든 이웃과 친구였다", sum: "반려동물과 함께 나이 든 인생", art: "end-park", if: (f) => f.pet },
+    { key: "solo", name: "자유로운 1인 가구", epitaph: "내 방식대로, 끝까지 즐겁게", sum: "혼자의 삶을 단단하게 꾸린 인생", art: "end-city", if: () => true },
+  ];
+  // 작은 사건이 나오는 나이(터닝포인트 사이). 나이마다 SLOTS에서 그 나이를 포함하는 시기의 사건 중 조건에 맞는 것을 고름
+  const SMALL_AGES = [5, 9, 13, 17, 22, 27, 33, 40, 44, 50, 57, 66, 72];
+  const MOMENT_AGES = [2, 11, 15, 20, 28, 35, 48, 55, 61, 70, 80];
+
+  NALGI.lifeData = { SLOTS, MOMENTS, SCENES, MILESTONES, BORN, NEEDS, MOMENT_NEEDS, OUTFIT, JOB_NAME, HOME_VIEW, TURNS, CRISES, ENDINGS, SMALL_AGES, MOMENT_AGES };
 })();

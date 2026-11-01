@@ -32,7 +32,7 @@
   run();
 })();
 
-// 놀이터: 「아무거나 한 판」 — 숨겨 둔 목록([data-draw-pool])에서 하나를 골라 이동
+// 오락실: 「아무거나 한 판」 — 숨겨 둔 목록([data-draw-pool])에서 하나를 골라 이동
 (function () {
   const btn = document.querySelector('[data-act="draw"]');
   const links = [...document.querySelectorAll("[data-draw-pool] a")];

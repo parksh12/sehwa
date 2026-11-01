@@ -659,3 +659,39 @@ details.opt summary{cursor:pointer;color:var(--cheong);font-weight:700;font-size
 .go-stats dt{font-size:11.5px;font-weight:800;color:var(--ink-2)}
 .go-stats dd{margin:0;font-family:var(--display);font-size:20px}
 @media(prefers-reduced-motion:reduce){.stack-pop.show{animation:none;opacity:1}}
+
+/* === COO 홈 배치 개편 (2026-11-02) === */
+.cabinet{display:grid;gap:20px;margin:6px 0 0;grid-template-columns:minmax(0,1fr)}
+.cab{display:flex}
+.cab .drawer{margin:0;flex:1}
+@media(min-width:700px){.cabinet{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(min-width:1000px){.cabinet{grid-template-columns:repeat(6,minmax(0,1fr))}.cab-big{grid-column:span 2}.cab-wide{grid-column:span 3}
+  .cab-wide .rows{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.cab-wide .rows li+li{border-top:0}.cab-wide .rows li:nth-child(2n){border-left:2px solid var(--soft)}.cab-wide .rows li:nth-child(n+3){border-top:2px solid var(--soft)}
+  .cabinet .row-body small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}}
+.fun-band{margin:34px 0 8px;background:var(--heuk);color:var(--white);border-radius:20px;padding:22px 18px 24px;box-shadow:var(--drop)}
+@media(min-width:880px){.fun-band{padding:28px 28px 30px}}
+.fun-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;margin:0 0 16px}
+.fun-head h2{margin:0;font-family:var(--display);font-weight:400;font-size:clamp(26px,3.4vw,36px);line-height:1.1}
+.fun-head h2 a{color:var(--hwang);text-decoration:none}
+.fun-head p{margin:0;color:#d9d9d4;font-weight:600}
+.fun-head .more{margin-left:auto;color:var(--white);font-weight:800;text-decoration:none;border:2px solid var(--white);border-radius:999px;padding:4px 12px}
+.fun-grid{list-style:none;margin:0;padding:0;display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(min-width:880px){.fun-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}}
+.fun-tile{display:flex;flex-direction:column;gap:4px;height:100%;box-sizing:border-box;background:var(--white);color:var(--ink);text-decoration:none;border:var(--bd);border-top:8px solid var(--tone);border-radius:14px;padding:12px 12px 14px;transition:transform .12s}
+.fun-tile:hover,.fun-tile:focus-visible{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--hwang)}
+.fun-art{width:52px;height:52px;display:block}
+.fun-art svg{width:100%;height:100%}
+.fun-tile b{font-size:16px;line-height:1.3}
+.fun-tile b .ext{font-size:11px;font-weight:700;color:var(--ink-3)}
+.fun-tile span:last-child{font-size:13px;line-height:1.45;color:var(--ink-2)}
+@media(max-width:620px){.fun-tile span:last-child{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.fun-art{width:42px;height:42px}}
+.fun-feature{display:flex;align-items:center;gap:14px;background:var(--hwang);color:var(--ink);text-decoration:none;border:var(--bd);border-radius:14px;padding:14px 16px;margin:0 0 14px;transition:transform .12s}
+.fun-feature:hover,.fun-feature:focus-visible{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--white)}
+.fun-feature .fun-art{width:60px;height:60px;flex:none}
+.ff-body{display:flex;flex-direction:column;gap:2px;min-width:0}
+.ff-body em{font-style:normal;font-size:12px;font-weight:800;color:var(--jeok)}
+.ff-body b{font-family:var(--display);font-weight:400;font-size:clamp(20px,2.6vw,26px);line-height:1.15}
+.ff-body span{font-size:14px;color:var(--ink-2)}
+.ff-go{margin-left:auto;flex:none;background:var(--heuk);color:var(--white);font-weight:800;border-radius:999px;padding:8px 14px}
+@media(max-width:620px){.ff-go{display:none}.fun-feature .fun-art{width:48px;height:48px}}
+.home-about{margin-top:26px}
