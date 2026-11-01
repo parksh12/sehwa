@@ -637,3 +637,25 @@ details.opt summary{cursor:pointer;color:var(--cheong);font-weight:700;font-size
 .site-footer .family a{color:var(--ink);font-weight:700}
 .clock{white-space:nowrap}
 [data-tool="stopwatch"] .clock{font-size:clamp(40px,14.5vw,140px)}
+
+/* ===================== P2-20 블록 쌓기 게임 (랜덤7942 대기 화면 게임 이식) ===================== */
+.stack-stage{position:relative;height:min(62vh,480px);min-height:340px;border-radius:14px;overflow:hidden;border:var(--bd);background:var(--soft);touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;cursor:pointer;overscroll-behavior:contain}
+.stack-stage:focus-visible{outline:3px solid var(--cheong);outline-offset:2px}
+#stack-canvas{position:absolute;inset:0;width:100%;height:100%}
+.stack-score{position:absolute;top:12px;left:0;right:0;text-align:center;pointer-events:none;font-family:var(--display);font-weight:400;font-size:48px;line-height:1.1;color:var(--ink)}
+.stack-pop{position:absolute;top:70px;left:0;right:0;text-align:center;pointer-events:none;font-family:var(--display);font-weight:400;font-size:20px;color:var(--jeok);opacity:0}
+.stack-pop.show{animation:gpop .8s ease forwards}
+@keyframes gpop{0%{opacity:0;transform:translateY(6px) scale(.9)}20%{opacity:1;transform:translateY(0) scale(1.06)}100%{opacity:0;transform:translateY(-14px) scale(1)}}
+.stack-overlay{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:20px;text-align:center;overflow-y:auto;background:var(--white)}
+.stack-overlay.show{display:flex}
+.stack-overlay .go-title{font-family:var(--display);font-weight:400;font-size:40px;line-height:1.15}
+.stack-overlay .go-sub{font-size:14px;color:var(--ink-2);line-height:1.55;margin:0}
+.stack-overlay .go-best{font-size:14px;color:var(--ink-2)}
+.stack-overlay .go-best b{color:var(--ink)}
+.stack-overlay .go-new{display:inline-block;font-size:14px;font-weight:800;color:var(--ink);background:var(--hwang);border:2px solid var(--ink);border-radius:6px;padding:1px 9px}
+.stack-overlay .go-btn{max-width:240px;margin:6px 0 4px}
+.go-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:4px 0;width:100%;max-width:340px}
+.go-stats div{border:2px solid var(--ink);border-radius:10px;padding:6px 4px;background:var(--soft)}
+.go-stats dt{font-size:11.5px;font-weight:800;color:var(--ink-2)}
+.go-stats dd{margin:0;font-family:var(--display);font-size:20px}
+@media(prefers-reduced-motion:reduce){.stack-pop.show{animation:none;opacity:1}}

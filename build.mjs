@@ -44,13 +44,14 @@ const CATS = {
 };
 // hook: 홈·추천 카드에 쓰는 짧은 한 줄 / meta: 소요 시간·분량
 // 노출 순위(RANK): 홈 놀이터 띠와 놀이터 순서 참고값. 지금은 운영진 추정치이고, GA4·서치콘솔 데이터가 쌓이면 실측 노출 순으로 바꿉니다.
-const RANK = ["today", "life", "personality", "birthday", "namematch", "reaction"];
+const RANK = ["today", "life", "personality", "stack", "birthday", "namematch", "reaction"];
 const TOOLS = [
   { id: "birthday", cat: "me", path: "/me/birthday/", icon: "🎂", title: "생일로 보는 나", h1: "생일로 보는 나 — 만 나이·띠·별자리 한 번에", desc: "생년월일만 넣으면 만 나이, 띠, 별자리, 다음 생일 D-day까지 한 번에 알려 드려요.", hook: "만 나이, 띠, 별자리, 다음 생일까지 며칠 남았는지. 생일만 넣으면 끝.", meta: "10초" },
   { id: "personality", cat: "me", path: "/me/personality/", icon: "🧩", title: "16유형 성격 테스트", h1: "16유형 성격 테스트 — 20문항으로 보는 나의 성향", desc: "20개 문항에 답하면 4가지 축의 비율과 16유형 중 나와 가까운 유형을 알려 드려요.", hook: "20문항이면 네 가지 축이 몇 대 몇인지까지 나와요.", meta: "20문항 · 3분" },
   { id: "namematch", cat: "love", path: "/love/name-match/", icon: "💌", title: "이름 궁합 테스트", h1: "이름 궁합 테스트 — 획수로 보는 두 사람의 케미", desc: "두 사람의 이름 획수를 더해 가며 궁합 점수를 계산하는 추억의 이름 궁합 놀이예요.", hook: "공책 귀퉁이에 획수 적어 가며 하던 그 궁합, 기억나요?", meta: "이름 두 개" },
   { id: "today", cat: "luck", path: "/luck/today/", icon: "", title: "오늘의 띠별 운세", h1: "오늘의 띠별 운세 — 매일 자정에 바뀌는 12띠 하루 운세", desc: "열두 띠의 오늘 하루 흐름과 일·관계 팁, 행운의 색·숫자를 매일 새로 정리해요.", hook: "매일 자정에 바뀌어요. 내 띠의 오늘 하루는?", meta: "매일 업데이트" },
   { id: "reaction", cat: "arcade", path: "/arcade/reaction/", icon: "⚡", title: "반응속도 게임", h1: "반응속도 게임 — 초록색이 되는 순간 터치!", desc: "빨간 화면이 초록색으로 바뀌는 순간을 다섯 번 잡아 보세요. 평균 기록과 등급, 내 최고 기록을 알려 드려요.", hook: "초록색 되는 순간 누르기. 다섯 번 평균으로 등급이 매겨져요.", meta: "터치 5번" },
+  { id: "stack", cat: "arcade", path: "/arcade/stack/", icon: "", title: "블록 쌓기 게임", h1: "블록 쌓기 게임 — 탭 한 번으로 높이 쌓기", desc: "좌우로 움직이는 블록을 탭해서 멈추고, 아래 블록과 겹친 만큼만 남겨 높이 쌓는 게임이에요. 딱 맞추면 PERFECT, 이 기기의 최고 기록을 남겨 다시 도전할 수 있어요.", hook: "탭 한 번에 한 층. 딱 맞추면 PERFECT.", meta: "탭 · Space" },
   { id: "life", cat: "story", path: "/story/life/", icon: "", title: "1분 인생", h1: "1분 인생 — 60초 동안 한 사람의 일생 살아 보기", desc: "한 사람이 되어 일생을 인생 시계 60초 동안 살아 보는 도트 이야기 게임. 성별·태어난 곳·띠를 고르고, 갈림길마다 5초 안에 고르면 마지막에 나만의 인생 연표와 묘비명이 나와요.", hook: "한 사람으로 60초 살기. 학교, 결혼식, 공항까지 장면이 바뀌어요.", meta: "1분 · 선택 10번" },
 ];
 // 카드 그림(인라인 SVG). 이모지 대신 사이트 고유 그림을 씁니다.
@@ -61,6 +62,7 @@ const ART = {
   personality: sv(`<rect x="18" y="18" width="40" height="40" rx="6" fill="${YEL}" stroke="${K}" stroke-width="4"/><circle cx="82" cy="38" r="20" fill="${W}" stroke="${K}" stroke-width="4"/><rect x="18" y="62" width="40" height="40" rx="6" fill="${K}" stroke="${K}" stroke-width="4"/><path d="M62 102 82 62l20 40z" fill="${RED}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/>`),
   namematch: sv(`<circle cx="47" cy="60" r="28" fill="${W}"/><circle cx="73" cy="60" r="28" fill="${YEL}"/><path d="M60 35.2A28 28 0 0 1 60 84.8 28 28 0 0 1 60 35.2z" fill="${K}"/><circle cx="47" cy="60" r="28" fill="none" stroke="${K}" stroke-width="4"/><circle cx="73" cy="60" r="28" fill="none" stroke="${K}" stroke-width="4"/>`),
   today: sv(`<path d="M30 84a30 30 0 0 1 60 0z" fill="${YEL}" stroke="${K}" stroke-width="4"/><path d="M22.4 70.3 11.1 66.2M37.1 51.2l-6.9-9.8M60 44V32M82.9 51.2l6.9-9.8M97.6 70.3l11.3-4.1" stroke="${RED}" stroke-width="6" stroke-linecap="round"/><path d="M12 84h96M30 96h22M68 96h22M44 107h32" stroke="${K}" stroke-width="4" stroke-linecap="round"/>`),
+  stack: sv(`<rect x="22" y="84" width="76" height="18" rx="4" fill="${RED}" stroke="${K}" stroke-width="4"/><rect x="30" y="64" width="62" height="18" rx="4" fill="${YEL}" stroke="${K}" stroke-width="4"/><rect x="36" y="44" width="50" height="18" rx="4" fill="${W}" stroke="${K}" stroke-width="4"/><rect x="50" y="18" width="50" height="18" rx="4" fill="${GRN}" stroke="${K}" stroke-width="4"/><path d="M16 27h22M24 20l-8 7 8 7" fill="none" stroke="${K}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`),
   reaction: sv(`<rect x="51" y="10" width="18" height="10" rx="3" fill="${YEL}"/><rect x="57" y="18" width="6" height="10" fill="${W}"/><circle cx="60" cy="68" r="38" fill="${W}"/><path d="M60 68V38a30 30 0 0 1 21.2 8.8z" fill="${GRN}"/><circle cx="60" cy="68" r="30" fill="none" stroke="${K}" stroke-width="3" stroke-dasharray="2 13.7"/><path d="M60 68 78 50" stroke="${RED}" stroke-width="6" stroke-linecap="round"/><circle cx="60" cy="68" r="5" fill="${K}"/>`),
   life: sv(`<path d="M34 16h52M34 104h52" stroke="${K}" stroke-width="6" stroke-linecap="round"/><path d="M40 18h40c0 22-18 30-18 42s18 20 18 42H40c0-22 18-30 18-42S40 40 40 18z" fill="${W}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M47 30h26q-6 14-13 21-7-7-13-21z" fill="${YEL}"/><path d="M60 54v40" stroke="${YEL}" stroke-width="3"/><path d="M45 101q15-20 30 0z" fill="${RED}"/>`),
   // 실용 툴 그림: 접힌 귀퉁이가 있는 문서(doc) 조합
@@ -91,7 +93,8 @@ const RECO = {
   personality: ["birthday", "namematch", "reaction"],
   namematch: ["birthday", "personality", "today"],
   today: ["life", "birthday", "personality"],
-  reaction: ["life", "personality", "birthday"],
+  reaction: ["stack", "life", "personality"],
+  stack: ["reaction", "life", "today"],
   life: ["today", "reaction", "personality"],
 };
 const TTI_KEYS = ["rat", "ox", "tiger", "rabbit", "dragon", "snake", "horse", "goat", "monkey", "rooster", "dog", "pig"];
@@ -385,7 +388,7 @@ ${adSlotFixed("home")}`;
 const ZONES = [
   { tone: "luck", name: "오늘", sub: "매일 자정에 바뀌는 운세", ids: ["today"] },
   { tone: "me", name: "테스트", sub: "생일·성향·이름으로 보는 나", ids: ["birthday", "personality", "namematch"] },
-  { tone: "story", name: "게임", sub: "한 판이면 끝나는 짧은 게임", ids: ["life", "reaction"] },
+  { tone: "story", name: "게임", sub: "한 판이면 끝나는 짧은 게임", ids: ["life", "stack", "reaction"] },
   { tone: "love", name: "같이", sub: "세화산업이 운영하는 다른 서비스(외부 사이트)", ids: [], ext: [FAMILY] },
 ];
 {
@@ -583,6 +586,22 @@ ZODIAC_KEYS.forEach((k, i) => {
     scripts: ["namematch.js"],
     dataJson: { bands: guides.namematchBands.map((b) => ({ ...b, title: fill(b.title), text: fill(b.text) })), elements: guides.elementMatch },
   });
+}
+
+// 블록 쌓기 게임 (P2-20, 랜덤7942 대기 화면 게임 이식. Firebase 없음, 최고 기록만 이 기기에)
+{
+  const html = `
+<div class="stack-wrap">
+  <div id="stack-stage" class="stack-stage" tabindex="0" role="application" aria-label="블록 쌓기 게임 화면. 탭하거나 Space를 눌러 블록을 멈추세요" data-state="ready">
+    <canvas id="stack-canvas"></canvas>
+    <div id="stack-score" class="stack-score" aria-live="polite">0</div>
+    <div id="stack-pop" class="stack-pop" aria-hidden="true"></div>
+    <div id="stack-overlay" class="stack-overlay"></div>
+  </div>
+</div>
+<p class="hint">PC는 클릭이나 Space, 휴대폰은 화면을 탭하세요. 최고 기록은 이 기기의 브라우저에만 남고 어디에도 보내지 않아요.</p>
+<p class="hint">랜덤7942의 대기 화면에서 하던 그 블록 쌓기와 같은 게임이에요. <a href="${FAMILY.url}" target="_blank" rel="noopener">랜덤7942 · 익명 브레인스토밍 ↗<span class="sr"> (새 창, 외부 사이트)</span></a></p>`;
+  toolPage(toolById.stack, html, { scripts: ["stack.js"] });
 }
 
 // ⑤ 반응속도 + 4 결과 페이지
