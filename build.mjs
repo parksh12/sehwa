@@ -3,6 +3,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import vm from "node:vm";
 import cfg from "./config.mjs";
 import questions from "./content/questions.mjs";
 import { renderDay, kstDate } from "./src/assets/daily.mjs";
@@ -49,7 +50,7 @@ const TOOLS = [
   { id: "namematch", cat: "love", path: "/love/name-match/", icon: "💌", title: "이름 궁합 테스트", h1: "이름 궁합 테스트 — 획수로 보는 두 사람의 케미", desc: "두 사람의 이름 획수를 더해 가며 궁합 점수를 계산하는 추억의 이름 궁합 놀이예요.", hook: "공책 귀퉁이에 획수 적어 가며 하던 그 궁합, 기억나요?", meta: "이름 두 개" },
   { id: "today", cat: "luck", path: "/luck/today/", icon: "", title: "오늘의 띠별 운세", h1: "오늘의 띠별 운세 — 매일 자정에 바뀌는 12띠 하루 운세", desc: "열두 띠의 오늘 하루 흐름과 일·관계 팁, 행운의 색·숫자를 매일 새로 정리해요.", hook: "매일 자정에 바뀌어요. 내 띠의 오늘 하루는?", meta: "매일 업데이트" },
   { id: "reaction", cat: "arcade", path: "/arcade/reaction/", icon: "⚡", title: "반응속도 게임", h1: "반응속도 게임 — 초록색이 되는 순간 터치!", desc: "빨간 화면이 초록색으로 바뀌는 순간을 다섯 번 잡아 보세요. 평균 기록과 등급, 내 최고 기록을 알려 드려요.", hook: "초록색 되는 순간 누르기. 다섯 번 평균으로 등급이 매겨져요.", meta: "터치 5번" },
-  { id: "life", cat: "story", path: "/story/life/", icon: "", title: "1분 인생", h1: "1분 인생 — 60초 동안 한 사람의 일생 살아 보기", desc: "오늘 태어난 한 사람이 되어 일생을 1분 동안 살아 보는 이야기 게임. 3초 안에 갈림길을 고르면 마지막에 나만의 인생 연표와 묘비명이 나와요.", hook: "오늘 태어난 한 사람으로 1분 살기. 고민할 시간은 3초뿐.", meta: "1분 · 선택 10번" },
+  { id: "life", cat: "story", path: "/story/life/", icon: "", title: "1분 인생", h1: "1분 인생 — 60초 동안 한 사람의 일생 살아 보기", desc: "한 사람이 되어 일생을 인생 시계 60초 동안 살아 보는 도트 이야기 게임. 성별·태어난 곳·띠를 고르고, 갈림길마다 5초 안에 고르면 마지막에 나만의 인생 연표와 묘비명이 나와요.", hook: "한 사람으로 60초 살기. 학교, 결혼식, 공항까지 장면이 바뀌어요.", meta: "1분 · 선택 10번" },
 ];
 // 카드 그림(인라인 SVG). 이모지 대신 사이트 고유 그림을 씁니다.
 const K = "#141414", W = "#fff", RED = "#e5372b", YEL = "#ffc21a", GRN = "#1e9e5a";
@@ -480,19 +481,65 @@ ZODIAC_KEYS.forEach((k, i) => {
 
 }
 
+// 1분 인생 장면 검사: 갈림길·이정표의 장면 키, 배경, 소품이 모두 있고, 시기마다 배경이 3종 이상인지 (어기면 빌드 실패)
+function checkLife() {
+  const ctx = { window: {} };
+  ctx.NALGI = ctx.window.NALGI = {};
+  vm.createContext(ctx);
+  for (const f of ["pixel.js", "life-data.js"]) vm.runInContext(fs.readFileSync(path.join(ROOT, "src", "assets", f), "utf8"), ctx, { filename: f });
+  const { BG_KEYS, PROPS, FX } = ctx.NALGI.pixel, { SLOTS, SCENES, MILESTONES } = ctx.NALGI.lifeData;
+  const err = [];
+  const scene = (k, where) => {
+    const s = SCENES[k];
+    if (!s) return err.push(`${where}: 장면 ${k} 없음`);
+    if (!BG_KEYS.includes(s.bg)) err.push(`${where}: 배경 ${s.bg} 없음`);
+    [...(s.props || []), ...(s.back || [])].forEach(([p]) => PROPS[p] || err.push(`${where}: 소품 ${p} 없음`));
+    (s.fx || []).forEach((p) => FX[p] || err.push(`${where}: 효과 ${p} 없음`));
+    return s.bg;
+  };
+  let n = 0;
+  SLOTS.forEach(([[lo, hi], list]) => {
+    const bgs = new Set(list.map((e) => (n++, scene(e[5], `${lo}~${hi}세 「${e[0]}」`))));
+    if (bgs.size < 3) err.push(`${lo}~${hi}세 시기의 배경이 ${bgs.size}종뿐 (3종 이상 필요)`);
+  });
+  if (n !== 100) err.push(`갈림길이 ${n}개 (100개여야 함)`);
+  MILESTONES.forEach(([, , k]) => ["city", "sea", "mountain"].forEach((b) => scene(k.replace("{born}", b), `이정표 ${k}`)));
+  scene("ending", "엔딩");
+  const used = new Set(Object.values(SCENES).map((s) => s.bg));
+  BG_KEYS.forEach((b) => used.has(b) || err.push(`배경 ${b}가 어느 장면에도 안 쓰임`));
+  if (BG_KEYS.length !== 12) err.push(`배경이 ${BG_KEYS.length}종 (12종이어야 함)`);
+  if (err.length) throw new Error("1분 인생 장면 검사 실패:\n  " + [...new Set(err)].join("\n  "));
+}
+
 // ⑥ 1분 인생 + 엔딩 5개
 {
   const html = `
 <div id="life" class="life">
   <div class="life-start">
-    <canvas class="life-pix" id="life-intro" width="64" height="40" role="img" aria-label="갓 태어난 아기가 있는 방"></canvas>
-    <p>오늘, 한 사람이 태어났어요. 그 사람이 되어 일생을 <strong>1분 동안</strong> 살아 보세요.</p>
-    <p>나이는 저절로 흘러가요. 갈림길이 나타나면 <strong>3초 안에</strong> 고르세요. 안 고르면 인생이 대신 골라요.</p>
-    <button class="btn big" type="button" data-act="start">태어나기</button>
+    <canvas class="life-pix" id="life-intro" width="96" height="60" role="img" aria-label="태어날 사람 미리보기"></canvas>
+    <p class="hint center">그림을 누르면 머리 모양과 옷이 바뀌어요.</p>
+    <p>한 사람이 태어나요. 그 사람이 되어 일생을 <strong>인생 시계 60초</strong> 동안 살아 보세요.</p>
+    <p>나이는 저절로 흘러가요. 갈림길이 나타나면 시계가 멈추고, <strong>5초 안에</strong> 고르면 돼요. 안 고르면 인생이 대신 골라요.</p>
+    <form class="life-setup" id="life-setup" autocomplete="off">
+      <fieldset class="seg"><legend>성별</legend>
+        <label><input type="radio" name="look" value="m"><span>남</span></label><label><input type="radio" name="look" value="f"><span>여</span></label><label><input type="radio" name="look" value="n" checked><span>선택 안 함</span></label>
+      </fieldset>
+      <fieldset class="seg"><legend>태어난 곳</legend>
+        <label><input type="radio" name="born" value="city" checked><span>도시</span></label><label><input type="radio" name="born" value="sea"><span>바닷가</span></label><label><input type="radio" name="born" value="mountain"><span>산골</span></label>
+      </fieldset>
+      <div class="life-row">
+        <label>띠<select name="tti">${TTI_KEYS.map((k, i) => `<option value="${i}">${esc(tti[k].name)}</option>`).join("")}</select></label>
+        <label>이름 (선택)<input name="name" maxlength="8" placeholder="비워 둬도 돼요"></label>
+      </div>
+      <p class="hint">성별은 그림의 옷차림에만 쓰여요. 이름은 결과 화면에만 보이고 저장하거나 보내지 않으며, 결과 이미지와 공유 문구에도 들어가지 않아요.</p>
+      <div class="life-start-btns"><button type="button" class="btn ghost" data-act="random">랜덤 탄생</button><button class="btn big" type="submit">태어나기</button></div>
+      <p class="hint life-done" id="life-done" hidden></p>
+    </form>
   </div>
 </div>`;
   const types = Object.fromEntries(LIFE_KEYS.map((k) => [k, { name: fill(guides.lifeTypes[k].name), epitaph: fill(guides.lifeTypes[k].epitaph) }]));
-  toolPage(toolById.life, html, { scripts: ["pixel.js", "life-data.js", "life.js"], dataJson: { types, slugs: LIFE_SLUG } });
+  toolPage(toolById.life, html, { scripts: ["pixel.js", "life-data.js", "life.js"], dataJson: { types, slugs: LIFE_SLUG, tti: TTI_KEYS.map((k) => ({ key: k, name: tti[k].name })) } });
+  checkLife();
 
   LIFE_KEYS.forEach((k) => {
     const d = guides.lifeTypes[k];
