@@ -497,3 +497,11 @@ details.opt summary{cursor:pointer;color:var(--cheong);font-weight:700;font-size
 .tab-cats .tab-cat+.tab-cat{margin-top:0}
 @media(min-width:880px){.tab-cats:not([hidden]){grid-template-columns:repeat(3,minmax(0,1fr))}.tab-cat.wide{grid-column:1/-1}.tab-cat:not(.wide) .cards-home{grid-template-columns:1fr}}
 @media(min-width:620px) and (max-width:879px){.tab-cats:not([hidden]){grid-template-columns:1fr 1fr}.tab-cat.wide{grid-column:1/-1}.tab-cat:not(.wide) .cards-home{grid-template-columns:1fr}}
+
+/* 만 나이·평수 (P2-12) */
+.age-big{font-family:var(--display);line-height:1.1;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px}
+.age-big b{font-weight:400;font-size:clamp(44px,10vw,64px);color:var(--jeok)}
+.age-big span{font-size:22px}
+.age-big .eq{color:var(--ink-3)}
+.age-stats{margin:10px 0}
+.py-form .chip{font:inherit;font-size:13.5px;cursor:pointer}

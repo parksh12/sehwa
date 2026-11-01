@@ -773,3 +773,16 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+
+======================================================================
+pdf.js (pdfjs-dist 6.4.299, legacy build) — Apache-2.0   [P2-12 추가, 받은 날짜 2026-11-02, npm pack]
+======================================================================
+경로: vendor/pdfjs/
+- pdf.min.js        ← legacy/build/pdf.min.mjs        (내용 수정 없음. 어느 서버에서나 자바스크립트로 인식되도록 확장자만 .js로 바꿈)
+- pdf.worker.min.js ← legacy/build/pdf.worker.min.mjs (같음. worker도 이 사이트에서 직접 제공)
+- cmaps/  ← cmaps/  (Adobe CMap, BSD-3-Clause 형식 — cmaps/LICENSE)
+- iccs/   ← iccs/   (CC0 1.0 — iccs/LICENSE)
+- wasm/   ← wasm/ 중 jbig2·openjpeg·qcms만 (PDFium BSD-3 형식, OpenJPEG BSD-2, qcms MIT, pdf.js 래퍼 Apache-2.0/BSD-2/MIT — wasm/LICENSE_*)
+넣지 않은 것: standard_fonts/ (LiberationSans가 GPLv2+글꼴 예외 조건이라 금지 원칙에 따라 제외. 대신 기기 글꼴 사용),
+              wasm/quickjs-eval.* (PDF 안 스크립트 실행용, 쓰지 않음)
+pdf.js 라이선스 전문: vendor/pdfjs/LICENSE (Apache License 2.0)

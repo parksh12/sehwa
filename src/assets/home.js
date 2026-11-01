@@ -37,7 +37,7 @@
     if (!raw) { hits.hidden = true; hits.innerHTML = ""; count.textContent = ""; cur = []; return; }
     const words = raw.toLowerCase().split(/\s+/).map(norm).filter(Boolean);
     cur = list
-      .map((x) => ({ x, s: words.every((w) => x._all.includes(w)) ? (words.some((w) => x._t.includes(w)) ? 2 : 1) : 0 }))
+      .map((x) => ({ x, s: words.every((w) => x._all.includes(w)) ? (x._t.includes(words.join("")) ? 3 : words.some((w) => x._t.includes(w)) ? 2 : 1) : 0 })) // 3: 적은 순서 그대로 제목에 있음
       .filter((r) => r.s)
       .sort((a, b) => b.s - a.s)
       .map((r) => r.x);

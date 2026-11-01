@@ -71,6 +71,9 @@ const ART = {
   imgcompress: sv(`<rect x="22" y="22" width="76" height="76" rx="8" fill="${W}" stroke="${K}" stroke-width="4"/><circle cx="44" cy="46" r="8" fill="${YEL}" stroke="${K}" stroke-width="3"/><path d="M28 92l22-22 14 12 14-16 16 26z" fill="${GRN}" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><g fill="none" stroke="${RED}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 8l14 14M22 10v12H10"/><path d="M112 8 98 22M98 10v12h12"/><path d="M8 112l14-14M22 110V98H10"/><path d="M112 112 98 98M98 110V98h12"/></g>`),
   charcount: sv(`<rect x="16" y="14" width="66" height="88" rx="6" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M28 34h42M28 48h42M28 62h30M28 76h38" stroke="${K}" stroke-width="4" stroke-linecap="round"/><rect x="58" y="70" width="50" height="34" rx="8" fill="${YEL}" stroke="${K}" stroke-width="4"/><text x="83" y="94" font-size="17" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">123</text>`),
   dday: sv(`<rect x="14" y="22" width="92" height="82" rx="8" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M14 30a8 8 0 0 1 8-8h76a8 8 0 0 1 8 8v16H14z" fill="${GRN}" stroke="${K}" stroke-width="4"/><rect x="34" y="12" width="8" height="20" rx="4" fill="${K}"/><rect x="78" y="12" width="8" height="20" rx="4" fill="${K}"/><text x="60" y="90" font-size="30" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">D-7</text>`),
+  age: sv(`<rect x="22" y="44" width="76" height="60" rx="8" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M22 66c10 8 19 8 25 0s16-8 25 0 17 8 26 0" fill="none" stroke="${RED}" stroke-width="5"/><path d="M40 44V30M60 44V26M80 44V30" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M40 22q4 5 0 8-4-3 0-8zM60 18q4 5 0 8-4-3 0-8zM80 22q4 5 0 8-4-3 0-8z" fill="${YEL}" stroke="${K}" stroke-width="2"/><text x="60" y="96" font-size="20" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">만 30</text>`),
+  pyeong: sv(`<path d="M18 52 60 18l42 34v52H18z" fill="${W}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><rect x="34" y="60" width="52" height="32" fill="${YEL}" stroke="${K}" stroke-width="3"/><path d="M34 100h52M34 96v8M86 96v8" stroke="${RED}" stroke-width="4"/><text x="60" y="82" font-size="15" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">㎡↔평</text>`),
+  pdf2img: sv(`${doc(10, 14, 48, 64, RED)}<text x="34" y="54" font-size="15" font-weight="800" text-anchor="middle" fill="${W}" font-family="sans-serif">PDF</text><path d="M52 90h12" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M60 82l9 8-9 8" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><rect x="66" y="50" width="44" height="56" rx="6" fill="${W}" stroke="${K}" stroke-width="4"/><circle cx="80" cy="66" r="6" fill="${YEL}" stroke="${K}" stroke-width="3"/><path d="M70 100l12-14 8 6 8-10 8 18z" fill="${GRN}" stroke="${K}" stroke-width="3" stroke-linejoin="round"/>`),
 };
 function doc(x, y, w, h, fill) {
   const f = Math.min(14, w / 3);
@@ -116,16 +119,22 @@ const UTILS = [
   { id: "imgcompress", cat: "image", path: "/image/compress/", title: "이미지 용량 줄이기", seo: "이미지 용량 줄이기 — 무료, 사진 압축", h1: "이미지 용량 줄이기 — 품질과 크기를 골라 사진 압축", desc: "JPG·PNG·WEBP 사진의 품질과 최대 너비를 조절해 용량을 줄이고, 얼마나 줄었는지 보여 드려요. 파일은 서버로 전송하지 않습니다.", hook: "품질·너비 조절해서 사진 용량 줄이기.", meta: "JPG·WEBP 저장", kw: "사진 압축 용량 줄이기 리사이즈 크기 jpg png webp 이미지 압축" },
   { id: "charcount", cat: "text", path: "/text/char-count/", title: "글자수 세기", seo: "글자수 세기 — 무료, 공백 포함·제외·바이트", h1: "글자수 세기 — 공백 포함·제외, 바이트까지", desc: "자기소개서와 리포트 글자수를 공백 포함·제외, 바이트(UTF-8·한글 2바이트), 줄·단락 수로 바로 세어 드려요. 입력한 글은 저장하지 않습니다.", hook: "자소서 글자수, 공백 포함·제외, 바이트까지.", meta: "실시간 계산", kw: "글자 수 글자수 자소서 자기소개서 바이트 공백 단어 세기 카운터" },
   { id: "dday", cat: "calc", path: "/calc/d-day/", title: "디데이 계산기", seo: "디데이 계산기 (D-day 계산) — 무료", h1: "디데이 계산기 — D-day, 날짜 사이 일수, 기념일", desc: "목표일까지 남은 날(D-day)과 두 날짜 사이의 일수를 계산하고, 100일·1000일 같은 기념일 날짜를 한 번에 보여 드려요.", hook: "시험·전역·기념일까지 며칠? 100일·1000일도.", meta: "날짜 두 개", kw: "d-day 디데이 날짜 계산 기념일 100일 1000일 며칠 남았는지 일수" },
+  { id: "age", cat: "calc", path: "/calc/age/", title: "만 나이 계산기", seo: "만 나이 계산기 — 무료, 연 나이·세는 나이까지", h1: "만 나이 계산기 — 만 나이, 연 나이, 다음 생일까지", desc: "생년월일을 넣으면 오늘 기준 만 나이와 연 나이, 한국식 세는 나이, 다음 생일까지 남은 날을 계산해 드려요. 2023년 만 나이 통일법 안내도 함께 정리했어요.", hook: "생년월일만 넣으면 만 나이·연 나이·세는 나이.", meta: "생년월일", kw: "만나이 만 나이 나이 계산 연나이 세는나이 한국나이 생일 몇살 통일법" },
+  { id: "pyeong", cat: "calc", path: "/calc/pyeong/", title: "평수 계산기", seo: "평수 계산기 — 무료, ㎡ 평 변환", h1: "평수 계산기 — 제곱미터(㎡) ↔ 평 변환", desc: "제곱미터(㎡)와 평을 양방향으로 바꾸고, 59㎡·84㎡처럼 자주 찾는 면적을 표로 보여 드려요. 전용면적과 공급면적의 차이도 정리했어요.", hook: "㎡를 평으로, 평을 ㎡로. 84㎡는 몇 평?", meta: "1평 = 3.3058㎡", kw: "평수 평 제곱미터 m2 ㎡ 면적 변환 아파트 전용면적 공급면적 평형" },
+  { id: "pdf2img", cat: "pdf", also: ["image"], path: "/pdf/pdf-to-jpg/", title: "PDF JPG 변환", seo: "PDF JPG 변환 — 무료, PDF를 이미지로", h1: "PDF JPG 변환 — PDF 페이지를 JPG·PNG 이미지로", desc: "PDF의 각 페이지를 JPG나 PNG 이미지로 바꾸고, 해상도를 고르고, zip으로 한 번에 받을 수 있어요. 파일은 서버로 전송하지 않습니다.", hook: "PDF 한 쪽씩 JPG·PNG 이미지로.", meta: "JPG·PNG · zip", kw: "pdf jpg 변환 pdf 이미지 png 그림 사진 페이지 캡처 pdf를 jpg로" },
 ];
-const UTIL_RANK = ["pdfmerge", "img2pdf", "charcount", "imgcompress", "pdfsplit", "word2pdf", "dday"];
+const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "pdfsplit", "age", "pyeong", "word2pdf", "dday"];
 const NEXT = {
   pdfmerge: ["pdfsplit", "img2pdf", "imgcompress"],
-  pdfsplit: ["pdfmerge", "img2pdf", "word2pdf"],
+  pdfsplit: ["pdfmerge", "pdf2img", "img2pdf"],
   img2pdf: ["pdfmerge", "imgcompress", "pdfsplit"],
   word2pdf: ["pdfmerge", "charcount", "pdfsplit"],
   imgcompress: ["img2pdf", "pdfmerge", "charcount"],
   charcount: ["word2pdf", "dday", "pdfmerge"],
-  dday: ["charcount", "today", "life"],
+  dday: ["age", "charcount", "today"],
+  age: ["dday", "pyeong", "today"],
+  pyeong: ["age", "dday", "charcount"],
+  pdf2img: ["imgcompress", "img2pdf", "pdfsplit"],
 };
 const utilById = Object.fromEntries(UTILS.map((x) => [x.id, x]));
 const anyById = { ...toolById, ...utilById };
@@ -317,7 +326,7 @@ const byUtilRank = UTIL_RANK.map((id) => utilById[id]);
   <div class="hero-text">
     <p class="hero-kicker">PDF · 이미지 · 글쓰기 · 생활 계산</p>
     <h1>자주 쓰는 툴,<br>설치 없이 바로</h1>
-    <p class="lead">PDF 합치기, JPG를 PDF로, 사진 용량 줄이기, 글자수 세기, 디데이 계산까지. 가입 없이 쓰고, 파일은 서버로 전송하지 않습니다.</p>
+    <p class="lead">PDF 합치기, JPG를 PDF로, PDF를 JPG로, 사진 용량 줄이기, 글자수 세기, 만 나이·평수·디데이 계산까지. 가입 없이 쓰고, 파일은 서버로 전송하지 않습니다.</p>
   </div>
   <form class="search" role="search" action="${u("/")}">
     <label for="tool-q">어떤 툴을 찾으세요?</label>
@@ -356,7 +365,7 @@ const byUtilRank = UTIL_RANK.map((id) => utilById[id]);
   <div class="about-body">${fill(pages.home.intro).split(/\n+/).map((p) => `<p>${esc(p)}</p>`).join("")}</div>
 </section>
 ${adSlotFixed("home")}`;
-  write("/", layout({ title: `${cfg.siteName} — ${cfg.tagline}`, fullTitle: true, wide: true, scripts: ["home.js"], desc: "PDF 합치기·나누기, JPG PDF 변환, 워드 PDF 변환, 이미지 용량 줄이기, 글자수 세기, 디데이 계산기까지. 자주 쓰는 툴을 설치·가입 없이 브라우저에서 바로 써 보세요.", path: "/", body }));
+  write("/", layout({ title: `${cfg.siteName} — ${cfg.tagline}`, fullTitle: true, wide: true, scripts: ["home.js"], desc: "PDF 합치기·나누기, JPG PDF 변환, PDF JPG 변환, 이미지 용량 줄이기, 글자수 세기, 만 나이·평수·디데이 계산기까지. 자주 쓰는 툴을 설치·가입 없이 브라우저에서 바로 써 보세요.", path: "/", body }));
 }
 
 // 펭귄 놀이터 허브 — 기존 콘텐츠(주소 그대로)를 한곳에 묶음. 예전 홈의 「한 장 뽑기」·띠 도장·16유형 판을 이리로 옮김
@@ -821,13 +830,54 @@ utilPage(utilById.dday, `<form class="dd-form" autocomplete="off">
 <h2 class="dd-h">기념일 목록</h2>
 <div class="dd-ann"></div>`, { scripts: ["t-text.js"], fileTool: false });
 
+// 만 나이 계산기
+utilPage(utilById.age, `<form class="dd-form" autocomplete="off">
+  <div class="row2">
+    <label>생년월일 (양력)<input type="date" name="birth" min="1900-01-01" max="2200-12-31"></label>
+    <label>기준일<input type="date" name="base" min="1900-01-01" max="2200-12-31"></label>
+  </div>
+  <div class="dd-opts"><button type="button" class="btn ghost" data-today>기준일을 오늘로</button><button type="button" class="btn" data-copy>결과 복사</button></div>
+</form>
+<div class="dd-result age-result" aria-live="polite"></div>
+<p class="hint">2023년 6월 28일부터 법령·계약·공문서의 나이는 특별한 규정이 없으면 <b>만 나이</b>로 셉니다(행정기본법·민법 개정). 병역·청소년 보호처럼 법에 따로 정한 경우는 연 나이를 써요.</p>`, { scripts: ["t-calc.js"], fileTool: false });
+
+// 평수 계산기
+{
+  const R = 400 / 121;
+  const COMMON = [33, 49, 59, 74, 84, 99, 114, 135];
+  utilPage(utilById.pyeong, `<form class="dd-form py-form" autocomplete="off">
+  <div class="row2">
+    <label>제곱미터 (㎡)<input type="number" name="m2" min="0" step="any" inputmode="decimal" placeholder="예: 84"></label>
+    <label>평<input type="number" name="py" min="0" step="any" inputmode="decimal" placeholder="예: 25.4"></label>
+  </div>
+  <div class="dd-opts"><span class="hint">자주 찾는 면적</span>${COMMON.map((m) => `<button type="button" class="chip" data-m2="${m}">${m}㎡</button>`).join("")}<button type="button" class="btn" data-copy>결과 복사</button></div>
+</form>
+<div class="dd-result py-result" aria-live="polite"></div>
+<h2 class="dd-h">자주 찾는 면적 표</h2>
+<div class="table-wrap"><table class="dd-table"><thead><tr><th scope="col">㎡</th><th scope="col">평</th><th scope="col">흔히 부르는 말(전용면적 기준)</th></tr></thead><tbody>${COMMON.map((m) => `<tr><th scope="row">${m}㎡</th><td>${(m / R).toFixed(2)}평</td><td>${{ 59: "「국민 평형」 아래 소형(공급 24~25평형 안팎)", 84: "「국민 평형」(공급 33~35평형 안팎)", 114: "중대형(공급 43평형 안팎)" }[m] || ""}</td></tr>`).join("")}</tbody></table></div>
+<p class="hint">1평 = 400/121㎡ ≈ 3.3058㎡. 「OO평형」은 보통 공급면적 기준이라 단지마다 달라요. 정확한 값은 분양 공고나 건축물대장을 확인하세요.</p>`, { scripts: ["t-calc.js"], fileTool: false });
+}
+
+// PDF JPG 변환 (pdf.js + worker 직접 호스팅)
+utilPage(utilById.pdf2img, `${dropHtml({ accept: ".pdf,application/pdf", label: "이미지로 바꿀 PDF 파일을 넣어 주세요", limit: "PDF 1개 · 100MB까지 · 한 번에 300쪽까지" })}
+<div class="tk-opts" hidden>
+  <p class="tk-info"></p>
+  <div class="row2">
+    <label>형식<select name="format"><option value="jpg" selected>JPG</option><option value="png">PNG</option></select></label>
+    <label>해상도<select name="dpi"><option value="72">72dpi (작게)</option><option value="96">96dpi</option><option value="150" selected>150dpi (화면용)</option><option value="200">200dpi</option><option value="300">300dpi (인쇄용)</option></select></label>
+  </div>
+  <label>바꿀 페이지 (선택)<input name="range" inputmode="text" autocomplete="off" placeholder="비워 두면 전체"></label>
+</div>
+${tkTail("이미지로 바꾸기")}`, { vendor: ["fflate.min.js"], scripts: ["t-pdf2img.js"] });
+
 // 오픈소스 고지
 {
   const p = "/licenses/";
   const libs = [
     ["pdf-lib", "1.17.1", "MIT", "https://github.com/Hopding/pdf-lib", "PDF 합치기 · PDF 나누기 · JPG PDF 변환"],
     ["mammoth", "1.13.0", "BSD-2-Clause", "https://github.com/mwilliamson/mammoth.js", "워드 PDF 변환(간단)"],
-    ["fflate", "0.8.3", "MIT", "https://github.com/101arrowz/fflate", "PDF 나누기 · 이미지 용량 줄이기의 zip 묶기"],
+    ["fflate", "0.8.3", "MIT", "https://github.com/101arrowz/fflate", "PDF 나누기 · 이미지 용량 줄이기 · PDF JPG 변환의 zip 묶기"],
+    ["pdf.js (pdfjs-dist, legacy build)", "6.4.299", "Apache-2.0", "https://github.com/mozilla/pdf.js", "PDF JPG 변환 (함께 둔 CMap: Adobe BSD-3, 이미지 디코더 wasm: OpenJPEG BSD-2·PDFium BSD-3·qcms MIT, ICC: CC0)"],
   ];
   const body = `${crumbHtml([["홈", "/"], ["오픈소스 고지", p]])}<article class="prose doc"><h1>오픈소스 고지</h1>
 <p>${esc(cfg.siteName)}의 일부 툴은 아래 오픈소스 소프트웨어를 사용합니다. 라이브러리 파일은 공식 배포본(npm 패키지)을 고치지 않고 이 사이트에 직접 올려 두었고, 해당 툴 페이지에서만 불러옵니다. 외부 CDN에서 불러오지 않습니다.</p>
