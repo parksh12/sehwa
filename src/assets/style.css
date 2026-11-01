@@ -601,12 +601,19 @@ details.opt summary{cursor:pointer;color:var(--cheong);font-weight:700;font-size
 .tm-bar i{display:block;height:100%;width:0;background:var(--nok)}
 .tm-form{display:grid;gap:12px}
 .tm-inputs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.tm-inputs label{display:grid;gap:4px;text-align:center}
-.tm-inputs input{text-align:center;font-size:20px;font-weight:800}
+.tm-head{margin:4px 0 0;font-weight:800}
+.tm-field{display:grid;grid-template-rows:auto auto auto auto;gap:4px;text-align:center}
+.tm-lab{font-weight:800;font-size:14px}
+.tm-inputs input{text-align:center;font-size:24px;font-weight:800;padding:10px 4px;width:100%}
+.tm-step{font:inherit;font-weight:800;background:var(--white);border:2px solid var(--heuk);border-radius:10px;padding:4px 0;cursor:pointer}
+.tm-step:disabled,.tm-quick .chip:disabled,.tm-inputs input:disabled{opacity:.45;cursor:not-allowed}
+.tm-qlab{font-weight:800;font-size:14px;align-self:center;margin-right:4px}
+.tm-quick .chip.on{background:var(--hwang)}
+.tm-btns .btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
 .tm-quick{display:flex;flex-wrap:wrap;gap:6px}
 .tm-quick .chip{font:inherit;font-weight:800;cursor:pointer}
 .tm-btns{display:flex;flex-wrap:wrap;gap:8px}
-.tm-btns .btn.big{flex:1 1 200px;width:auto}
+.tm-btns .btn.big{flex:1 1 120px;width:auto}
 [hidden]{display:none!important}
 .tm-silence{background:var(--jeok)}
 [data-state="run"] .tm-state{background:var(--nok);color:var(--white)}

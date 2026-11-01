@@ -55,11 +55,11 @@
   if (tm) {
     const disp = tm.querySelector(".clock"), state = tm.querySelector(".tm-state");
     const H = tm.querySelector('[name="h"]'), M = tm.querySelector('[name="m"]'), S = tm.querySelector('[name="s"]');
-    const bStart = tm.querySelector("[data-start]"), bReset = tm.querySelector("[data-reset]"), bStop = tm.querySelector("[data-silence]");
+    const bStart = tm.querySelector("[data-start]"), bPause = tm.querySelector("[data-pause]"), bReset = tm.querySelector("[data-reset]"), bStop = tm.querySelector("[data-silence]");
     let total = 0, left = 0, endAt = 0, running = false, tick = null, ring = null, ringCount = 0;
     const fmt = (ms) => { const sec = Math.max(0, Math.ceil(ms / 1000)); const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60; return h ? `${h}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`; };
     const inputMs = () => ((Math.max(0, +H.value || 0) * 3600) + (Math.max(0, +M.value || 0) * 60) + Math.max(0, +S.value || 0)) * 1000;
-    const setMode = (m) => { tm.dataset.state = m; state.textContent = { idle: "대기", run: "진행 중", pause: "일시정지", done: "끝!" }[m]; bStart.textContent = m === "run" ? "일시정지" : m === "pause" ? "다시 시작" : "시작"; };
+    const setMode = (m) => { tm.dataset.state = m; state.textContent = { idle: "대기", run: "진행 중", pause: "일시정지", done: "끝!" }[m]; bStart.textContent = m === "pause" ? "다시 시작" : "시작"; bStart.disabled = m === "run"; bPause.disabled = m !== "run"; tm.querySelectorAll(".tm-inputs input,.tm-step,[data-quick]").forEach((el) => { el.disabled = m === "run" || m === "pause"; }); };
     const paint = () => {
       const ms = running ? endAt - Date.now() : left;
       disp.textContent = fmt(ms);
@@ -87,13 +87,22 @@
       keepAwake(false);
     }
     function stopRing(keepDone) { clearInterval(ring); ring = null; tm.classList.remove("ringing"); bStop.hidden = true; if (!keepDone && tm.dataset.state === "done") document.title = baseTitle; }
-    bStart.addEventListener("click", () => { const st = tm.dataset.state; if (st === "run") pause(); else if (st === "pause") start(); else start(inputMs()); });
+    bStart.addEventListener("click", () => { const st = tm.dataset.state; if (st === "run") return; if (st === "pause") start(); else start(inputMs()); });
+    bPause.addEventListener("click", () => { if (tm.dataset.state === "run") pause(); });
+    const fromInputs = () => { if (tm.dataset.state === "idle" || tm.dataset.state === "done") { stopRing(); setMode("idle"); left = total = inputMs(); paint(); } };
+    tm.querySelectorAll(".tm-step").forEach((b) => b.addEventListener("click", () => {
+      const unit = { h: 3600, m: 60, s: 1 }[b.dataset.step];
+      const sec = Math.min(99 * 3600 + 59 * 60 + 59, Math.max(0, inputMs() / 1000 + unit * (+b.dataset.d))); // 자리 올림·내림 포함
+      H.value = Math.floor(sec / 3600); M.value = Math.floor((sec % 3600) / 60); S.value = sec % 60;
+      tm.querySelectorAll("[data-quick]").forEach((c) => c.classList.remove("on")); fromInputs();
+    }));
+    [H, M, S].forEach((el) => el.addEventListener("focus", () => el.select()));
     bReset.addEventListener("click", reset);
     bStop.addEventListener("click", () => { stopRing(); setMode("idle"); left = total = inputMs(); paint(); });
     tm.querySelectorAll("[data-quick]").forEach((b) => b.addEventListener("click", () => {
-      const min = +b.dataset.quick; H.value = Math.floor(min / 60); M.value = min % 60; S.value = 0; start(min * 60000);
+      const min = +b.dataset.quick; H.value = Math.floor(min / 60); M.value = min % 60; S.value = 0; fromInputs(); tm.querySelectorAll("[data-quick]").forEach((c) => c.classList.toggle("on", c === b)); bStart.focus();
     }));
-    [H, M, S].forEach((el) => el.addEventListener("input", () => { if (tm.dataset.state === "idle" || tm.dataset.state === "done") { stopRing(); setMode("idle"); left = total = inputMs(); paint(); } }));
+    [H, M, S].forEach((el) => el.addEventListener("input", () => { tm.querySelectorAll("[data-quick]").forEach((c) => c.classList.remove("on")); fromInputs(); }));
     tm.querySelector("form").addEventListener("submit", (e) => { e.preventDefault(); bStart.click(); });
     setMode("idle"); left = total = inputMs(); paint();
   }
