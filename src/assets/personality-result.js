@@ -1,5 +1,10 @@
 (function () {
-  const m = /^E(\d{1,3})S(\d{1,3})T(\d{1,3})J(\d{1,3})$/.exec(new URLSearchParams(location.search).get("r") || "");
+  // 새 형식 #r=… 를 먼저 읽고, 옛 링크(?r=…)도 그대로 열어 준 뒤 주소를 # 형식으로 바꿔 둠
+  const fromHash = new URLSearchParams(location.hash.slice(1)).get("r");
+  const fromQuery = new URLSearchParams(location.search).get("r");
+  const raw = fromHash || fromQuery || "";
+  if (!fromHash && fromQuery && history.replaceState) history.replaceState(null, "", location.pathname + "#r=" + encodeURIComponent(fromQuery));
+  const m = /^E(\d{1,3})S(\d{1,3})T(\d{1,3})J(\d{1,3})$/.exec(raw);
   const el = document.getElementById("my-axes");
   if (!m || !el) return;
   const v = m.slice(1).map((x) => Math.min(100, Math.max(0, +x)));

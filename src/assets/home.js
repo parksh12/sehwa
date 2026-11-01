@@ -1,24 +1,3 @@
-// 홈 탭: 인기 / 전체
-(function () {
-  const tabs = [...document.querySelectorAll('[role="tab"][data-tab]')];
-  const show = (tab) => {
-    tabs.forEach((t) => {
-      const on = t === tab;
-      t.setAttribute("aria-selected", on);
-      t.tabIndex = on ? 0 : -1;
-      document.getElementById(t.getAttribute("aria-controls")).hidden = !on;
-    });
-  };
-  tabs.forEach((t, i) => {
-    t.addEventListener("click", () => show(t));
-    t.addEventListener("keydown", (e) => {
-      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
-      const n = tabs[(i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length];
-      show(n); n.focus();
-    });
-  });
-})();
-
 // 홈: 툴 검색 — 빌드 때 만든 툴 목록(#tool-index)을 브라우저에서 거릅니다. 검색어는 어디에도 보내지 않습니다.
 (function () {
   const input = document.getElementById("tool-q");
@@ -53,32 +32,16 @@
   run();
 })();
 
-// 놀이터: 「아무거나 한 장 뽑기」 — 덱을 섞은 뒤 한 장을 뽑아 해당 콘텐츠로 이동
+// 놀이터: 「아무거나 한 판」 — 숨겨 둔 목록([data-draw-pool])에서 하나를 골라 이동
 (function () {
-  const deck = document.querySelector(".deck");
   const btn = document.querySelector('[data-act="draw"]');
-  if (!deck || !btn) return;
-  const cards = [...deck.querySelectorAll(".deck-card")];
-  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
-
+  const links = [...document.querySelectorAll("[data-draw-pool] a")];
+  if (!btn || !links.length) return;
   btn.addEventListener("click", () => {
-    if (deck.classList.contains("shuffling")) return;
-    const pick = cards[Math.floor(Math.random() * cards.length)];
-    if (still) { location.href = pick.href; return; }
+    const pick = links[Math.floor(Math.random() * links.length)];
     btn.disabled = true;
-    deck.classList.add("shuffling");
-    setTimeout(() => {
-      deck.classList.remove("shuffling");
-      deck.classList.add("drawn");
-      pick.classList.add("picked");
-      setTimeout(() => { location.href = pick.href; }, 750);
-    }, 650);
+    btn.textContent = `${pick.textContent}(으)로 갈게요…`;
+    setTimeout(() => { location.href = pick.href; }, matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 450);
   });
-
-  // 뒤로 가기로 돌아왔을 때(bfcache) 덱 원상복구
-  addEventListener("pageshow", () => {
-    btn.disabled = false;
-    deck.classList.remove("shuffling", "drawn");
-    cards.forEach((c) => c.classList.remove("picked"));
-  });
+  addEventListener("pageshow", () => { btn.disabled = false; btn.textContent = "아무거나 한 판"; });
 })();
