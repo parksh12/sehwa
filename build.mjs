@@ -73,6 +73,9 @@ const ART = {
   dday: sv(`<rect x="14" y="22" width="92" height="82" rx="8" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M14 30a8 8 0 0 1 8-8h76a8 8 0 0 1 8 8v16H14z" fill="${GRN}" stroke="${K}" stroke-width="4"/><rect x="34" y="12" width="8" height="20" rx="4" fill="${K}"/><rect x="78" y="12" width="8" height="20" rx="4" fill="${K}"/><text x="60" y="90" font-size="30" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">D-7</text>`),
   age: sv(`<rect x="22" y="44" width="76" height="60" rx="8" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M22 66c10 8 19 8 25 0s16-8 25 0 17 8 26 0" fill="none" stroke="${RED}" stroke-width="5"/><path d="M40 44V30M60 44V26M80 44V30" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M40 22q4 5 0 8-4-3 0-8zM60 18q4 5 0 8-4-3 0-8zM80 22q4 5 0 8-4-3 0-8z" fill="${YEL}" stroke="${K}" stroke-width="2"/><text x="60" y="96" font-size="20" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">만 30</text>`),
   pyeong: sv(`<path d="M18 52 60 18l42 34v52H18z" fill="${W}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><rect x="34" y="60" width="52" height="32" fill="${YEL}" stroke="${K}" stroke-width="3"/><path d="M34 100h52M34 96v8M86 96v8" stroke="${RED}" stroke-width="4"/><text x="60" y="82" font-size="15" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">㎡↔평</text>`),
+  timer: sv(`<circle cx="60" cy="66" r="40" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M60 66V36A30 30 0 0 1 86 51z" fill="${YEL}" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M50 14h20M60 14v12M92 30l8-8" stroke="${K}" stroke-width="6" stroke-linecap="round"/><path d="M60 66 74 82" stroke="${RED}" stroke-width="6" stroke-linecap="round"/><circle cx="60" cy="66" r="5" fill="${K}"/>`),
+  stopwatch: sv(`<circle cx="60" cy="68" r="38" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M52 14h16M60 14v16" stroke="${K}" stroke-width="6" stroke-linecap="round"/><path d="M60 68V42" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M60 68 80 78" stroke="${GRN}" stroke-width="5" stroke-linecap="round"/><circle cx="60" cy="68" r="5" fill="${RED}"/><path d="M34 58h-8M34 78h-8M94 58h-6" stroke="${K}" stroke-width="3" stroke-linecap="round"/><text x="60" y="104" font-size="12" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">LAP</text>`),
+  family: sv(`<path d="M14 24h56a8 8 0 0 1 8 8v26a8 8 0 0 1-8 8H38l-14 12V66h-10a8 8 0 0 1-8-8V32a8 8 0 0 1 8-8z" fill="${YEL}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M50 52h56a8 8 0 0 1 8 8v26a8 8 0 0 1-8 8h-10v12L82 94H50a8 8 0 0 1-8-8V60a8 8 0 0 1 8-8z" fill="${W}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><text x="78" y="80" font-size="15" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">7942</text><path d="M22 40h40M22 50h26" stroke="${K}" stroke-width="4" stroke-linecap="round"/>`),
   pdf2img: sv(`${doc(10, 14, 48, 64, RED)}<text x="34" y="54" font-size="15" font-weight="800" text-anchor="middle" fill="${W}" font-family="sans-serif">PDF</text><path d="M52 90h12" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M60 82l9 8-9 8" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><rect x="66" y="50" width="44" height="56" rx="6" fill="${W}" stroke="${K}" stroke-width="4"/><circle cx="80" cy="66" r="6" fill="${YEL}" stroke="${K}" stroke-width="3"/><path d="M70 100l12-14 8 6 8-10 8 18z" fill="${GRN}" stroke="${K}" stroke-width="3" stroke-linejoin="round"/>`),
 };
 function doc(x, y, w, h, fill) {
@@ -80,7 +83,7 @@ function doc(x, y, w, h, fill) {
   return `<path d="M${x} ${y + 4}a4 4 0 0 1 4-4h${w - f - 4}l${f} ${f}v${h - f - 4}a4 4 0 0 1-4 4H${x + 4}a4 4 0 0 1-4-4z" fill="${fill}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M${x + w - f} ${y}v${f}h${f}" fill="none" stroke="${K}" stroke-width="3" stroke-linejoin="round"/>`;
 }
 // 로고: 코드로 그린 단순한 펭귄(둥근 사각 몸통 + 흰 배 + 점 눈 + 노란 부리). 실존 캐릭터·로고를 본뜨지 않음
-const LOGO = (size = 34) => `<svg class="logo-mark" width="${size}" height="${size}" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><path d="M13 31l-6 12M51 31l6 12" stroke="${K}" stroke-width="5" stroke-linecap="round"/><rect x="13" y="5" width="38" height="52" rx="16" fill="${K}"/><path d="M20 34c0-8 5-12 12-12s12 4 12 12v8c0 7-5 11-12 11s-12-4-12-11z" fill="${W}"/><circle cx="25" cy="17" r="2.6" fill="${W}"/><circle cx="39" cy="17" r="2.6" fill="${W}"/><path d="M28 23h8l-4 5z" fill="${YEL}" stroke="${K}" stroke-width="1.5" stroke-linejoin="round"/><path d="M21 59h9M34 59h9" stroke="${YEL}" stroke-width="4" stroke-linecap="round"/></svg>`;
+const LOGO = (size = 34) => `<svg class="logo-mark" width="${size}" height="${size}" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><circle cx="32" cy="32" r="28" fill="#141414"/><path d="M32 20.5c-4-7-19-7-20.5 6C10 40 18.5 53 32 53s22-13 20.5-26.5C51 13.5 36 13.5 32 20.5z" fill="#fff"/><ellipse cx="23.5" cy="33" rx="3.2" ry="4" fill="#141414"/><ellipse cx="40.5" cy="33" rx="3.2" ry="4" fill="#141414"/><circle cx="24.6" cy="31.6" r="1.1" fill="#fff"/><circle cx="41.6" cy="31.6" r="1.1" fill="#fff"/><path d="M28.6 39.5h6.8l-3.4 4.4z" fill="#ffc21a" stroke="#141414" stroke-width="1.6" stroke-linejoin="round"/><circle cx="18" cy="41" r="2.8" fill="#e5372b" opacity=".4"/><circle cx="46" cy="41" r="2.8" fill="#e5372b" opacity=".4"/></svg>`;
 const toolById = Object.fromEntries(TOOLS.map((x) => [x.id, x]));
 const byRank = RANK.map((id) => toolById[id]).concat(TOOLS.filter((x) => !RANK.includes(x.id)));
 const RECO = {
@@ -108,6 +111,7 @@ const UCATS = {
   image: { name: "이미지", desc: "사진 용량을 줄이거나 여러 장을 PDF로 묶는 이미지 툴이에요." },
   text: { name: "글쓰기", desc: "자기소개서, 리포트, 블로그 글을 쓸 때 필요한 글쓰기 툴이에요." },
   calc: { name: "생활 계산", desc: "D-day처럼 생활에서 자주 찾는 계산을 바로 해 주는 툴이에요." },
+  time: { name: "시간", desc: "타이머와 스톱워치처럼 시간을 재고 알려 주는 툴이에요." },
 };
 const NAV = [...Object.entries(UCATS).map(([k, c]) => [c.name, `/${k}/`]), [PLAY.name, PLAY.path]];
 // seo: <title> 앞부분(검색어 그대로) / also: 다른 카테고리 페이지에도 함께 노출 / beta: 베타 표시 / kw: 홈 검색용 동의어
@@ -118,12 +122,14 @@ const UTILS = [
   { id: "word2pdf", cat: "pdf", beta: true, path: "/pdf/word-to-pdf/", title: "워드 PDF 변환(간단)", seo: "워드 PDF 변환(간단) — 무료, docx를 PDF로", h1: "워드 PDF 변환(간단) — docx 미리보고 PDF로 저장", desc: "워드(docx) 문서를 브라우저에서 미리 보고 인쇄의 「PDF로 저장」으로 PDF를 만들어요. 표·머리글·각주·복잡한 서식은 깨질 수 있는 간단 변환(베타)입니다.", hook: "docx를 열어 보고 PDF로 저장. 글 위주 문서용.", meta: "docx · 베타", kw: "word docx 워드 문서 pdf 변환 docs" },
   { id: "imgcompress", cat: "image", path: "/image/compress/", title: "이미지 용량 줄이기", seo: "이미지 용량 줄이기 — 무료, 사진 압축", h1: "이미지 용량 줄이기 — 품질과 크기를 골라 사진 압축", desc: "JPG·PNG·WEBP 사진의 품질과 최대 너비를 조절해 용량을 줄이고, 얼마나 줄었는지 보여 드려요. 파일은 서버로 전송하지 않습니다.", hook: "품질·너비 조절해서 사진 용량 줄이기.", meta: "JPG·WEBP 저장", kw: "사진 압축 용량 줄이기 리사이즈 크기 jpg png webp 이미지 압축" },
   { id: "charcount", cat: "text", path: "/text/char-count/", title: "글자수 세기", seo: "글자수 세기 — 무료, 공백 포함·제외·바이트", h1: "글자수 세기 — 공백 포함·제외, 바이트까지", desc: "자기소개서와 리포트 글자수를 공백 포함·제외, 바이트(UTF-8·한글 2바이트), 줄·단락 수로 바로 세어 드려요. 입력한 글은 저장하지 않습니다.", hook: "자소서 글자수, 공백 포함·제외, 바이트까지.", meta: "실시간 계산", kw: "글자 수 글자수 자소서 자기소개서 바이트 공백 단어 세기 카운터" },
-  { id: "dday", cat: "calc", path: "/calc/d-day/", title: "디데이 계산기", seo: "디데이 계산기 (D-day 계산) — 무료", h1: "디데이 계산기 — D-day, 날짜 사이 일수, 기념일", desc: "목표일까지 남은 날(D-day)과 두 날짜 사이의 일수를 계산하고, 100일·1000일 같은 기념일 날짜를 한 번에 보여 드려요.", hook: "시험·전역·기념일까지 며칠? 100일·1000일도.", meta: "날짜 두 개", kw: "d-day 디데이 날짜 계산 기념일 100일 1000일 며칠 남았는지 일수" },
+  { id: "dday", cat: "calc", also: ["time"], path: "/calc/d-day/", title: "디데이 계산기", seo: "디데이 계산기 (D-day 계산) — 무료", h1: "디데이 계산기 — D-day, 날짜 사이 일수, 기념일", desc: "목표일까지 남은 날(D-day)과 두 날짜 사이의 일수를 계산하고, 100일·1000일 같은 기념일 날짜를 한 번에 보여 드려요.", hook: "시험·전역·기념일까지 며칠? 100일·1000일도.", meta: "날짜 두 개", kw: "d-day 디데이 날짜 계산 기념일 100일 1000일 며칠 남았는지 일수" },
   { id: "age", cat: "calc", path: "/calc/age/", title: "만 나이 계산기", seo: "만 나이 계산기 — 무료, 연 나이·세는 나이까지", h1: "만 나이 계산기 — 만 나이, 연 나이, 다음 생일까지", desc: "생년월일을 넣으면 오늘 기준 만 나이와 연 나이, 한국식 세는 나이, 다음 생일까지 남은 날을 계산해 드려요. 2023년 만 나이 통일법 안내도 함께 정리했어요.", hook: "생년월일만 넣으면 만 나이·연 나이·세는 나이.", meta: "생년월일", kw: "만나이 만 나이 나이 계산 연나이 세는나이 한국나이 생일 몇살 통일법" },
   { id: "pyeong", cat: "calc", path: "/calc/pyeong/", title: "평수 계산기", seo: "평수 계산기 — 무료, ㎡ 평 변환", h1: "평수 계산기 — 제곱미터(㎡) ↔ 평 변환", desc: "제곱미터(㎡)와 평을 양방향으로 바꾸고, 59㎡·84㎡처럼 자주 찾는 면적을 표로 보여 드려요. 전용면적과 공급면적의 차이도 정리했어요.", hook: "㎡를 평으로, 평을 ㎡로. 84㎡는 몇 평?", meta: "1평 = 3.3058㎡", kw: "평수 평 제곱미터 m2 ㎡ 면적 변환 아파트 전용면적 공급면적 평형" },
   { id: "pdf2img", cat: "pdf", also: ["image"], path: "/pdf/pdf-to-jpg/", title: "PDF JPG 변환", seo: "PDF JPG 변환 — 무료, PDF를 이미지로", h1: "PDF JPG 변환 — PDF 페이지를 JPG·PNG 이미지로", desc: "PDF의 각 페이지를 JPG나 PNG 이미지로 바꾸고, 해상도를 고르고, zip으로 한 번에 받을 수 있어요. 파일은 서버로 전송하지 않습니다.", hook: "PDF 한 쪽씩 JPG·PNG 이미지로.", meta: "JPG·PNG · zip", kw: "pdf jpg 변환 pdf 이미지 png 그림 사진 페이지 캡처 pdf를 jpg로" },
+  { id: "timer", cat: "time", path: "/time/timer/", title: "타이머", seo: "온라인 타이머 — 무료, 알람 소리·전체 화면", h1: "온라인 타이머 — 시간이 되면 소리로 알려 줘요", desc: "시·분·초를 넣거나 1·3·5·10·25분 버튼을 누르면 바로 시작하는 온라인 타이머예요. 끝나면 알림음과 화면 깜빡임으로 알려 주고, 탭 제목에 남은 시간을 보여 줘요.", hook: "라면 3분, 공부 25분. 끝나면 소리로 알려 줘요.", meta: "알림음 · 전체 화면", kw: "타이머 알람 카운트다운 초시계 뽀모도로 라면 3분 25분 공부 시간 재기 인터벌" },
+  { id: "stopwatch", cat: "time", path: "/time/stopwatch/", title: "스톱워치", seo: "온라인 스톱워치 — 무료, 랩 기록·1/100초", h1: "온라인 스톱워치 — 랩 기록과 1/100초 표시", desc: "시작·정지·랩·초기화를 지원하는 온라인 스톱워치예요. 1/100초까지 보여 주고, 랩마다 구간·누적 시간과 최고·최저 구간을 표시해요. Space·L·R 단축키도 쓸 수 있어요.", hook: "1/100초까지. 랩마다 구간·누적 기록.", meta: "랩 · 단축키", kw: "스톱워치 초시계 랩 타임 기록 시간 측정 달리기 1/100초" },
 ];
-const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "pdfsplit", "age", "pyeong", "word2pdf", "dday"];
+const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "timer", "pdfsplit", "age", "pyeong", "stopwatch", "word2pdf", "dday"];
 const NEXT = {
   pdfmerge: ["pdfsplit", "img2pdf", "imgcompress"],
   pdfsplit: ["pdfmerge", "pdf2img", "img2pdf"],
@@ -131,7 +137,9 @@ const NEXT = {
   word2pdf: ["pdfmerge", "charcount", "pdfsplit"],
   imgcompress: ["img2pdf", "pdfmerge", "charcount"],
   charcount: ["word2pdf", "dday", "pdfmerge"],
-  dday: ["age", "charcount", "today"],
+  dday: ["age", "timer", "charcount"],
+  timer: ["stopwatch", "dday", "charcount"],
+  stopwatch: ["timer", "dday", "reaction"],
   age: ["dday", "pyeong", "today"],
   pyeong: ["age", "dday", "charcount"],
   pdf2img: ["imgcompress", "img2pdf", "pdfsplit"],
@@ -202,9 +210,13 @@ const recoHtml = (ids, heading = "이것도 해 보세요") =>
 // 행 목록이라 툴이 몇 개든 빈칸이 생기지 않고, 서랍들은 CSS 다단(column)으로 높이를 맞춰 흘려 넣음
 const rowHtml = (x) =>
   `<li><a class="row" href="${u(x.path)}"><span class="row-art">${ART[x.id]}</span><span class="row-body"><b>${esc(x.title)}${x.beta ? ' <em class="beta">베타</em>' : ""}</b><small>${esc(x.hook)}</small></span><span class="row-go" aria-hidden="true">›</span></a></li>`;
-const drawerHtml = ({ tone, name, href = "", sub = "", tools, extra = "", tag = "h2" }) =>
-  `<section class="drawer t-${tone}"><header class="drawer-head"><span class="drawer-pull" aria-hidden="true"></span><${tag} class="drawer-name">${href ? `<a href="${u(href)}">${esc(name)}</a>` : esc(name)}</${tag}><small>${tools.length}개</small>${sub ? `<p>${esc(sub)}</p>` : ""}</header><ul class="rows">${tools.map(rowHtml).join("")}</ul>${extra}</section>`;
+const drawerHtml = ({ tone, name, href = "", sub = "", tools, ext = [], extra = "", tag = "h2" }) =>
+  `<section class="drawer t-${tone}"><header class="drawer-head"><span class="drawer-pull" aria-hidden="true"></span><${tag} class="drawer-name">${href ? `<a href="${u(href)}">${esc(name)}</a>` : esc(name)}</${tag}><small>${tools.length + ext.length}개</small>${sub ? `<p>${esc(sub)}</p>` : ""}</header><ul class="rows">${tools.map(rowHtml).join("")}${ext.map(extRowHtml).join("")}</ul>${extra}</section>`;
 const utilsIn = (k) => UTIL_RANK.map((id) => utilById[id]).filter((x) => x.cat === k || (x.also || []).includes(k));
+// 세화산업의 다른 서비스(외부 사이트, 새 창). iframe·코드 가져오기 없이 링크만 검
+const FAMILY = { name: "랜덤7942", url: "https://www.random7942.com/", hook: "가입 없이 낯선 사람과 아이디어 나누기 · 익명 브레인스토밍" };
+const extRowHtml = (f) =>
+  `<li><a class="row ext" href="${f.url}" target="_blank" rel="noopener"><span class="row-art">${ART.family}</span><span class="row-body"><b>${esc(f.name)} <em class="ext-tag">새 창 ↗</em></b><small>${esc(f.hook)}</small></span><span class="row-go" aria-hidden="true">↗</span></a></li>`;
 const recoRows = (ids, heading) => `<section class="reco"><h2>${heading}</h2><ul class="rows rows-flow">${ids.map((id) => rowHtml(anyById[id])).join("")}</ul></section>`;
 
 const shareBar = (opts = {}) =>
@@ -272,6 +284,7 @@ ${body}
     <nav class="foot-links" aria-label="사이트 정보">
       <a href="${u("/about/")}">소개</a><a href="${u("/editorial/")}">작성·검수 기준</a><a href="${u("/privacy/")}"><strong>개인정보처리방침</strong></a><a href="${u("/terms/")}">이용약관</a><a href="${u("/disclaimer/")}">면책고지</a><a href="${u("/licenses/")}">오픈소스 고지</a><a href="${u("/contact/")}">문의</a>
     </nav>
+    <p class="family">세화산업의 다른 서비스: <a href="${FAMILY.url}" target="_blank" rel="noopener">${esc(FAMILY.name)} · 익명 브레인스토밍 ↗<span class="sr"> (새 창, 외부 사이트)</span></a></p>
     <p class="copy">© ${new Date().getFullYear()} ${esc(cfg.operator)} · ${esc(cfg.siteName)}</p>
   </div>
 </footer>
@@ -373,6 +386,7 @@ const ZONES = [
   { tone: "luck", name: "오늘", sub: "매일 자정에 바뀌는 운세", ids: ["today"] },
   { tone: "me", name: "테스트", sub: "생일·성향·이름으로 보는 나", ids: ["birthday", "personality", "namematch"] },
   { tone: "story", name: "게임", sub: "한 판이면 끝나는 짧은 게임", ids: ["life", "reaction"] },
+  { tone: "love", name: "같이", sub: "세화산업이 운영하는 다른 서비스(외부 사이트)", ids: [], ext: [FAMILY] },
 ];
 {
   const items = [["홈", "/"], [PLAY.name, PLAY.path]];
@@ -390,7 +404,7 @@ const ZONES = [
   <div class="hero-actions"><button class="btn" type="button" data-act="draw">아무거나 한 판</button><span class="fun-badge">놀이터의 모든 테스트와 운세는 재미로 보는 콘텐츠예요</span></div>
   <ul hidden data-draw-pool>${pool.map((id) => `<li><a href="${u(toolById[id].path)}">${esc(toolById[id].title)}</a></li>`).join("")}</ul>
 </header>
-<div class="drawers drawers-3">${ZONES.map((z) => drawerHtml({ tone: z.tone, name: z.name, sub: z.sub, tools: z.ids.map((id) => toolById[id]), extra: extra[z.name] })).join("")}</div>
+<div class="drawers drawers-3">${ZONES.map((z) => drawerHtml({ tone: z.tone, name: z.name, sub: z.sub, tools: z.ids.map((id) => toolById[id]), ext: z.ext || [], extra: extra[z.name] || "" })).join("")}</div>
 ${recoRows(["charcount", "dday", "pdfmerge"], "쉬었다면, 일하러 갈 때 쓰는 툴")}
 ${adSlot("play")}`;
   write(PLAY.path, layout({ title: `${PLAY.name} — 운세·성격 테스트·짧은 게임`, wide: true, scripts: ["home.js"], desc: `${PLAY.desc} 오늘의 띠별 운세, 생일로 보는 나, 16유형 성격 테스트, 이름 궁합, 1분 인생, 반응속도 게임.`, path: PLAY.path, body, jsonld: [crumbs(items)] }));
@@ -856,6 +870,22 @@ utilPage(utilById.pdf2img, `${dropHtml({ accept: ".pdf,application/pdf", label: 
 </div>
 ${tkTail("이미지로 바꾸기")}`, { vendor: ["fflate.min.js"], scripts: ["t-pdf2img.js"] });
 
+// 타이머
+utilPage(utilById.timer, `<div class="tm-face" aria-live="off"><span class="tm-state">대기</span><div class="clock" role="timer" aria-label="남은 시간">00:00</div><div class="tm-bar" aria-hidden="true"><i></i></div></div>
+<form class="tm-form" autocomplete="off">
+  <div class="tm-inputs"><label>시<input type="number" name="h" min="0" max="99" value="0" inputmode="numeric"></label><label>분<input type="number" name="m" min="0" max="59" value="5" inputmode="numeric"></label><label>초<input type="number" name="s" min="0" max="59" value="0" inputmode="numeric"></label></div>
+  <div class="tm-quick" aria-label="빠른 시작">${[1, 3, 5, 10, 25].map((m) => `<button type="button" class="chip" data-quick="${m}">${m}분</button>`).join("")}</div>
+  <div class="tm-btns"><button type="button" class="btn big" data-start>시작</button><button type="button" class="btn ghost" data-reset>초기화</button><button type="button" class="btn ghost" data-fullscreen>전체 화면</button></div>
+  <button type="button" class="btn big tm-silence" data-silence hidden>알림 끄기</button>
+</form>
+<p class="safe">설정한 시간은 저장하거나 전송하지 않습니다. 지원하는 브라우저에서는 도는 동안 화면이 꺼지지 않게 해 둬요.</p>`, { scripts: ["t-time.js"], fileTool: false });
+
+// 스톱워치
+utilPage(utilById.stopwatch, `<div class="tm-face"><span class="tm-state">Space 시작·정지 · L 랩 · R 초기화</span><div class="clock" role="timer" aria-label="경과 시간">00:00.00</div></div>
+<div class="tm-btns"><button type="button" class="btn big" data-go>시작</button><button type="button" class="btn ghost" data-lap disabled>랩</button><button type="button" class="btn ghost" data-reset disabled>초기화</button><button type="button" class="btn ghost" data-fullscreen>전체 화면</button></div>
+<div class="laps table-wrap" hidden><table class="dd-table"><thead><tr><th scope="col">랩</th><th scope="col">구간</th><th scope="col">누적</th></tr></thead><tbody></tbody></table></div>
+<p class="safe">기록은 저장하거나 전송하지 않습니다. 페이지를 닫으면 사라져요.</p>`, { scripts: ["t-time.js"], fileTool: false });
+
 // 오픈소스 고지
 {
   const p = "/licenses/";
@@ -898,6 +928,7 @@ for (const k of INFO) {
 <p class="hint">운영: ${esc(cfg.operator)}</p></article>`;
   write(p, layout({ title: "작성·검수 기준", desc: `${cfg.siteName}가 테스트와 해설을 만들고 검수하는 기준을 소개합니다.`, path: p, body }));
 }
+
 
 // 404
 write("/404.html", layout({ title: "페이지를 찾을 수 없어요", desc: "요청하신 페이지를 찾을 수 없어요.", path: "/404.html", noindex: true, body: `<section class="hero"><h1>앗, 길을 잃었어요</h1><p class="lead">주소가 바뀌었거나 없는 페이지예요. 대신 많이 쓰는 툴로 가 보세요.</p></section>${recoHtml(["pdfmerge", "img2pdf", "charcount", "today"], "많이 쓰는 툴")}` }));

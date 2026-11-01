@@ -591,3 +591,42 @@ details.opt summary{cursor:pointer;color:var(--cheong);font-weight:700;font-size
 .reco:last-child,.drawers-mini{margin-bottom:8px}
 @media(max-width:620px){.toolbox .row{min-height:48px;padding:7px 12px}.toolbox .row-body small{display:none}.toolbox .row-art{width:34px;height:34px}.toolbox .drawer{margin-bottom:14px}.hero-tools{padding:12px 0 16px}}
 .home-about{margin-bottom:8px}
+
+/* ===================== P2-16 타이머·스톱워치 / P2-17 다른 서비스 링크 ===================== */
+.t-time,.c-time{--tone:var(--heuk)}
+.tm-face{text-align:center;border:var(--bd);border-radius:16px;background:var(--soft);padding:14px 10px 16px}
+.tm-state{display:inline-block;font-size:13px;font-weight:800;color:var(--ink-2);background:var(--white);border:2px solid var(--ink);border-radius:99px;padding:1px 10px}
+.clock{font-family:"Pretendard Variable",Pretendard,system-ui,sans-serif;font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:-.02em;font-size:clamp(56px,19vw,150px);line-height:1.05;margin:6px 0 2px;color:var(--ink)}
+.tm-bar{height:10px;border:2px solid var(--ink);border-radius:99px;overflow:hidden;background:var(--white);max-width:520px;margin:8px auto 0}
+.tm-bar i{display:block;height:100%;width:0;background:var(--nok)}
+.tm-form{display:grid;gap:12px}
+.tm-inputs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tm-inputs label{display:grid;gap:4px;text-align:center}
+.tm-inputs input{text-align:center;font-size:20px;font-weight:800}
+.tm-quick{display:flex;flex-wrap:wrap;gap:6px}
+.tm-quick .chip{font:inherit;font-weight:800;cursor:pointer}
+.tm-btns{display:flex;flex-wrap:wrap;gap:8px}
+.tm-btns .btn.big{flex:1 1 200px;width:auto}
+[hidden]{display:none!important}
+.tm-silence{background:var(--jeok)}
+[data-state="run"] .tm-state{background:var(--nok);color:var(--white)}
+[data-state="pause"] .tm-state{background:var(--hwang)}
+[data-state="done"] .tm-state{background:var(--jeok);color:var(--white)}
+.tk.ringing .tm-face{animation:ring .5s steps(2) infinite}
+@keyframes ring{0%{background:var(--jeok);color:var(--white)}50%{background:var(--soft)}}
+.tk.ringing .tm-face .clock{color:inherit}
+@media(prefers-reduced-motion:reduce){.tk.ringing .tm-face{animation:none;background:var(--jeok)}.tk.ringing .clock{color:var(--white)}}
+.laps tr.best td,.laps tr.best th{background:#e8f7ee}
+.laps tr.worst td,.laps tr.worst th{background:#ffe9e6}
+.laps em{font-style:normal;font-size:11.5px;font-weight:800;border:1.5px solid currentColor;border-radius:5px;padding:0 5px;margin-left:4px}
+.laps td{font-variant-numeric:tabular-nums}
+/* 전체 화면: 숫자만 크게 */
+.tk:fullscreen{background:var(--white);padding:4vh 4vw;display:flex;flex-direction:column;justify-content:center;overflow:auto}
+.tk:fullscreen .clock{font-size:min(24vw,40vh)}
+.tk:fullscreen .tk-next,.tk:fullscreen .safe{display:none}
+/* P2-17 외부 링크 행·하단 한 줄 */
+.ext-tag{font-style:normal;font-size:11px;font-weight:800;border:1.5px solid var(--ink);border-radius:5px;padding:0 5px;margin-left:4px;vertical-align:middle;color:var(--ink-2)}
+.site-footer .family{margin:0 0 8px;font-size:13.5px}
+.site-footer .family a{color:var(--ink);font-weight:700}
+.clock{white-space:nowrap}
+[data-tool="stopwatch"] .clock{font-size:clamp(40px,14.5vw,140px)}
