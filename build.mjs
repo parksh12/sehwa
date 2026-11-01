@@ -5,6 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
 import cfg from "./config.mjs";
+const BUILD_V = Date.now().toString(36); // 자원 주소 버전(배포마다 바뀜) → 캐시된 옛 CSS·JS가 새 HTML과 섞이지 않음
 import questions from "./content/questions.mjs";
 import { renderDay, kstDate } from "./src/assets/daily.mjs";
 
@@ -267,7 +268,7 @@ ${cfg.naverVerification ? `<meta name="naver-site-verification" content="${esc(c
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap">
-<link rel="stylesheet" href="${u("/assets/style.css")}">
+<link rel="stylesheet" href="${u("/assets/style.css")}?v=${BUILD_V}">
 ${cfg.adsenseClient ? `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${esc(cfg.adsenseClient)}" crossorigin="anonymous"></script>` : ""}
 ${cfg.gaId ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${esc(cfg.gaId)}"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${esc(cfg.gaId)}');</script>` : ""}
 <script type="application/ld+json">${JSON.stringify(ld.length === 1 ? ld[0] : ld).replace(/</g, "\\u003c")}</script>
@@ -295,9 +296,9 @@ ${body}
     <p class="copy">© ${new Date().getFullYear()} ${esc(cfg.operator)} · ${esc(cfg.siteName)}</p>
   </div>
 </footer>
-<script src="${u("/assets/app.js")}" defer></script>
-${vendor.map((s) => `<script src="${u(`/assets/vendor/${s}`)}" defer></script>`).join("\n")}
-${scripts.map((s) => `<script src="${u(`/assets/${s}`)}" defer></script>`).join("\n")}
+<script src="${u("/assets/app.js")}?v=${BUILD_V}" defer></script>
+${vendor.map((s) => `<script src="${u(`/assets/vendor/${s}`)}?v=${BUILD_V}" defer></script>`).join("\n")}
+${scripts.map((s) => `<script src="${u(`/assets/${s}`)}?v=${BUILD_V}" defer></script>`).join("\n")}
 </body>
 </html>`;
 }
@@ -488,7 +489,7 @@ ${recoRows(TOOLS.filter((x) => x.cat !== k).map((x) => x.id), "오락실의 다�
 <div id="today" aria-live="polite">${renderDay(kstDate())}</div>
 <div class="share"><button type="button" class="btn" data-act="threads">오늘의 운세 이미지 저장</button></div>
 ${shareBar({ title: "오늘의 띠별 운세", text: "매일 자정에 바뀌는 12띠 오늘의 운세", path: "/luck/today/" })}
-<script type="module" src="${u("/assets/today.js")}"></script>`;
+<script type="module" src="${u("/assets/today.js")}?v=${BUILD_V}"></script>`;
   toolPage(toolById.today, html);
 }
 

@@ -51,7 +51,7 @@ ${crumbHtml(items)}
     <h1>${esc(R.h1)}</h1>
     <p class="lead">${esc(R.desc)}</p>
   </header>
-  <link rel="stylesheet" href="${u("/assets/rpg-style.css")}">
+  <link rel="stylesheet" href="${u("/assets/rpg-style.css")}?v=${Date.now().toString(36)}">
   <section class="tool-box rpg-box" aria-label="게임">
     <div id="rpg" class="rpg"><div class="rpg-screen rpg-loading"><p>게임을 불러오는 중이에요…</p></div><div class="rpg-pad" aria-hidden="true"></div><p class="rpg-keys">방향키·WASD 이동 · Enter/Space 확인 · Esc 메뉴</p></div>
     <noscript><p class="hint">이 게임은 자바스크립트가 켜져 있어야 실행돼요.</p></noscript>
