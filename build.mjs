@@ -1,4 +1,4 @@
-// 나알기 정적 사이트 빌더 — 외부 패키지 없이 Node 18+ 만으로 dist/ 를 생성합니다.
+// 펭귄 툴즈 정적 사이트 빌더 — 외부 패키지 없이 Node 18+ 만으로 dist/ 를 생성합니다. (툴 라이브러리는 src/assets/vendor/에 직접 둠)
 // 사용: node build.mjs   (환경변수 SITE_URL, SITE_NAME, CONTACT_EMAIL, ADSENSE_CLIENT, GA_ID 로 설정 덮어쓰기)
 import fs from "node:fs";
 import path from "node:path";
@@ -16,6 +16,7 @@ const tti = await load("tti");
 const zodiac = await load("zodiac");
 const guides = await load("guides");
 const pages = await load("pages");
+const toolText = await load("tools");
 
 // ---------- 유틸 ----------
 const esc = (s = "") => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -62,7 +63,21 @@ const ART = {
   today: sv(`<path d="M30 84a30 30 0 0 1 60 0z" fill="${YEL}" stroke="${K}" stroke-width="4"/><path d="M22.4 70.3 11.1 66.2M37.1 51.2l-6.9-9.8M60 44V32M82.9 51.2l6.9-9.8M97.6 70.3l11.3-4.1" stroke="${RED}" stroke-width="6" stroke-linecap="round"/><path d="M12 84h96M30 96h22M68 96h22M44 107h32" stroke="${K}" stroke-width="4" stroke-linecap="round"/>`),
   reaction: sv(`<rect x="51" y="10" width="18" height="10" rx="3" fill="${YEL}"/><rect x="57" y="18" width="6" height="10" fill="${W}"/><circle cx="60" cy="68" r="38" fill="${W}"/><path d="M60 68V38a30 30 0 0 1 21.2 8.8z" fill="${GRN}"/><circle cx="60" cy="68" r="30" fill="none" stroke="${K}" stroke-width="3" stroke-dasharray="2 13.7"/><path d="M60 68 78 50" stroke="${RED}" stroke-width="6" stroke-linecap="round"/><circle cx="60" cy="68" r="5" fill="${K}"/>`),
   life: sv(`<path d="M34 16h52M34 104h52" stroke="${K}" stroke-width="6" stroke-linecap="round"/><path d="M40 18h40c0 22-18 30-18 42s18 20 18 42H40c0-22 18-30 18-42S40 40 40 18z" fill="${W}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M47 30h26q-6 14-13 21-7-7-13-21z" fill="${YEL}"/><path d="M60 54v40" stroke="${YEL}" stroke-width="3"/><path d="M45 101q15-20 30 0z" fill="${RED}"/>`),
+  // 실용 툴 그림: 접힌 귀퉁이가 있는 문서(doc) 조합
+  pdfmerge: sv(`${doc(14, 14, 40, 52, W)}${doc(30, 26, 40, 52, YEL)}<path d="M74 60h14" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M84 52l9 8-9 8" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>${doc(66, 52, 40, 54, RED)}<text x="86" y="90" font-size="15" font-weight="800" text-anchor="middle" fill="${W}" font-family="sans-serif">PDF</text>`),
+  pdfsplit: sv(`${doc(16, 16, 54, 72, RED)}<text x="43" y="60" font-size="16" font-weight="800" text-anchor="middle" fill="${W}" font-family="sans-serif">PDF</text><path d="M8 96h104" stroke="${K}" stroke-width="4" stroke-dasharray="7 6"/>${doc(56, 58, 30, 40, W)}${doc(80, 66, 30, 40, YEL)}`),
+  img2pdf: sv(`<rect x="12" y="20" width="56" height="48" rx="6" fill="${W}" stroke="${K}" stroke-width="4"/><circle cx="28" cy="36" r="6" fill="${YEL}" stroke="${K}" stroke-width="3"/><path d="M16 64l16-14 10 8 12-12 12 18z" fill="${GRN}" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M40 82h16" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M52 74l9 8-9 8" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>${doc(64, 46, 44, 60, RED)}<text x="86" y="84" font-size="15" font-weight="800" text-anchor="middle" fill="${W}" font-family="sans-serif">PDF</text>`),
+  word2pdf: sv(`${doc(10, 18, 46, 62, W)}<path d="M20 40h26M20 50h26M20 60h18" stroke="${K}" stroke-width="4" stroke-linecap="round"/><path d="M56 88h12" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M64 80l9 8-9 8" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>${doc(66, 40, 44, 66, RED)}<text x="88" y="80" font-size="15" font-weight="800" text-anchor="middle" fill="${W}" font-family="sans-serif">PDF</text>`),
+  imgcompress: sv(`<rect x="22" y="22" width="76" height="76" rx="8" fill="${W}" stroke="${K}" stroke-width="4"/><circle cx="44" cy="46" r="8" fill="${YEL}" stroke="${K}" stroke-width="3"/><path d="M28 92l22-22 14 12 14-16 16 26z" fill="${GRN}" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><g fill="none" stroke="${RED}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 8l14 14M22 10v12H10"/><path d="M112 8 98 22M98 10v12h12"/><path d="M8 112l14-14M22 110V98H10"/><path d="M112 112 98 98M98 110V98h12"/></g>`),
+  charcount: sv(`<rect x="16" y="14" width="66" height="88" rx="6" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M28 34h42M28 48h42M28 62h30M28 76h38" stroke="${K}" stroke-width="4" stroke-linecap="round"/><rect x="58" y="70" width="50" height="34" rx="8" fill="${YEL}" stroke="${K}" stroke-width="4"/><text x="83" y="94" font-size="17" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">123</text>`),
+  dday: sv(`<rect x="14" y="22" width="92" height="82" rx="8" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M14 30a8 8 0 0 1 8-8h76a8 8 0 0 1 8 8v16H14z" fill="${GRN}" stroke="${K}" stroke-width="4"/><rect x="34" y="12" width="8" height="20" rx="4" fill="${K}"/><rect x="78" y="12" width="8" height="20" rx="4" fill="${K}"/><text x="60" y="90" font-size="30" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">D-7</text>`),
 };
+function doc(x, y, w, h, fill) {
+  const f = Math.min(14, w / 3);
+  return `<path d="M${x} ${y + 4}a4 4 0 0 1 4-4h${w - f - 4}l${f} ${f}v${h - f - 4}a4 4 0 0 1-4 4H${x + 4}a4 4 0 0 1-4-4z" fill="${fill}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M${x + w - f} ${y}v${f}h${f}" fill="none" stroke="${K}" stroke-width="3" stroke-linejoin="round"/>`;
+}
+// 로고: 코드로 그린 단순한 펭귄(둥근 사각 몸통 + 흰 배 + 점 눈 + 노란 부리). 실존 캐릭터·로고를 본뜨지 않음
+const LOGO = (size = 34) => `<svg class="logo-mark" width="${size}" height="${size}" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><path d="M13 31l-6 12M51 31l6 12" stroke="${K}" stroke-width="5" stroke-linecap="round"/><rect x="13" y="5" width="38" height="52" rx="16" fill="${K}"/><path d="M20 34c0-8 5-12 12-12s12 4 12 12v8c0 7-5 11-12 11s-12-4-12-11z" fill="${W}"/><circle cx="25" cy="17" r="2.6" fill="${W}"/><circle cx="39" cy="17" r="2.6" fill="${W}"/><path d="M28 23h8l-4 5z" fill="${YEL}" stroke="${K}" stroke-width="1.5" stroke-linejoin="round"/><path d="M21 59h9M34 59h9" stroke="${YEL}" stroke-width="4" stroke-linecap="round"/></svg>`;
 const toolById = Object.fromEntries(TOOLS.map((x) => [x.id, x]));
 const byRank = RANK.map((id) => toolById[id]).concat(TOOLS.filter((x) => !RANK.includes(x.id)));
 const RECO = {
@@ -82,11 +97,66 @@ const REACTION_SLUG = { fastSteady: "fast-steady", fastVaried: "fast-varied", sl
 const LIFE_KEYS = ["adventure", "love", "stable", "fun", "drift"];
 const LIFE_SLUG = { adventure: "adventurer", love: "warm-heart", stable: "steady-tree", fun: "mood-maker", drift: "drifter" };
 
+// ---------- 펭귄 툴즈: 실용 툴 카테고리·목록 ----------
+// 기존 콘텐츠(CATS: me·love·luck·story·arcade)는 주소를 그대로 두고 「펭귄 놀이터」(/play/)로 묶습니다.
+const PLAY = { name: "펭귄 놀이터", path: "/play/", desc: "운세, 성격 테스트, 이름 궁합, 1분 인생, 반응속도 게임처럼 잠깐 쉬어 가는 재미 콘텐츠를 모았어요." };
+const UCATS = {
+  pdf: { name: "PDF·문서", desc: "PDF를 합치고 나누고, 이미지와 워드 문서를 PDF로 바꾸는 툴이에요." },
+  image: { name: "이미지", desc: "사진 용량을 줄이거나 여러 장을 PDF로 묶는 이미지 툴이에요." },
+  text: { name: "글쓰기", desc: "자기소개서, 리포트, 블로그 글을 쓸 때 필요한 글쓰기 툴이에요." },
+  calc: { name: "생활 계산", desc: "D-day처럼 생활에서 자주 찾는 계산을 바로 해 주는 툴이에요." },
+};
+const NAV = [...Object.entries(UCATS).map(([k, c]) => [c.name, `/${k}/`]), [PLAY.name, PLAY.path]];
+// seo: <title> 앞부분(검색어 그대로) / also: 다른 카테고리 페이지에도 함께 노출 / beta: 베타 표시 / kw: 홈 검색용 동의어
+const UTILS = [
+  { id: "pdfmerge", cat: "pdf", path: "/pdf/merge/", title: "PDF 합치기", seo: "PDF 합치기 — 무료", h1: "PDF 합치기 — 여러 PDF를 순서대로 한 파일로", desc: "여러 개의 PDF를 원하는 순서대로 한 파일로 합쳐요. 파일은 서버로 전송하지 않고 브라우저 안에서 처리합니다.", hook: "PDF 여러 개를 순서 정해서 한 파일로.", meta: "PDF 30개까지", kw: "pdf 병합 합치기 묶기 merge 하나로" },
+  { id: "pdfsplit", cat: "pdf", path: "/pdf/split/", title: "PDF 나누기", seo: "PDF 나누기 — 무료, 페이지 추출", h1: "PDF 나누기 — 페이지 추출, 한 쪽씩 나누기", desc: "PDF에서 원하는 페이지만 뽑거나 한 쪽씩 나눠 zip으로 받아요. 파일은 서버로 전송하지 않고 브라우저 안에서 처리합니다.", hook: "필요한 쪽만 뽑거나 한 쪽씩 쪼개기.", meta: "범위 추출 · zip", kw: "pdf 분할 자르기 추출 페이지 split 쪼개기" },
+  { id: "img2pdf", cat: "pdf", also: ["image"], path: "/pdf/image-to-pdf/", title: "JPG PDF 변환", seo: "JPG PDF 변환 — 무료, 이미지 여러 장을 PDF로", h1: "JPG PDF 변환 — 이미지 여러 장을 PDF 한 파일로", desc: "JPG·PNG 이미지 여러 장을 순서대로 PDF 한 파일로 만들어요. A4 또는 원본 크기를 고를 수 있고, 파일은 서버로 전송하지 않습니다.", hook: "사진·스캔 이미지 여러 장을 PDF 하나로.", meta: "JPG·PNG · A4", kw: "이미지 pdf 사진 png jpeg 변환 스캔 영수증" },
+  { id: "word2pdf", cat: "pdf", beta: true, path: "/pdf/word-to-pdf/", title: "워드 PDF 변환(간단)", seo: "워드 PDF 변환(간단) — 무료, docx를 PDF로", h1: "워드 PDF 변환(간단) — docx 미리보고 PDF로 저장", desc: "워드(docx) 문서를 브라우저에서 미리 보고 인쇄의 「PDF로 저장」으로 PDF를 만들어요. 표·머리글·각주·복잡한 서식은 깨질 수 있는 간단 변환(베타)입니다.", hook: "docx를 열어 보고 PDF로 저장. 글 위주 문서용.", meta: "docx · 베타", kw: "word docx 워드 문서 pdf 변환 docs" },
+  { id: "imgcompress", cat: "image", path: "/image/compress/", title: "이미지 용량 줄이기", seo: "이미지 용량 줄이기 — 무료, 사진 압축", h1: "이미지 용량 줄이기 — 품질과 크기를 골라 사진 압축", desc: "JPG·PNG·WEBP 사진의 품질과 최대 너비를 조절해 용량을 줄이고, 얼마나 줄었는지 보여 드려요. 파일은 서버로 전송하지 않습니다.", hook: "품질·너비 조절해서 사진 용량 줄이기.", meta: "JPG·WEBP 저장", kw: "사진 압축 용량 줄이기 리사이즈 크기 jpg png webp 이미지 압축" },
+  { id: "charcount", cat: "text", path: "/text/char-count/", title: "글자수 세기", seo: "글자수 세기 — 무료, 공백 포함·제외·바이트", h1: "글자수 세기 — 공백 포함·제외, 바이트까지", desc: "자기소개서와 리포트 글자수를 공백 포함·제외, 바이트(UTF-8·한글 2바이트), 줄·단락 수로 바로 세어 드려요. 입력한 글은 저장하지 않습니다.", hook: "자소서 글자수, 공백 포함·제외, 바이트까지.", meta: "실시간 계산", kw: "글자 수 글자수 자소서 자기소개서 바이트 공백 단어 세기 카운터" },
+  { id: "dday", cat: "calc", path: "/calc/d-day/", title: "디데이 계산기", seo: "디데이 계산기 (D-day 계산) — 무료", h1: "디데이 계산기 — D-day, 날짜 사이 일수, 기념일", desc: "목표일까지 남은 날(D-day)과 두 날짜 사이의 일수를 계산하고, 100일·1000일 같은 기념일 날짜를 한 번에 보여 드려요.", hook: "시험·전역·기념일까지 며칠? 100일·1000일도.", meta: "날짜 두 개", kw: "d-day 디데이 날짜 계산 기념일 100일 1000일 며칠 남았는지 일수" },
+];
+const UTIL_RANK = ["pdfmerge", "img2pdf", "charcount", "imgcompress", "pdfsplit", "word2pdf", "dday"];
+const NEXT = {
+  pdfmerge: ["pdfsplit", "img2pdf", "imgcompress"],
+  pdfsplit: ["pdfmerge", "img2pdf", "word2pdf"],
+  img2pdf: ["pdfmerge", "imgcompress", "pdfsplit"],
+  word2pdf: ["pdfmerge", "charcount", "pdfsplit"],
+  imgcompress: ["img2pdf", "pdfmerge", "charcount"],
+  charcount: ["word2pdf", "dday", "pdfmerge"],
+  dday: ["charcount", "today", "life"],
+};
+const utilById = Object.fromEntries(UTILS.map((x) => [x.id, x]));
+const anyById = { ...toolById, ...utilById };
+const catName = (k) => (UCATS[k] || CATS[k]).name;
+
 // ---------- 공통 조각 ----------
-const DISCLAIMER = "이 사이트의 모든 테스트와 운세는 재미로 보는 콘텐츠이며, 의학·심리·재정·법률적 판단의 근거가 될 수 없어요.";
+const DISCLAIMER = "툴로 만든 결과물은 원본과 함께 확인한 뒤 사용해 주세요. 펭귄 놀이터의 테스트와 운세는 재미로 보는 콘텐츠이며, 의학·심리·재정·법률적 판단의 근거가 될 수 없어요.";
+const SAFE = "파일은 서버로 전송하지 않습니다. 지금 쓰는 브라우저 안에서 처리해요.";
+// 툴 페이지 CSP: 스크립트는 자체 파일 + 애드센스·GA 도메인만. 파일 데이터를 보낼 수 있는 connect-src도 자체·Google 광고/통계로 한정
+const GDOM = "https://*.google.com https://*.google.co.kr https://*.googlesyndication.com https://*.doubleclick.net https://*.googleadservices.com https://*.adtrafficquality.google https://*.gstatic.com https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com";
+const CSP = [
+  "default-src 'self'",
+  `script-src 'self' 'unsafe-inline' ${GDOM}`, // 'unsafe-inline': 애드센스 push·GA 초기화 인라인 코드용
+  "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com",
+  "font-src 'self' data: https://cdn.jsdelivr.net https://fonts.gstatic.com",
+  "img-src 'self' data: blob: https:",
+  `connect-src 'self' ${GDOM}`,
+  `frame-src ${GDOM}`,
+  "worker-src 'self' blob:",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+].join("; ");
 const adSlot = (name) =>
   cfg.adsenseClient
     ? `<div class="ad" aria-label="광고"><ins class="adsbygoogle" style="display:block" data-ad-client="${esc(cfg.adsenseClient)}" data-ad-format="auto" data-full-width-responsive="true" data-slot-name="${name}"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script></div>`
+    : "";
+// 툴 페이지용: 광고 높이를 미리 확보(CLS 방지). 광고 코드가 없으면 출력하지 않음
+const adSlotFixed = (name) =>
+  cfg.adsenseClient
+    ? `<div class="ad ad-fixed" aria-label="광고"><ins class="adsbygoogle" style="display:block;min-height:250px" data-ad-client="${esc(cfg.adsenseClient)}" data-ad-format="auto" data-full-width-responsive="true" data-slot-name="${name}"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script></div>`
     : "";
 
 const blocks = (arr = [], hTag = "h3") => arr.map((b) => `<${hTag}>${t(b.h)}</${hTag}>${fill(b.p).split(/\n+/).map((p) => `<p>${esc(p)}</p>`).join("")}`).join("");
@@ -102,19 +172,21 @@ const faqLd = (faq = []) => ({
   mainEntity: faq.map((f) => ({ "@type": "Question", name: fill(f.q), acceptedAnswer: { "@type": "Answer", text: fill(f.a) } })),
 });
 
-const crumbs = (items) => ({
+// 기존 콘텐츠(놀이터) 경로면 「홈 › 펭귄 놀이터 › …」로 위치를 보여 줌
+const withPlay = (items) => (items.length > 1 && Object.keys(CATS).some((k) => items[1][1] === `/${k}/`) ? [items[0], [PLAY.name, PLAY.path], ...items.slice(1)] : items);
+const crumbs = (items0) => { const items = withPlay(items0); return {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   itemListElement: items.map((it, i) => ({ "@type": "ListItem", position: i + 1, name: it[0], item: abs(it[1]) })),
-});
-const crumbHtml = (items) =>
+}; };
+const crumbHtml = (items0, items = withPlay(items0)) =>
   `<nav class="crumbs" aria-label="현재 위치">${items.map((it, i) => (i < items.length - 1 ? `<a href="${u(it[1])}">${esc(it[0])}</a>` : `<span>${esc(it[0])}</span>`)).join(" › ")}</nav>`;
 
 const toolCard = (tool, rank) =>
-  `<a class="card c-${tool.cat}" href="${u(tool.path)}">${rank ? `<span class="rank">${rank}</span>` : ""}<span class="card-art">${ART[tool.id]}</span><span class="card-body"><span class="card-cat">${esc(CATS[tool.cat].name)}</span><strong>${esc(tool.title)}</strong><small>${esc(tool.hook)}</small><span class="card-meta">${esc(tool.meta)}</span></span></a>`;
+  `<a class="card c-${tool.cat}" href="${u(tool.path)}">${rank ? `<span class="rank">${rank}</span>` : ""}<span class="card-art">${ART[tool.id]}</span><span class="card-body"><span class="card-cat">${esc(catName(tool.cat))}${tool.beta ? ' <em class="beta">베타</em>' : ""}</span><strong>${esc(tool.title)}</strong><small>${esc(tool.hook)}</small><span class="card-meta">${esc(tool.meta)}</span></span></a>`;
 
 const recoHtml = (ids, heading = "이것도 해 보세요") =>
-  `<section class="reco"><h2>${heading}</h2><div class="cards">${ids.map((id) => toolCard(toolById[id])).join("")}</div></section>`;
+  `<section class="reco"><h2>${heading}</h2><div class="cards">${ids.map((id) => toolCard(anyById[id])).join("")}</div></section>`;
 
 const shareBar = (opts = {}) =>
   `<div class="share" data-share-title="${esc(opts.title || "")}" data-share-text="${esc(opts.text || "")}" data-share-path="${esc(opts.path || "")}">
@@ -123,7 +195,7 @@ const shareBar = (opts = {}) =>
   <button type="button" class="btn ghost" data-act="image">결과 이미지 저장</button>
 </div>`;
 
-function layout({ title, desc, path: p, body, scripts = [], jsonld = [], noindex = false, ogType = "website", fullTitle = false, wide = false }) {
+function layout({ title, desc, path: p, body, scripts = [], jsonld = [], noindex = false, ogType = "website", fullTitle = false, wide = false, csp = false, vendor = [] }) {
   const pageTitle = fullTitle ? title : `${title} | ${cfg.siteName}`;
   if (!noindex) sitemap.push(p);
   const ld = [
@@ -135,6 +207,7 @@ function layout({ title, desc, path: p, body, scripts = [], jsonld = [], noindex
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+${csp ? `<meta http-equiv="Content-Security-Policy" content="${CSP}">` : ""}
 <title>${esc(pageTitle)}</title>
 <meta name="description" content="${esc(desc)}">
 <link rel="canonical" href="${abs(p)}">
@@ -165,9 +238,9 @@ ${cfg.gaId ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${e
 <a class="skip" href="#main">본문으로 건너뛰기</a>
 <header class="site-header">
   <div class="wrap header-inner">
-    <a class="logo" href="${u("/")}"><span class="logo-mark" aria-hidden="true">나</span>${esc(cfg.siteName)}</a>
+    <a class="logo" href="${u("/")}">${LOGO(34)}${esc(cfg.siteName)}</a>
     <nav class="nav" aria-label="카테고리">
-      ${Object.entries(CATS).map(([k, c]) => `<a href="${u(`/${k}/`)}">${esc(c.name)}</a>`).join("")}
+      ${NAV.map(([n, h]) => `<a href="${u(h)}"${p.startsWith(h) || (h === PLAY.path && Object.keys(CATS).some((k) => p.startsWith(`/${k}/`))) ? ' aria-current="true"' : ""}>${esc(n)}</a>`).join("")}
     </nav>
   </div>
 </header>
@@ -178,12 +251,13 @@ ${body}
   <div class="wrap">
     <p class="notice">${esc(DISCLAIMER)}</p>
     <nav class="foot-links" aria-label="사이트 정보">
-      <a href="${u("/about/")}">소개</a><a href="${u("/editorial/")}">작성·검수 기준</a><a href="${u("/privacy/")}"><strong>개인정보처리방침</strong></a><a href="${u("/terms/")}">이용약관</a><a href="${u("/disclaimer/")}">면책고지</a><a href="${u("/contact/")}">문의</a>
+      <a href="${u("/about/")}">소개</a><a href="${u("/editorial/")}">작성·검수 기준</a><a href="${u("/privacy/")}"><strong>개인정보처리방침</strong></a><a href="${u("/terms/")}">이용약관</a><a href="${u("/disclaimer/")}">면책고지</a><a href="${u("/licenses/")}">오픈소스 고지</a><a href="${u("/contact/")}">문의</a>
     </nav>
     <p class="copy">© ${new Date().getFullYear()} ${esc(cfg.operator)} · ${esc(cfg.siteName)}</p>
   </div>
 </footer>
 <script src="${u("/assets/app.js")}" defer></script>
+${vendor.map((s) => `<script src="${u(`/assets/vendor/${s}`)}" defer></script>`).join("\n")}
 ${scripts.map((s) => `<script src="${u(`/assets/${s}`)}" defer></script>`).join("\n")}
 </body>
 </html>`;
@@ -231,48 +305,82 @@ fs.rmSync(DIST, { recursive: true, force: true });
 fs.mkdirSync(DIST, { recursive: true });
 fs.cpSync(path.join(ROOT, "src", "assets"), path.join(DIST, "assets"), { recursive: true });
 
-// 홈 — 「한 장 뽑기」 카드 덱 + 테스트 카드 + 12띠 도장 + 16유형 판
+// 홈 — 툴 검색 + 카테고리별 툴 카드 + 인기/전체 탭(툴 기준) + 펭귄 놀이터(면적 20% 이하, 오늘의 운세 1칸)
+const SEARCH_INDEX = [
+  ...UTILS.map((x) => ({ t: x.title, p: u(x.path), c: catName(x.cat), k: `${x.kw} ${x.hook}`, b: x.beta ? 1 : 0 })),
+  ...TOOLS.map((x) => ({ t: x.title, p: u(x.path), c: `${PLAY.name} · ${CATS[x.cat].name}`, k: x.hook })),
+];
+const byUtilRank = UTIL_RANK.map((id) => utilById[id]);
 {
-  const fan = [-15, -7, 0, 7, 15];
-  const deck = byRank.slice(0, 5).map((tool, i) => `<a class="deck-card c-${tool.cat}" href="${u(tool.path)}" style="--r:${fan[i]}deg;--x:${(i - 2) * 54}px;--i:${i}"><span class="card-art">${ART[tool.id]}</span><strong>${esc(tool.title)}</strong></a>`).join("");
-  const GROUP = { NT: "me", NF: "love", SJ: "luck", SP: "arcade" };
-  const groupOf = (k) => (k[1] === "N" ? (k[2] === "T" ? "NT" : "NF") : k[3] === "J" ? "SJ" : "SP");
   const body = `
-<section class="hero">
+<section class="hero hero-tools">
   <div class="hero-text">
-    <p class="hero-kicker">운세 · 성격 테스트 · 짧은 게임</p>
-    <h1>생일 하나 넣었는데<br>이렇게까지 나온다고?</h1>
-    <p class="lead">오늘의 운세, 16유형, 이름 궁합, 1분 인생까지. 가입은 필요 없고, 입력한 건 어디에도 저장하지 않아요.</p>
-    <div class="hero-actions">
-      <button class="btn big" type="button" data-act="draw">아무거나 한 장 뽑기</button>
-      <a class="text-link" href="${u("/me/birthday/")}">생일부터 넣어 볼래요</a>
-    </div>
+    <p class="hero-kicker">PDF · 이미지 · 글쓰기 · 생활 계산</p>
+    <h1>자주 쓰는 툴,<br>설치 없이 바로</h1>
+    <p class="lead">PDF 합치기, JPG를 PDF로, 사진 용량 줄이기, 글자수 세기, 디데이 계산까지. 가입 없이 쓰고, 파일은 서버로 전송하지 않습니다.</p>
   </div>
-  <div class="deck" aria-label="테스트 카드">${deck}</div>
+  <form class="search" role="search" action="${u("/")}">
+    <label for="tool-q">어떤 툴을 찾으세요?</label>
+    <div class="search-row"><input id="tool-q" type="search" placeholder="예: pdf 합치기, 글자수, 사진 압축" autocomplete="off" aria-controls="tool-hits" aria-describedby="tool-hits-n"><span class="search-ico" aria-hidden="true"></span></div>
+    <p class="hint" id="tool-hits-n" aria-live="polite"></p>
+    <ul class="hits" id="tool-hits" hidden></ul>
+    <div class="quick">${byUtilRank.slice(0, 5).map((x) => `<a class="chip" href="${u(x.path)}">${esc(x.title)}</a>`).join("")}</div>
+  </form>
 </section>
+<script type="application/json" id="tool-index">${JSON.stringify(SEARCH_INDEX).replace(/</g, String.fromCharCode(92) + "u003c")}</script>
 
 <section class="home-block">
-  <div class="tabs" role="tablist" aria-label="테스트 목록">
-    <button type="button" role="tab" id="tab-pop" aria-controls="panel-pop" aria-selected="true" data-tab="pop">인기</button>
-    <button type="button" role="tab" id="tab-all" aria-controls="panel-all" aria-selected="false" tabindex="-1" data-tab="all">전체 <small>${TOOLS.length}</small></button>
+  <div class="tabs" role="tablist" aria-label="툴 목록">
+    <button type="button" role="tab" id="tab-pop" aria-controls="panel-pop" aria-selected="false" tabindex="-1" data-tab="pop">인기</button>
+    <button type="button" role="tab" id="tab-all" aria-controls="panel-all" aria-selected="true" data-tab="all">전체 <small>${UTILS.length}</small></button>
   </div>
-  <div class="tab-panel" role="tabpanel" id="panel-pop" aria-labelledby="tab-pop"><div class="cards cards-home">${byRank.slice(0, 6).map((x, i) => toolCard(x, i + 1)).join("")}</div></div>
-  <div class="tab-panel" role="tabpanel" id="panel-all" aria-labelledby="tab-all" hidden>${Object.entries(CATS)
+  <div class="tab-panel" role="tabpanel" id="panel-pop" aria-labelledby="tab-pop" hidden><div class="cards cards-home">${byUtilRank.slice(0, 6).map((x, i) => toolCard(x, i + 1)).join("")}</div></div>
+  <div class="tab-panel tab-cats" role="tabpanel" id="panel-all" aria-labelledby="tab-all">${Object.entries(UCATS)
     .map(([k, c]) => {
-      const list = TOOLS.filter((x) => x.cat === k);
-      return list.length ? `<div class="tab-cat"><h3><a href="${u(`/${k}/`)}">${esc(c.name)}</a> <small>${list.length}</small></h3><div class="cards cards-home">${list.map((x) => toolCard(x)).join("")}</div></div>` : "";
+      const list = UTILS.filter((x) => x.cat === k);
+      return list.length ? `<div class="tab-cat${list.length > 1 ? " wide" : ""}"><h2 class="cat-h"><a href="${u(`/${k}/`)}">${esc(c.name)}</a> <small>${list.length}</small></h2><div class="cards cards-home">${list.map((x) => toolCard(x)).join("")}</div></div>` : "";
     })
     .join("")}</div>
+</section>
+
+<section class="home-block home-play" aria-labelledby="play-h">
+  <div class="band-head"><h2 class="home-h" id="play-h">${esc(PLAY.name)}</h2><p>잠깐 쉬어 갈 때. <a href="${u(PLAY.path)}">놀이터 전체 보기</a></p></div>
+  <div class="play-row">${toolCard(toolById.today)}<div class="chips">${byRank.filter((x) => x.id !== "today").map((x) => `<a class="chip" href="${u(x.path)}">${esc(x.title)}</a>`).join("")}</div></div>
 </section>
 
 <section class="home-block home-about">
   <div class="about-head">
     <h2 class="home-h">${esc(cfg.siteName)}는 이런 곳이에요</h2>
-    <ul class="about-points"><li><b>매일 자정</b>새 운세로 바뀌어요</li><li><b>저장 0건</b>입력값은 브라우저 안에서만</li><li><b>직접 쓴 글</b>계산 방식까지 공개해요</li></ul>
+    <ul class="about-points"><li><b>설치·가입 없음</b>주소만 열면 바로 써요</li><li><b>브라우저 처리</b>파일은 서버로 전송하지 않습니다</li><li><b>쓰는 법 공개</b>툴마다 사용법과 한계를 적어 둬요</li></ul>
   </div>
   <div class="about-body">${fill(pages.home.intro).split(/\n+/).map((p) => `<p>${esc(p)}</p>`).join("")}</div>
 </section>
+${adSlotFixed("home")}`;
+  write("/", layout({ title: `${cfg.siteName} — ${cfg.tagline}`, fullTitle: true, wide: true, scripts: ["home.js"], desc: "PDF 합치기·나누기, JPG PDF 변환, 워드 PDF 변환, 이미지 용량 줄이기, 글자수 세기, 디데이 계산기까지. 자주 쓰는 툴을 설치·가입 없이 브라우저에서 바로 써 보세요.", path: "/", body }));
+}
 
+// 펭귄 놀이터 허브 — 기존 콘텐츠(주소 그대로)를 한곳에 묶음. 예전 홈의 「한 장 뽑기」·띠 도장·16유형 판을 이리로 옮김
+{
+  const fan = [-15, -7, 0, 7, 15];
+  const deck = byRank.slice(0, 5).map((tool, i) => `<a class="deck-card c-${tool.cat}" href="${u(tool.path)}" style="--r:${fan[i]}deg;--x:${(i - 2) * 54}px;--i:${i}"><span class="card-art">${ART[tool.id]}</span><strong>${esc(tool.title)}</strong></a>`).join("");
+  const GROUP = { NT: "me", NF: "love", SJ: "luck", SP: "arcade" };
+  const groupOf = (k) => (k[1] === "N" ? (k[2] === "T" ? "NT" : "NF") : k[3] === "J" ? "SJ" : "SP");
+  const items = [["홈", "/"], [PLAY.name, PLAY.path]];
+  const body = `${crumbHtml(items)}
+<section class="hero">
+  <div class="hero-text">
+    <p class="hero-kicker">운세 · 성격 테스트 · 짧은 게임</p>
+    <h1>${esc(PLAY.name)}</h1>
+    <p class="lead">${esc(PLAY.desc)} 가입은 필요 없고, 입력한 건 어디에도 저장하지 않아요.</p>
+    <div class="hero-actions">
+      <button class="btn big" type="button" data-act="draw">아무거나 한 장 뽑기</button>
+      <a class="text-link" href="${u("/luck/today/")}">오늘의 운세부터 볼래요</a>
+    </div>
+    <p class="fun-badge">놀이터의 모든 테스트와 운세는 재미로 보는 콘텐츠예요</p>
+  </div>
+  <div class="deck" aria-label="놀이터 카드">${deck}</div>
+</section>
+${Object.entries(CATS).map(([k, c]) => `<section class="home-block"><h2 class="cat-h"><a href="${u(`/${k}/`)}">${esc(c.name)}</a></h2><p class="hint">${esc(c.desc)}</p><div class="cards cards-home">${TOOLS.filter((x) => x.cat === k).map((x) => toolCard(x)).join("")}</div></section>`).join("")}
 <section class="home-block band band-red">
   <div class="band-head">
     <h2 class="home-h">오늘, 내 띠는?</h2>
@@ -280,7 +388,6 @@ fs.cpSync(path.join(ROOT, "src", "assets"), path.join(DIST, "assets"), { recursi
   </div>
   <div class="stamps">${TTI_KEYS.map((k) => `<a class="stamp" href="${u(`/luck/today/#${k}`)}"><span class="stamp-hanja">${esc(tti[k].hanja)}</span><span class="stamp-name">${esc(tti[k].name)}</span></a>`).join("")}</div>
 </section>
-
 <section class="home-block">
   <div class="band-head">
     <h2 class="home-h">열여섯 가지 중에 나는 어디쯤</h2>
@@ -288,8 +395,9 @@ fs.cpSync(path.join(ROOT, "src", "assets"), path.join(DIST, "assets"), { recursi
   </div>
   <div class="types">${TYPE_KEYS.map((k) => `<a class="type c-${GROUP[groupOf(k)]}" href="${u(`/me/personality/${k.toLowerCase()}/`)}"><b>${k}</b><span>${esc(personality[k].name)}</span></a>`).join("")}</div>
 </section>
-${adSlot("home")}`;
-  write("/", layout({ title: `${cfg.siteName} — ${cfg.tagline}`, fullTitle: true, wide: true, scripts: ["home.js"], desc: "오늘의 띠별 운세, 만 나이·띠·별자리 계산, 16유형 성격 테스트, 이름 궁합, 1분 인생과 반응속도 게임까지. 나를 알아보는 재미있는 테스트를 한곳에서 즐겨 보세요.", path: "/", body }));
+${recoHtml(["charcount", "dday", "pdfmerge"], "쉬었다면, 일하러 갈 때 쓰는 툴")}
+${adSlot("play")}`;
+  write(PLAY.path, layout({ title: `${PLAY.name} — 운세·성격 테스트·짧은 게임`, wide: true, scripts: ["home.js"], desc: `${PLAY.desc} 오늘의 띠별 운세, 생일로 보는 나, 16유형 성격 테스트, 이름 궁합, 1분 인생, 반응속도 게임.`, path: PLAY.path, body, jsonld: [crumbs(items)] }));
 }
 
 // 카테고리 페이지
@@ -437,7 +545,7 @@ ZODIAC_KEYS.forEach((k, i) => {
   ${adSlot("mid")}
   <div class="chips">${TYPE_KEYS.filter((x) => x !== k).map((x) => `<a class="chip" href="${u(`/me/personality/${x.toLowerCase()}/`)}">${x} · ${esc(personality[x].name)}</a>`).join("")}</div>
   ${recoHtml(["birthday", "namematch", "reaction"])}
-  <p class="legal">이 테스트는 칼 융의 심리 유형론에서 출발한 대중적인 4축 모델을 참고해 ${esc(cfg.siteName)}가 자체 제작한 간이 테스트입니다. 공식 MBTI® 검사가 아니며, MBTI 상표 권리자 및 국내 판권사와 관련이 없습니다.</p>
+  <p class="legal">이 테스트는 칼 융의 심리 유형론에서 출발한 대중적인 4축 모델을 참고해 ${esc(cfg.siteName)}가 자체 제작한 간이 테스트입니다. 공식 성격유형 검사가 아니며, 해당 검사의 상표 권리자 및 국내 판권사와 관련이 없습니다.</p>
 </article>`;
     write(p, layout({ title: `${d.name}(${k}) 성격 특징·장단점`, desc: `16유형 ${k} ${d.name}: ${fill(d.summary)} 일·관계·스트레스 상황에서의 모습과 성장 팁을 정리했어요.`, path: p, body, scripts: ["personality-result.js"], ogType: "article", noindex: len < 800, jsonld: [crumbs(items)] }));
   });
@@ -573,6 +681,163 @@ function checkLife() {
   }
 }
 
+// ---------- 펭귄 툴즈 실용 툴 ----------
+// 실용 툴 카테고리 페이지 (/pdf/ /image/ /text/ /calc/)
+for (const [k, c] of Object.entries(UCATS)) {
+  const list = UTILS.filter((x) => x.cat === k || (x.also || []).includes(k));
+  const items = [["홈", "/"], [c.name, `/${k}/`]];
+  const others = UTILS.filter((x) => !list.includes(x)).slice(0, 3).map((x) => x.id);
+  const body = `${crumbHtml(items)}
+<header class="page-head"><span class="eyebrow">카테고리</span><h1>${esc(c.name)} 툴</h1><p class="lead">${esc(c.desc)} ${esc(SAFE)}</p></header>
+<div class="cards">${list.map((x) => toolCard(x)).join("")}</div>
+${recoHtml(others, "다른 툴도 둘러보세요")}`;
+  write(`/${k}/`, layout({ title: `${c.name} 툴 — 무료`, desc: `${c.name} 툴 모음: ${list.map((x) => x.title).join(", ")}. ${c.desc}`, path: `/${k}/`, body, jsonld: [crumbs(items)] }));
+}
+
+// 파일 넣는 칸(공통). input이 칸 전체를 덮어서 누르거나 끌어다 놓으면 파일이 들어감
+const dropHtml = ({ accept, multiple = false, label, limit }) => `
+<div class="drop">
+  <input type="file" accept="${accept}"${multiple ? " multiple" : ""} aria-label="${esc(label)} — 파일 선택" aria-describedby="drop-limit">
+  <span class="drop-art" aria-hidden="true">${sv(`<path d="M60 84V34M40 52l20-20 20 20" fill="none" stroke="${K}" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 80v16a6 6 0 0 0 6 6h64a6 6 0 0 0 6-6V80" fill="none" stroke="${K}" stroke-width="8" stroke-linecap="round"/>`)}</span>
+  <strong>${esc(label)}</strong>
+  <span class="drop-or">여기로 끌어다 놓거나 <span class="btn ghost drop-btn">파일 선택</span></span>
+  <small id="drop-limit">${esc(limit)}</small>
+</div>
+<p class="safe">${esc(SAFE)}</p>`;
+const tkTail = (runLabel, { disabled = true } = {}) => `
+<div class="tk-msg" role="alert" hidden></div>
+${runLabel ? `<button class="btn big tk-run" type="button" data-run${disabled ? " disabled" : ""}>${esc(runLabel)}</button>` : ""}
+<div class="tk-progress" role="status" hidden><span class="spin" aria-hidden="true"></span><span class="tk-progress-text">처리 중…</span><span class="tk-bar" aria-hidden="true"><i></i></span></div>
+<div class="tk-result" hidden><div class="tk-result-body" aria-live="polite"></div></div>`;
+const nextHtml = (id, hidden) => `<nav class="tk-next" aria-label="다음 툴"${hidden ? " hidden" : ""}><b>다음으로 많이 쓰는 툴</b>${NEXT[id].map((x) => `<a class="chip" href="${u(anyById[x].path)}">${esc(anyById[x].title)}</a>`).join("")}</nav>`;
+
+// 실용 툴 페이지 공통 본문: 제목 → [툴 상자: 넣기 → 처리 → 내려받기 → 다음 툴] → 광고(높이 확보) → 사용법·예시·한계 → FAQ → 추천
+// fileTool: 파일 툴이면 결과가 나온 뒤에 「다음 툴」을 보이고, 입력형 툴(글자수·D-day)은 처음부터 보임
+function utilPage(tool, toolHtml, { scripts = [], vendor = [], after = "", fileTool = true } = {}) {
+  const g = toolText[tool.id];
+  if (!g) throw new Error(`tools.${tool.id} 원고 없음`);
+  const len = [...g.howto, g.example, g.limits, ...g.faq.map((f) => f.a)].reduce((n, x) => n + fill(x).trim().length, 0);
+  if (len < 300) warnings.push(`${tool.path} 툴 원고 ${len}자 (<300, noindex)`);
+  const items = [["홈", "/"], [UCATS[tool.cat].name, `/${tool.cat}/`], [tool.title, tool.path]];
+  const body = `
+${crumbHtml(items)}
+<article class="tool util">
+  <header class="page-head">
+    <span class="eyebrow">${esc(UCATS[tool.cat].name)}</span>${tool.beta ? ' <span class="eyebrow beta-tag">베타</span>' : ""}
+    <h1>${esc(tool.h1)}</h1>
+    <p class="lead">${esc(tool.desc)}</p>
+  </header>
+  <section class="tool-box tk" id="tool" data-tool="${tool.id}">
+    ${toolHtml}
+    ${nextHtml(tool.id, fileTool)}
+  </section>
+  ${after}
+  ${adSlotFixed("below-tool")}
+  <section class="prose">
+    <p>${t(g.intro)}</p>
+    <h2>사용법</h2>
+    <ol>${g.howto.map((x) => `<li>${t(x)}</li>`).join("")}</ol>
+    <h2>예시</h2>
+    <p>${t(g.example)}</p>
+    <h2>알아 두세요 (한계)</h2>
+    <p>${t(g.limits)}</p>
+  </section>
+  ${faqHtml(g.faq)}
+  ${recoHtml(NEXT[tool.id].filter((x) => utilById[x]).concat(UTIL_RANK.filter((x) => x !== tool.id && !NEXT[tool.id].includes(x))).slice(0, 4), "다른 툴도 써 보세요")}
+</article>`;
+  write(tool.path, layout({ title: tool.seo, desc: tool.desc, path: tool.path, body, csp: true, vendor, scripts: ["tool-kit.js", ...scripts], noindex: len < 300 || g.noindex === true, jsonld: [faqLd(g.faq), crumbs(items), { "@context": "https://schema.org", "@type": "WebApplication", name: tool.title, url: abs(tool.path), applicationCategory: "UtilitiesApplication", operatingSystem: "Any", offers: { "@type": "Offer", price: "0", priceCurrency: "KRW" } }] }));
+}
+
+// PDF 합치기
+utilPage(utilById.pdfmerge, `${dropHtml({ accept: ".pdf,application/pdf", multiple: true, label: "합칠 PDF 파일을 넣어 주세요", limit: "PDF · 파일당 50MB · 30개 · 합계 200MB까지" })}
+<ul class="flist" hidden></ul>
+<p class="hint tk-hint-two" hidden>PDF를 하나 더 넣어 주세요. 두 개 이상이어야 합칠 수 있어요.</p>
+${tkTail("PDF 합치기")}`, { vendor: ["pdf-lib.min.js"], scripts: ["t-pdfmerge.js"] });
+
+// PDF 나누기
+utilPage(utilById.pdfsplit, `${dropHtml({ accept: ".pdf,application/pdf", label: "나눌 PDF 파일을 넣어 주세요", limit: "PDF 1개 · 100MB까지 · 한 쪽씩 나누기는 500쪽까지" })}
+<div class="tk-opts" hidden>
+  <p class="tk-info"></p>
+  <fieldset class="seg"><legend>나누는 방식</legend>
+    <label><input type="radio" name="mode" value="range" checked><span>페이지 범위 추출</span></label><label><input type="radio" name="mode" value="each"><span>한 쪽씩 나누기</span></label>
+  </fieldset>
+  <label class="range-row">뽑을 페이지<input name="range" inputmode="text" autocomplete="off" placeholder="예: 1-3, 5"></label>
+</div>
+${tkTail("범위 추출하기")}`, { vendor: ["pdf-lib.min.js", "fflate.min.js"], scripts: ["t-pdfsplit.js"] });
+
+// JPG PDF 변환
+utilPage(utilById.img2pdf, `${dropHtml({ accept: ".jpg,.jpeg,.png,image/jpeg,image/png", multiple: true, label: "PDF로 만들 이미지를 넣어 주세요", limit: "JPG·PNG · 장당 20MB · 50장 · 합계 200MB까지" })}
+<ul class="flist thumbs" hidden></ul>
+<div class="tk-opts" hidden>
+  <fieldset class="seg"><legend>용지</legend>
+    <label><input type="radio" name="paper" value="a4" checked><span>A4 (자동 방향)</span></label><label><input type="radio" name="paper" value="fit"><span>원본 크기</span></label>
+  </fieldset>
+  <label>A4 여백<select name="margin"><option value="0">없음</option><option value="24" selected>좁게</option><option value="48">보통</option></select></label>
+</div>
+${tkTail("PDF 만들기")}`, { vendor: ["pdf-lib.min.js"], scripts: ["t-img2pdf.js"] });
+
+// 워드 PDF 변환(간단, 베타)
+utilPage(utilById.word2pdf, `<p class="tk-warn" role="note"><b>베타 · 간단 변환</b> 표·머리글·각주·복잡한 서식은 깨질 수 있습니다. docx만 지원하며 .doc와 .hwp(한글)는 지원하지 않아요.</p>
+${dropHtml({ accept: ".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document", label: "PDF로 바꿀 워드(docx) 파일을 넣어 주세요", limit: "docx 1개 · 20MB까지 (.doc·.hwp 미지원)" })}
+${tkTail("")}`, { vendor: ["mammoth.browser.min.js"], scripts: ["t-word2pdf.js"], after: `<section class="w2p" id="w2p-preview" hidden aria-label="문서 미리보기"><p class="w2p-note">미리보기 · 표·머리글·각주·복잡한 서식은 깨질 수 있습니다</p><div class="w2p-paper"></div></section>` });
+
+// 이미지 용량 줄이기
+utilPage(utilById.imgcompress, `${dropHtml({ accept: ".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp", multiple: true, label: "용량을 줄일 이미지를 넣어 주세요", limit: "JPG·PNG·WEBP · 장당 30MB · 30장까지" })}
+<ul class="flist thumbs" hidden></ul>
+<div class="tk-opts" hidden>
+  <label>품질 <output class="q-out">75</output><input type="range" name="quality" min="10" max="95" step="5" value="75"></label>
+  <div class="row2">
+    <label>최대 너비<select name="maxw"><option value="0">원본 그대로</option><option value="3840">3840px</option><option value="2560">2560px</option><option value="1920" selected>1920px</option><option value="1280">1280px</option><option value="1024">1024px</option><option value="800">800px</option></select></label>
+    <label>저장 형식<select name="format"><option value="jpg" selected>JPG</option><option value="webp">WEBP</option></select></label>
+  </div>
+</div>
+${tkTail("용량 줄이기")}`, { vendor: ["fflate.min.js"], scripts: ["t-imgcompress.js"] });
+
+// 글자수 세기 (입력 → 결과 → 결과 복사 → 다음 툴)
+utilPage(utilById.charcount, `<label for="cc-text" class="sr">글자수를 셀 글</label>
+<textarea id="cc-text" class="cc-text" rows="10" placeholder="여기에 글을 붙여 넣거나 입력하세요. 입력한 글은 저장하지 않아요." autocomplete="off" spellcheck="false"></textarea>
+<dl class="cc-stats" aria-live="polite">
+  <div class="main"><dt>공백 포함</dt><dd><b data-out="all">0</b>자</dd></div>
+  <div class="main"><dt>공백 제외</dt><dd><b data-out="noSpace">0</b>자</dd></div>
+  <div><dt>한글 2바이트 기준</dt><dd><b data-out="kr2">0</b>바이트</dd></div>
+  <div><dt>UTF-8</dt><dd><b data-out="utf8">0</b>바이트</dd></div>
+  <div><dt>줄</dt><dd><b data-out="lines">0</b></dd></div>
+  <div><dt>단락</dt><dd><b data-out="paras">0</b></dd></div>
+  <div><dt>단어(띄어쓰기 기준)</dt><dd><b data-out="words">0</b></dd></div>
+</dl>
+<div class="cc-tools"><label>목표 글자수(선택)<input name="limit" type="number" min="0" max="1000000" inputmode="numeric" placeholder="예: 1000"></label><button type="button" class="btn" data-copy>결과 복사</button><button type="button" class="btn ghost" data-clear>글 지우기</button></div>
+<p class="cc-limit" hidden></p>
+<p class="safe">입력한 글은 서버로 전송하지 않고, 저장하지도 않습니다.</p>`, { scripts: ["t-text.js"], fileTool: false });
+
+// 디데이 계산기
+utilPage(utilById.dday, `<form class="dd-form" autocomplete="off">
+  <div class="row2">
+    <label>기준일 (시작일)<input type="date" name="from" min="1900-01-01" max="2200-12-31"></label>
+    <label>목표일<input type="date" name="to" min="1900-01-01" max="2200-12-31"></label>
+  </div>
+  <div class="dd-opts"><label class="check"><input type="checkbox" name="countone"> 시작일을 1일로 세기</label><button type="button" class="btn ghost" data-today>기준일을 오늘로</button><button type="button" class="btn" data-copy>결과 복사</button></div>
+</form>
+<div class="dd-result" aria-live="polite"></div>
+<h2 class="dd-h">기념일 목록</h2>
+<div class="dd-ann"></div>`, { scripts: ["t-text.js"], fileTool: false });
+
+// 오픈소스 고지
+{
+  const p = "/licenses/";
+  const libs = [
+    ["pdf-lib", "1.17.1", "MIT", "https://github.com/Hopding/pdf-lib", "PDF 합치기 · PDF 나누기 · JPG PDF 변환"],
+    ["mammoth", "1.13.0", "BSD-2-Clause", "https://github.com/mwilliamson/mammoth.js", "워드 PDF 변환(간단)"],
+    ["fflate", "0.8.3", "MIT", "https://github.com/101arrowz/fflate", "PDF 나누기 · 이미지 용량 줄이기의 zip 묶기"],
+  ];
+  const body = `${crumbHtml([["홈", "/"], ["오픈소스 고지", p]])}<article class="prose doc"><h1>오픈소스 고지</h1>
+<p>${esc(cfg.siteName)}의 일부 툴은 아래 오픈소스 소프트웨어를 사용합니다. 라이브러리 파일은 공식 배포본(npm 패키지)을 고치지 않고 이 사이트에 직접 올려 두었고, 해당 툴 페이지에서만 불러옵니다. 외부 CDN에서 불러오지 않습니다.</p>
+<div class="table-wrap"><table class="lic"><thead><tr><th scope="col">라이브러리</th><th scope="col">버전</th><th scope="col">라이선스</th><th scope="col">쓰는 곳</th></tr></thead><tbody>${libs.map(([n, v, l, url, where]) => `<tr><th scope="row"><a href="${url}" rel="noopener">${n}</a></th><td>${v}</td><td>${l}</td><td>${esc(where)}</td></tr>`).join("")}</tbody></table></div>
+<p>각 라이브러리에 함께 묶여 있는 하위 라이브러리(pako, jszip, underscore 등)와 라이선스 전문은 <a href="${u("/assets/vendor/LICENSES.txt")}">라이선스 전문(LICENSES.txt)</a>에서 확인할 수 있어요. jszip은 MIT와 GPLv3 이중 라이선스이며, ${esc(cfg.siteName)}는 MIT 조건으로 사용합니다. GPL·AGPL 조건으로만 쓸 수 있는 코드는 사용하지 않습니다.</p>
+<h2>글꼴</h2><p>본문 글꼴 Pretendard와 제목 글꼴 Black Han Sans는 SIL Open Font License 1.1 글꼴입니다. 두 글꼴은 각각 jsDelivr와 Google Fonts에서 불러오며, 이 요청에는 파일이나 입력한 글이 포함되지 않습니다.</p>
+<p class="hint">고지에 빠진 내용이 있다면 <a href="${u("/contact/")}">문의</a>로 알려 주세요.</p></article>`;
+  write(p, layout({ title: "오픈소스 고지", desc: `${cfg.siteName}가 사용하는 오픈소스 라이브러리와 라이선스 안내`, path: p, body }));
+}
+
 // 정보 페이지
 const INFO = ["about", "privacy", "terms", "disclaimer", "contact"];
 for (const k of INFO) {
@@ -586,8 +851,9 @@ for (const k of INFO) {
 {
   const p = "/editorial/";
   const body = `${crumbHtml([["홈", "/"], ["작성·검수 기준", p]])}<article class="prose doc"><h1>작성·검수 기준</h1>
-<p>${esc(cfg.siteName)}는 「가볍게 즐기되, 대충 만들지 않는다」를 원칙으로 콘텐츠를 만들어요. 모든 테스트와 해설은 아래 기준을 거쳐 공개합니다.</p>
-<h2>1. 직접 쓰고 사람이 검수해요</h2><p>해설과 운세 문구는 다른 사이트의 문장을 옮기지 않고 직접 작성합니다. 초안 작성에 도구의 도움을 받더라도, 공개 전에 운영자가 한 문장씩 읽고 사실관계와 표현을 확인해요.</p>
+<p>${esc(cfg.siteName)}는 「필요한 일을 빨리 끝내되, 대충 만들지 않는다」를 원칙으로 툴과 콘텐츠를 만들어요. 모든 툴 설명과 놀이터 해설은 아래 기준을 거쳐 공개합니다.</p>
+<h2>0. 툴은 실제 파일로 확인하고, 한계를 적어요</h2><p>툴은 공개 전에 실제 PDF·이미지·워드 파일로 끝까지 실행해 결과 파일이 열리는지, 쪽수와 이미지 크기가 맞는지 확인합니다. 툴마다 사용법, 예시, 자주 묻는 질문과 함께 할 수 없는 것(한계)을 적고, 원본 모양을 그대로 재현하지 못하는 툴에는 「베타」와 경고를 붙여요. 툴에 넣은 파일은 서버로 전송하지 않습니다.</p>
+<h2>1. 직접 쓰고 사람이 검수해요</h2><p>툴 설명, 해설과 운세 문구는 다른 사이트의 문장을 옮기지 않고 직접 작성합니다. 초안 작성에 도구의 도움을 받더라도, 공개 전에 운영자가 한 문장씩 읽고 사실관계와 표현을 확인해요.</p>
 <h2>2. 단정하지 않아요</h2><p>운세와 성격 해설은 「~할 수 있어요」, 「참고해 보세요」처럼 가능성으로 표현합니다. 건강이 좋아진다거나 돈이 들어온다는 식의 결과를 보장하는 문구, 특정 관계를 맺거나 끊으라고 권하는 문구는 쓰지 않아요.</p>
 <h2>3. 계산은 투명하게 공개해요</h2><p>만 나이, 띠, 별자리, 이름 궁합, 반응속도처럼 계산이 들어가는 도구는 각 페이지의 「결과 해석 가이드」에 계산 방식을 적어 둡니다. 띠는 입춘 기준, 별자리는 일반적으로 쓰이는 날짜 구간을 따르며 경계 날짜는 해마다 하루쯤 달라질 수 있어요.</p>
 <h2>4. 개인정보를 받지 않아요</h2><p>생년월일과 이름은 사용자의 브라우저 안에서만 계산하고 서버로 보내거나 저장하지 않습니다. 공유 링크와 공유 이미지에도 입력한 이름이나 생년월일은 들어가지 않아요.</p>
@@ -598,13 +864,13 @@ for (const k of INFO) {
 }
 
 // 404
-write("/404.html", layout({ title: "페이지를 찾을 수 없어요", desc: "요청하신 페이지를 찾을 수 없어요.", path: "/404.html", noindex: true, body: `<section class="hero"><h1>앗, 길을 잃었어요</h1><p class="lead">주소가 바뀌었거나 없는 페이지예요. 대신 이런 테스트는 어떠세요?</p></section>${recoHtml(["today", "birthday", "personality"], "인기 테스트")}` }));
+write("/404.html", layout({ title: "페이지를 찾을 수 없어요", desc: "요청하신 페이지를 찾을 수 없어요.", path: "/404.html", noindex: true, body: `<section class="hero"><h1>앗, 길을 잃었어요</h1><p class="lead">주소가 바뀌었거나 없는 페이지예요. 대신 많이 쓰는 툴로 가 보세요.</p></section>${recoHtml(["pdfmerge", "img2pdf", "charcount", "today"], "많이 쓰는 툴")}` }));
 
 // sitemap / robots / rss
 const today = new Date().toISOString().slice(0, 10);
 fs.writeFileSync(path.join(DIST, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemap.map((p) => `  <url><loc>${abs(p)}</loc><lastmod>${today}</lastmod></url>`).join("\n")}\n</urlset>\n`);
 fs.writeFileSync(path.join(DIST, "robots.txt"), `User-agent: *\nAllow: /\n\nSitemap: ${abs("/sitemap.xml")}\n`);
-const rssItems = [...TOOLS.map((x) => [x.title, x.path, x.desc]), ...TYPE_KEYS.map((k) => [`${personality[k].name}(${k}) 성격 특징`, `/me/personality/${k.toLowerCase()}/`, fill(personality[k].summary)])];
+const rssItems = [...UTILS.map((x) => [x.title, x.path, x.desc]), ...TOOLS.map((x) => [x.title, x.path, x.desc]), ...TYPE_KEYS.map((k) => [`${personality[k].name}(${k}) 성격 특징`, `/me/personality/${k.toLowerCase()}/`, fill(personality[k].summary)])];
 fs.writeFileSync(path.join(DIST, "rss.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"><channel><title>${esc(cfg.siteName)}</title><link>${abs("/")}</link><description>${esc(cfg.tagline)}</description><language>ko</language>\n${rssItems.map(([ti, p, d]) => `<item><title>${esc(ti)}</title><link>${abs(p)}</link><guid>${abs(p)}</guid><description>${esc(d)}</description><pubDate>${new Date().toUTCString()}</pubDate></item>`).join("\n")}\n</channel></rss>\n`);
 if (cfg.adsenseClient) fs.writeFileSync(path.join(DIST, "ads.txt"), `google.com, ${cfg.adsenseClient.replace("ca-", "")}, DIRECT, f08c47fec0942fa0\n`);
 

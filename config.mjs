@@ -3,8 +3,8 @@
 const siteUrl = (process.env.SITE_URL || "https://parksh12.github.io/sehwa").replace(/\/$/, "");
 
 export default {
-  siteName: process.env.SITE_NAME || "나알기",
-  tagline: "나를 알아보는 재미있는 테스트",
+  siteName: process.env.SITE_NAME || "펭귄 툴즈",
+  tagline: "PDF·이미지·글자수·D-day, 자주 쓰는 툴 모음",
   siteUrl,
   basePath: new URL(siteUrl).pathname.replace(/\/$/, ""), // GitHub Pages 프로젝트 주소면 "/sehwa", 자체 도메인이면 ""
   operator: "세화산업",
