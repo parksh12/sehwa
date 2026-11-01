@@ -26,6 +26,12 @@ jobs:
         with:
           node-version: 20
       - run: node build.mjs
+        env:
+          # 저장소 변수가 비어 있으면 빈 문자열 → config.mjs 기본값(현재 주소) 사용. 전환 절차: 산출물/P2-19_도메인_GA4_전환절차.md
+          SITE_URL: ${{ vars.SITE_URL }}
+          GA_ID: ${{ vars.GA_ID }}
+          ADSENSE_CLIENT: ${{ vars.ADSENSE_CLIENT }}
+          CONTACT_EMAIL: ${{ vars.CONTACT_EMAIL }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
