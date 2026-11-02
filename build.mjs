@@ -406,7 +406,34 @@ const homeIn = (k) => UTIL_RANK.map((id) => utilById[id]).filter((x) => ((x.also
 // 서랍 순서: 툴이 많은 서랍부터(같으면 UCATS 순서). 위 3개는 윗줄, 나머지는 아랫줄
 const homeOrder = () => Object.entries(UCATS).map((e, i) => [e, homeIn(e[0]).length, i]).sort((a, b) => b[1] - a[1] || a[2] - b[2]).map((x) => x[0]);
 // 오락실 타일: 홈에서 놀이 콘텐츠를 한눈에(4×2)
-const FUN_TILES = ["today", "saju", "personality", "birthday", "life", "stack", "reaction", "family"];
+// ★ 새 툴·게임을 만들면 여기에 { id, d: "출시일" }을 맨 위에 추가(대표님 지시: 새 콘텐츠는 메인에 잘 보이게).
+// 출시 30일 이내 항목 중 최신 4개가 홈 맨 위 「NEW」 띠에 나오고, 해당 행·타일에 NEW 표시가 붙음
+const NEW_ITEMS = [
+  { id: "hellchosun", d: "2026-11-02" },
+  { id: "hell", d: "2026-11-02" },
+  { id: "removebg", d: "2026-11-02" },
+  { id: "saju", d: "2026-11-02" },
+  { id: "rpg", d: "2026-11-02" },
+  { id: "stack", d: "2026-11-02" },
+  { id: "timer", d: "2026-11-02" },
+];
+// ★ 체류시간이 긴 게임은 홈 맨 위 큰 카드로(대표님 지시). 새 장편 게임을 만들면 여기에도 추가
+const LONG_GAMES = [
+  { id: "rpg", t: "약 1시간 · 자동 저장" },
+  { id: "hellchosun", t: "한 판 15~30분" },
+  { id: "life", t: "한 판 5~10분" },
+];
+const NEW_DAYS = 30;
+const newList = (() => {
+  const now = Date.parse(kstDate());
+  return NEW_ITEMS.filter((x) => anyById[x.id] && now - Date.parse(x.d) <= NEW_DAYS * 864e5);
+})();
+const isNew = (id) => newList.some((x) => x.id === id);
+const newCard = (id) => {
+  const x = anyById[id], util = !!utilById[id];
+  return `<li class="has-fav">${favBtn(x, "fav-tile")}<a class="new-card" href="${u(x.path)}"><span class="new-tag">NEW</span><span class="fun-art">${ART[x.id]}</span><b>${esc(x.title)}</b><span>${esc(x.hook)}</span><small>${util ? esc(catName(x.cat)) : esc(PLAY.name)}</small></a></li>`;
+};
+const FUN_TILES = ["today", "saju", "personality", "birthday", "namematch", "stack", "reaction", "family"];
 const funTile = (id) => {
   if (id === "family") return `<li class="has-fav">${favBtn({ id: "family", title: FAMILY.name }, "fav-tile")}<a class="fun-tile t-love" href="${FAMILY.url}" target="_blank" rel="noopener"><span class="fun-art">${ART.family || ""}</span><b>${esc(FAMILY.name)} <small class="ext">새 창 ↗</small></b><span>${esc(FAMILY.hook)}</span></a></li>`;
   const x = toolById[id];
@@ -437,6 +464,8 @@ const byUtilRank = UTIL_RANK.map((id) => utilById[id]);
 </section>
 <script type="application/json" id="tool-index">${JSON.stringify(SEARCH_INDEX).replace(/</g, String.fromCharCode(92) + "u003c")}</script>
 
+<section class="long-band" aria-labelledby="long-h"><h2 id="long-h">오래 즐기는 게임 <small>${esc(PLAY.name)}의 대표 게임</small></h2><ul class="long-grid">${LONG_GAMES.map(({ id, t }) => { const x = toolById[id]; return `<li class="has-fav">${favBtn(x, "fav-tile")}<a class="long-card t-${x.cat}" href="${u(x.path)}"><span class="long-art">${ART[x.id]}</span><span class="long-body">${isNew(id) ? '<span class="new-tag">NEW</span> ' : ""}<em>${esc(t)}</em><b>${esc(x.title)}</b><span>${esc(x.hook)}</span></span><span class="ff-go">플레이 ›</span></a></li>`; }).join("")}</ul></section>
+${newList.filter((x) => !LONG_GAMES.some((g) => g.id === x.id)).length ? `<section class="new-band" aria-labelledby="new-h"><h2 id="new-h"><span class="new-tag">NEW</span> 새로 나왔어요</h2><ul class="new-grid">${newList.filter((x) => !LONG_GAMES.some((g) => g.id === x.id)).slice(0, 4).map((x) => newCard(x.id)).join("")}</ul></section>` : ""}
 <section class="toolbox" aria-labelledby="toolbox-h">
   <h2 class="sr" id="toolbox-h">툴 서랍</h2>
   <div class="cabinet">${homeOrder().map(([k, c], i, all) => `<div class="cab ${i < 3 && all.length > 3 ? "cab-big" : "cab-wide"}">${drawerHtml({ tone: k, name: c.name, href: `/${k}/`, tools: homeIn(k), tag: "h3" })}</div>`).join("")}</div>

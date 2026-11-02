@@ -893,3 +893,37 @@ li.has-fav{position:relative}
 @media(max-width:879px){.arc-grid:not(.arc-1)>li:last-child:nth-child(odd){grid-column:1/-1}}
 @media(min-width:620px) and (max-width:879px){.arc-5>li:last-child:nth-child(odd){grid-column:auto}}
 @media(min-width:880px){.arc-stamps .mini-stamps{grid-template-columns:repeat(12,minmax(0,1fr))}}
+
+/* === COO 홈 NEW 띠 (2026-11-02) === */
+.new-band{margin:6px 0 22px}
+.new-band h2{display:flex;align-items:center;gap:8px;margin:0 0 10px;font-family:var(--display);font-weight:400;font-size:clamp(22px,2.6vw,28px)}
+.new-tag{display:inline-block;background:var(--jeok);color:var(--white);font:800 11px/1 "Pretendard Variable",sans-serif;letter-spacing:.06em;border:2px solid var(--heuk);border-radius:999px;padding:4px 7px;vertical-align:middle}
+.new-grid{list-style:none;margin:0;padding:0;display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(min-width:880px){.new-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}}
+.new-card{position:relative;display:flex;flex-direction:column;gap:4px;height:100%;box-sizing:border-box;background:var(--white);color:var(--ink);text-decoration:none;border:var(--bd);border-radius:14px;box-shadow:var(--drop);padding:14px 12px 12px;transition:transform .12s}
+.new-card:hover,.new-card:focus-visible{transform:translate(-2px,-2px)}
+.new-card .new-tag{position:absolute;top:10px;left:10px}
+.new-card .fun-art{width:56px;height:56px;margin:18px 0 4px}
+.new-card b{font-size:16px;line-height:1.3}
+.new-card span:not(.new-tag):not(.fun-art){font-size:13px;line-height:1.45;color:var(--ink-2)}
+.new-card small{margin-top:auto;padding-top:6px;font-size:12px;font-weight:700;color:var(--ink-3)}
+@media(max-width:620px){.new-card span:not(.new-tag):not(.fun-art){display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.new-card .fun-art{width:44px;height:44px}}
+
+/* === COO 홈 「오래 즐기는 게임」 (2026-11-02) === */
+.long-band{margin:4px 0 24px;background:var(--heuk);border-radius:20px;padding:18px 16px 20px;box-shadow:var(--drop)}
+@media(min-width:880px){.long-band{padding:22px 24px 24px}}
+.long-band h2{margin:0 0 12px;color:var(--hwang);font-family:var(--display);font-weight:400;font-size:clamp(24px,3vw,32px)}
+.long-band h2 small{font-family:"Pretendard Variable",sans-serif;font-size:14px;font-weight:600;color:#d9d9d4;margin-left:6px}
+.long-grid{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+@media(min-width:880px){.long-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.long-card{display:flex;flex-direction:column;gap:10px;height:100%;box-sizing:border-box;background:var(--white);color:var(--ink);text-decoration:none;border:var(--bd);border-top:10px solid var(--tone);border-radius:16px;padding:18px 16px 16px;transition:transform .12s}
+.long-card:hover,.long-card:focus-visible{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--hwang)}
+.long-art{width:84px;height:84px;display:block}
+.long-art svg{width:100%;height:100%}
+.long-body{display:flex;flex-direction:column;gap:3px}
+.long-body em{font-style:normal;font-size:12px;font-weight:800;color:var(--jeok)}
+.long-body b{font-family:var(--display);font-weight:400;font-size:clamp(22px,2.4vw,28px);line-height:1.15}
+.long-body>span:not(.new-tag){font-size:14px;color:var(--ink-2)}
+.long-card .ff-go{align-self:flex-start;margin:auto 0 0}
+@media(max-width:879px){.long-card{flex-direction:row;align-items:center}.long-art{width:60px;height:60px;flex:none}.long-card .ff-go{display:none}}
+.long-body .new-tag{align-self:flex-start}
