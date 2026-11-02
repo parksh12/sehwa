@@ -937,7 +937,7 @@ utilPage(utilById.timer, `<button type="button" class="tm-fs-close" data-fs-clos
   <div class="tm-inputs"><div class="tm-field"><span class="tm-lab">시</span><button type="button" class="tm-step" data-step="h" data-d="1" aria-label="시 늘리기">▲</button><input type="number" name="h" min="0" max="99" value="0" inputmode="numeric" aria-label="시"><button type="button" class="tm-step" data-step="h" data-d="-1" aria-label="시 줄이기">▼</button></div><div class="tm-field"><span class="tm-lab">분</span><button type="button" class="tm-step" data-step="m" data-d="1" aria-label="분 늘리기">▲</button><input type="number" name="m" min="0" max="59" value="5" inputmode="numeric" aria-label="분"><button type="button" class="tm-step" data-step="m" data-d="-1" aria-label="분 줄이기">▼</button></div><div class="tm-field"><span class="tm-lab">초</span><button type="button" class="tm-step" data-step="s" data-d="1" aria-label="초 늘리기">▲</button><input type="number" name="s" min="0" max="59" value="0" inputmode="numeric" aria-label="초"><button type="button" class="tm-step" data-step="s" data-d="-1" aria-label="초 줄이기">▼</button></div></div>
   <div class="tm-quick" aria-label="빠르게 정하기"><span class="tm-qlab">빠르게</span>${[1, 3, 5, 10, 15, 30, 60].map((m) => `<button type="button" class="chip" data-quick="${m}">${m}분</button>`).join("")}</div>
   <div class="tm-btns"><button type="button" class="btn big" data-start>시작</button><button type="button" class="btn big ghost" data-pause disabled>일시정지</button><button type="button" class="btn ghost" data-reset>초기화</button></div>
-  <div class="tm-btns tm-view"><button type="button" class="btn ghost" data-fullscreen>전체 화면</button><button type="button" class="btn ghost" data-pip>화면 속 화면</button><button type="button" class="btn ghost" data-preview>소리 미리 듣기</button></div>
+  <div class="tm-btns tm-view"><button type="button" class="btn ghost" data-fullscreen>전체 화면</button><button type="button" class="btn ghost" data-pip>PiP 모드</button><button type="button" class="btn ghost" data-preview>소리 미리 듣기</button></div>
   <p class="hint pip-hint" hidden></p>
   <button type="button" class="btn big tm-silence" data-silence hidden>알림 끄기</button>
 </form>
@@ -946,7 +946,7 @@ utilPage(utilById.timer, `<button type="button" class="tm-fs-close" data-fs-clos
 // 스톱워치
 utilPage(utilById.stopwatch, `<button type="button" class="tm-fs-close" data-fs-close hidden>전체 화면 닫기 ✕</button><div class="tm-face"><span class="tm-state">Space 시작·정지 · L 랩 · R 초기화</span><div class="clock" role="timer" aria-label="경과 시간">00:00.00</div></div>
 <div class="tm-btns"><button type="button" class="btn big" data-go>시작</button><button type="button" class="btn ghost" data-lap disabled>랩</button><button type="button" class="btn ghost" data-reset disabled>초기화</button></div>
-<div class="tm-btns tm-view"><button type="button" class="btn ghost" data-fullscreen>전체 화면</button><button type="button" class="btn ghost" data-pip>화면 속 화면</button></div>
+<div class="tm-btns tm-view"><button type="button" class="btn ghost" data-fullscreen>전체 화면</button><button type="button" class="btn ghost" data-pip>PiP 모드</button></div>
 <p class="hint pip-hint" hidden></p>
 <div class="laps table-wrap" hidden><table class="dd-table"><thead><tr><th scope="col">랩</th><th scope="col">구간</th><th scope="col">누적</th></tr></thead><tbody></tbody></table></div>
 <p class="safe">기록은 저장하거나 전송하지 않습니다. 페이지를 닫으면 사라져요.</p>`, { scripts: ["t-time.js"], fileTool: false });

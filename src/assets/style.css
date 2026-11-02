@@ -717,7 +717,7 @@ html.vfs-lock,html.vfs-lock body{overflow:hidden}
   .tk.vfs .tm-btns .btn.big{flex:0 1 220px;padding:10px 16px}
 }
 @media(prefers-reduced-motion:reduce){.tk.vfs.ringing,.tk:fullscreen.ringing{animation:none;background:var(--jeok)}}
-.pip-video{position:fixed;left:-9999px;top:0;width:2px;height:2px;opacity:0;pointer-events:none}
+.pip-video{position:fixed;right:0;bottom:0;width:1px;height:1px;opacity:.01;pointer-events:none} /* iOS PiP: 숨기거나 0×0이면 거부되므로 화면 안에 1px로 둠 */
 
 /* === P2-22 사주 === */
 .sj-form .sj-leap{margin-left:6px}.sj-form .sj-leap.off{opacity:.4}
@@ -792,3 +792,49 @@ html.vfs-lock,html.vfs-lock body{overflow:hidden}
 .sj-f p{margin:.35em 0;font-size:15px}
 .sj-why{font-size:12.5px!important;color:var(--ink-3);border-top:1px dashed var(--ink-3);padding-top:6px;margin-top:8px!important}
 .sj-f-health p:nth-last-of-type(2){font-weight:700}
+
+/* === P2-25 즐겨찾기 === 별 버튼(제목·서랍 행·오락실 타일), 상단 메뉴 별 + 팝오버, 홈 「내 즐겨찾기」 줄 */
+.fav{appearance:none;display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;padding:0;border:2px solid var(--ink);border-radius:9px;background:var(--white);color:var(--ink);cursor:pointer;flex:none;line-height:1;vertical-align:middle}
+.fav .fav-ico{width:20px;height:20px;fill:none;stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fav[aria-pressed="true"] .fav-ico{fill:var(--hwang)}
+.fav:hover{background:#fffbea}
+.fav:focus-visible{outline:3px solid var(--cheong);outline-offset:2px}
+.fav-title{width:38px;height:38px;margin-left:4px;position:relative;top:-3px}
+.fav-title .fav-ico{width:22px;height:22px}
+li.has-fav{position:relative}
+.fav-row{position:absolute;right:38px;top:50%;transform:translateY(-50%);z-index:1;width:32px;height:32px;border-width:1.5px}
+.has-fav>.row{padding-right:78px}
+.fav-tile{position:absolute;top:6px;right:6px;z-index:1;width:30px;height:30px;border-width:1.5px}
+.fav-tile .fav-ico{width:17px;height:17px}
+/* 상단 메뉴 별 */
+.fav-menu{appearance:none;position:relative;display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;padding:0;border:2px solid var(--ink);border-radius:10px;background:var(--white);cursor:pointer;order:2;flex:none}
+.header-inner .nav{order:1}
+.fav-menu .fav-ico{width:22px;height:22px;fill:var(--hwang);stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fav-menu[aria-expanded="true"]{background:var(--hwang)}
+.fav-count{position:absolute;top:-8px;right:-8px;min-width:20px;height:20px;padding:0 5px;border-radius:99px;background:var(--jeok);color:#fff;border:2px solid var(--ink);font-size:11.5px;font-weight:800;line-height:16px;text-align:center}
+@media(max-width:620px){.fav-menu{order:1;margin-left:auto;width:36px;height:36px}.header-inner .nav{order:2}}
+.fav-pop{position:fixed;z-index:70;right:max(12px,calc((100vw - 1080px) / 2 + 18px));width:min(340px,calc(100vw - 24px));max-height:min(70vh,520px);overflow:auto;background:var(--white);border:var(--bd);border-radius:14px;box-shadow:var(--drop)}
+.fav-pop-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding:10px 14px;border-bottom:2px solid var(--ink);background:var(--soft)}
+.fav-pop-head small{color:var(--ink-3);font-size:12px}
+.fav-pop-body{padding:6px 0}
+.fav-pop .fav-empty{margin:0;padding:12px 14px;font-size:14px;color:var(--ink-2)}
+.fav-list{list-style:none;margin:0;padding:0;counter-reset:fav}
+.fav-list li{display:flex;align-items:center;gap:8px;padding:6px 10px 6px 14px}
+.fav-list li+li{border-top:2px solid var(--soft)}
+.fav-list a{flex:1;min-width:0;display:flex;flex-direction:column;text-decoration:none;color:var(--ink)}
+.fav-list a:hover b{text-decoration:underline}
+.fav-list b{font-size:15px}
+.fav-list small{font-size:12px;color:var(--ink-3)}
+.fav-x{appearance:none;font:inherit;font-size:12.5px;font-weight:800;padding:4px 9px;border:1.5px solid var(--ink);border-radius:7px;background:var(--white);cursor:pointer}
+.fav-x:hover{background:#ffe9e6}
+/* 홈 검색창 아래 한 줄(높이 고정 — 개수가 바뀌어도 아래 내용이 밀리지 않음) */
+.fav-bar{display:flex;align-items:center;gap:8px;margin-top:10px;height:40px}
+.fav-bar-h{display:inline-flex;align-items:center;gap:4px;flex:none;font-size:13px;font-weight:800;color:var(--ink)}
+.fav-bar-h .fav-ico{width:16px;height:16px;fill:var(--white);stroke:var(--ink);stroke-width:2}
+.fav-bar-list{flex:1;min-width:0;display:flex;align-items:center;gap:6px;height:40px;overflow-x:auto;overflow-y:hidden;white-space:nowrap;scrollbar-width:thin}
+.fav-bar .fav-empty{font-size:13px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fav-chip{display:inline-flex;align-items:center;gap:4px;flex:none;height:30px;padding:0 10px;border:2px solid var(--ink);border-radius:99px;background:var(--white);color:var(--ink);text-decoration:none;font-size:13px;font-weight:800}
+.fav-chip .fav-ico{width:14px;height:14px;fill:var(--hwang);stroke:var(--ink);stroke-width:2}
+.fav-chip:hover{background:#fffbea}
+@media print{.fav,.fav-menu,.fav-pop,.fav-bar{display:none!important}}
+.hero-tools>*,.search,.fav-bar{min-width:0;max-width:100%}

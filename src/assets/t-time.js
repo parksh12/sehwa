@@ -1,6 +1,6 @@
 // 타이머 + 스톱워치. 경과 시간은 항상 Date.now() 기준(백그라운드 탭에서 setInterval이 느려져도 정확).
 // P2-23: 알림음은 WAV를 직접 만들어 <audio>로 재생(모바일 무음·자동 재생 제한 대응), WebAudio는 보조.
-//        전체 화면(지원 안 하면 가상 전체 화면), 화면 속 화면(Document PiP → 캔버스 영상 PiP). 저장·전송하는 값은 없습니다.
+//        전체 화면(지원 안 하면 가상 전체 화면), PiP 모드(Document PiP → 캔버스 영상 PiP). 저장·전송하는 값은 없습니다.
 (function () {
   const pad = (n, w = 2) => String(n).padStart(w, "0");
   const toast = (m) => (window.NALGI && NALGI.toast ? NALGI.toast(m) : null);
@@ -113,24 +113,30 @@
     sync();
   }
 
-  // ---------- 공통: 화면 속 화면(PiP) ----------
+  // ---------- 공통: PiP 모드 ----------
   // 데스크톱 Chrome·Edge: Document Picture-in-Picture(작은 창에 남은 시간 + 버튼)
-  // 그 밖: 캔버스에 시간을 그려 captureStream → <video> → requestPictureInPicture (iOS는 webkitSetPresentationMode)
+  // 그 밖: 캔버스에 시간을 그려 captureStream → <video> → PiP
+  //   iOS Safari 조건(WebKit): video가 문서 안에 보이는 상태(display:none·0×0 금지)여야 하고, playsinline·muted·autoplay,
+  //   그리고 webkitSetPresentationMode는 「탭한 그 순간」(같은 핸들러, await 전)에 불러야 함 → 영상은 미리 준비해 두고 탭에서는 동기 호출만
   function setupPip(box, { text, sub, act, actLabel }) {
     const btn = box.querySelector("[data-pip]"), hint = box.querySelector(".pip-hint");
     if (!btn) return { update() {} };
     const probe = document.createElement("video");
     const docPip = "documentPictureInPicture" in window;
     const canCanvas = !!HTMLCanvasElement.prototype.captureStream;
-    const vidPip = canCanvas && ((document.pictureInPictureEnabled && probe.requestPictureInPicture) || (probe.webkitSupportsPresentationMode && probe.webkitSupportsPresentationMode("picture-in-picture")));
+    const webkitPip = !!(probe.webkitSupportsPresentationMode && typeof probe.webkitSetPresentationMode === "function" && probe.webkitSupportsPresentationMode("picture-in-picture"));
+    const stdPip = !!(document.pictureInPictureEnabled && probe.requestPictureInPicture);
+    const vidPip = canCanvas && (webkitPip || stdPip);
+    const say = (msg) => { if (hint) { hint.hidden = !msg; hint.textContent = msg || ""; } box.dataset.pipMsg = msg || ""; };
     if (!docPip && !vidPip) {
       btn.hidden = true;
-      if (hint) { hint.hidden = false; hint.textContent = "이 브라우저는 화면 속 화면(PiP)을 지원하지 않아요. 크게 보려면 「전체 화면」을 써 주세요."; }
+      say("이 브라우저는 PiP 모드를 지원하지 않아요. 크게 보려면 「전체 화면」을 써 주세요.");
       return { update() {} };
     }
-    let win = null, video = null, canvas = null, ctx = null, keep = 0;
-    const setMode = (m) => { box.dataset.pip = m; btn.textContent = m ? "화면 속 화면 닫기" : "화면 속 화면"; };
+    let win = null, video = null, canvas = null, ctx = null, keep = 0, check = 0;
+    const setMode = (m) => { box.dataset.pip = m; btn.textContent = m ? "PiP 모드 닫기" : "PiP 모드"; };
     function draw() {
+      if (!ctx) return;
       const W = canvas.width, H = canvas.height, done = box.dataset.state === "done";
       ctx.fillStyle = done ? "#e5372b" : "#ffffff"; ctx.fillRect(0, 0, W, H);
       ctx.fillStyle = done ? "#ffffff" : "#141414"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
@@ -145,48 +151,73 @@
         d.body.classList.toggle("done", done);
         const b = d.querySelector("button"); b.textContent = actLabel(); b.hidden = !actLabel();
       }
-      if (video && canvas) draw();
+      draw();
     }
-    async function openDoc() {
-      win = await documentPictureInPicture.requestWindow({ width: 280, height: 170 });
-      const d = win.document;
-      d.head.innerHTML = `<meta charset="utf-8"><style>body{margin:0;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-family:system-ui,sans-serif;background:#fff;color:#141414;border:5px solid #141414;box-sizing:border-box}
+    // 영상 준비(탭하기 전에): 첫 프레임을 그린 캔버스 → captureStream → 화면 안의 1px 영상, 재생까지 해 둠
+    function prepare() {
+      if (video || !vidPip) return;
+      canvas = document.createElement("canvas"); canvas.width = 480; canvas.height = 270; ctx = canvas.getContext("2d"); draw();
+      video = document.createElement("video");
+      video.muted = true; video.defaultMuted = true; video.autoplay = true; video.playsInline = true;
+      ["muted", "autoplay", "playsinline", "webkit-playsinline"].forEach((a) => video.setAttribute(a, ""));
+      video.setAttribute("aria-hidden", "true"); video.tabIndex = -1; video.className = "pip-video";
+      document.body.appendChild(video); // 화면 안에 1px·불투명도 0.01로 둠(숨김 처리하면 iOS가 거부)
+      video.srcObject = canvas.captureStream(); // 프레임은 캔버스를 다시 그릴 때마다 들어감
+      const p = video.play(); if (p && p.catch) p.catch(() => {}); // 소리 없는 영상이라 자동 재생 허용
+      keep = setInterval(draw, 1000); // requestAnimationFrame은 PiP·백그라운드에서 멈출 수 있어 setInterval로 1초마다
+      video.addEventListener("leavepictureinpicture", () => setMode(""));
+      video.addEventListener("webkitpresentationmodechanged", () => { if (video.webkitPresentationMode === "picture-in-picture") { setMode("video"); say(""); } else if (box.dataset.pip === "video") setMode(""); });
+    }
+    const failMsg = (e) => {
+      const n = (e && e.name) || "";
+      if (n === "NotSupportedError") return "이 기기·브라우저 버전은 실시간 영상의 PiP 모드를 지원하지 않아요(iOS 17 이하에서 알려진 제한). iOS를 최신으로 올리거나 「전체 화면」을 써 주세요.";
+      if (n === "NotAllowedError") return "PiP 모드를 열 권한이 없어요. 버튼을 한 번 더 눌러 주세요.";
+      return `PiP 모드를 열 수 없어요${n ? ` (${n})` : ""}. 「전체 화면」을 써 주세요.`;
+    };
+    // 탭 핸들러 안에서 동기적으로 부름(await 없음)
+    function openVideoNow() {
+      prepare();
+      draw();
+      const p = video.play(); if (p && p.catch) p.catch(() => {});
+      if (webkitPip) {
+        try { video.webkitSetPresentationMode("picture-in-picture"); } catch (e) { say(failMsg(e)); return; }
+        // Safari는 실패해도 알려 주지 않을 수 있어서 잠시 뒤 실제로 들어갔는지 확인
+        clearTimeout(check);
+        check = setTimeout(() => { if (video.webkitPresentationMode !== "picture-in-picture") { setMode(""); say(failMsg({ name: stdPip ? "" : "NotSupportedError" })); } }, 1500);
+        return;
+      }
+      video.requestPictureInPicture().then(() => { setMode("video"); say(""); }, (e) => { setMode(""); say(failMsg(e)); });
+    }
+    function openDoc() {
+      return documentPictureInPicture.requestWindow({ width: 280, height: 170 }).then((w) => {
+        win = w; const d = win.document;
+        d.head.innerHTML = `<meta charset="utf-8"><style>body{margin:0;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-family:system-ui,sans-serif;background:#fff;color:#141414;border:5px solid #141414;box-sizing:border-box}
 .t{font-size:min(30vw,52vh);font-weight:900;font-variant-numeric:tabular-nums;line-height:1}.s{font-size:13px;font-weight:700;color:#3d3d3d}
 button{font:inherit;font-weight:800;padding:6px 16px;border:2.5px solid #141414;border-radius:10px;background:#141414;color:#fff;cursor:pointer}
 body.done{background:#e5372b;color:#fff}body.done .s{color:#fff}</style>`;
-      d.body.innerHTML = `<div class="t"></div><div class="s"></div><button type="button"></button>`;
-      d.querySelector("button").addEventListener("click", () => { act(); update(); });
-      win.addEventListener("pagehide", () => { win = null; setMode(""); });
-      setMode("doc"); update();
-    }
-    async function openVideo() {
-      canvas = document.createElement("canvas"); canvas.width = 480; canvas.height = 270; ctx = canvas.getContext("2d"); draw();
-      video = document.createElement("video");
-      video.muted = true; video.playsInline = true; video.setAttribute("playsinline", ""); video.className = "pip-video";
-      box.appendChild(video); // iOS는 문서 안에 있어야 함(화면 밖으로 숨김)
-      video.srcObject = canvas.captureStream(4);
-      await video.play();
-      const leave = () => { closeVideo(); };
-      if (video.requestPictureInPicture && document.pictureInPictureEnabled) { await video.requestPictureInPicture(); video.addEventListener("leavepictureinpicture", leave); }
-      else { video.webkitSetPresentationMode("picture-in-picture"); video.addEventListener("webkitpresentationmodechanged", () => { if (video && video.webkitPresentationMode !== "picture-in-picture") leave(); }); }
-      keep = setInterval(update, 1000); // 1초마다 다시 그림(멈춰 있을 때도)
-      setMode("video");
-    }
-    function closeVideo() {
-      clearInterval(keep);
-      if (video) { try { video.srcObject && video.srcObject.getTracks().forEach((t) => t.stop()); } catch (e) {} video.remove(); }
-      video = canvas = ctx = null; setMode("");
-    }
-    async function open() {
-      if (docPip) { try { await openDoc(); return; } catch (e) { win = null; } }
-      if (vidPip) await openVideo();
+        d.body.innerHTML = `<div class="t"></div><div class="s"></div><button type="button"></button>`;
+        d.querySelector("button").addEventListener("click", () => { act(); update(); });
+        win.addEventListener("pagehide", () => { win = null; setMode(""); });
+        setMode("doc"); say(""); update();
+      });
     }
     function close() {
       if (win) { win.close(); win = null; }
       if (document.pictureInPictureElement) document.exitPictureInPicture().catch(() => {});
-      closeVideo();
+      if (video && video.webkitPresentationMode === "picture-in-picture") { try { video.webkitSetPresentationMode("inline"); } catch (e) {} }
+      setMode("");
     }
-    btn.addEventListener("click", () => { if (box.dataset.pip) close(); else open().catch(() => { closeVideo(); toast("화면 속 화면을 열 수 없어요"); }); });
+    btn.addEventListener("click", () => {
+      if (box.dataset.pip) return close();
+      say("");
+      if (docPip) { openDoc().catch(() => { if (vidPip) say("PiP 창을 열지 못했어요. 한 번 더 눌러 주세요."); else say(failMsg({})); }); return; }
+      openVideoNow();
+    });
+    // 영상 방식이면 미리 준비(페이지가 뜰 때). 「시작」·「전체 화면」 같은 다른 탭에서도 재생을 한 번 더 걸어 둠
+    if (!docPip && vidPip) {
+      prepare();
+      box.addEventListener("click", () => { if (video && video.paused) { const p = video.play(); if (p && p.catch) p.catch(() => {}); } }, true);
+    }
     setMode("");
     return { update };
   }
