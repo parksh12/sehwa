@@ -35,7 +35,7 @@
   let pop = null;
   function listHtml() {
     if (!favs.length) return `<p class="fav-empty">☆를 눌러 자주 쓰는 툴을 모아 두세요.</p>`;
-    return `<ol class="fav-list">${favs.map((id) => `<li><a href="${esc(IDX[id].p)}"><b>${esc(IDX[id].t)}</b><small>${esc(IDX[id].c)}</small></a><button type="button" class="fav-x" data-fav="${esc(id)}" aria-label="${esc(IDX[id].t)} 즐겨찾기에서 빼기">빼기</button></li>`).join("")}</ol>`;
+    return `<ol class="fav-list">${favs.map((id) => `<li><a href="${esc(IDX[id].p)}"${IDX[id].x ? ' target="_blank" rel="noopener"' : ""}><b>${esc(IDX[id].t)}</b><small>${esc(IDX[id].c)}</small></a><button type="button" class="fav-x" data-fav="${esc(id)}" aria-label="${esc(IDX[id].t)} 즐겨찾기에서 빼기">빼기</button></li>`).join("")}</ol>`;
   }
   function renderPop() { if (pop) pop.querySelector(".fav-pop-body").innerHTML = listHtml(); }
   function openPop() {
@@ -64,7 +64,7 @@
     if (!bar) return;
     const box = bar.querySelector(".fav-bar-list");
     box.innerHTML = favs.length
-      ? favs.map((id) => `<a class="fav-chip" href="${esc(IDX[id].p)}">${STAR}<span>${esc(IDX[id].t)}</span></a>`).join("")
+      ? favs.map((id) => `<a class="fav-chip" href="${esc(IDX[id].p)}"${IDX[id].x ? ' target="_blank" rel="noopener"' : ""}>${STAR}<span>${esc(IDX[id].t)}</span></a>`).join("")
       : `<span class="fav-empty">☆를 눌러 자주 쓰는 툴을 모아 두세요</span>`;
     bar.dataset.count = favs.length;
   }

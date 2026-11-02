@@ -360,7 +360,7 @@ const homeOrder = () => Object.entries(UCATS).map((e, i) => [e, homeIn(e[0]).len
 // 오락실 타일: 홈에서 놀이 콘텐츠를 한눈에(4×2)
 const FUN_TILES = ["today", "saju", "personality", "birthday", "life", "stack", "reaction", "family"];
 const funTile = (id) => {
-  if (id === "family") return `<li><a class="fun-tile t-love" href="${FAMILY.url}" target="_blank" rel="noopener"><span class="fun-art">${ART.family || ""}</span><b>${esc(FAMILY.name)} <small class="ext">새 창 ↗</small></b><span>${esc(FAMILY.hook)}</span></a></li>`;
+  if (id === "family") return `<li class="has-fav">${favBtn({ id: "family", title: FAMILY.name }, "fav-tile")}<a class="fun-tile t-love" href="${FAMILY.url}" target="_blank" rel="noopener"><span class="fun-art">${ART.family || ""}</span><b>${esc(FAMILY.name)} <small class="ext">새 창 ↗</small></b><span>${esc(FAMILY.hook)}</span></a></li>`;
   const x = toolById[id];
   return `<li class="has-fav">${favBtn(x, "fav-tile")}<a class="fun-tile t-${x.cat}" href="${u(x.path)}"><span class="fun-art">${ART[x.id]}</span><b>${esc(x.title)}</b><span>${esc(x.hook)}</span></a></li>`;
 };
@@ -1009,6 +1009,7 @@ write("/404.html", layout({ title: "페이지를 찾을 수 없어요", desc: "�
   const favIdx = {};
   UTILS.forEach((x) => { favIdx[x.id] = { t: x.title, p: u(x.path), c: catName(x.cat) }; });
   TOOLS.forEach((x) => { favIdx[x.id] = { t: x.title, p: u(x.path), c: `${PLAY.name} · ${CATS[x.cat].name}` }; });
+  favIdx.family = { t: FAMILY.name, p: FAMILY.url, c: "세화산업 다른 서비스 · 새 창", x: 1 }; // 외부 사이트
   fs.writeFileSync(path.join(DIST, "assets", "fav-index.js"), `window.FAV_INDEX=${JSON.stringify(favIdx).replace(/</g, String.fromCharCode(92) + "u003c")};\n`);
 }
 
