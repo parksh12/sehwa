@@ -32,7 +32,7 @@ const FAQ = [
   { q: "잔인한 장면이 나오나요?", a: "피나 잔혹한 장면은 나오지 않아요. 사망 연출은 해골이 용암에 둥둥 뜨거나, 운석에 납작해지거나, 숯검댕이 아프로 머리가 되는 식의 만화 슬랩스틱으로만 만들었어요. 특정 인물이나 종교, 집단을 비하하는 내용도 넣지 않았습니다. 염라대왕과 악마는 옛이야기 속 캐릭터를 바탕으로 새로 그린 가상의 캐릭터예요." },
   { q: "게임 속 행동을 현실에서 해도 되나요?", a: "절대 안 돼요. 핫소스를 들이키거나, 자판기를 흔들거나, 냉탕에 뛰어드는 식의 선택지는 모두 게임 속 병맛 설정이에요. 현실에서는 다칠 수 있으니 따라 하지 마세요." },
   { q: "소리가 안 나요.", a: "이 게임은 기본으로 소리가 켜져 있고, 「지옥 입장」을 누르는 순간부터 배경 음악과 효과음이 나요. 소리가 안 나면 오른쪽 위 스피커 버튼이 켜져 있는지, 기기 음량이 올라가 있는지 확인해 주세요. 아이폰은 무음 모드 스위치나 iOS 버전에 따라 소리가 안 날 수 있어요. 모든 소리는 브라우저가 그 자리에서 합성해서 따로 내려받는 음원 파일이 없어요." },
-  { q: "도감 기록은 어디에 저장되나요?", a: "모은 사망 카드와 체크포인트, 소리 설정은 지금 쓰는 브라우저의 저장 공간(localStorage)에만 남고 서버로 보내지 않아요. 다른 기기나 다른 브라우저와는 이어지지 않고, 브라우저 기록을 지우면 함께 사라집니다. 도감 화면의 「도감 초기화」로 직접 지울 수도 있어요." },
+  { q: "도감 기록은 어디에 저장되나요?", a: "모은 사망 카드와 체크포인트, 소리 설정은 지금 쓰는 브라우저의 저장 공간(localStorage)에만 남고 서버로 보내지 않아요. 다른 기기나 다른 브라우저와는 이어지지 않고, 브라우저 기록을 지우면 함께 사라집니다. 도감 화면의 「도감 초기화」로 직접 지울 수도 있어요. 순위표만 예외로, TOP10에 들어 「순위에 올리기」를 고른 경우에 한해 닉네임과 기록이 순위표(Google Firebase)에 저장돼요." },
   { q: "다른 게임을 따라 만든 건가요?", a: "아니요. 단계, 선택지, 사망 장면, 그림, 음악은 모두 직접 만들었어요. 그림은 이미지 파일 없이 코드로 한 점씩 그리고, 음악과 효과음은 브라우저의 소리 합성 기능으로 만들어요. 글꼴은 SIL 오픈 폰트 라이선스로 공개된 갈무리(Galmuri11 Bold)를 이 사이트에 직접 올려 씁니다." },
 ];
 
@@ -94,10 +94,11 @@ ${crumbHtml(items)}
     <h2>조작법</h2>
     <div class="table-wrap"><table><thead><tr><th scope="col">하는 일</th><th scope="col">PC 키보드</th><th scope="col">휴대폰</th></tr></thead><tbody>${CONTROLS.map(([a, b, c]) => `<tr><th scope="row">${esc(a)}</th><td>${esc(b)}</td><td>${esc(c)}</td></tr>`).join("")}</tbody></table></div>
   </section>
+  <section class="rank-page" data-rank-game="hell" aria-label="순위표"></section>
   ${faqHtml(FAQ)}
   ${adSlot("hell-faq")}
 </article>`;
   const ld = [crumbs(items), faqLd(FAQ), { "@context": "https://schema.org", "@type": "VideoGame", name: "지옥에서 살아남기 (Hell Survival 31)", url: abs(R.path), description: R.desc, genre: ["Casual", "Comedy"], gamePlatform: "Web browser", applicationCategory: "Game", operatingSystem: "Any", inLanguage: "ko", isAccessibleForFree: true, publisher: { "@type": "Organization", name: cfg.operator } }];
-  write(R.path, layout({ title: R.seo, desc: R.desc, path: R.path, body, scripts: ["hell-data.js", "hell-art.js", "hell-sound.js", "hell.js"], jsonld: ld, fullTitle: false }));
+  write(R.path, layout({ title: R.seo, desc: R.desc, path: R.path, body, scripts: ["rank.js", "hell-data.js", "hell-art.js", "hell-sound.js", "hell.js"], jsonld: ld, fullTitle: false }));
   return R;
 }

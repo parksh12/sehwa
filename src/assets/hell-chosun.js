@@ -237,7 +237,8 @@
     const cp = S.cp && S.cp.n ? S.cp.n : 1;
     openOv(`<div class="hl-dead"><p class="hl-dno">사망 카드 #${pad(no)}${first ? ' <em class="hl-new">NEW</em>' : ""} · ${stage().age}세</p><h3>${esc(d.name)}</h3><p class="hl-ddesc">${esc(d.desc)}</p><p class="hl-quip">“${esc(q)}”</p>
 <p class="hl-dmeta">자산 ${fmtM(G.st.m)} · 체력 ${G.st.h}% · 멘탈 ${G.st.mt}% · 눈치 ${G.st.i}% · 도감 ${gotN()}/${TOTAL}</p>
-<div class="hl-btns"><div class="hl-row"><button type="button" class="hl-btn" data-act="cp" data-focus>${chOf(cp).no}장부터 다시</button><button type="button" class="hl-btn" data-act="life">환생(0세)</button></div><p class="hc-lg">${esc(legacyLine())}</p><div class="hl-row"><button type="button" class="hl-btn ghost" data-act="share" data-n="${no}">억울한 죽음 카드</button><button type="button" class="hl-btn ghost" data-act="book">도감</button></div></div></div>`, "dead");
+<div class="hl-btns"><div class="hl-row"><button type="button" class="hl-btn" data-act="cp" data-focus>${chOf(cp).no}장부터 다시</button><button type="button" class="hl-btn" data-act="life">환생(0세)</button></div><p class="hc-lg">${esc(legacyLine())}</p><div class="hl-row"><button type="button" class="hl-btn ghost" data-act="share" data-n="${no}">억울한 죽음 카드</button><button type="button" class="hl-btn ghost" data-act="book">도감</button></div></div><div class="rank-slot"></div></div>`, "dead");
+    window.PT_RANK && PT_RANK.report("chosun", PT_RANK.score.chosun({ age: stage().age, money: G.st.m }), ov.querySelector(".rank-slot"));
   }
   function rest() {
     G.mode = "stage"; G.lock = true; idleCards("정비 시간이에요. 다음 장으로 가기 전에 하나만 고르세요.");
@@ -266,7 +267,8 @@
     const cl = G.clear;
     openOv(`<div class="hl-dead hl-clear"><p class="hl-dno">80세 생존 · 엔딩 ${endN()}/4${first ? ' <em class="hl-new">NEW</em>' : ""}</p><h3>${esc(e.name)}</h3><p class="hl-ddesc">${esc(e.desc)}</p>
 <p class="hl-dmeta">자산 ${fmtM(cl.st.m)} · 체력 ${cl.st.h}% · 멘탈 ${cl.st.mt}% · 눈치 ${cl.st.i}%<br>직업 ${esc(cl.st.job || "-")} · 주거 ${esc(cl.st.house || "-")} · ${Math.floor(cl.s / 60)}분 ${cl.s % 60}초</p>
-<div class="hl-btns"><button type="button" class="hl-btn" data-act="life" data-focus>환생하기(유산 보너스)</button><p class="hc-lg">${esc(legacyLine())}</p><div class="hl-row"><button type="button" class="hl-btn ghost" data-act="share" data-n="end">엔딩 카드</button><button type="button" class="hl-btn ghost" data-act="book">도감</button></div></div></div>`, "dead clear");
+<div class="hl-btns"><button type="button" class="hl-btn" data-act="life" data-focus>환생하기(유산 보너스)</button><p class="hc-lg">${esc(legacyLine())}</p><div class="hl-row"><button type="button" class="hl-btn ghost" data-act="share" data-n="end">엔딩 카드</button><button type="button" class="hl-btn ghost" data-act="book">도감</button></div></div><div class="rank-slot"></div></div>`, "dead clear");
+    window.PT_RANK && PT_RANK.report("chosun", PT_RANK.score.chosun({ age: 80, money: cl.st.m }), ov.querySelector(".rank-slot"));
   }
   // 사망 도감(44장 + 엔딩 4종)
   const ALLD = () => [...STAGES.map((s) => ({ no: s.n, d: s.death, st: s, age: s.age })), ...Object.values(C.STAT_DEATHS).map((d) => ({ no: d.no, d, st: null, age: null }))];

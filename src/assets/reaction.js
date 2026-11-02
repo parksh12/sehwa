@@ -31,7 +31,8 @@
   <dl class="rc-meta"><div><dt>가장 빨랐던 한 번</dt><dd>${best}ms</dd></div><div><dt>내 최고 평균</dt><dd>${isNew ? avg : prev}ms${isNew ? '<span class="rt-new">신기록</span>' : ""}</dd></div></dl>
 </div>
 <div class="rt-bars">${times.map((ms, i) => `<div class="${Math.round(ms) === best ? "best" : ""}"><span>${i + 1}회</span><i style="width:${Math.max(8, (ms / max) * 100)}%"></i><span>${Math.round(ms)}ms</span></div>`).join("")}</div>
-${NALGI.shareBar({ title: `반응속도 게임: ${grade} 등급 ${avg}ms`, text: `내 평균은 ${avg}ms. 너는 몇 ms?`, path: "/arcade/reaction/" })}`;
+${NALGI.shareBar({ title: `반응속도 게임: ${grade} 등급 ${avg}ms`, text: `내 평균은 ${avg}ms. 너는 몇 ms?`, path: "/arcade/reaction/" })}<div class="rank-slot"></div>`;
+    window.PT_RANK && PT_RANK.report("reaction", avg, out.querySelector(".rank-slot"));
     out.hidden = false;
     out.scrollIntoView({ behavior: "smooth", block: "nearest" });
     set("", `평균 ${avg}ms · ${grade}`, "한 번 더 하려면 터치");

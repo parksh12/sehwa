@@ -720,9 +720,9 @@ ZODIAC_KEYS.forEach((k, i) => {
     <div id="stack-overlay" class="stack-overlay"></div>
   </div>
 </div>
-<p class="hint">PC는 클릭이나 Space, 휴대폰은 화면을 탭하세요. 최고 기록은 이 기기의 브라우저에만 남고 어디에도 보내지 않아요.</p>
+<p class="hint">PC는 클릭이나 Space, 휴대폰은 화면을 탭하세요. 최고 기록은 이 기기의 브라우저에 남고, TOP10에 들어 「순위에 올리기」를 고른 경우에만 닉네임과 점수가 순위표로 전송돼요.</p>
 <p class="hint">랜덤7942의 대기 화면에서 하던 그 블록 쌓기와 같은 게임이에요. <a href="${FAMILY.url}" target="_blank" rel="noopener">랜덤7942 · 익명 브레인스토밍 ↗<span class="sr"> (새 창, 외부 사이트)</span></a></p>`;
-  toolPage(toolById.stack, html, { scripts: ["stack.js"] });
+  toolPage(toolById.stack, html, { scripts: ["rank.js", "stack.js"], extraBelow: `<section class="rank-page" data-rank-game="stack" aria-label="순위표"></section>` });
 }
 
 // ⑤ 반응속도 + 4 결과 페이지
@@ -734,7 +734,7 @@ ZODIAC_KEYS.forEach((k, i) => {
 <div class="rt-progress" id="rt-progress" aria-hidden="true"></div>
 <div class="result" id="rt-result" hidden aria-live="polite"></div>
 <p class="hint">결과는 기기와 화면, 입력 방식에 따라 수십 ms까지 달라질 수 있어요. 같은 기기로 여러 번 해 보면 나만의 기록을 비교할 수 있어요.</p>`;
-  toolPage(toolById.reaction, html, { scripts: ["reaction.js"] });
+  toolPage(toolById.reaction, html, { scripts: ["rank.js", "reaction.js"], extraBelow: `<section class="rank-page" data-rank-game="reaction" aria-label="순위표"></section>` });
 
 
 }

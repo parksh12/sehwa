@@ -130,7 +130,8 @@
       (isNew && score > 0 ? '<div class="go-new">최고 기록 갱신!</div>' : "") +
       `<dl class="go-stats"><div><dt>점수</dt><dd>${score}층</dd></div><div><dt>최고 기록</dt><dd>${Math.max(prevBest, score)}층</dd></div><div><dt>PERFECT 연속</dt><dd>${maxCombo}번</dd></div></dl>` +
       '<button type="button" class="btn big go-btn" data-act="start">다시 하기</button>' +
-      '<p class="go-sub">기록은 이 기기에만 남고 어디에도 보내지 않아요.</p>');
+      '<p class="go-sub">최고 기록은 이 기기에 남고, TOP10에 들면 순위표에 올릴 수 있어요.</p><div class="rank-slot"></div>');
+    if (score > 0) window.PT_RANK && PT_RANK.report("stack", score, $("stack-overlay").querySelector(".rank-slot"));
     setState("over");
     const n = +(stage.dataset.games || 0) + 1; stage.dataset.games = n;
   }

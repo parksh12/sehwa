@@ -33,7 +33,7 @@ const FAQ = [
   { q: "눈치는 어떻게 쓰나요?", a: "눈치가 40% 이상이면 화면 위 눈치 칸 테두리가 하늘색으로 바뀌어요. 이때 즉사 선택을 고르면 한 번 피하고 다음 단계로 넘어가는 대신 눈치 35, 멘탈 10이 줄어요. 피했을 때는 살아남는 선택의 보상도 받지 못하니, 일부러 피하는 것도 전략이 될 수 있어요." },
   { q: "특정 지역이나 세대를 비꼬는 게임인가요?", a: "아니요. 비꼬는 대상은 학원비, 야근, 깡통 전세, 사기 문자, 끝없는 키오스크 메뉴 같은 「부조리한 상황」이에요. 특정 지역·성별·세대를 깎아내리는 표현과 실존 인물·기업·브랜드 이름은 넣지 않았어요. 불편한 표현을 발견하면 문의로 알려 주세요." },
   { q: "잔인한 장면이 나오나요?", a: "피나 잔혹한 장면은 나오지 않아요. 사망은 젖병에 맞아 납작해지거나, 숯검댕이 아프로 머리가 되거나, 비둘기 떼에 실려 날아가는 식의 만화 슬랩스틱으로만 표현했어요." },
-  { q: "기록은 어디에 저장되나요?", a: "사망 도감, 엔딩, 장 체크포인트, 유산 기록, 소리 설정은 지금 쓰는 브라우저의 저장 공간(localStorage)에만 남고 서버로 보내지 않아요. 도감 화면의 「기록 초기화」로 지울 수 있어요." },
+  { q: "기록은 어디에 저장되나요?", a: "사망 도감, 엔딩, 장 체크포인트, 유산 기록, 소리 설정은 지금 쓰는 브라우저의 저장 공간(localStorage)에만 남고 서버로 보내지 않아요. 도감 화면의 「기록 초기화」로 지울 수 있어요. 순위표만 예외로, TOP10에 들어 「순위에 올리기」를 고른 경우에 한해 닉네임과 기록이 순위표(Google Firebase)에 저장돼요." },
   { q: "소리가 안 나요.", a: "「응애, 태어나기」를 누르는 순간부터 배경 음악과 효과음이 나요. 오른쪽 위 스피커 버튼과 기기 음량을 확인해 주세요. 아이폰은 무음 스위치나 iOS 버전에 따라 소리가 안 날 수 있어요. 모든 소리는 브라우저가 그 자리에서 합성해서 따로 내려받는 음원 파일이 없어요." },
 ];
 
@@ -99,10 +99,11 @@ ${crumbHtml(items)}
     <div class="table-wrap"><table><thead><tr><th scope="col">하는 일</th><th scope="col">PC 키보드</th><th scope="col">휴대폰</th></tr></thead><tbody>${CONTROLS.map(([a, b, c]) => `<tr><th scope="row">${esc(a)}</th><td>${esc(b)}</td><td>${esc(c)}</td></tr>`).join("")}</tbody></table></div>
     <p>같은 오락실의 <a href="${u("/arcade/hell-31/")}">지옥에서 살아남기</a>는 3~5분짜리 31단계 버전이고, <a href="${u("/story/life/")}">Life Game</a>은 정답 없이 일생을 따라가는 차분한 인생 게임이에요.</p>
   </section>
+  <section class="rank-page" data-rank-game="chosun" aria-label="순위표"></section>
   ${faqHtml(FAQ)}
   ${adSlot("hellchosun-faq")}
 </article>`;
   const ld = [crumbs(items), faqLd(FAQ), { "@context": "https://schema.org", "@type": "VideoGame", name: "헬조선에서 살아남기", url: abs(R.path), description: R.desc, genre: ["Simulation", "Comedy"], gamePlatform: "Web browser", applicationCategory: "Game", operatingSystem: "Any", inLanguage: "ko", isAccessibleForFree: true, publisher: { "@type": "Organization", name: cfg.operator } }];
-  write(R.path, layout({ title: R.seo, desc: R.desc, path: R.path, body, scripts: ["hell-art.js", "hell-chosun-data.js", "hell-chosun-art.js", "hell-sound.js", "hell-chosun.js"], jsonld: ld, fullTitle: false }));
+  write(R.path, layout({ title: R.seo, desc: R.desc, path: R.path, body, scripts: ["rank.js", "hell-art.js", "hell-chosun-data.js", "hell-chosun-art.js", "hell-sound.js", "hell-chosun.js"], jsonld: ld, fullTitle: false }));
   return R;
 }

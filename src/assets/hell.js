@@ -189,7 +189,8 @@
     const cp = cpOf(s.n);
     openOv(`<div class="hl-dead"><p class="hl-dno">사망 카드 #${pad(s.n)}${first ? ' <em class="hl-new">NEW</em>' : ""}</p><h3>${esc(s.death.name)}</h3><p class="hl-ddesc">${esc(s.death.desc)}</p><p class="hl-quip">“${esc(q)}”</p>
 <p class="hl-dmeta">이번 판 사망 ${G.runDeaths}회 · 도감 ${gotN()}/31</p>
-<div class="hl-btns"><button type="button" class="hl-btn" data-act="retry" data-focus>다시 도전 · STAGE ${pad(cp)}부터</button><div class="hl-row"><button type="button" class="hl-btn ghost" data-act="share" data-n="${s.n}">억울한 죽음 카드</button><button type="button" class="hl-btn ghost" data-act="book">도감</button></div></div></div>`, "dead");
+<div class="hl-btns"><button type="button" class="hl-btn" data-act="retry" data-focus>다시 도전 · STAGE ${pad(cp)}부터</button><div class="hl-row"><button type="button" class="hl-btn ghost" data-act="share" data-n="${s.n}">억울한 죽음 카드</button><button type="button" class="hl-btn ghost" data-act="book">도감</button></div></div><div class="rank-slot"></div></div>`, "dead");
+    window.PT_RANK && PT_RANK.report("hell", PT_RANK.score.hell({ stage: s.n }), ov.querySelector(".rank-slot"));
   }
   async function ending() {
     G.mode = "ending"; G.anim = now(); G.lock = true; setCardsIdle("염라대왕이 환생 버튼을 눌렀다!");
@@ -203,7 +204,8 @@
     G.clear = { d: G.runDeaths, s: sec, title };
     openOv(`<div class="hl-dead hl-clear"><p class="hl-dno">31단계 클리어</p><h3>환생 성공!</h3><p class="hl-ddesc">칭호: <b>${esc(title)}</b></p>
 <p class="hl-dmeta">사망 ${G.runDeaths}회 · ${Math.floor(sec / 60)}분 ${sec % 60}초 · 도감 ${gotN()}/31</p>${gotN() < 31 ? `<p class="hl-quip">아직 못 본 죽음이 ${31 - gotN()}가지 남았어요. 일부러 죽어 보는 것도 방법!</p>` : `<p class="hl-quip">사망 도감 31장 완성! 당신이 진정한 지옥 박사입니다.</p>`}
-<div class="hl-btns"><button type="button" class="hl-btn" data-act="start" data-focus>다시 하기</button><div class="hl-row"><button type="button" class="hl-btn ghost" data-act="share" data-n="clear">클리어 카드</button><button type="button" class="hl-btn ghost" data-act="book">도감</button></div></div></div>`, "dead clear");
+<div class="hl-btns"><button type="button" class="hl-btn" data-act="start" data-focus>다시 하기</button><div class="hl-row"><button type="button" class="hl-btn ghost" data-act="share" data-n="clear">클리어 카드</button><button type="button" class="hl-btn ghost" data-act="book">도감</button></div></div><div class="rank-slot"></div></div>`, "dead clear");
+    window.PT_RANK && PT_RANK.report("hell", PT_RANK.score.hell({ clear: true, deaths: G.runDeaths }), ov.querySelector(".rank-slot"));
   }
   // 사망 도감
   const thumbs = {};

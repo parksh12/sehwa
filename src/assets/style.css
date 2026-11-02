@@ -938,3 +938,32 @@ li.has-fav{position:relative}
 .rest-card .ff-go{background:var(--hwang);color:var(--ink)}
 @media(max-width:620px){.rest-card .ff-go{display:none}}
 .rest-card{margin-top:22px}
+
+/* === P2-39 게임 랭킹 === 결과 화면·게임 페이지 하단 순위표(어두운 게임 화면 위에서도 읽히게 흰 카드) */
+.rank-board{display:block;text-align:left;background:#fff;color:#141414;border:2.5px solid #141414;border-radius:12px;padding:10px 12px;margin:12px auto 4px;max-width:420px;width:100%;font-size:14px;line-height:1.45}
+.rank-page{margin:28px 0}
+.rank-page.rank-board{max-width:none}
+.rank-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+.rank-head b{font-size:15px}
+.rank-head small{color:#767676;font-size:12px}
+.rank-tabs{display:inline-flex;gap:4px}
+.rank-tabs button{font:inherit;font-size:12.5px;font-weight:800;padding:3px 10px;border:2px solid #141414;border-radius:99px;background:#fff;color:#141414;cursor:pointer}
+.rank-tabs button[aria-selected="true"]{background:#141414;color:#fff}
+.rank-list{list-style:none;margin:0;padding:0}
+.rank-list li{display:flex;align-items:center;gap:8px;padding:5px 2px;border-top:1px solid #eee}
+.rank-list li:first-child{border-top:0}
+.rank-list .rk{flex:none;width:22px;text-align:right;font-weight:900;color:#e5372b}
+.rank-list .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}
+.rank-list .nm em{font-style:normal;font-size:11px;font-weight:800;background:#ffc21a;border:1.5px solid #141414;border-radius:5px;padding:0 4px;margin-left:2px}
+.rank-list .sc{flex:none;font-weight:800;font-variant-numeric:tabular-nums}
+.rank-list li.me{background:#fffbea}
+.rank-empty{margin:4px 0;color:#3d3d3d;font-size:13.5px}
+.rank-note{margin:0 0 8px;font-size:13px;font-weight:700;color:#8a1209}
+.rank-note.ok{color:#1e7a46}
+.rank-form p{margin:0 0 8px}
+.rank-form label{display:grid;gap:4px;font-weight:800;font-size:13px}
+.rank-form input{font:inherit;font-size:16px;padding:8px 10px;border:2px solid #141414;border-radius:8px;width:100%;color:#141414;background:#fff}
+.rank-hint{font-size:12px;color:#767676;margin:6px 0!important}
+.rank-err{color:#8a1209;font-weight:700;font-size:13px}
+.rank-btns{display:flex;gap:8px;flex-wrap:wrap}
+.rank-btns .btn{flex:1 1 auto;padding:8px 12px;font-size:14px}

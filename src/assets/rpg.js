@@ -649,7 +649,8 @@
     t.hidden = false;
     t.className = "rpg-title rpg-end";
     const lv = G.party.map((m) => `${mname(m)} Lv${m.lv}`).join(" · ");
-    t.innerHTML = `<div class="rpg-roll"><h2>뽀득이와 오색 연</h2><p class="rpg-sub">— 끝 —</p><dl><dt>플레이 시간</dt><dd>${fmtTime(G.ms)}</dd><dt>전투</dt><dd>${G.battles}번</dd><dt>파티</dt><dd>${esc(lv)}</dd><dt>몬스터 수첩</dt><dd>${kinds()}/15종</dd><dt>서브 퀘스트</dt><dd>${["q1", "q2", "q3", "q4", "q5"].filter((q) => G.flags[q + "done"]).length}/5</dd></dl><p class="rpg-credit">만든 곳: 세화산업 · 펭귄 툴즈<br>그림·이야기·소리 모두 코드로 직접 만들었어요.</p><div class="rpg-tbtn"><button type="button" class="btn" data-a="free">마을에서 계속 놀기</button><button type="button" class="btn ghost" data-a="title">타이틀로</button></div></div>`;
+    t.innerHTML = `<div class="rpg-roll"><h2>뽀득이와 오색 연</h2><p class="rpg-sub">— 끝 —</p><dl><dt>플레이 시간</dt><dd>${fmtTime(G.ms)}</dd><dt>전투</dt><dd>${G.battles}번</dd><dt>파티</dt><dd>${esc(lv)}</dd><dt>몬스터 수첩</dt><dd>${kinds()}/15종</dd><dt>서브 퀘스트</dt><dd>${["q1", "q2", "q3", "q4", "q5"].filter((q) => G.flags[q + "done"]).length}/5</dd></dl><p class="rpg-credit">만든 곳: 세화산업 · 펭귄 툴즈<br>그림·이야기·소리 모두 코드로 직접 만들었어요.</p><div class="rank-slot"></div><div class="rpg-tbtn"><button type="button" class="btn" data-a="free">마을에서 계속 놀기</button><button type="button" class="btn ghost" data-a="title">타이틀로</button></div></div>`;
+    if (!dbg.auto) window.PT_RANK && PT_RANK.report("rpg", Math.round(G.ms / 1000), t.querySelector(".rank-slot")); // 자동 시험 플레이는 올리지 않음
     const w = { kinds: ["A"], res: null };
     const r = await new Promise((res) => { w.res = () => res("free"); t.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => res(b.dataset.a))); if (dbg.auto) setTimeout(() => res("free"), 50); setTimeout(() => waiters.push(w), 800); });
     waiters = waiters.filter((x) => x !== w);

@@ -29,7 +29,7 @@ const TIPS = [
   "지도에는 주변과 생김새가 살짝 다른 나무나 벽이 있어요. 그쪽으로 걸어 들어가 보세요. 숨은 길일 수 있어요.",
 ];
 const FAQ = [
-  { q: "저장은 어떻게 하나요?", a: "따로 누르지 않아도 지도를 옮길 때, 전투가 끝날 때, 모닥불이나 찜질방에서 쉴 때 자동으로 저장돼요. 메뉴의 「저장」으로 직접 저장할 수도 있어요. 저장 데이터는 이 브라우저에만 남고 서버로 보내지 않아요." },
+  { q: "저장은 어떻게 하나요?", a: "따로 누르지 않아도 지도를 옮길 때, 전투가 끝날 때, 모닥불이나 찜질방에서 쉴 때 자동으로 저장돼요. 메뉴의 「저장」으로 직접 저장할 수도 있어요. 저장 데이터는 이 브라우저에만 남고 서버로 보내지 않아요. 순위표만 예외로, TOP10에 들어 「순위에 올리기」를 고른 경우에 한해 닉네임과 기록이 순위표(Google Firebase)에 저장돼요." },
   { q: "휴대폰에서도 할 수 있나요?", a: "네. 화면 아래 방향 패드와 A·B 버튼으로 끝까지 플레이할 수 있어요. 세로 화면 기준으로 맞췄고, 메뉴 항목은 손가락으로 바로 눌러도 돼요." },
   { q: "전투에서 지면 어떻게 되나요?", a: "마지막으로 쉰 모닥불이나 마을 찜질방에서 HP와 MP가 모두 찬 상태로 다시 시작해요. 가진 골드의 10%만 잃고, 레벨과 아이템, 퀘스트 진행은 그대로예요." },
   { q: "막혔어요. 어디로 가야 하나요?", a: "메뉴의 「퀘스트」에 지금 해야 할 일이 적혀 있어요. 마을 촌장님 집에 가면 다음 목적지를 알려 줘요. 보스가 너무 세다면 상점에서 장비를 바꾸고, 그 지역 몬스터의 기운을 이기는 스킬을 써 보세요." },
@@ -64,10 +64,11 @@ ${crumbHtml(items)}
     <h2>처음 하는 분을 위한 팁</h2>
     <ul>${TIPS.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>
   </section>
+  <section class="rank-page" data-rank-game="rpg" aria-label="순위표"></section>
   ${faqHtml(FAQ)}
   ${adSlot("rpg-faq")}
 </article>`;
   const ld = [crumbs(items), faqLd(FAQ), { "@context": "https://schema.org", "@type": "VideoGame", name: "뽀득이와 오색 연", url: abs(R.path), description: R.desc, genre: "RPG", gamePlatform: "Web browser", applicationCategory: "Game", operatingSystem: "Any", inLanguage: "ko", isAccessibleForFree: true, publisher: { "@type": "Organization", name: cfg.operator } }];
-  write(R.path, layout({ title: R.seo, desc: R.desc, path: R.path, body, scripts: ["rpg-data.js", "rpg-art.js", "rpg-battle.js", "rpg.js"], jsonld: ld, fullTitle: false }));
+  write(R.path, layout({ title: R.seo, desc: R.desc, path: R.path, body, scripts: ["rank.js", "rpg-data.js", "rpg-art.js", "rpg-battle.js", "rpg.js"], jsonld: ld, fullTitle: false }));
   return R;
 }
