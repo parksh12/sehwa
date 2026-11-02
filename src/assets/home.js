@@ -21,13 +21,13 @@
       .sort((a, b) => b.s - a.s)
       .map((r) => r.x);
     hits.innerHTML = cur.length
-      ? cur.map((x) => `<li><a href="${esc(x.p)}"><b>${esc(x.t)}</b>${x.b ? ' <em class="beta">베타</em>' : ""}<small>${esc(x.c)}</small></a></li>`).join("")
+      ? cur.map((x) => `<li><a href="${esc(x.p)}"${x.x ? ' target="_blank" rel="noopener"' : ""}><b>${esc(x.t)}</b>${x.b ? ' <em class="beta">베타</em>' : ""}<small>${esc(x.c)}</small></a></li>`).join("")
       : `<li class="none">「${esc(raw)}」에 맞는 툴이 아직 없어요. 다른 말로 찾아보세요.</li>`;
     hits.hidden = false;
     count.textContent = cur.length ? `${cur.length}개 찾았어요. 엔터를 누르면 첫 번째 툴로 가요.` : "";
   };
   input.addEventListener("input", run);
-  input.closest("form").addEventListener("submit", (e) => { e.preventDefault(); if (cur[0]) location.href = cur[0].p; });
+  input.closest("form").addEventListener("submit", (e) => { e.preventDefault(); if (cur[0]) { if (cur[0].x) window.open(cur[0].p, "_blank", "noopener"); else location.href = cur[0].p; } });
   input.addEventListener("keydown", (e) => { if (e.key === "Escape") { input.value = ""; run(); } });
   run();
 })();
