@@ -11,7 +11,7 @@ export default {
   contactEmail: process.env.CONTACT_EMAIL || "aqaaq1@naver.com", // 대표님 지정 공개 문의 이메일(2026-11-02)
   adsenseClient: process.env.ADSENSE_CLIENT || "ca-pub-5127178209204980", // 대표님 애드센스 게시자 ID(2026-11-02). 머리말 자동 광고 스크립트 + ads.txt
   adsenseSlot: process.env.ADSENSE_SLOT || "", // 수동 광고 단위 ID(승인 후 애드센스에서 만들어 넣음). 비어 있으면 본문 광고 칸을 출력하지 않음(빈 상자 방지)
-  gaId: process.env.GA_ID || "", // 예: "G-XXXXXXX"
+  gaId: process.env.GA_ID || "G-D6CDR67DM4", // 대표님 GA4 측정 ID(2026-11-02). 있으면 처리방침 8항(위탁)·8-2항(국외 이전)에 Google Analytics 항목 출력
   googleVerification: process.env.GOOGLE_VERIFICATION || "",
   naverVerification: process.env.NAVER_VERIFICATION || "",
   lang: "ko",
