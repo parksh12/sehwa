@@ -439,7 +439,24 @@ const ZONES = [
   <div class="hero-actions"><button class="btn" type="button" data-act="draw">아무거나 한 판</button><span class="fun-badge">오락실의 모든 테스트와 운세는 재미로 보는 콘텐츠예요</span></div>
   <ul hidden data-draw-pool>${pool.map((id) => `<li><a href="${u(toolById[id].path)}">${esc(toolById[id].title)}</a></li>`).join("")}</ul>
 </header>
-<div class="drawers drawers-3">${ZONES.map((z) => drawerHtml({ tone: z.tone, name: z.name, sub: z.sub, tools: z.ids.map((id) => toolById[id]), ext: z.ext || [], extra: extra[z.name] || "" })).join("")}</div>
+${(() => {
+  // ZONES는 그대로 두고(다른 작업자가 게임 id를 추가함) 화면 배치만 새로: 게임 구역의 앞 2개는 특집 카드
+  const z = Object.fromEntries(ZONES.map((x) => [x.name, x]));
+  const games = z["게임"].ids, feat = games.slice(0, 2), mini = games.slice(2);
+  const fortune = [...z["오늘"].ids, ...z["테스트"].ids];
+  const tile = (id) => funTile(id);
+  const featCard = (id) => { const x = toolById[id]; return `<li class="has-fav">${favBtn(x, "fav-tile")}<a class="arc-feat t-${x.cat}" href="${u(x.path)}"><span class="fun-art">${ART[x.id]}</span><span class="ff-body"><em>${esc(x.meta || "게임")}</em><b>${esc(x.title)}</b><span>${esc(x.hook)}</span></span><span class="ff-go">플레이 ›</span></a></li>`; };
+  return `<section class="arcade" aria-label="${esc(PLAY.name)} 콘텐츠">
+  <div class="arc-sec"><h2 class="arc-h"><span class="dot t-story"></span>게임 <small>한 판이면 끝나는 짧은 게임부터 1시간 RPG까지</small></h2>
+    <ul class="arc-feats">${feat.map(featCard).join("")}</ul>
+    <ul class="fun-grid arc-grid">${mini.map(tile).join("")}</ul>${extra["게임"]}</div>
+  <div class="arc-sec"><h2 class="arc-h"><span class="dot t-luck"></span>운세 · 테스트 <small>오늘의 운세, 사주, 생일·성향·이름으로 보는 나</small></h2>
+    <ul class="fun-grid arc-grid arc-5">${fortune.map(tile).join("")}</ul>
+    <div class="arc-stamps">${extra["오늘"]}</div>${extra["테스트"]}</div>
+  <div class="arc-sec"><h2 class="arc-h"><span class="dot t-love"></span>같이 <small>세화산업이 운영하는 다른 서비스</small></h2>
+    <ul class="fun-grid arc-grid arc-1">${tile("family")}</ul></div>
+</section>`;
+})()}
 ${recoRows(["charcount", "dday", "pdfmerge"], "쉬었다면, 일하러 갈 때 쓰는 툴")}
 ${adSlot("play")}`;
   write(PLAY.path, layout({ title: `${PLAY.name} — 운세·성격 테스트·짧은 게임`, wide: true, scripts: ["home.js"], desc: `${PLAY.desc} 오늘의 띠별 운세, 생일로 보는 나, 16유형 성격 테스트, 이름 궁합, Life Game, 반응속도 게임.`, path: PLAY.path, body, jsonld: [crumbs(items)] }));

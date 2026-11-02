@@ -862,3 +862,34 @@ li.has-fav{position:relative}
 .rb-stat{margin:0}
 .tk.is-busy .rb-view,.tk.is-busy .rb-actions,.tk.is-busy .rb-modes{opacity:.6;pointer-events:none}
 @media(max-width:480px){.rb .seg span{padding:7px 12px;font-size:14px}.rb-view{--hmax:60vh}.rb-actions .btn.ghost{flex:1 1 0;padding-left:6px;padding-right:6px;font-size:14px}}
+
+/* === COO 오락실 허브 재배치 (2026-11-02) === */
+.arcade{background:var(--heuk);color:var(--white);border-radius:20px;padding:22px 16px 26px;box-shadow:var(--drop);margin:18px 0 26px}
+@media(min-width:880px){.arcade{padding:28px 28px 32px}}
+.arc-sec+.arc-sec{margin-top:30px;padding-top:24px;border-top:2px dashed #444}
+.arc-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin:0 0 14px;font-family:var(--display);font-weight:400;font-size:clamp(24px,3vw,30px);color:var(--hwang)}
+.arc-h small{font-family:inherit;font-family:"Pretendard Variable",sans-serif;font-size:14px;font-weight:600;color:#d9d9d4}
+.arc-h .dot{width:14px;height:14px;border-radius:50%;background:var(--tone);border:2px solid var(--white);align-self:center}
+.arc-feats{list-style:none;margin:0 0 14px;padding:0;display:grid;gap:14px}
+@media(min-width:880px){.arc-feats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.arc-feat{display:flex;align-items:center;gap:16px;height:100%;box-sizing:border-box;background:var(--white);color:var(--ink);text-decoration:none;border:var(--bd);border-left:12px solid var(--tone);border-radius:14px;padding:18px 18px;transition:transform .12s}
+.arc-feat:hover,.arc-feat:focus-visible{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--hwang)}
+.arc-feat .fun-art{width:72px;height:72px;flex:none}
+.arc-feat .ff-body b{font-size:clamp(20px,2.4vw,26px)}
+.arc-grid{margin:0}
+@media(min-width:880px){.arc-grid{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}.arc-5{grid-template-columns:repeat(5,minmax(0,1fr))}}
+@media(min-width:620px) and (max-width:879px){.arc-5{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.arc-1{grid-template-columns:minmax(0,1fr)!important}
+@media(min-width:620px){.arc-1 .fun-tile{flex-direction:row;align-items:center;gap:14px}}
+.arc-1 .fun-tile b{white-space:nowrap}
+.arc-stamps{margin-top:14px;background:var(--white);color:var(--ink);border:var(--bd);border-radius:14px;padding:10px 12px}
+.arc-stamps .drawer-extra{border:0;padding:0;margin:0}
+.arcade details.drawer-extra{margin-top:12px;background:#222;border:2px solid #444;border-radius:12px;padding:10px 12px;color:var(--white)}
+.arcade details.drawer-extra summary{cursor:pointer;font-weight:800}
+.arcade details .chip{background:var(--white);color:var(--ink)}
+.arcade .has-fav{position:relative}
+.arcade details.drawer-extra summary,.arcade details.drawer-extra summary *{color:var(--hwang)!important;opacity:1}
+.arc-feat.t-arcade{--tone:var(--jeok)}
+@media(max-width:879px){.arc-grid:not(.arc-1)>li:last-child:nth-child(odd){grid-column:1/-1}}
+@media(min-width:620px) and (max-width:879px){.arc-5>li:last-child:nth-child(odd){grid-column:auto}}
+@media(min-width:880px){.arc-stamps .mini-stamps{grid-template-columns:repeat(12,minmax(0,1fr))}}
