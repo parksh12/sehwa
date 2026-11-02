@@ -118,11 +118,16 @@
     else if (f === "l") { P.p(X + 3, Y + 3, K); P.p(X + 4, Y + 4, K); P.p(X + 8, Y + 3, K); P.p(X + 7, Y + 4, K); P.r(X + 4, Y + 5, 4, 2, K); P.r(X + 5, Y + 6, 2, 1, "#ff6a6a"); } // 깔깔(눈 질끈)
     else if (f === "s") { P.r(X + 3, Y + 3, 2, 2, "#fff"); P.r(X + 7, Y + 3, 2, 2, "#fff"); } // 숯검댕이: 흰 눈만
   }
+  // 옷차림(P2-28 헬조선이 나이별로 바꿈). 기본 "n"은 P2-27과 같은 모습
+  let OUTFIT = "n";
+  const OUTFITS = { n: {} };
   function heroSprite(face_ = "n", pose = "idle", pal = "n") {
-    const key = `hero:${face_}:${pose}:${pal}`;
+    const special = pal !== "n", of = special ? {} : OUTFITS[OUTFIT] || {};
+    const key = `hero:${face_}:${pose}:${pal}:${special ? "" : OUTFIT}`;
     if (cache.has(key)) return cache.get(key);
     const rows = pose === "up" ? HERO_UP : pose === "run" ? HERO_RUN : pose === "baby" ? HERO_BABY : HERO;
-    const c = sprite(key, rows, PALS[pal] || PALS.n, (P) => { if (pose !== "baby") face(P, face_); else { P.p(3, 3, K); P.p(6, 3, K); } });
+    const palette = special ? PALS[pal] || PALS.n : { ...PALS.n, ...(of.pal || {}) };
+    const c = sprite(key, rows, palette, (P) => { if (pose !== "baby") { face(P, face_); if (of.deco) of.deco(P, pose, face_); } else { P.p(3, 3, K); P.p(6, 3, K); } });
     if (pal === "soot") { // 아프로 머리
       const c2 = cv(c.width + 6, c.height + 5), x2 = c2.getContext("2d"), P = pen(x2);
       P.e(c2.width / 2, 5, 9, 5, "#141414"); [[-6, 2], [5, 1], [0, -2], [-3, 4], [6, 5]].forEach(([a, b]) => P.e(c2.width / 2 + a, 5 + b, 3, 3, "#2a2a2a"));
@@ -135,7 +140,8 @@
     const s = heroSprite(o.face || "n", o.pose || "idle", o.pal || "n");
     x.save(); x.globalAlpha = o.a == null ? 1 : o.a; x.translate(Math.round(X), Math.round(Y));
     if (o.rot) x.rotate(o.rot);
-    x.scale((o.flip ? -1 : 1) * (o.sx || 1), o.sy || 1);
+    const osc = (OUTFITS[OUTFIT] || {}).scale || 1;
+    x.scale((o.flip ? -1 : 1) * (o.sx || 1) * osc, (o.sy || 1) * osc);
     x.drawImage(s, -Math.round(s.width / 2), -s.height + 1);
     x.restore();
   }
@@ -352,7 +358,9 @@
   // t: 0→1 (약 0.9초). base: 장면이 준 주인공 위치. d: 사망 데이터
   function puff(P, X, Y, r, col = "#e8e8f0") { P.e(X, Y, r, r, col); P.e(X - r * 0.8, Y + r * 0.3, r * 0.7, r * 0.7, col); P.e(X + r * 0.8, Y + r * 0.2, r * 0.75, r * 0.75, col); }
   function stars(P, X, Y, t, n = 3, r = 7) { for (let i = 0; i < n; i++) { const a = t * 10 + (i / n) * Math.PI * 2; const sx = X + Math.cos(a) * r, sy = Y + Math.sin(a) * r * 0.4; P.p(sx, sy, "#ffe07a"); P.p(sx - 1, sy, "#ffc21a"); P.p(sx + 1, sy, "#ffc21a"); P.p(sx, sy - 1, "#ffc21a"); P.p(sx, sy + 1, "#ffc21a"); } }
+  const FALL = {}; // P2-28 등에서 떨어지는 물체 추가
   function fallObj(x, kind, X, Y) {
+    if (FALL[kind]) return FALL[kind](x, X, Y);
     const P = pen(x);
     if (kind === "meteor") { P.e(X, Y - 7, 9, 8, K); P.e(X, Y - 7, 8, 7, "#6a4a3a"); P.e(X - 2, Y - 9, 2, 2, "#8a6a5a"); flame(P, X, Y - 14, 4, Y); }
     else if (kind === "boot") { P.r(X - 10, Y - 16, 14, 12, K); P.r(X - 9, Y - 16, 12, 11, "#5a0a10"); P.r(X - 10, Y - 6, 24, 7, K); P.r(X - 9, Y - 5, 22, 5, "#3a0508"); }
@@ -361,7 +369,7 @@
     else if (kind === "floor") { P.r(0, Y - 8, W, 8, K); P.r(0, Y - 7, W, 6, "#7a1fa8"); for (let i = 0; i < 10; i++) P.r(i * 16, Y - 7, 1, 6, "#ff3fd8"); }
   }
   const DEATH = {
-    melt(x, t, b) { const P = pen(x); const lw = 4 + ease(seg(t, 0, 0.3)) * 18; P.e(b.hx, b.hy + 2, lw, 3, "#ff5a1a"); P.e(b.hx, b.hy + 2, lw - 3, 2, "#ffc21a"); const sink = ease(seg(t, 0.1, 0.6)); if (sink < 1) { x.save(); x.beginPath(); x.rect(0, 0, W, b.hy + 1); x.clip(); hero(x, b.hx, b.hy + sink * 18, { face: "o", pose: "up", sx: 1 + sink * 0.3, sy: 1 - sink * 0.2 }); x.restore(); } if (t > 0.55) { const bob = Math.sin(t * 20) * 1.2; skull(x, b.hx, b.hy - 1 + bob); for (let i = 0; i < 3; i++) { const k = (t * 3 + i / 3) % 1; P.e(b.hx - 8 + i * 8, b.hy - k * 10, 1, 1, "#ffc21a"); } } },
+    melt(x, t, b, d = {}) { const P = pen(x); const lw = 4 + ease(seg(t, 0, 0.3)) * 18; P.e(b.hx, b.hy + 2, lw, 3, (d.col || ["#ff5a1a"])[0]); P.e(b.hx, b.hy + 2, lw - 3, 2, (d.col || [0, "#ffc21a"])[1]); const sink = ease(seg(t, 0.1, 0.6)); if (sink < 1) { x.save(); x.beginPath(); x.rect(0, 0, W, b.hy + 1); x.clip(); hero(x, b.hx, b.hy + sink * 18, { face: "o", pose: "up", sx: 1 + sink * 0.3, sy: 1 - sink * 0.2 }); x.restore(); } if (t > 0.55) { const bob = Math.sin(t * 20) * 1.2; skull(x, b.hx, b.hy - 1 + bob); for (let i = 0; i < 3; i++) { const k = (t * 3 + i / 3) % 1; P.e(b.hx - 8 + i * 8, b.hy - k * 10, 1, 1, "#ffc21a"); } } },
     cliff(x, t, b) { const P = pen(x); const ex = b.hx + 26; P.r(ex, 100, W - ex, 20, "#0c0202"); P.r(ex, 100, 1, 20, "#5a2a1a"); const walk = seg(t, 0, 0.35), hang = seg(t, 0.35, 0.6), drop = seg(t, 0.6, 1); const X = b.hx + walk * 38; if (drop === 0) { hero(x, X, b.hy, { face: hang > 0 ? "o" : "w", pose: hang > 0 ? "up" : (Math.floor(t * 20) % 2 ? "run" : "idle") }); if (hang > 0.2) { bubble(P, X + 6, b.hy - 28, 10, 10, "l"); txt(P, "?", X + 9, b.hy - 26, K); } } else { hero(x, X, b.hy + drop * drop * 60, { face: "o", pose: "up", sx: 1 - drop * 0.4, sy: 1 + drop * 0.6 }); for (let i = 0; i < 3; i++) P.r(X - 4 + i * 4, b.hy - 22 - drop * 10, 1, 6, "#fff"); } },
     bloat(x, t, b, d) { const P = pen(x); const g = ease(seg(t, 0, 0.65)); if (t < 0.68) { hero(x, b.hx, b.hy, { face: d.tint === "pink" ? "l" : "p", pal: d.tint === "pink" ? "pink" : "green", sx: 1 + g * 1.4, sy: 1 + g * 0.8 }); if (d.tint !== "pink") for (let i = 0; i < 4; i++) { const a = t * 9 + i * 1.6; const gx = b.hx + Math.cos(a) * (12 + g * 8), gy = b.hy - 12 + Math.sin(a) * 8; P.e(gx, gy, 2, 2, "#3fbf5a"); P.p(gx, gy, K); } } else { const k = seg(t, 0.68, 1); for (let i = 0; i < 8; i++) { const a = (i / 8) * Math.PI * 2; P.e(b.hx + Math.cos(a) * k * 26, b.hy - 12 + Math.sin(a) * k * 20, 4 - k * 3, 4 - k * 3, "#fff"); } puff(P, b.hx, b.hy - 10, 8 - k * 4); ghost(x, b.hx, b.hy - 16 - k * 30, 1 - k * 0.3); } },
     soul(x, t, b, d) { const P = pen(x); const [tx, ty] = d.target || [120, 60]; const k = ease(seg(t, 0.15, 0.85)); hero(x, b.hx, b.hy, { face: t > 0.2 ? "x" : "o", pal: t > 0.3 ? "grey" : "n", sy: 1 - seg(t, 0.3, 1) * 0.15 }); const gx = b.hx + (tx - b.hx) * k, gy = b.hy - 18 + (ty - b.hy + 18) * k - Math.sin(k * Math.PI) * 16; for (let i = 0; i < 6; i++) { const q = i / 6; P.e(b.hx + (gx - b.hx) * q, b.hy - 14 + (gy - b.hy + 14) * q, 1 + q * 2, 1 + q * 2, "rgba(238,246,255,0.6)"); } ghost(x, gx, gy, 1 - seg(t, 0.85, 1)); if (t > 0.85) { txt(P, "+1", tx - 4, ty - 16 - (t - 0.85) * 40, "#ffc21a"); } },
@@ -372,7 +380,7 @@
     chomp(x, t, b) { const P = pen(x); const dx = 116 - ease(seg(t, 0, 0.25)) * (116 - b.hx); if (t < 0.25) { dog(x, dx, 100, t * 3, { flip: true, run: true }); hero(x, b.hx, b.hy, { face: "p" }); } else if (t < 0.8) { const j = Math.sin(t * 60) * 3; puff(P, b.hx + j, b.hy - 12, 12, "#d8d0c8"); puff(P, b.hx - j, b.hy - 18, 8, "#e8e0d8"); stars(P, b.hx, b.hy - 14, t, 4, 14); if (Math.sin(t * 50) > 0) hero(x, b.hx - 14, b.hy - 18, { face: "x", sx: 0.6, sy: 0.6, rot: t * 20 }); if (Math.sin(t * 40) > 0.3) shoe(x, b.hx + 12, b.hy - 20); } else { const k = seg(t, 0.8, 1); dog(x, b.hx - 10 - k * 80, 100, t * 3, { run: true }); shoe(x, b.hx + 6, b.hy - 2); } },
     poke(x, t, b) { const P = pen(x); const k = seg(t, 0, 0.2); const tx = b.hx + 34 - k * 22; P.r(tx, b.hy - 7, 40, 1, "#6a4a2a"); P.r(tx - 3, b.hy - 10, 1, 7, "#c8c8d0"); P.r(tx - 3, b.hy - 7, 4, 1, "#c8c8d0"); if (t < 0.25) { hero(x, b.hx, b.hy, { face: k > 0.8 ? "o" : "w", flip: true }); } else { const q = seg(t, 0.25, 1); const X = b.hx - q * 40, Y = b.hy - q * 90 + q * q * 10; hero(x, X, Y, { face: "o", rot: q * 14, sx: 1 - q * 0.6, sy: 1 - q * 0.6 }); for (let i = 0; i < 4; i++) P.r(X + 4 + i * 3, Y + 4 + i * 3, 1, 3, "#fff"); if (q > 0.8) stars(P, X, Y, t, 4, 4); } if (t > 0.18 && t < 0.4) { txt(P, "!", b.hx - 4, b.hy - 28, "#ffc21a", 2); } },
     soot(x, t, b) { const P = pen(x); if (t < 0.35) { hero(x, b.hx, b.hy, { face: "o" }); const k = seg(t, 0.05, 0.35); for (let i = 0; i < 5; i++) flame(P, b.hx - 10 + i * 5, b.hy, 3 + k * 8, t * 4, i); } else { const k = seg(t, 0.35, 1); hero(x, b.hx, b.hy, { face: "s", pal: "soot" }); if (Math.floor(t * 12) % 4 === 0) P.r(b.hx - 4, b.hy - 15, 8, 2, "#141414"); for (let i = 0; i < 3; i++) puff(P, b.hx + 6 + i * 4, b.hy - 20 - k * 16 - i * 4, 2 + i, "#6a6a74"); if (t > 0.6) { P.r(b.hx + 4, b.hy - 10, 3, 2, "#6a6a74"); } } },
-    paper(x, t, b) { const P = pen(x); const k = seg(t, 0, 0.75); const n = Math.floor(k * 22); hero(x, b.hx, b.hy, { face: "o", pose: "up" }); for (let i = 0; i < n; i++) { const px = b.hx - 16 + hash(i, 61) * 32, py = b.hy - 3 - Math.floor(i / 5) * 4 - (i % 5 === 4 ? 0 : 0); P.box(px - 5, py - (i < 8 ? 0 : i * 0.9), 12, 5, "#fff"); P.r(px - 3, py + 2 - (i < 8 ? 0 : i * 0.9), 7, 1, "#9a9aa6"); } for (let i = 0; i < 3; i++) { const fy = ((t * 2 + i / 3) % 1) * 70; P.box(b.hx - 12 + i * 12, fy, 10, 4, "#fff"); } if (t > 0.75) { const w = Math.sin(t * 40) * 2; P.r(b.hx + w, b.hy - 32, 2, 6, "#ffd7b0"); P.r(b.hx - 1 + w, b.hy - 34, 4, 2, "#ffd7b0"); if (t > 0.92) P.r(b.hx - 4, b.hy - 32, 6, 2, "#ffd7b0"); } },
+    paper(x, t, b, d = {}) { const P = pen(x); const k = seg(t, 0, 0.75); const n = Math.floor(k * 22); hero(x, b.hx, b.hy, { face: "o", pose: "up" }); for (let i = 0; i < n; i++) { const px = b.hx - 16 + hash(i, 61) * 32, py = b.hy - 3 - Math.floor(i / 5) * 4 - (i % 5 === 4 ? 0 : 0); P.box(px - 5, py - (i < 8 ? 0 : i * 0.9), 12, 5, d.col || "#fff"); P.r(px - 3, py + 2 - (i < 8 ? 0 : i * 0.9), 7, 1, "#9a9aa6"); } for (let i = 0; i < 3; i++) { const fy = ((t * 2 + i / 3) % 1) * 70; P.box(b.hx - 12 + i * 12, fy, 10, 4, d.col || "#fff"); } if (t > 0.75) { const w = Math.sin(t * 40) * 2; P.r(b.hx + w, b.hy - 32, 2, 6, "#ffd7b0"); P.r(b.hx - 1 + w, b.hy - 34, 4, 2, "#ffd7b0"); if (t > 0.92) P.r(b.hx - 4, b.hy - 32, 6, 2, "#ffd7b0"); } },
     shrink(x, t, b, d) { const P = pen(x); const k = ease(seg(t, 0, 0.85)); if (t < 0.85) { const fl = Math.sin(t * 50) > 0 || t < 0.4; if (fl) { if (d.baby && k > 0.4) hero(x, b.hx, b.hy, { pose: "baby", sx: 1.4 - (k - 0.4) * 2.4, sy: 1.4 - (k - 0.4) * 2.4 }); else hero(x, b.hx, b.hy, { face: "w", sx: 1 - k * (d.baby ? 0.5 : 0.95), sy: 1 - k * (d.baby ? 0.5 : 0.95), a: d.baby ? 1 : 1 - k * 0.6 }); } } else { const q = seg(t, 0.85, 1); for (let i = 0; i < 6; i++) { const a = (i / 6) * Math.PI * 2; P.p(b.hx + Math.cos(a) * q * 8, b.hy - 2 + Math.sin(a) * q * 8, "#ffe07a"); } } if (d.baby) for (let i = 0; i < 3; i++) { const a = -t * 14 + i * 2; P.line(b.hx + 22, b.hy - 30, b.hx + 22 + Math.cos(a) * 6, b.hy - 30 + Math.sin(a) * 6, "#fff"); } },
     freeze(x, t, b) { const P = pen(x); const k = seg(t, 0, 0.4); hero(x, b.hx + seg(t, 0.55, 1) ** 2 * 120, b.hy, { face: "o", pal: k > 0.5 ? "ice" : "n", pose: "up" }); if (k > 0.3) { const X = b.hx + seg(t, 0.55, 1) ** 2 * 120; x.save(); x.globalAlpha = 0.55; P.r(X - 10, b.hy - 22, 20, 23, "#bfe8ff"); x.restore(); P.r(X - 10, b.hy - 22, 20, 1, "#fff"); P.r(X - 10, b.hy - 22, 1, 23, "#fff"); P.r(X + 9, b.hy - 22, 1, 23, "#7fb8e8"); P.r(X - 10, b.hy, 20, 1, "#7fb8e8"); P.r(X - 7, b.hy - 19, 2, 6, "#fff"); if (t > 0.55) for (let i = 0; i < 4; i++) P.r(X - 14 - i * 6, b.hy - 4 + i, 4, 1, "#fff"); } for (let i = 0; i < 6; i++) P.p(b.hx - 14 + hash(i, 71) * 28, b.hy - 30 + ((t * 40 + i * 9) % 30), "#fff"); },
     chase(x, t, b) { const P = pen(x); const k = seg(t, 0, 0.6); const hx = b.hx + k * 100; const dx = -20 + k * 150; hero(x, hx, b.hy - Math.abs(Math.sin(t * 30)) * 3, { face: "p", pose: Math.floor(t * 20) % 2 ? "run" : "idle" }); dog(x, dx, 100, t * 3, { run: true }); for (let i = 0; i < 3; i++) P.r(dx - 20 - i * 6, 90 + i * 3, 4, 1, "#fff"); if (t > 0.6) { const q = seg(t, 0.6, 1); const sx = 150 - q * 70, sy = 40 + (q - 0.5) * (q - 0.5) * 220 - 10; x.save(); x.translate(sx, Math.min(sy, b.hy - 2)); x.rotate(q * 12); x.drawImage(sprite("shoe", SHOE, { ...C, k: "#3a2a20", a: "#ddd" }), -5, -3); x.restore(); if (q > 0.9) stars(P, sx, b.hy - 8, t, 2, 5); } },
@@ -507,5 +515,7 @@
     const o = cv(w, h), ox = o.getContext("2d"); ox.imageSmoothingEnabled = false; ox.drawImage(c, 0, 0, w, h); return o;
   }
 
+  // P2-28 헬조선이 같은 엔진을 쓰도록 도구를 내보냄
+  H.lib = { pen, sprite, outline, cv, hash, clamp, ease, seg, C, K, W, HH, GY, txt, txtW, bubble, hero, heroSprite, ghost, skull, shoe, devil, dog, flame, steam, puff, stars, fallObj, FALL, DEATH, win, IC, icon, PALS, OUTFITS, setOutfit: (k) => { OUTFIT = OUTFITS[k] ? k : "n"; } };
   H.art = { W, H: HH, drawStage, drawTitle, drawEnding, icon, deathThumb, floorOf, background, hasScene: (k) => !!SC[k], hasAnim: (k) => !!DEATH[k], hasIcon: (k) => !!IC[k] };
 })();

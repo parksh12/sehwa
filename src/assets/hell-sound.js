@@ -72,6 +72,39 @@
     }],
   };
 
+  // ---------- P2-28 헬조선 BGM 5곡 + 효과음 ----------
+  const HC = !!document.getElementById("hc");
+  if (HC) {
+    Object.assign(SFX, {
+      ding: [0.6, (c, d) => { tone(c, d, "square", NOTE(88), 0, 0.12, 0.2); tone(c, d, "square", NOTE(93), 0.12, 0.4, 0.2, { vib: 6, vibAmt: 5 }); }],
+      coin: [0.35, (c, d) => { tone(c, d, "square", NOTE(83), 0, 0.07, 0.18); tone(c, d, "square", NOTE(88), 0.07, 0.25, 0.18); }],
+      drop: [0.5, (c, d) => tone(c, d, "triangle", NOTE(70), 0, 0.45, 0.35, { slide: NOTE(46) })],
+      warn: [0.6, (c, d) => { [0, 0.15, 0.3].forEach((t) => tone(c, d, "square", NOTE(81), t, 0.08, 0.2)); tone(c, d, "sine", NOTE(69), 0.45, 0.15, 0.3); }],
+      combo: [0.7, (c, d) => { for (let i = 0; i < 10; i++) tone(c, d, "square", NOTE(60 + i * 2), i * 0.05, 0.05, 0.12); noise(c, d, 0.5, 0.2, 0.3, { f: 3000 }); }],
+    });
+    for (const k of Object.keys(BGM)) delete BGM[k];
+    Object.assign(BGM, {
+      c1: [132, 4, (c, d) => { // 경쾌한 아동용 8비트(C장조)
+        const mel = [72, 76, 79, 76, 77, 74, 72, 74, 76, 79, 84, 79, 77, 76, 74, 72];
+        seq(c, d, 132, 4, (b, t0, bt) => { const ch = [[48, 55], [53, 57], [55, 59], [48, 55]][b]; for (let i = 0; i < 4; i++) { tone(c, d, "triangle", NOTE(ch[0]), t0 + i * bt, bt * 0.45, 0.3); tone(c, d, "triangle", NOTE(ch[1]), t0 + i * bt + bt / 2, bt * 0.4, 0.22); } for (let i = 0; i < 4; i++) tone(c, d, "square", NOTE(mel[(b * 4 + i) % 16]), t0 + i * bt, bt * 0.8, 0.07); noise(c, d, t0 + bt, 0.04, 0.15, { f: 7000, type: "highpass" }); noise(c, d, t0 + bt * 3, 0.04, 0.15, { f: 7000, type: "highpass" }); });
+      }],
+      c2: [112, 4, (c, d) => { // 우울하고 찌릿한 인디 록 칩튠(A단조)
+        const ws = shaper(c, 8); ws.connect(d);
+        seq(c, d, 112, 4, (b, t0, bt) => { const r = [45, 41, 48, 43][b]; for (let i = 0; i < 8; i++) { tone(c, ws, "sawtooth", NOTE(r), t0 + i * bt * 0.5, bt * 0.42, 0.06); tone(c, ws, "sawtooth", NOTE(r + 7), t0 + i * bt * 0.5, bt * 0.42, 0.04); } [0, 2].forEach((k) => noise(c, d, t0 + k * bt, 0.12, 0.3, { f: 180 })); [1, 3].forEach((k) => noise(c, d, t0 + k * bt, 0.08, 0.2, { f: 2500, type: "bandpass" })); tone(c, d, "square", NOTE(r + 24 + (b % 2 ? 3 : 0)), t0 + bt, bt * 2.5, 0.04, { vib: 5, vibAmt: 6 }); });
+      }],
+      c3: [150, 4, (c, d) => { // 야근 오피스(빠른 반복 + 시계 째깍)
+        seq(c, d, 150, 4, (b, t0, bt) => { for (let i = 0; i < 16; i++) tone(c, d, "square", NOTE([62, 65, 69, 65][i % 4] + (b === 3 ? 2 : 0)), t0 + i * bt / 4, bt * 0.18, 0.045); for (let k = 0; k < 4; k++) { noise(c, d, t0 + k * bt, 0.03, 0.25, { f: 5000, type: "highpass" }); tone(c, d, "triangle", NOTE(38), t0 + k * bt, bt * 0.5, 0.3); } });
+      }],
+      c4: [120, 4, (c, d) => { // 치킨집 주방 펑크
+        seq(c, d, 120, 4, (b, t0, bt) => { const bass = [43, 43, 46, 48, 43, 43, 50, 48]; for (let i = 0; i < 8; i++) tone(c, d, "triangle", NOTE(bass[i]), t0 + i * bt * 0.5, bt * 0.3, 0.3); [0.5, 1.5, 2.5, 3.5].forEach((k) => tone(c, d, "square", NOTE(67 + (b % 2) * 2), t0 + k * bt, bt * 0.15, 0.06)); [0, 2].forEach((k) => noise(c, d, t0 + k * bt, 0.1, 0.3, { f: 200 })); [1, 3].forEach((k) => noise(c, d, t0 + k * bt, 0.08, 0.2, { f: 3000, type: "bandpass" })); for (let i = 0; i < 8; i++) noise(c, d, t0 + i * bt * 0.5, 0.03, 0.06, { f: 9000, type: "highpass" }); });
+      }],
+      c5: [72, 4, (c, d) => { // 잔잔하고 쓸쓸한 아코디언풍(바람통 떨림)
+        const mel = [[69, 2], [67, 1], [65, 1], [64, 4], [62, 2], [64, 1], [65, 1], [64, 4]];
+        seq(c, d, 72, 4, (b, t0, bt) => { const ch = [[50, 57, 62], [45, 52, 57], [46, 53, 58], [45, 52, 57]][b]; ch.forEach((n) => { tone(c, d, "sawtooth", NOTE(n), t0, bt * 3.9, 0.025, { a: 0.1, vib: 6, vibAmt: 3 }); tone(c, d, "sawtooth", NOTE(n), t0, bt * 3.9, 0.02, { a: 0.1, detune: 12 }); }); tone(c, d, "triangle", NOTE(ch[0] - 12), t0, bt * 2, 0.25); tone(c, d, "triangle", NOTE(ch[1] - 12), t0 + bt * 2, bt * 2, 0.2); });
+        let t = 0; const bt = 60 / 72; for (let r = 0; r < 2; r++) mel.forEach(([n, l]) => { tone(c, d, "square", NOTE(n + 12), t, l * bt * 0.95, 0.05, { a: 0.04, vib: 6, vibAmt: 5 }); t += l * bt; });
+      }],
+    });
+  }
   // ---------- 렌더 → WAV ----------
   function render(dur, fn, gain = 1) {
     const len = Math.ceil(dur * SR);
@@ -98,7 +131,7 @@
       for (const [k, [dur, fn]] of Object.entries(SFX)) jobs.push(render(dur, fn, 1).then((b) => { buffers[k] = b; urls[k] = URL.createObjectURL(wav(b)); makeEl(k, urls[k], false); }));
       for (const [k, [bpm, bars, fn]] of Object.entries(BGM)) jobs.push(render((60 / bpm) * 4 * bars, fn, 0.55).then((b) => { buffers[k] = b; urls[k] = URL.createObjectURL(wav(b)); }));
       await Promise.all(jobs);
-      makeEl("bgm", urls.f1, true);
+      makeEl("bgm", urls.f1 || urls.c1, true);
       ready = true;
       if (pending) { const p = pending; pending = null; bgm(p); }
     } catch (e) { status.engine = "none"; }

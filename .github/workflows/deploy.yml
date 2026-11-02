@@ -32,6 +32,9 @@ jobs:
           GA_ID: ${{ vars.GA_ID }}
           ADSENSE_CLIENT: ${{ vars.ADSENSE_CLIENT }}
           CONTACT_EMAIL: ${{ vars.CONTACT_EMAIL }}
+          # P2-35 검색 등록 소유 확인 메타 태그(값이 있으면 모든 페이지 <head>에 출력). 절차: 산출물/P2-35_검색등록_절차.md
+          GOOGLE_VERIFICATION: ${{ vars.GOOGLE_VERIFICATION }}
+          NAVER_VERIFICATION: ${{ vars.NAVER_VERIFICATION }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

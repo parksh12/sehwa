@@ -33,7 +33,9 @@ function write(p, html) {
   const file = path.join(DIST, p.endsWith("/") ? p + "index.html" : p);
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, html);
+  pageHtml.set(p, html); // P2-35 sitemap lastmod 계산용
 }
+const pageHtml = new Map();
 
 // ---------- 사이트 구조 ----------
 const CATS = {
@@ -57,6 +59,7 @@ const TOOLS = [
   { id: "stack", cat: "arcade", path: "/arcade/stack/", icon: "", title: "블록 쌓기 게임", h1: "블록 쌓기 게임 — 탭 한 번으로 높이 쌓기", desc: "좌우로 움직이는 블록을 탭해서 멈추고, 아래 블록과 겹친 만큼만 남겨 높이 쌓는 게임이에요. 딱 맞추면 PERFECT, 이 기기의 최고 기록을 남겨 다시 도전할 수 있어요.", hook: "탭 한 번에 한 층. 딱 맞추면 PERFECT.", meta: "탭 · Space" },
   { id: "life", cat: "story", path: "/story/life/", icon: "", title: "Life Game", seo: "Life Game — 인생 시뮬레이션 게임, 진학·결혼·직업을 직접 고르기", h1: "Life Game — 진학·결혼·직업, 갈림길을 직접 고르는 인생 게임", desc: "한 사람이 되어 일생을 살아 보는 도트 이야기 게임. 진학, 첫 직업, 결혼, 자녀, 이직, 이사, 위기, 은퇴 같은 인생의 터닝포인트를 시간 제한 없이 직접 고르면, 고른 길에 맞는 장면과 엔딩, 내 인생 연표가 나와요.", hook: "결혼할까, 창업할까? 터닝포인트를 직접 고르는 인생.", meta: "5~10분 · 터닝포인트 9번" },
   { id: "hell", cat: "arcade", path: "/arcade/hell-31/", icon: "", title: "지옥에서 살아남기", h1: "지옥에서 살아남기 — Hell Survival 31", desc: "A와 B 중 하나는 살고 하나는 죽는 31단계 병맛 선택 게임. 슬랩스틱 사망 31종을 모으는 사망 도감과 「가장 억울한 죽음」 공유 카드까지, 3~5분이면 한 판.", hook: "A/B 중 하나는 즉사. 상식대로 고르면 대개 죽는 31단계.", meta: "31단계 · 3~5분" }, // P2-27
+  { id: "hellchosun", cat: "story", path: "/story/hell-chosun/", icon: "", title: "헬조선에서 살아남기", h1: "헬조선에서 살아남기 — 0세부터 80세까지 40단계", desc: "자산·체력·멘탈·눈치를 지키며 0세부터 80세까지 40단계를 버티는 병맛 인생 생존 게임. 사망 도감 44장, 엔딩 4종, 다음 생 유산 보너스.", hook: "자산·체력·멘탈·눈치 중 하나라도 바닥나면 끝. 80세까지 버티기.", meta: "40단계 · 15~30분" }, // P2-28
 ];
 // 카드 그림(인라인 SVG). 이모지 대신 사이트 고유 그림을 씁니다.
 const K = "#141414", W = "#fff", RED = "#e5372b", YEL = "#ffc21a", GRN = "#1e9e5a";
@@ -72,6 +75,7 @@ const ART = {
   reaction: sv(`<rect x="51" y="10" width="18" height="10" rx="3" fill="${YEL}"/><rect x="57" y="18" width="6" height="10" fill="${W}"/><circle cx="60" cy="68" r="38" fill="${W}"/><path d="M60 68V38a30 30 0 0 1 21.2 8.8z" fill="${GRN}"/><circle cx="60" cy="68" r="30" fill="none" stroke="${K}" stroke-width="3" stroke-dasharray="2 13.7"/><path d="M60 68 78 50" stroke="${RED}" stroke-width="6" stroke-linecap="round"/><circle cx="60" cy="68" r="5" fill="${K}"/>`),
   life: sv(`<path d="M34 16h52M34 104h52" stroke="${K}" stroke-width="6" stroke-linecap="round"/><path d="M40 18h40c0 22-18 30-18 42s18 20 18 42H40c0-22 18-30 18-42S40 40 40 18z" fill="${W}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M47 30h26q-6 14-13 21-7-7-13-21z" fill="${YEL}"/><path d="M60 54v40" stroke="${YEL}" stroke-width="3"/><path d="M45 101q15-20 30 0z" fill="${RED}"/>`),
   hell: sv(`<path d="M60 8c8 18 30 26 30 52a30 30 0 0 1-60 0c0-14 8-20 12-30 4 8 8 10 10 10-2-12 2-22 8-32z" fill="${RED}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M42 64a18 18 0 0 1 36 0v10l-6 4v8H48v-8l-6-4z" fill="${W}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><circle cx="52" cy="66" r="5" fill="${K}"/><circle cx="68" cy="66" r="5" fill="${K}"/><path d="M60 72l-3 5h6z" fill="${K}"/><path d="M54 86v-6M60 86v-6M66 86v-6" stroke="${K}" stroke-width="3"/><rect x="74" y="88" width="38" height="24" rx="5" fill="${YEL}" stroke="${K}" stroke-width="4"/><text x="93" y="107" font-size="18" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">31</text>`), // P2-27
+  hellchosun: sv(`<rect x="14" y="70" width="92" height="36" rx="4" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M14 70l46-40 46 40" fill="${RED}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><rect x="30" y="80" width="18" height="16" fill="${YEL}" stroke="${K}" stroke-width="3"/><rect x="72" y="80" width="18" height="26" fill="${K}"/><path d="M20 26h22M31 16v20" stroke="${K}" stroke-width="5" stroke-linecap="round"/><text x="90" y="36" font-size="18" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">80</text>`), // P2-28
   // 실용 툴 그림: 접힌 귀퉁이가 있는 문서(doc) 조합
   pdfmerge: sv(`${doc(14, 14, 40, 52, W)}${doc(30, 26, 40, 52, YEL)}<path d="M74 60h14" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M84 52l9 8-9 8" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>${doc(66, 52, 40, 54, RED)}<text x="86" y="90" font-size="15" font-weight="800" text-anchor="middle" fill="${W}" font-family="sans-serif">PDF</text>`),
   pdfsplit: sv(`${doc(16, 16, 54, 72, RED)}<text x="43" y="60" font-size="16" font-weight="800" text-anchor="middle" fill="${W}" font-family="sans-serif">PDF</text><path d="M8 96h104" stroke="${K}" stroke-width="4" stroke-dasharray="7 6"/>${doc(56, 58, 30, 40, W)}${doc(80, 66, 30, 40, YEL)}`),
@@ -244,13 +248,51 @@ const shareBar = (opts = {}) =>
   <button type="button" class="btn ghost" data-act="image">결과 이미지 저장</button>
 </div>`;
 
-function layout({ title, desc, path: p, body, scripts = [], jsonld = [], noindex = false, ogType = "website", fullTitle = false, wide = false, csp = false, vendor = [] }) {
-  const pageTitle = fullTitle ? title : `${title} | ${cfg.siteName}`;
+// ---------- P2-35 기술 SEO: 검색 결과 제목·설명 보정 + 사이트 전체 구조화 데이터 ----------
+// 짧거나 검색어가 빠진 제목·설명만 여기서 보정(원고는 그대로). 주소 기준이라 호출부를 고치지 않아도 됨
+const SEO_DESC = {
+  "/about/": () => `${cfg.siteName} 소개: PDF·이미지·글쓰기·생활 계산 툴과 펭귄 오락실을 어떤 원칙(브라우저 안에서 처리, 한계까지 적는 설명)으로 운영하는지, 운영자 ${cfg.operator} 안내.`,
+  "/privacy/": () => `${cfg.siteName} 개인정보처리방침: 툴에 넣은 파일과 입력값을 서버로 보내지 않는 원칙, Google AdSense 광고 쿠키${cfg.gaId ? "와 Google Analytics 방문 통계" : ""}, 국외 이전, 문의처 안내.`,
+  "/terms/": () => `${cfg.siteName} 이용약관: 서비스 내용, 서비스 변경·중단, 이용자의 의무, 저작권, 책임의 제한, 준거법과 분쟁 해결 안내.`,
+  "/disclaimer/": () => `${cfg.siteName} 면책고지: 툴 결과물은 원본과 함께 확인해 주세요. 펭귄 오락실의 운세·테스트는 재미로 보는 콘텐츠이며 의학·법률·재정·심리 진단을 대신하지 않아요.`,
+  "/contact/": () => `${cfg.siteName} 문의: 오류 제보, 의견, 제휴 문의는 이메일 ${cfg.contactEmail}로 보내 주세요. 문의할 때 알려 주시면 좋은 내용과 답변 안내.`,
+  "/licenses/": () => `${cfg.siteName}가 쓰는 오픈소스 라이브러리(pdf-lib, pdf.js, mammoth, fflate 등)와 글꼴(Pretendard, Black Han Sans)의 버전·라이선스 안내.`,
+  "/editorial/": () => `${cfg.siteName}가 툴 설명과 오락실 해설을 만들고 검수하는 기준: 실제 파일로 확인, 직접 작성과 사람 검수, 단정하지 않는 표현, 계산 방식 공개.`,
+};
+// 제목 보정: ① 오락실 카테고리(나의 성격 등)는 이름만 있으면 안에 든 콘텐츠 이름을 붙임 ② 오락실 툴에 seo 제목이 없으면 h1(검색어가 든 긴 제목)을 씀
+function seoTitle(p, title) {
+  const k = Object.keys(CATS).find((c) => p === `/${c}/`);
+  if (k && title === CATS[k].name) {
+    const names = []; let len = title.length + 3;
+    for (const x of TOOLS.filter((x) => x.cat === k)) { if (len + x.title.length > 30 && names.length) break; names.push(x.title); len += x.title.length + 1; }
+    return names.length ? `${title} — ${names.join("·")}` : title;
+  }
+  const tool = TOOLS.find((x) => x.path === p);
+  if (tool && !tool.seo && title === tool.title && tool.h1) return tool.h1;
+  return title;
+}
+// 사이트 전체 Organization·WebSite. 실제 주소 검색 기능이 없어서 SearchAction은 넣지 않음(홈 검색은 화면 안에서만 동작)
+const ORG_ID = () => abs("/#organization");
+const siteLd = () => [
+  { "@context": "https://schema.org", "@type": "Organization", "@id": ORG_ID(), name: cfg.operator, url: abs("/"), email: cfg.contactEmail },
+  { "@context": "https://schema.org", "@type": "WebSite", "@id": abs("/#website"), name: cfg.siteName, url: abs("/"), inLanguage: "ko", publisher: { "@id": ORG_ID() } },
+];
+// 페이지별 구조화 데이터 정리: Google 소프트웨어 앱 리치 결과는 평점(aggregateRating)이나 리뷰(review)가 필수 → 실제 평점이 없는 WebApplication은
+// 서치 콘솔에 「잘못된 항목」으로 잡히므로 빼고(평점을 지어내지 않음), 운영자 Organization에는 주소(@id·url)를 채움
+function cleanLd(list) {
+  return list.filter((o) => !(o && o["@type"] === "WebApplication" && !o.aggregateRating && !o.review)).map((o) => {
+    if (o && o.publisher && o.publisher["@type"] === "Organization" && o.publisher.name === cfg.operator && !o.publisher.url) return { ...o, publisher: { ...o.publisher, "@id": ORG_ID(), url: abs("/") } };
+    return o;
+  });
+}
+
+function layout({ title: title0, desc: desc0, path: p, body, scripts = [], jsonld = [], noindex = false, ogType = "website", fullTitle = false, wide = false, csp = false, vendor = [] }) {
+  const title = fullTitle ? title0 : seoTitle(p, title0);
+  const desc = SEO_DESC[p] ? SEO_DESC[p]() : desc0;
+  // 제목이 길면(사이트 이름 포함 40자 초과) 「| 펭귄 툴즈」를 빼서 검색어가 잘리지 않게 함. 사이트 이름은 WebSite 구조화 데이터로 따로 알림
+  const pageTitle = fullTitle || `${title} | ${cfg.siteName}`.length > 40 ? title : `${title} | ${cfg.siteName}`;
   if (!noindex) sitemap.push(p);
-  const ld = [
-    { "@context": "https://schema.org", "@type": "WebSite", name: cfg.siteName, url: abs("/") },
-    ...jsonld,
-  ];
+  const ld = [...siteLd(), ...cleanLd(jsonld)];
   return `<!doctype html>
 <html lang="ko" data-base="${esc(cfg.basePath)}" data-site="${esc(cfg.siteName)}">
 <head>
@@ -267,6 +309,7 @@ ${noindex ? '<meta name="robots" content="noindex,follow">' : ""}
 <meta property="og:description" content="${esc(desc)}">
 <meta property="og:url" content="${abs(p)}">
 <meta property="og:image" content="${abs("/assets/og.png")}">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="${esc(cfg.siteName)} — 자주 쓰는 툴, 설치 없이 바로. PDF 합치기, JPG→PDF, 용량 줄이기, 글자수 세기, 타이머">
 <meta property="og:locale" content="ko_KR">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#ffffff">
@@ -420,7 +463,7 @@ ${adSlotFixed("home")}`;
 const ZONES = [
   { tone: "luck", name: "오늘", sub: "매일 자정에 바뀌는 운세 · 사주팔자", ids: ["today", "saju"] },
   { tone: "me", name: "테스트", sub: "생일·성향·이름으로 보는 나", ids: ["birthday", "personality", "namematch"] },
-  { tone: "story", name: "게임", sub: "한 판이면 끝나는 짧은 게임", ids: ["rpg", "hell", "life", "stack", "reaction"] },
+  { tone: "story", name: "게임", sub: "한 판이면 끝나는 짧은 게임", ids: ["rpg", "hell", "hellchosun", "life", "stack", "reaction"] },
   { tone: "love", name: "같이", sub: "세화산업이 운영하는 다른 서비스(외부 사이트)", ids: [], ext: [FAMILY] },
 ];
 {
@@ -1047,6 +1090,8 @@ for (const k of INFO) {
 (await import("./content/saju.mjs")).default({ cfg, write, layout, crumbHtml, crumbs, faqHtml, faqLd, adSlot, esc, t, u, abs, textLen, warnings, root: ROOT });
 // P2-27 지옥에서 살아남기 (본문·데이터 검사는 content/hell.mjs, 게임은 src/assets/hell-*.js)
 (await import("./content/hell.mjs")).default({ cfg, write, layout, crumbHtml, crumbs, faqHtml, faqLd, adSlot, esc, t, u, abs, textLen, warnings, root: ROOT });
+// P2-28 헬조선에서 살아남기 (본문·데이터 검사는 content/hell-chosun.mjs, 게임은 src/assets/hell-chosun-*.js + P2-27 엔진)
+(await import("./content/hell-chosun.mjs")).default({ cfg, write, layout, crumbHtml, crumbs, faqHtml, faqLd, adSlot, esc, t, u, abs, textLen, warnings, root: ROOT });
 
 // 404
 write("/404.html", layout({ title: "페이지를 찾을 수 없어요", desc: "요청하신 페이지를 찾을 수 없어요.", path: "/404.html", noindex: true, body: `<section class="hero"><h1>앗, 길을 잃었어요</h1><p class="lead">주소가 바뀌었거나 없는 페이지예요. 대신 많이 쓰는 툴로 가 보세요.</p></section>${recoHtml(["pdfmerge", "img2pdf", "charcount", "today"], "많이 쓰는 툴")}` }));
@@ -1061,11 +1106,31 @@ write("/404.html", layout({ title: "페이지를 찾을 수 없어요", desc: "�
 }
 
 // sitemap / robots / rss
-const today = new Date().toISOString().slice(0, 10);
-fs.writeFileSync(path.join(DIST, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemap.map((p) => `  <url><loc>${abs(p)}</loc><lastmod>${today}</lastmod></url>`).join("\n")}\n</urlset>\n`);
+const today = kstDate(); // 한국 날짜(YYYY-MM-DD)
+// P2-35 lastmod: 매일 자정 재빌드 때 모든 페이지가 「오늘 수정」으로 나오면 Google이 lastmod를 믿지 않음 → 페이지 내용이 실제로 바뀐 날만 기록.
+// seo-lastmod.json = { 경로: [내용 지문, 날짜] }. 지문은 주소(SITE_URL)·빌드 버전·연도를 지운 HTML로 만들어 로컬·배포 빌드가 같은 값을 냄.
+// 로컬 빌드가 이 파일을 갱신하고(커밋에 포함), 배포(CI) 빌드는 읽기만 함. 지문이 다르면 그날 날짜를 씀(오늘의 운세처럼 매일 바뀌는 페이지).
+const LASTMOD_FILE = path.join(ROOT, "seo-lastmod.json");
+const lastmodDb = fs.existsSync(LASTMOD_FILE) ? JSON.parse(fs.readFileSync(LASTMOD_FILE, "utf8")) : {};
+const fingerprint = (html) => {
+  let h = html.split(cfg.siteUrl).join("@SITE");
+  if (cfg.basePath) h = h.split(`${cfg.basePath}/`).join("/").split(`data-base="${cfg.basePath}"`).join('data-base=""');
+  h = h.replace(/\?v=[a-z0-9]+/g, "").replace(/© \d{4}/g, "©").replace(/<meta name="(google|naver)-site-verification"[^>]*>/g, ""); // 소유 확인 값은 배포 변수에만 있음
+  let x = 2166136261; for (let i = 0; i < h.length; i++) { x ^= h.charCodeAt(i); x = Math.imul(x, 16777619) >>> 0; } // FNV-1a 32bit
+  return x.toString(36) + "." + h.length.toString(36);
+};
+const lastmod = {};
+for (const p of sitemap) {
+  const fp = fingerprint(pageHtml.get(p) || "");
+  const prev = lastmodDb[p];
+  lastmod[p] = prev && prev[0] === fp ? prev[1] : today;
+  lastmodDb[p] = [fp, lastmod[p]];
+}
+if (!process.env.CI) fs.writeFileSync(LASTMOD_FILE, "{\n" + sitemap.map((p) => `${JSON.stringify(p)}: ${JSON.stringify(lastmodDb[p])}`).join(",\n") + "\n}\n");
+fs.writeFileSync(path.join(DIST, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemap.map((p) => `  <url><loc>${abs(p)}</loc><lastmod>${lastmod[p]}</lastmod></url>`).join("\n")}\n</urlset>\n`);
 fs.writeFileSync(path.join(DIST, "robots.txt"), `User-agent: *\nAllow: /\n\nSitemap: ${abs("/sitemap.xml")}\n`);
 const rssItems = [...UTILS.map((x) => [x.title, x.path, x.desc]), ...TOOLS.map((x) => [x.title, x.path, x.desc]), ...TYPE_KEYS.map((k) => [`${personality[k].name}(${k}) 성격 특징`, `/me/personality/${k.toLowerCase()}/`, fill(personality[k].summary)])];
-fs.writeFileSync(path.join(DIST, "rss.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"><channel><title>${esc(cfg.siteName)}</title><link>${abs("/")}</link><description>${esc(cfg.tagline)}</description><language>ko</language>\n${rssItems.map(([ti, p, d]) => `<item><title>${esc(ti)}</title><link>${abs(p)}</link><guid>${abs(p)}</guid><description>${esc(d)}</description><pubDate>${new Date().toUTCString()}</pubDate></item>`).join("\n")}\n</channel></rss>\n`);
+fs.writeFileSync(path.join(DIST, "rss.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"><channel><title>${esc(cfg.siteName)}</title><link>${abs("/")}</link><description>${esc(cfg.tagline)}</description><language>ko</language>\n${rssItems.map(([ti, p, d]) => `<item><title>${esc(ti)}</title><link>${abs(p)}</link><guid>${abs(p)}</guid><description>${esc(d)}</description><pubDate>${new Date(`${lastmod[p] || today}T00:00:00+09:00`).toUTCString()}</pubDate></item>`).join("\n")}\n</channel></rss>\n`);
 // 자체 도메인(basePath "")이면 CNAME도 만들어 둠. GitHub Actions로 배포할 때는 이 파일이 쓰이지 않고 저장소 Settings → Pages의 Custom domain 값이 기준(문서 확인)
 { const host = new URL(cfg.siteUrl).hostname; if (cfg.basePath === "" && !host.endsWith(".github.io")) fs.writeFileSync(path.join(DIST, "CNAME"), host + "\n"); }
 if (cfg.adsenseClient) fs.writeFileSync(path.join(DIST, "ads.txt"), `google.com, ${cfg.adsenseClient.replace("ca-", "")}, DIRECT, f08c47fec0942fa0\n`);

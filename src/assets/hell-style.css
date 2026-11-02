@@ -98,3 +98,47 @@
 .hell-page .hl-warn{background:#fff5d6;border:2px solid var(--ink);border-radius:10px;padding:10px 12px;font-size:14px;margin:12px 0}
 @media (max-width:420px){.hl-hud{gap:6px;padding:6px}.hl-floor{font-size:11px;padding:2px 5px}.hl-dc{font-size:12px}.hl-ib{width:32px;height:32px}.hl-card{min-height:86px;padding:7px}.hl-ic{width:30px;height:30px}.hl-ov{top:50px}}
 @media (prefers-reduced-motion:reduce){.hl-shake{animation:none}.hl-fcard.go{animation-duration:.01s;opacity:1}}
+/* ---------- P2-28 헬조선에서 살아남기(/story/hell-chosun/) — 같은 파일을 함께 씀 ---------- */
+.hc .hl-screen{--fc:#ff8fb1;--cardA:#d8467a;--cardB:#2a8ad8;--hudbg:#000}
+.hc .hl-screen[data-ch="1"]{--fc:#ff8fb1;--cardA:#d8467a;--cardB:#2a8ad8;--hudbg:#3a1a2a}
+.hc .hl-screen[data-ch="2"]{--fc:#8aa07a;--cardA:#5a6a4a;--cardB:#3a4a5a;--hudbg:#141a14}
+.hc .hl-screen[data-ch="3"]{--fc:#6a8ad8;--cardA:#3a4a7a;--cardB:#5a3a6a;--hudbg:#0c1020}
+.hc .hl-screen[data-ch="4"]{--fc:#ff9a2a;--cardA:#c8501a;--cardB:#a8781a;--hudbg:#2a140a}
+.hc .hl-screen[data-ch="5"]{--fc:#ffb070;--cardA:#8a4a5a;--cardB:#4a5a7a;--hudbg:#1e1428}
+.hc .hl-hud,.hc .hc-stats,.hc .hc-life,.hc .hl-pips,.hc .hl-sub,.hc .hl-cards{background:var(--hudbg)}
+.hc .hl-floor{background:var(--fc);color:#000;text-shadow:none;border-color:#fff}
+.hc .hl-card{background:var(--cardA)}.hc .hl-card[data-k="1"]{background:var(--cardB)}
+.hc-stats{display:grid;grid-template-columns:1.25fr 1fr 1fr 1fr;gap:4px;padding:2px 8px 4px;text-shadow:var(--ol)}
+.hc-st{position:relative;display:flex;flex-direction:column;gap:2px;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.25);border-radius:6px;padding:3px 5px;line-height:1.1;min-width:0}
+.hc-st small{font-size:10.5px;color:#ddd}.hc-st b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hc-st[data-k="m"] b{color:#ffe07a}
+.hc-bar{position:relative;display:block;height:5px;background:#000;border-radius:2px;overflow:visible}
+.hc-bar>i{display:block;height:100%;width:50%;background:#3fbf5a;border-radius:2px;transition:width .4s}
+.hc-st[data-k="mt"] .hc-bar>i{background:#9b4dff}.hc-st[data-k="i"] .hc-bar>i{background:#3ff0ff}
+.hc-bar em{position:absolute;top:-2px;width:2px;height:9px;background:#fff}
+.hc-st.low{border-color:#ff3a2a;animation:hlb .5s steps(2) infinite}
+.hc-st.ready{border-color:#3ff0ff}
+.hc-dl{position:absolute;right:3px;top:-4px;font-size:12px;font-style:normal;animation:hcdl 1.4s ease-out forwards;pointer-events:none}
+.hc-dl.up{color:#9dff8a}.hc-dl.dn{color:#ff7a6a}
+@keyframes hcdl{0%{opacity:0;transform:translateY(6px)}15%{opacity:1;transform:none}80%{opacity:1}100%{opacity:0;transform:translateY(-10px)}}
+.hc-life{display:flex;justify-content:space-between;gap:8px;padding:0 9px 4px;font-size:11.5px;color:#ccc;text-shadow:var(--ol)}
+.hc-life b{color:#fff}.hc-life span{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hc .hl-pips{grid-template-columns:repeat(40,1fr)}
+.hc .hl-say.warn{color:#3ff0ff}
+.hl-flash.warn.go{background:#3ff0ff;animation:hlf .45s ease-out}
+.hc-pop{position:absolute;left:5%;right:5%;top:3%;text-align:center;background:#fff;color:#000;border:3px solid #000;border-radius:8px;padding:6px 8px;font-size:clamp(13px,3.8vw,16px);line-height:1.35;box-shadow:0 4px 0 #000}
+.hc-pop.gold{background:#ffe07a}
+.hc-pop.go{animation:hcpop .3s steps(3)}
+@keyframes hcpop{0%{transform:scale(.4)}100%{transform:none}}
+.hc-lg{margin:0;font-size:12px;color:#ffe07a;line-height:1.4}
+.hc-rest{width:100%;max-width:440px;text-align:center}
+.hc-rest h3{margin:2px 0 4px;font-family:inherit;font-size:28px;color:#ffe07a;font-weight:700}
+.hc-rgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.hc-rb{display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 6px}
+.hc-rb .hl-ic{width:32px;height:32px}.hc-rb b{font-size:14px}.hc-rb small{font-size:11px;color:#ddd;line-height:1.3}
+.hc-eh{margin:14px 0 6px;font-family:inherit;color:#ffc21a;font-size:18px;text-align:left;font-weight:700}
+.hc-ends{list-style:none;margin:0;padding:0;display:grid;gap:6px;text-align:left}
+.hc-ends li{border:2px solid #5a3a3e;border-radius:7px;padding:6px 8px;color:#888;font-size:12px}
+.hc-ends li.got{border-color:#3ff0ff;color:#fff}
+.hc-ends li b{display:block;font-size:13px}.hc-ends small{color:inherit;opacity:.85}
+@media (max-width:420px){.hc-st{padding:2px 4px}.hc-st b{font-size:12px}.hc-st small{font-size:10px}}

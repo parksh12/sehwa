@@ -32,6 +32,7 @@ node build.mjs            # dist/ 생성
   - `tool-kit.js` 툴 공통 틀(파일 넣기 → 처리·진행 표시 → 내려받기 → 다음 툴), `t-*.js` 툴별 코드
 - 카테고리: `/pdf/` `/image/` `/text/` `/calc/` + 펭귄 놀이터 `/play/`(기존 `/me/` `/love/` `/luck/` `/story/` `/arcade/` 주소 그대로)
 - `build.mjs` 페이지·sitemap.xml·rss.xml·robots.txt 생성. 본문 기준 미달 결과 페이지는 자동 noindex
+- `seo-lastmod.json` sitemap `<lastmod>` 기록(페이지 내용 지문 + 실제로 바뀐 날). 로컬 `node build.mjs`가 갱신하므로 **페이지를 고친 커밋에 함께 넣으세요.** 배포(CI) 빌드는 읽기만 하고, 지문이 다르면 그날 날짜를 씁니다(P2-35)
 
 ## 콘텐츠 원칙
 파일은 서버로 전송하지 않음(문구도 이 표현으로 한정) / 툴 작업 영역 안 광고 금지, 광고는 툴 상자 아래 높이 확보 / 툴 페이지 CSP meta / 놀이터는 재미로 보는 콘텐츠 고지 / 단정·보장 표현 금지 / 성격유형 검사 상표명 표기 안 함 / 실존 인물 이미지 금지
