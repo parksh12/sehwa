@@ -927,3 +927,13 @@ li.has-fav{position:relative}
 .long-card .ff-go{align-self:flex-start;margin:auto 0 0}
 @media(max-width:879px){.long-card{flex-direction:row;align-items:center}.long-art{width:60px;height:60px;flex:none}.long-card .ff-go{display:none}}
 .long-body .new-tag{align-self:flex-start}
+
+/* === COO 툴 완료 후 「잠깐 쉬어 가기」 게임 카드 (2026-11-02) === */
+.tk-next .rest-card{flex-basis:100%;display:flex;align-items:center;gap:12px;margin-top:10px;background:var(--heuk);color:var(--white);text-decoration:none;border:var(--bd);border-left:10px solid var(--tone);border-radius:14px;padding:12px 14px;transition:transform .12s}
+.tk-next .rest-card:hover,.tk-next .rest-card:focus-visible{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--hwang)}
+.rest-card .fun-art{width:48px;height:48px;flex:none;background:var(--white);border-radius:10px;padding:4px;box-sizing:border-box}
+.rest-card .ff-body em{color:var(--hwang)}
+.rest-card .ff-body b{color:var(--white);font-size:clamp(18px,2.2vw,22px)}
+.rest-card .ff-body span{color:#d9d9d4}
+.rest-card .ff-go{background:var(--hwang);color:var(--ink)}
+@media(max-width:620px){.rest-card .ff-go{display:none}}

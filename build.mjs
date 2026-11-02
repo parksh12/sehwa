@@ -873,7 +873,14 @@ const tkTail = (runLabel, { disabled = true } = {}) => `
 ${runLabel ? `<button class="btn big tk-run" type="button" data-run${disabled ? " disabled" : ""}>${esc(runLabel)}</button>` : ""}
 <div class="tk-progress" role="status" hidden><span class="spin" aria-hidden="true"></span><span class="tk-progress-text">처리 중…</span><span class="tk-bar" aria-hidden="true"><i></i></span></div>
 <div class="tk-result" hidden><div class="tk-result-body" aria-live="polite"></div></div>`;
-const nextHtml = (id, hidden) => `<nav class="tk-next" aria-label="다음 툴"${hidden ? " hidden" : ""}><b>다음으로 많이 쓰는 툴</b>${NEXT[id].map((x) => `<a class="chip" href="${u(anyById[x].path)}">${esc(anyById[x].title)}</a>`).join("")}</nav>`;
+// 작업을 끝낸 뒤(파일 툴은 결과가 나온 뒤)에만 보이는 「잠깐 쉬어 가기」 게임 카드: 체류시간 긴 게임으로 안내(대표님 지시)
+const REST_GAMES = ["rpg", "hellchosun", "hell", "life"];
+const restCard = (id) => {
+  const g = toolById[REST_GAMES[[...id].reduce((a, c) => a + c.charCodeAt(0), 0) % REST_GAMES.length]];
+  const lg = LONG_GAMES.find((x) => x.id === g.id);
+  return `<a class="rest-card t-${g.cat}" href="${u(g.path)}"><span class="fun-art">${ART[g.id]}</span><span class="ff-body"><em>잠깐 쉬어 가기${lg ? ` · ${esc(lg.t)}` : ""}</em><b>${esc(g.title)}</b><span>${esc(g.hook)}</span></span><span class="ff-go">한 판 ›</span></a>`;
+};
+const nextHtml = (id, hidden) => `<nav class="tk-next" aria-label="다음 툴"${hidden ? " hidden" : ""}><b>다음으로 많이 쓰는 툴</b>${NEXT[id].map((x) => `<a class="chip" href="${u(anyById[x].path)}">${esc(anyById[x].title)}</a>`).join("")}${restCard(id)}</nav>`;
 
 // 실용 툴 페이지 공통 본문: 제목 → [툴 상자: 넣기 → 처리 → 내려받기 → 다음 툴] → 광고(높이 확보) → 사용법·예시·한계 → FAQ → 추천
 // fileTool: 파일 툴이면 결과가 나온 뒤에 「다음 툴」을 보이고, 입력형 툴(글자수·D-day)은 처음부터 보임
