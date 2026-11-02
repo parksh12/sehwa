@@ -9,7 +9,8 @@ export default {
   basePath: new URL(siteUrl).pathname.replace(/\/$/, ""), // GitHub Pages 프로젝트 주소면 "/sehwa", 자체 도메인이면 ""
   operator: "세화산업",
   contactEmail: process.env.CONTACT_EMAIL || "contact@example.com", // TODO(대표님 결정): 공개 문의 이메일
-  adsenseClient: process.env.ADSENSE_CLIENT || "", // 예: "ca-pub-0000000000000000". 비어 있으면 광고 영역 자체를 출력하지 않습니다.
+  adsenseClient: process.env.ADSENSE_CLIENT || "ca-pub-5127178209204980", // 대표님 애드센스 게시자 ID(2026-11-02). 머리말 자동 광고 스크립트 + ads.txt
+  adsenseSlot: process.env.ADSENSE_SLOT || "", // 수동 광고 단위 ID(승인 후 애드센스에서 만들어 넣음). 비어 있으면 본문 광고 칸을 출력하지 않음(빈 상자 방지)
   gaId: process.env.GA_ID || "", // 예: "G-XXXXXXX"
   googleVerification: process.env.GOOGLE_VERIFICATION || "",
   naverVerification: process.env.NAVER_VERIFICATION || "",

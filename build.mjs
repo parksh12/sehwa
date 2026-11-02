@@ -182,13 +182,13 @@ const CSP = [
   "form-action 'self'",
 ].join("; ");
 const adSlot = (name) =>
-  cfg.adsenseClient
-    ? `<div class="ad" aria-label="광고"><ins class="adsbygoogle" style="display:block" data-ad-client="${esc(cfg.adsenseClient)}" data-ad-format="auto" data-full-width-responsive="true" data-slot-name="${name}"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script></div>`
+  cfg.adsenseClient && cfg.adsenseSlot
+    ? `<div class="ad" aria-label="광고"><ins class="adsbygoogle" style="display:block" data-ad-client="${esc(cfg.adsenseClient)}" data-ad-format="auto" data-full-width-responsive="true" data-ad-slot="${esc(cfg.adsenseSlot)}" data-slot-name="${name}"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script></div>`
     : "";
 // 툴 페이지용: 광고 높이를 미리 확보(CLS 방지). 광고 코드가 없으면 출력하지 않음
 const adSlotFixed = (name) =>
-  cfg.adsenseClient
-    ? `<div class="ad ad-fixed" aria-label="광고"><ins class="adsbygoogle" style="display:block;min-height:250px" data-ad-client="${esc(cfg.adsenseClient)}" data-ad-format="auto" data-full-width-responsive="true" data-slot-name="${name}"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script></div>`
+  cfg.adsenseClient && cfg.adsenseSlot
+    ? `<div class="ad ad-fixed" aria-label="광고"><ins class="adsbygoogle" style="display:block;min-height:250px" data-ad-client="${esc(cfg.adsenseClient)}" data-ad-format="auto" data-full-width-responsive="true" data-ad-slot="${esc(cfg.adsenseSlot)}" data-slot-name="${name}"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script></div>`
     : "";
 
 const blocks = (arr = [], hTag = "h3") => arr.map((b) => `<${hTag}>${t(b.h)}</${hTag}>${fill(b.p).split(/\n+/).map((p) => `<p>${esc(p)}</p>`).join("")}`).join("");
