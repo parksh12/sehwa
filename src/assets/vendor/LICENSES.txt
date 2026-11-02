@@ -786,3 +786,33 @@ pdf.js (pdfjs-dist 6.4.299, legacy build) — Apache-2.0   [P2-12 추가, 받은
 넣지 않은 것: standard_fonts/ (LiberationSans가 GPLv2+글꼴 예외 조건이라 금지 원칙에 따라 제외. 대신 기기 글꼴 사용),
               wasm/quickjs-eval.* (PDF 안 스크립트 실행용, 쓰지 않음)
 pdf.js 라이선스 전문: vendor/pdfjs/LICENSE (Apache License 2.0)
+
+==== P2-22 사주팔자 데이터 ====
+saju-kr-lunar.js: 한국천문연구원(KASI) 천문우주지식정보 음양력 변환 자료로 만든 1900~2050년 음력 표(사실 정보).
+  같은 범위를 korean-lunar-calendar 0.4.0 과 하루 단위로 대조했습니다.
+saju-vsop87d-earth.js: VSOP87D 지구 급수(P. Bretagnon & G. Francou, 1988)의 일부 계수. 계수 파일은 astronomia 4.2.0 에서 가져왔습니다.
+
+korean-lunar-calendar — MIT License
+Copyright (c) 2022 Jinil Lee
+
+astronomia — MIT License
+Copyright (c) 2013 Sonia Keys
+Copyright (c) 2016 commenthol
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
