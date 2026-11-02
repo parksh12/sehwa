@@ -56,6 +56,7 @@ const TOOLS = [
   { id: "rpg", cat: "story", path: "/story/penguin-rpg/", icon: "", title: "펭귄 RPG 뽀득이와 오색 연", h1: "펭귄 RPG — 뽀득이와 오색 연", desc: "색을 잃은 얼음 군도에서 펭귄 뽀득이가 오색 실 네 가닥을 찾아 떠나는 약 1시간짜리 턴제 RPG. 지역 4곳과 보스 5마리, 동료 2명, 자동 저장.", hook: "색을 잃은 얼음 군도, 오색 실을 찾아 떠나는 1시간 모험.", meta: "턴제 RPG · 약 1시간 · 자동 저장" },
   { id: "stack", cat: "arcade", path: "/arcade/stack/", icon: "", title: "블록 쌓기 게임", h1: "블록 쌓기 게임 — 탭 한 번으로 높이 쌓기", desc: "좌우로 움직이는 블록을 탭해서 멈추고, 아래 블록과 겹친 만큼만 남겨 높이 쌓는 게임이에요. 딱 맞추면 PERFECT, 이 기기의 최고 기록을 남겨 다시 도전할 수 있어요.", hook: "탭 한 번에 한 층. 딱 맞추면 PERFECT.", meta: "탭 · Space" },
   { id: "life", cat: "story", path: "/story/life/", icon: "", title: "Life Game", seo: "Life Game — 인생 시뮬레이션 게임, 진학·결혼·직업을 직접 고르기", h1: "Life Game — 진학·결혼·직업, 갈림길을 직접 고르는 인생 게임", desc: "한 사람이 되어 일생을 살아 보는 도트 이야기 게임. 진학, 첫 직업, 결혼, 자녀, 이직, 이사, 위기, 은퇴 같은 인생의 터닝포인트를 시간 제한 없이 직접 고르면, 고른 길에 맞는 장면과 엔딩, 내 인생 연표가 나와요.", hook: "결혼할까, 창업할까? 터닝포인트를 직접 고르는 인생.", meta: "5~10분 · 터닝포인트 9번" },
+  { id: "hell", cat: "arcade", path: "/arcade/hell-31/", icon: "", title: "지옥에서 살아남기", h1: "지옥에서 살아남기 — Hell Survival 31", desc: "A와 B 중 하나는 살고 하나는 죽는 31단계 병맛 선택 게임. 슬랩스틱 사망 31종을 모으는 사망 도감과 「가장 억울한 죽음」 공유 카드까지, 3~5분이면 한 판.", hook: "A/B 중 하나는 즉사. 상식대로 고르면 대개 죽는 31단계.", meta: "31단계 · 3~5분" }, // P2-27
 ];
 // 카드 그림(인라인 SVG). 이모지 대신 사이트 고유 그림을 씁니다.
 const K = "#141414", W = "#fff", RED = "#e5372b", YEL = "#ffc21a", GRN = "#1e9e5a";
@@ -70,6 +71,7 @@ const ART = {
   stack: sv(`<rect x="22" y="84" width="76" height="18" rx="4" fill="${RED}" stroke="${K}" stroke-width="4"/><rect x="30" y="64" width="62" height="18" rx="4" fill="${YEL}" stroke="${K}" stroke-width="4"/><rect x="36" y="44" width="50" height="18" rx="4" fill="${W}" stroke="${K}" stroke-width="4"/><rect x="50" y="18" width="50" height="18" rx="4" fill="${GRN}" stroke="${K}" stroke-width="4"/><path d="M16 27h22M24 20l-8 7 8 7" fill="none" stroke="${K}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`),
   reaction: sv(`<rect x="51" y="10" width="18" height="10" rx="3" fill="${YEL}"/><rect x="57" y="18" width="6" height="10" fill="${W}"/><circle cx="60" cy="68" r="38" fill="${W}"/><path d="M60 68V38a30 30 0 0 1 21.2 8.8z" fill="${GRN}"/><circle cx="60" cy="68" r="30" fill="none" stroke="${K}" stroke-width="3" stroke-dasharray="2 13.7"/><path d="M60 68 78 50" stroke="${RED}" stroke-width="6" stroke-linecap="round"/><circle cx="60" cy="68" r="5" fill="${K}"/>`),
   life: sv(`<path d="M34 16h52M34 104h52" stroke="${K}" stroke-width="6" stroke-linecap="round"/><path d="M40 18h40c0 22-18 30-18 42s18 20 18 42H40c0-22 18-30 18-42S40 40 40 18z" fill="${W}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M47 30h26q-6 14-13 21-7-7-13-21z" fill="${YEL}"/><path d="M60 54v40" stroke="${YEL}" stroke-width="3"/><path d="M45 101q15-20 30 0z" fill="${RED}"/>`),
+  hell: sv(`<path d="M60 8c8 18 30 26 30 52a30 30 0 0 1-60 0c0-14 8-20 12-30 4 8 8 10 10 10-2-12 2-22 8-32z" fill="${RED}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M42 64a18 18 0 0 1 36 0v10l-6 4v8H48v-8l-6-4z" fill="${W}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><circle cx="52" cy="66" r="5" fill="${K}"/><circle cx="68" cy="66" r="5" fill="${K}"/><path d="M60 72l-3 5h6z" fill="${K}"/><path d="M54 86v-6M60 86v-6M66 86v-6" stroke="${K}" stroke-width="3"/><rect x="74" y="88" width="38" height="24" rx="5" fill="${YEL}" stroke="${K}" stroke-width="4"/><text x="93" y="107" font-size="18" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">31</text>`), // P2-27
   // 실용 툴 그림: 접힌 귀퉁이가 있는 문서(doc) 조합
   pdfmerge: sv(`${doc(14, 14, 40, 52, W)}${doc(30, 26, 40, 52, YEL)}<path d="M74 60h14" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M84 52l9 8-9 8" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>${doc(66, 52, 40, 54, RED)}<text x="86" y="90" font-size="15" font-weight="800" text-anchor="middle" fill="${W}" font-family="sans-serif">PDF</text>`),
   pdfsplit: sv(`${doc(16, 16, 54, 72, RED)}<text x="43" y="60" font-size="16" font-weight="800" text-anchor="middle" fill="${W}" font-family="sans-serif">PDF</text><path d="M8 96h104" stroke="${K}" stroke-width="4" stroke-dasharray="7 6"/>${doc(56, 58, 30, 40, W)}${doc(80, 66, 30, 40, YEL)}`),
@@ -84,6 +86,7 @@ const ART = {
   stopwatch: sv(`<circle cx="60" cy="68" r="38" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M52 14h16M60 14v16" stroke="${K}" stroke-width="6" stroke-linecap="round"/><path d="M60 68V42" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M60 68 80 78" stroke="${GRN}" stroke-width="5" stroke-linecap="round"/><circle cx="60" cy="68" r="5" fill="${RED}"/><path d="M34 58h-8M34 78h-8M94 58h-6" stroke="${K}" stroke-width="3" stroke-linecap="round"/><text x="60" y="104" font-size="12" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">LAP</text>`),
   family: sv(`<path d="M14 24h56a8 8 0 0 1 8 8v26a8 8 0 0 1-8 8H38l-14 12V66h-10a8 8 0 0 1-8-8V32a8 8 0 0 1 8-8z" fill="${YEL}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M50 52h56a8 8 0 0 1 8 8v26a8 8 0 0 1-8 8h-10v12L82 94H50a8 8 0 0 1-8-8V60a8 8 0 0 1 8-8z" fill="${W}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><text x="78" y="80" font-size="15" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">7942</text><path d="M22 40h40M22 50h26" stroke="${K}" stroke-width="4" stroke-linecap="round"/>`),
   pdf2img: sv(`${doc(10, 14, 48, 64, RED)}<text x="34" y="54" font-size="15" font-weight="800" text-anchor="middle" fill="${W}" font-family="sans-serif">PDF</text><path d="M52 90h12" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M60 82l9 8-9 8" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><rect x="66" y="50" width="44" height="56" rx="6" fill="${W}" stroke="${K}" stroke-width="4"/><circle cx="80" cy="66" r="6" fill="${YEL}" stroke="${K}" stroke-width="3"/><path d="M70 100l12-14 8 6 8-10 8 18z" fill="${GRN}" stroke="${K}" stroke-width="3" stroke-linejoin="round"/>`),
+  removebg: sv(`<rect x="14" y="14" width="92" height="92" rx="8" fill="${W}"/><g fill="#d6d6d6">${[0, 1, 2, 3].flatMap((r) => [0, 1, 2, 3].filter((c) => (r + c) % 2).map((c) => `<rect x="${14 + c * 23}" y="${14 + r * 23}" width="23" height="23"/>`)).join("")}</g><rect x="14" y="14" width="92" height="92" rx="8" fill="none" stroke="${K}" stroke-width="4"/><path d="M60 30c-13 0-22 10-22 24 0 9 4 15 9 19l-5 21h36l-5-21c5-4 9-10 9-19 0-14-9-24-22-24z" fill="${YEL}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M60 22c-19 0-30 14-30 32 0 10 4 17 9 22l-6 24h54l-6-24c5-5 9-12 9-22 0-18-11-32-30-32z" fill="none" stroke="${RED}" stroke-width="4" stroke-dasharray="7 6" stroke-linejoin="round"/>`), // P2-26
 };
 function doc(x, y, w, h, fill) {
   const f = Math.min(14, w / 3);
@@ -137,8 +140,9 @@ const UTILS = [
   { id: "pdf2img", cat: "pdf", also: ["image"], path: "/pdf/pdf-to-jpg/", title: "PDF JPG 변환", seo: "PDF JPG 변환 — 무료, PDF를 이미지로", h1: "PDF JPG 변환 — PDF 페이지를 JPG·PNG 이미지로", desc: "PDF의 각 페이지를 JPG나 PNG 이미지로 바꾸고, 해상도를 고르고, zip으로 한 번에 받을 수 있어요. 파일은 서버로 전송하지 않습니다.", hook: "PDF 한 쪽씩 JPG·PNG 이미지로.", meta: "JPG·PNG · zip", kw: "pdf jpg 변환 pdf 이미지 png 그림 사진 페이지 캡처 pdf를 jpg로" },
   { id: "timer", cat: "time", path: "/time/timer/", title: "타이머", seo: "온라인 타이머 — 무료, 알람 소리·전체 화면", h1: "온라인 타이머 — 시간이 되면 소리로 알려 줘요", desc: "시·분·초를 직접 넣거나 1·3·5·10·15·30·60분 버튼으로 맞춰 시작하는 온라인 타이머예요. 끝나면 알림음과 화면 깜빡임으로 알려 주고, 탭 제목에 남은 시간을 보여 줘요.", hook: "라면 3분, 공부 30분. 끝나면 소리로 알려 줘요.", meta: "알림음 · 전체 화면", kw: "타이머 알람 카운트다운 초시계 뽀모도로 라면 3분 15분 30분 1시간 공부 시간 재기 인터벌" },
   { id: "stopwatch", cat: "time", path: "/time/stopwatch/", title: "스톱워치", seo: "온라인 스톱워치 — 무료, 랩 기록·1/100초", h1: "온라인 스톱워치 — 랩 기록과 1/100초 표시", desc: "시작·정지·랩·초기화를 지원하는 온라인 스톱워치예요. 1/100초까지 보여 주고, 랩마다 구간·누적 시간과 최고·최저 구간을 표시해요. Space·L·R 단축키도 쓸 수 있어요.", hook: "1/100초까지. 랩마다 구간·누적 기록.", meta: "랩 · 단축키", kw: "스톱워치 초시계 랩 타임 기록 시간 측정 달리기 1/100초" },
+  { id: "removebg", cat: "image", path: "/image/remove-bg/", title: "배경 지우기", seo: "배경 지우기 — 무료 누끼 따기", h1: "배경 지우기 — 무료 누끼 따기, 투명 PNG로 저장", desc: "사진을 넣으면 사람·물건·동물만 남기고 배경을 지워 투명 PNG나 흰 배경 사진으로 저장해요. 누른 대상만 남기고, 브러시로 다듬을 수 있어요. 사진은 서버로 전송하지 않습니다.", hook: "누끼 따기, 사진 배경을 투명하게.", meta: "투명 PNG · 흰 배경", kw: "배경 지우기 배경 제거 누끼 누끼따기 투명 png 배경 투명 remove bg 배경 삭제 흰 배경 상품 사진" }, // P2-26
 ];
-const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "timer", "pdfsplit", "age", "pyeong", "stopwatch", "word2pdf", "dday"];
+const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "timer", "pdfsplit", "age", "pyeong", "stopwatch", "word2pdf", "dday"];
 const NEXT = {
   pdfmerge: ["pdfsplit", "img2pdf", "imgcompress"],
   pdfsplit: ["pdfmerge", "pdf2img", "img2pdf"],
@@ -152,6 +156,7 @@ const NEXT = {
   age: ["dday", "pyeong", "today"],
   pyeong: ["age", "dday", "charcount"],
   pdf2img: ["imgcompress", "img2pdf", "pdfsplit"],
+  removebg: ["imgcompress", "img2pdf", "pdf2img"], // P2-26
 };
 const utilById = Object.fromEntries(UTILS.map((x) => [x.id, x]));
 const anyById = { ...toolById, ...utilById };
@@ -414,7 +419,7 @@ ${adSlotFixed("home")}`;
 const ZONES = [
   { tone: "luck", name: "오늘", sub: "매일 자정에 바뀌는 운세 · 사주팔자", ids: ["today", "saju"] },
   { tone: "me", name: "테스트", sub: "생일·성향·이름으로 보는 나", ids: ["birthday", "personality", "namematch"] },
-  { tone: "story", name: "게임", sub: "한 판이면 끝나는 짧은 게임", ids: ["rpg", "life", "stack", "reaction"] },
+  { tone: "story", name: "게임", sub: "한 판이면 끝나는 짧은 게임", ids: ["rpg", "hell", "life", "stack", "reaction"] },
   { tone: "love", name: "같이", sub: "세화산업이 운영하는 다른 서비스(외부 사이트)", ids: [], ext: [FAMILY] },
 ];
 {
@@ -862,6 +867,26 @@ utilPage(utilById.imgcompress, `${dropHtml({ accept: ".jpg,.jpeg,.png,.webp,imag
 </div>
 ${tkTail("용량 줄이기")}`, { vendor: ["fflate.min.js"], scripts: ["t-imgcompress.js"] });
 
+// 배경 지우기(누끼) — P2-26. 엔진(MediaPipe, Apache-2.0)은 사진을 넣을 때 작업자(t-removebg-worker.js)가 받음
+utilPage(utilById.removebg, `${dropHtml({ accept: ".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp", label: "배경을 지울 사진을 넣어 주세요", limit: "JPG·PNG·WEBP 1장 · 30MB까지 · 긴 변 2048px에 맞춰 처리" })}
+<p class="hint rb-first">처음 한 번은 배경 지우기 엔진(약 17MB)을 받아요. 페이지를 열 때가 아니라 사진을 넣을 때 받고, 다음부터는 브라우저에 저장된 파일을 써요.</p>
+${tkTail("")}
+<div class="rb" hidden>
+  <p class="rb-hint" aria-live="polite"></p>
+  <div class="rb-view" data-mode="pick"><canvas class="rb-before" aria-hidden="true"></canvas><canvas class="rb-after" role="img" aria-label="배경을 지운 결과"></canvas><span class="rb-line" aria-hidden="true"></span><span class="rb-tag rb-tag-b" aria-hidden="true">원본</span><span class="rb-tag rb-tag-a" aria-hidden="true">결과</span></div>
+  <label class="rb-cmp-row">전후 비교<input type="range" class="rb-cmp" min="0" max="100" value="50" aria-label="전후 비교: 왼쪽은 원본, 오른쪽은 결과"></label>
+  <fieldset class="seg rb-modes"><legend>사진을 누르면</legend>
+    <label><input type="radio" name="rb-mode" value="pick" checked><span>대상 바꾸기</span></label><label><input type="radio" name="rb-mode" value="add"><span>대상 더하기</span></label><label><input type="radio" name="rb-mode" value="erase"><span>지우기 브러시</span></label><label><input type="radio" name="rb-mode" value="restore"><span>되살리기 브러시</span></label>
+  </fieldset>
+  <label class="rb-brush-row" hidden>브러시 크기 <output class="rb-brush-out">30</output><input type="range" name="rb-brush" min="6" max="90" step="2" value="30"></label>
+  <label>가장자리 부드럽게 <output class="rb-soft-out">1</output><input type="range" name="rb-soft" min="0" max="8" step="1" value="1"></label>
+  <fieldset class="seg rb-bgs"><legend>배경</legend>
+    <label><input type="radio" name="rb-bg" value="none" checked><span>투명</span></label><label><input type="radio" name="rb-bg" value="#ffffff"><span>흰색</span></label><label><input type="radio" name="rb-bg" value="#000000"><span>검정</span></label><label class="rb-custom"><input type="radio" name="rb-bg" value="custom"><span>직접 고르기</span><input type="color" name="rb-color" value="#ffc21a" aria-label="배경색 고르기"></label>
+  </fieldset>
+  <div class="rb-actions"><button type="button" class="btn big" data-save>PNG 내려받기</button><button type="button" class="btn ghost" data-undo disabled>되돌리기</button><button type="button" class="btn ghost" data-again>처음 결과로</button><button type="button" class="btn ghost" data-new>다른 사진</button></div>
+  <p class="rb-stat hint"></p>
+</div>`, { scripts: ["t-removebg.js"] });
+
 // 글자수 세기 (입력 → 결과 → 결과 복사 → 다음 툴)
 utilPage(utilById.charcount, `<label for="cc-text" class="sr">글자수를 셀 글</label>
 <textarea id="cc-text" class="cc-text" rows="10" placeholder="여기에 글을 붙여 넣거나 입력하세요. 입력한 글은 저장하지 않아요." autocomplete="off" spellcheck="false"></textarea>
@@ -961,6 +986,8 @@ utilPage(utilById.stopwatch, `<button type="button" class="tm-fs-close" data-fs-
     ["pdf.js (pdfjs-dist, legacy build)", "6.4.299", "Apache-2.0", "https://github.com/mozilla/pdf.js", "PDF JPG 변환 (함께 둔 CMap: Adobe BSD-3, 이미지 디코더 wasm: OpenJPEG BSD-2·PDFium BSD-3·qcms MIT, ICC: CC0)"],
     ["korean-lunar-calendar", "0.4.0", "MIT", "https://github.com/usingsky/korean_lunar_calendar_js", "사주팔자 음력 변환표 대조 (변환표 자체는 한국천문연구원 음양력 자료로 만듦)"], // P2-22
     ["astronomia (VSOP87D 지구 계수)", "4.2.0", "MIT", "https://github.com/commenthol/astronomia", "사주팔자 절기 시각 계산에 쓰는 VSOP87 계수 (계수 일부를 덜어 내 직접 둠)"], // P2-22
+    ["Galmuri (Galmuri11 Bold 글꼴)", "2.40.3", "SIL OFL 1.1", "https://github.com/quiple/galmuri", "지옥에서 살아남기 게임 화면 글꼴 (이 사이트에 직접 둠, 라이선스 전문: /assets/vendor/galmuri/OFL.txt)"], // P2-27
+    ["MediaPipe Tasks Vision (@mediapipe/tasks-vision) + MagicTouch 모델(Google)", "0.10.35", "Apache-2.0", "https://github.com/google-ai-edge/mediapipe", "배경 지우기 (모델 카드: https://storage.googleapis.com/mediapipe-assets/Model%20Card%20MagicTouch.pdf, 전문: /assets/vendor/mediapipe/LICENSE)"], // P2-26
   ];
   const body = `${crumbHtml([["홈", "/"], ["오픈소스 고지", p]])}<article class="prose doc"><h1>오픈소스 고지</h1>
 <p>${esc(cfg.siteName)}의 일부 툴은 아래 오픈소스 소프트웨어를 사용합니다. 라이브러리 파일은 공식 배포본(npm 패키지)을 고치지 않고 이 사이트에 직접 올려 두었고, 해당 툴 페이지에서만 불러옵니다. 외부 CDN에서 불러오지 않습니다.</p>
@@ -1000,6 +1027,8 @@ for (const k of INFO) {
 (await import("./content/rpg.mjs")).default({ cfg, write, layout, crumbHtml, crumbs, faqHtml, faqLd, adSlot, esc, t, u, abs, textLen, warnings });
 // P2-22 사주팔자 (본문·검증은 content/saju.mjs, 계산은 src/assets/saju-*.js). 검증표가 하나라도 어긋나면 빌드 실패
 (await import("./content/saju.mjs")).default({ cfg, write, layout, crumbHtml, crumbs, faqHtml, faqLd, adSlot, esc, t, u, abs, textLen, warnings, root: ROOT });
+// P2-27 지옥에서 살아남기 (본문·데이터 검사는 content/hell.mjs, 게임은 src/assets/hell-*.js)
+(await import("./content/hell.mjs")).default({ cfg, write, layout, crumbHtml, crumbs, faqHtml, faqLd, adSlot, esc, t, u, abs, textLen, warnings, root: ROOT });
 
 // 404
 write("/404.html", layout({ title: "페이지를 찾을 수 없어요", desc: "요청하신 페이지를 찾을 수 없어요.", path: "/404.html", noindex: true, body: `<section class="hero"><h1>앗, 길을 잃었어요</h1><p class="lead">주소가 바뀌었거나 없는 페이지예요. 대신 많이 쓰는 툴로 가 보세요.</p></section>${recoHtml(["pdfmerge", "img2pdf", "charcount", "today"], "많이 쓰는 툴")}` }));

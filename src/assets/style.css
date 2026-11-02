@@ -838,3 +838,27 @@ li.has-fav{position:relative}
 .fav-chip:hover{background:#fffbea}
 @media print{.fav,.fav-menu,.fav-pop,.fav-bar{display:none!important}}
 .hero-tools>*,.search,.fav-bar{min-width:0;max-width:100%}
+
+/* === P2-26 배경 지우기 === */
+[data-tool="removebg"] .drop[hidden],.rb[hidden],.rb [hidden]{display:none!important}
+.rb-first{margin:-6px 0 0}
+.rb{display:grid;gap:12px;border-top:2px dashed var(--ink);padding-top:12px}
+.rb label{display:grid;gap:6px;font-weight:700}
+.rb .seg label{display:inline-block}
+.rb input[type=range]{padding:0;border:0;accent-color:var(--jeok);width:100%}
+.rb-hint{margin:0;font-size:14px;font-weight:700;color:var(--ink-2)}
+.rb-view{--hmax:70vh;position:relative;width:min(100%,calc(var(--hmax) * var(--ar,1)));aspect-ratio:var(--ar,1);margin:0 auto;border:2px solid var(--ink);border-radius:10px;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;
+  background-color:#fff;background-image:linear-gradient(45deg,#d6d6d6 25%,transparent 25%,transparent 75%,#d6d6d6 75%),linear-gradient(45deg,#d6d6d6 25%,transparent 25%,transparent 75%,#d6d6d6 75%);background-size:20px 20px;background-position:0 0,10px 10px}
+.rb-view canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.rb-view[data-mode="pick"],.rb-view[data-mode="add"]{cursor:pointer}
+.rb-view[data-mode="erase"],.rb-view[data-mode="restore"]{cursor:crosshair}
+.rb-line{position:absolute;top:0;bottom:0;width:3px;margin-left:-1.5px;background:var(--hwang);box-shadow:0 0 0 1.5px var(--ink);pointer-events:none}
+.rb-tag{position:absolute;top:8px;padding:2px 8px;border:2px solid var(--ink);border-radius:99px;background:var(--white);font-size:12px;font-weight:800;pointer-events:none}
+.rb-tag-b{left:8px}.rb-tag-a{right:8px}
+.rb-custom{display:inline-flex!important;align-items:center;gap:6px}
+.rb-custom input[type=color]{position:static;opacity:1;width:36px;height:34px;padding:0;border:2px solid var(--ink);border-radius:8px;background:var(--white);cursor:pointer}
+.rb-actions{display:flex;flex-wrap:wrap;gap:8px}
+.rb-actions .btn.big{flex:1 1 220px}
+.rb-stat{margin:0}
+.tk.is-busy .rb-view,.tk.is-busy .rb-actions,.tk.is-busy .rb-modes{opacity:.6;pointer-events:none}
+@media(max-width:480px){.rb .seg span{padding:7px 12px;font-size:14px}.rb-view{--hmax:60vh}.rb-actions .btn.ghost{flex:1 1 0;padding-left:6px;padding-right:6px;font-size:14px}}
