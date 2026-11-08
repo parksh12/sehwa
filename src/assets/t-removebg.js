@@ -3,7 +3,7 @@
 (function () {
   const box = document.querySelector('[data-tool="removebg"]');
   if (!box) return;
-  const OPT = { exts: ["jpg", "jpeg", "png", "webp"], maxSize: 30 * PT.MB, maxCount: 1, reject: { heic: "HEIC(아이폰 사진) 파일은 아직 지원하지 않아요. 사진 앱에서 JPG로 내보낸 뒤 넣어 주세요.", gif: "GIF는 지원하지 않아요. JPG·PNG·WEBP로 넣어 주세요." } };
+  const OPT = { exts: ["jpg", "jpeg", "png", "webp"], maxSize: 30 * PT.MB, maxCount: 1, reject: { heic: "HEIC(아이폰 사진)는 이 사이트의 「HEIC JPG 변환」에서 JPG로 바꾼 뒤 넣어 주세요.", gif: "GIF는 지원하지 않아요. JPG·PNG·WEBP로 넣어 주세요." } };
   const MAX_SIDE = 2048; // 처리·저장 해상도 상한(긴 변)
   const MODEL_SIDE = 1024; // 엔진에 넘기는 사진 크기(긴 변). 엔진 내부는 512로 줄여서 봄
   const MAX_PIXELS = 50e6;

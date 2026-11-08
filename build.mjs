@@ -95,6 +95,7 @@ const ART = {
   removebg: sv(`<rect x="14" y="14" width="92" height="92" rx="8" fill="${W}"/><g fill="#d6d6d6">${[0, 1, 2, 3].flatMap((r) => [0, 1, 2, 3].filter((c) => (r + c) % 2).map((c) => `<rect x="${14 + c * 23}" y="${14 + r * 23}" width="23" height="23"/>`)).join("")}</g><rect x="14" y="14" width="92" height="92" rx="8" fill="none" stroke="${K}" stroke-width="4"/><path d="M60 30c-13 0-22 10-22 24 0 9 4 15 9 19l-5 21h36l-5-21c5-4 9-10 9-19 0-14-9-24-22-24z" fill="${YEL}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M60 22c-19 0-30 14-30 32 0 10 4 17 9 22l-6 24h54l-6-24c5-5 9-12 9-22 0-18-11-32-30-32z" fill="none" stroke="${RED}" stroke-width="4" stroke-dasharray="7 6" stroke-linejoin="round"/>`), // P2-26
   draw: sv(`<path d="M18 14v92M48 14v92" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M18 34h30M18 60h30M18 86h30" stroke="${RED}" stroke-width="5" stroke-linecap="round"/><circle cx="84" cy="72" r="28" fill="${W}"/><path d="M84 72V44a28 28 0 0 1 24.2 14z" fill="${YEL}"/><path d="M84 72l24.2 14A28 28 0 0 1 84 100z" fill="${GRN}"/><path d="M84 72 59.8 86A28 28 0 0 1 59.8 58z" fill="${RED}"/><circle cx="84" cy="72" r="28" fill="none" stroke="${K}" stroke-width="4"/><circle cx="84" cy="72" r="4" fill="${K}"/><path d="M78 32h12l-6 11z" fill="${K}"/>`), // P2-44
   imgmerge: sv(`<rect x="30" y="10" width="60" height="32" rx="5" fill="${YEL}" stroke="${K}" stroke-width="4"/><rect x="30" y="44" width="60" height="32" rx="5" fill="${GRN}" stroke="${K}" stroke-width="4"/><rect x="30" y="78" width="60" height="32" rx="5" fill="${W}" stroke="${K}" stroke-width="4"/><circle cx="46" cy="94" r="6" fill="${RED}"/><path d="M8 26v68M2 34l6-8 6 8M2 86l6 8 6-8" fill="none" stroke="${RED}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M98 60h18" stroke="${K}" stroke-width="4" stroke-linecap="round" stroke-dasharray="4 5"/>`), // P2-46
+  heic: sv(`<rect x="10" y="12" width="56" height="74" rx="10" fill="${W}" stroke="${K}" stroke-width="4"/><circle cx="28" cy="34" r="6" fill="${YEL}" stroke="${K}" stroke-width="3"/><path d="M16 66l14-14 10 8 10-10 12 16z" fill="${GRN}" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><text x="38" y="80" font-size="12" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">HEIC</text><path d="M62 96h14" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M72 88l9 8-9 8" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><rect x="74" y="44" width="38" height="44" rx="6" fill="${RED}" stroke="${K}" stroke-width="4"/><text x="93" y="71" font-size="13" font-weight="800" text-anchor="middle" fill="${W}" font-family="sans-serif">JPG</text>`), // P2-47
   salary: sv(`<rect x="12" y="30" width="96" height="60" rx="8" fill="${GRN}" stroke="${K}" stroke-width="4"/><circle cx="60" cy="60" r="17" fill="${W}" stroke="${K}" stroke-width="4"/><text x="60" y="67" font-size="20" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">₩</text><path d="M24 44h10M86 76h10" stroke="${K}" stroke-width="4" stroke-linecap="round"/>`), // P2-45
   severance: sv(`<rect x="22" y="36" width="76" height="62" rx="8" fill="${YEL}" stroke="${K}" stroke-width="4"/><path d="M44 36v-8a6 6 0 0 1 6-6h20a6 6 0 0 1 6 6v8" fill="none" stroke="${K}" stroke-width="4"/><path d="M22 60h76" stroke="${K}" stroke-width="4"/><rect x="52" y="54" width="16" height="12" rx="3" fill="${W}" stroke="${K}" stroke-width="3"/>`), // P2-45
   unemp: sv(`<path d="M60 16a36 36 0 0 1 36 36H24a36 36 0 0 1 36-36z" fill="${RED}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M60 52v40a8 8 0 0 1-16 0" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round"/><circle cx="88" cy="88" r="14" fill="${YEL}" stroke="${K}" stroke-width="4"/><text x="88" y="94" font-size="15" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">₩</text>`), // P2-45
@@ -133,7 +134,7 @@ const LIFE_SLUG = { adventure: "adventurer", love: "warm-heart", stable: "steady
 const PLAY = { name: "펭귄 오락실", tagline: "운세·테스트·게임, 잠깐 쉬어 가는 재미", path: "/play/", desc: "운세, 성격 테스트, 이름 궁합, Life Game, 반응속도 게임처럼 잠깐 쉬어 가는 재미 콘텐츠를 모았어요." };
 const UCATS = {
   pdf: { name: "PDF·문서", desc: "PDF를 합치고 나누고, 이미지와 워드 문서를 PDF로 바꾸는 툴이에요." },
-  image: { name: "이미지", desc: "사진 용량을 줄이고, 여러 장을 한 장으로 이어 붙이거나 PDF로 묶는 이미지 툴이에요." }, // P2-46 desc
+  image: { name: "이미지", desc: "사진 용량을 줄이고, 아이폰 HEIC 사진을 JPG로 바꾸고, 여러 장을 한 장으로 이어 붙이거나 PDF로 묶는 이미지 툴이에요." }, // P2-46 desc, P2-47 HEIC
   text: { name: "글쓰기", desc: "자기소개서, 리포트, 블로그 글을 쓸 때 필요한 글쓰기 툴이에요." },
   calc: { name: "생활 계산", desc: "D-day, 연봉 실수령액, 퇴직금처럼 생활에서 자주 찾는 계산을 바로 해 주는 툴이에요." }, // P2-45 desc
   time: { name: "시간", desc: "타이머와 스톱워치처럼 시간을 재고 알려 주는 툴이에요." },
@@ -159,8 +160,9 @@ const UTILS = [
   { id: "unemp", cat: "calc", path: "/calc/unemployment/", title: "실업급여 계산기", seo: `실업급여 계산기 ${PAY.year} — 구직급여 하루 금액·받는 기간`, h1: `실업급여 계산기 ${PAY.year} — 하루 얼마, 며칠 받을까`, desc: `퇴직 전 평균임금, 나이, 고용보험 가입기간을 넣으면 ${PAY.year}년 상한(하루 ${PAY.unemp.dayCap[PAY.year].toLocaleString("ko-KR")}원)·하한을 적용한 구직급여 하루 금액과 소정급여일수, 총 예상 수급액을 계산해요.`, hook: "하루 얼마, 며칠 동안? 구직급여 예상액.", meta: `상한 ${PAY.unemp.dayCap[PAY.year].toLocaleString("ko-KR")}원/일`, kw: "실업급여 실업급여 계산 실업급여 계산기 구직급여 실업급여 금액 실업급여 기간 실업급여 조건 소정급여일수 권고사직 계약만료 고용보험" }, // P2-45
   { id: "removebg", cat: "image", path: "/image/remove-bg/", title: "배경 지우기", seo: "배경 지우기 — 무료 누끼 따기", h1: "배경 지우기 — 무료 누끼 따기, 투명 PNG로 저장", desc: "사진을 넣으면 사람·물건·동물만 남기고 배경을 지워 투명 PNG나 흰 배경 사진으로 저장해요. 누른 대상만 남기고, 브러시로 다듬을 수 있어요. 사진은 서버로 전송하지 않습니다.", hook: "누끼 따기, 사진 배경을 투명하게.", meta: "투명 PNG · 흰 배경", kw: "배경 지우기 배경 제거 누끼 누끼따기 투명 png 배경 투명 remove bg 배경 삭제 흰 배경 상품 사진" }, // P2-26
   { id: "imgmerge", cat: "image", path: "/image/merge/", title: "사진 이어붙이기", seo: "사진 이어붙이기 — 사진 합치기·캡처 합치기·긴 캡처 만들기", h1: "사진 이어붙이기 — 여러 장을 세로·가로·격자로 한 장에", desc: "사진과 휴대폰 캡처 여러 장을 세로·가로·격자로 한 장에 이어 붙여요. 캡처의 상태바·주소창·하단 바를 자동으로 잘라 내고, 연속 캡처는 겹친 부분을 빼서 긴 캡처로 만들어요. 사진은 서버로 전송하지 않습니다.", hook: "캡처 여러 장을 한 장으로, 툴바는 자동으로 잘라요.", meta: "세로·가로·격자 · JPG·PNG", kw: "사진 합치기 사진 이어붙이기 사진 붙이기 이미지 합치기 이미지 붙이기 이미지 이어붙이기 캡처 합치기 캡처 이어붙이기 스크린샷 합치기 긴 캡처 스크롤 캡처 긴 스크린샷 사진 연결 콜라주 격자 사진 세로로 붙이기 가로로 붙이기" }, // P2-46
+  { id: "heic", cat: "image", path: "/image/heic-to-jpg/", title: "HEIC JPG 변환", seo: "HEIC JPG 변환 — 아이폰 사진 JPG로, 여러 장 한꺼번에", h1: "HEIC JPG 변환 — 아이폰 사진을 여러 장 한꺼번에 JPG로", desc: "아이폰 HEIC·HEIF 사진을 여러 장 한꺼번에 JPG로 바꿔요. 화질과 크기를 고르고, 하나씩 또는 zip으로 받아요. 위치 정보(GPS)는 기본으로 지워요. 사진은 서버로 전송하지 않습니다.", hook: "아이폰 사진(HEIC)을 JPG로, 여러 장 한꺼번에.", meta: "HEIC·HEIF → JPG · zip", kw: "heic jpg 변환 heic jpg heic 변환 heic to jpg heic 파일 열기 heic 열기 heif 변환 heif jpg 아이폰 사진 jpg 아이폰 사진 변환 아이폰 사진 안 열림 아이폰 사진 윈도우 아이폰 사진 컴퓨터 heic 뷰어 사진 확장자 변환 jpg 변환 위치 정보 지우기 gps 삭제" }, // P2-47
 ];
-const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "word2pdf", "dday"]; // P2-45 돈 계산기 4종, P2-46 imgmerge
+const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "heic", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "word2pdf", "dday"]; // P2-45 돈 계산기 4종, P2-46 imgmerge, P2-47 heic
 const NEXT = {
   pdfmerge: ["pdfsplit", "img2pdf", "imgcompress"],
   pdfsplit: ["pdfmerge", "pdf2img", "img2pdf"],
@@ -176,6 +178,7 @@ const NEXT = {
   pdf2img: ["imgcompress", "img2pdf", "pdfsplit"],
   removebg: ["imgcompress", "img2pdf", "pdf2img"], // P2-26
   imgmerge: ["imgcompress", "img2pdf", "removebg"], // P2-46
+  heic: ["imgcompress", "imgmerge", "img2pdf"], // P2-47
   salary: ["juhyu", "severance", "unemp"], // P2-45
   juhyu: ["salary", "unemp", "severance"], // P2-45
   severance: ["unemp", "salary", "juhyu"], // P2-45
@@ -275,7 +278,7 @@ const SEO_DESC = {
   "/terms/": () => `${cfg.siteName} 이용약관: 서비스 내용, 서비스 변경·중단, 이용자의 의무, 저작권, 책임의 제한, 준거법과 분쟁 해결 안내.`,
   "/disclaimer/": () => `${cfg.siteName} 면책고지: 툴 결과물은 원본과 함께 확인해 주세요. 펭귄 오락실의 운세·테스트는 재미로 보는 콘텐츠이며 의학·법률·재정·심리 진단을 대신하지 않아요.`,
   "/contact/": () => `${cfg.siteName} 문의: 오류 제보, 의견, 제휴 문의는 이메일 ${cfg.contactEmail}로 보내 주세요. 문의할 때 알려 주시면 좋은 내용과 답변 안내.`,
-  "/licenses/": () => `${cfg.siteName}가 쓰는 오픈소스 라이브러리(pdf-lib, pdf.js, mammoth, fflate 등)와 글꼴(Pretendard, Black Han Sans)의 버전·라이선스 안내.`,
+  "/licenses/": () => `${cfg.siteName}가 쓰는 오픈소스 라이브러리(pdf-lib, pdf.js, mammoth, fflate, libheif 등)와 글꼴(Pretendard, Black Han Sans)의 버전·라이선스 안내.`, // P2-47 libheif
   "/editorial/": () => `${cfg.siteName}가 툴 설명과 오락실 해설을 만들고 검수하는 기준: 실제 파일로 확인, 직접 작성과 사람 검수, 단정하지 않는 표현, 계산 방식 공개.`,
 };
 // 제목 보정: ① 오락실 카테고리(나의 성격 등)는 이름만 있으면 안에 든 콘텐츠 이름을 붙임 ② 오락실 툴에 seo 제목이 없으면 h1(검색어가 든 긴 제목)을 씀
@@ -428,6 +431,7 @@ const homeOrder = () => Object.entries(UCATS).map((e, i) => [e, homeIn(e[0]).len
 // ★ 새 툴·게임을 만들면 여기에 { id, d: "출시일" }을 맨 위에 추가(대표님 지시: 새 콘텐츠는 메인에 잘 보이게).
 // 출시 30일 이내 항목 중 최신 4개가 홈 맨 위 「NEW」 띠에 나오고, 해당 행·타일에 NEW 표시가 붙음
 const NEW_ITEMS = [
+  { id: "heic", d: "2026-11-09" }, // P2-47
   { id: "imgmerge", d: "2026-11-09" }, // P2-46
   { id: "salary", d: "2026-11-09" }, // P2-45
   { id: "juhyu", d: "2026-11-09" }, // P2-45
@@ -1085,6 +1089,21 @@ ${tkTail("")}
   <div class="im-actions"><button type="button" class="btn big" data-save>이미지 저장</button><button type="button" class="btn ghost" data-clear>모두 지우기</button></div>
 </div>`, { scripts: ["t-imgmerge.js"] });
 
+// P2-47 HEIC JPG 변환: 여러 장 넣기 → 화질·크기·사진 정보 고르기 → 한꺼번에 변환(진행률) → 하나씩 받기 + zip
+// 엔진(libheif, LGPL-3.0)은 브라우저가 HEIC를 직접 못 열 때만 첫 변환 순간에 작업자(t-heic-worker.js)가 받음. zip은 fflate(MIT) 무압축
+utilPage(utilById.heic, `${dropHtml({ accept: ".heic,.heif,.hif,.jpg,.jpeg,image/heic,image/heif,image/heic-sequence,image/heif-sequence,image/jpeg", multiple: true, label: "JPG로 바꿀 HEIC 사진을 넣어 주세요", limit: "HEIC·HEIF · 장당 50MB · 50장까지 · 여러 장을 한꺼번에" })}
+<p class="hint hc-first">처음 한 번은 HEIC 변환 엔진(약 1.6MB)을 받아요. 페이지를 열 때가 아니라 변환을 시작할 때 받고, HEIC를 직접 여는 브라우저(아이폰·맥 사파리 등)에서는 받지 않아요.</p>
+<ul class="flist" hidden></ul>
+<div class="tk-opts hc-opts" hidden>
+  <fieldset class="seg"><legend>화질</legend>
+    <label><input type="radio" name="q" value="high" checked><span>높음</span></label><label><input type="radio" name="q" value="mid"><span>보통</span></label><label><input type="radio" name="q" value="low"><span>작게</span></label>
+  </fieldset>
+  <label>긴 변 크기 제한<select name="maxside"><option value="0" selected>원본 그대로</option><option value="4032">4032px</option><option value="3000">3000px</option><option value="2048">2048px</option><option value="1600">1600px</option><option value="1280">1280px</option></select></label>
+  <div class="hc-meta"><label class="check"><input type="checkbox" name="nogps" checked> 위치 정보(GPS) 지우기</label><label class="check"><input type="checkbox" name="keepinfo"> 촬영 날짜·기기 정보 남기기</label><p class="hint hc-meta-hint" aria-live="polite"></p></div>
+</div>
+${tkTail("JPG로 바꾸기")}
+<p class="hint hc-lic">HEIC 변환 엔진: libheif · libde265 (LGPL-3.0, 고치지 않은 공식 배포본) · <a href="${u("/licenses/")}#libheif">오픈소스 고지·소스 코드</a></p>`, { vendor: ["fflate.min.js"], scripts: ["t-heic.js"] });
+
 // 글자수 세기 (입력 → 결과 → 결과 복사 → 다음 툴)
 utilPage(utilById.charcount, `<label for="cc-text" class="sr">글자수를 셀 글</label>
 <textarea id="cc-text" class="cc-text" rows="10" placeholder="여기에 글을 붙여 넣거나 입력하세요. 입력한 글은 저장하지 않아요." autocomplete="off" spellcheck="false"></textarea>
@@ -1277,12 +1296,23 @@ utilPage(utilById.stopwatch, `<button type="button" class="tm-fs-close" data-fs-
     ["korean-lunar-calendar", "0.4.0", "MIT", "https://github.com/usingsky/korean_lunar_calendar_js", "사주팔자 음력 변환표 대조 (변환표 자체는 한국천문연구원 음양력 자료로 만듦)"], // P2-22
     ["astronomia (VSOP87D 지구 계수)", "4.2.0", "MIT", "https://github.com/commenthol/astronomia", "사주팔자 절기 시각 계산에 쓰는 VSOP87 계수 (계수 일부를 덜어 내 직접 둠)"], // P2-22
     ["Galmuri (Galmuri11 Bold 글꼴)", "2.40.3", "SIL OFL 1.1", "https://github.com/quiple/galmuri", "지옥에서 살아남기 게임 화면 글꼴 (이 사이트에 직접 둠, 라이선스 전문: /assets/vendor/galmuri/OFL.txt)"], // P2-27
+    ["libheif", "1.23.5", "LGPL-3.0", "https://github.com/strukturag/libheif", "HEIC JPG 변환 (HEIF 파일 해석, Emscripten wasm 빌드 libheif-emscripten v1.23.5)"], // P2-47
+    ["libde265", "1.0.15", "LGPL-3.0", "https://github.com/strukturag/libde265", "HEIC JPG 변환 (HEVC 영상 디코더, libheif.wasm 안에 함께 묶여 있음)"], // P2-47
     ["MediaPipe Tasks Vision (@mediapipe/tasks-vision) + MagicTouch 모델(Google)", "0.10.35", "Apache-2.0", "https://github.com/google-ai-edge/mediapipe", "배경 지우기 (모델 카드: https://storage.googleapis.com/mediapipe-assets/Model%20Card%20MagicTouch.pdf, 전문: /assets/vendor/mediapipe/LICENSE)"], // P2-26
   ];
+  // P2-47: 본문에 「HEIC 변환 엔진(LGPL-3.0) 소스 코드」 절(#libheif) 추가
   const body = `${crumbHtml([["홈", "/"], ["오픈소스 고지", p]])}<article class="prose doc"><h1>오픈소스 고지</h1>
 <p>${esc(cfg.siteName)}의 일부 툴은 아래 오픈소스 소프트웨어를 사용합니다. 라이브러리 파일은 공식 배포본(npm 패키지)을 고치지 않고 이 사이트에 직접 올려 두었고, 해당 툴 페이지에서만 불러옵니다. 외부 CDN에서 불러오지 않습니다.</p>
 <div class="table-wrap"><table class="lic"><thead><tr><th scope="col">라이브러리</th><th scope="col">버전</th><th scope="col">라이선스</th><th scope="col">쓰는 곳</th></tr></thead><tbody>${libs.map(([n, v, l, url, where]) => `<tr><th scope="row"><a href="${url}" rel="noopener">${n}</a></th><td>${v}</td><td>${l}</td><td>${esc(where)}</td></tr>`).join("")}</tbody></table></div>
 <p>각 라이브러리에 함께 묶여 있는 하위 라이브러리(pako, jszip, underscore 등)와 라이선스 전문은 <a href="${u("/assets/vendor/LICENSES.txt")}">라이선스 전문(LICENSES.txt)</a>에서 확인할 수 있어요. jszip은 MIT와 GPLv3 이중 라이선스이며, ${esc(cfg.siteName)}는 MIT 조건으로 사용합니다. GPL·AGPL 조건으로만 쓸 수 있는 코드는 사용하지 않습니다.</p>
+<h2 id="libheif">HEIC 변환 엔진(LGPL-3.0) 소스 코드</h2>
+<p>「HEIC JPG 변환」은 브라우저가 HEIC를 직접 열지 못할 때 libheif 1.23.5와 libde265 1.0.15를 Emscripten으로 빌드한 공식 배포본(<a href="https://github.com/catdad-experiments/libheif-emscripten/releases/tag/v1.23.5" rel="noopener">libheif-emscripten v1.23.5</a>)을 고치지 않고 그대로 씁니다. 두 라이브러리는 GNU LGPL v3로 배포되며, 이 사이트의 변환 코드와는 별도 파일(libheif.js, libheif.wasm)로 불러오므로 같은 인터페이스의 다른 버전으로 바꿔 넣을 수 있습니다.</p>
+<ul>
+<li>고지와 빌드 정보(버전·SHA-256): <a href="${u("/assets/vendor/libheif/NOTICE.txt")}">NOTICE.txt</a></li>
+<li>라이선스 전문(LGPL v3·GPL v3): <a href="${u("/assets/vendor/libheif/LICENSE-libheif.txt")}">libheif</a> · <a href="${u("/assets/vendor/libheif/LICENSE-libde265.txt")}">libde265</a></li>
+<li>소스 코드(이 사이트 사본): <a href="${u("/assets/vendor/libheif/source/libheif-1.23.5.tar.gz")}">libheif-1.23.5.tar.gz</a> · <a href="${u("/assets/vendor/libheif/source/libde265-1.0.15.tar.gz")}">libde265-1.0.15.tar.gz</a> · 빌드 설정 <a href="${u("/assets/vendor/libheif/source/libheif-emscripten-v1.23.5_emscripten.yml")}">emscripten.yml</a>, <a href="${u("/assets/vendor/libheif/source/libheif-emscripten-v1.23.5_dist-prep.sh")}">dist-prep.sh</a></li>
+<li>원본 저장소: <a href="https://github.com/strukturag/libheif/releases/tag/v1.23.5" rel="noopener">libheif v1.23.5</a> · <a href="https://github.com/strukturag/libde265/releases/tag/v1.0.15" rel="noopener">libde265 v1.0.15</a></li>
+</ul>
 <h2>글꼴</h2><p>본문 글꼴 Pretendard와 제목 글꼴 Black Han Sans는 SIL Open Font License 1.1 글꼴입니다. 두 글꼴은 각각 jsDelivr와 Google Fonts에서 불러오며, 이 요청에는 파일이나 입력한 글이 포함되지 않습니다.</p>
 <p class="hint">고지에 빠진 내용이 있다면 <a href="${u("/contact/")}">문의</a>로 알려 주세요.</p></article>`;
   write(p, layout({ title: "오픈소스 고지", desc: `${cfg.siteName}가 사용하는 오픈소스 라이브러리와 라이선스 안내`, path: p, body }));

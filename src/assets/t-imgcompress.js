@@ -2,7 +2,7 @@
 (function () {
   const box = document.querySelector('[data-tool="imgcompress"]');
   if (!box) return;
-  const OPT = { exts: ["jpg", "jpeg", "png", "webp"], maxSize: 30 * PT.MB, maxCount: 30, maxTotal: 300 * PT.MB, reject: { heic: "HEIC(아이폰 사진) 파일은 아직 지원하지 않아요. 사진 앱에서 JPG로 내보낸 뒤 넣어 주세요.", gif: "GIF는 지원하지 않아요. 움직이는 그림이 멈춘 그림으로 바뀌기 때문이에요." } };
+  const OPT = { exts: ["jpg", "jpeg", "png", "webp"], maxSize: 30 * PT.MB, maxCount: 30, maxTotal: 300 * PT.MB, reject: { heic: "HEIC(아이폰 사진)는 이 사이트의 「HEIC JPG 변환」에서 JPG로 바꾼 뒤 넣어 주세요.", gif: "GIF는 지원하지 않아요. 움직이는 그림이 멈춘 그림으로 바뀌기 때문이에요." } };
   const MAX_PIXELS = 50e6; // 5천만 화소 넘는 이미지는 브라우저 메모리 문제로 거절
   const run = box.querySelector("[data-run]");
   const q = box.querySelector('[name="quality"]'), qOut = box.querySelector(".q-out");

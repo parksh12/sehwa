@@ -3,7 +3,7 @@
 (function () {
   const box = document.querySelector('[data-tool="imgmerge"]');
   if (!box) return;
-  const OPT = { exts: ["jpg", "jpeg", "png", "webp"], maxSize: 30 * PT.MB, maxCount: 30, maxTotal: 300 * PT.MB, reject: { heic: "HEIC(아이폰 사진) 파일은 아직 지원하지 않아요. 사진 앱에서 JPG로 내보내거나 캡처(PNG)를 넣어 주세요.", gif: "GIF는 지원하지 않아요." } };
+  const OPT = { exts: ["jpg", "jpeg", "png", "webp"], maxSize: 30 * PT.MB, maxCount: 30, maxTotal: 300 * PT.MB, reject: { heic: "HEIC(아이폰 사진)는 이 사이트의 「HEIC JPG 변환」에서 JPG로 바꾼 뒤 넣어 주세요.", gif: "GIF는 지원하지 않아요." } };
   const MAX_PIXELS = 50e6; // 한 장 5천만 화소까지
   const MAX_AREA = 16777216, MAX_SIDE = 16384; // 결과 캔버스 한계: iOS 사파리 약 1,677만 화소(가장 엄격한 브라우저 기준)
   const SW = 192; // 행 비교용 축소 폭(px)

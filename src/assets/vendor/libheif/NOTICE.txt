@@ -1,0 +1,34 @@
+HEIC JPG 변환(/image/heic-to-jpg/)이 쓰는 HEIC 디코더 고지
+================================================================
+
+이 폴더의 libheif.js · libheif.wasm 은 아래 공식 배포본을 내려받아 한 글자도 고치지 않고 그대로 둔 것입니다.
+페이지를 열 때는 불러오지 않고, 브라우저가 HEIC를 직접 열지 못할 때 첫 변환 순간에만 작업자(t-heic-worker.js)가 불러옵니다.
+
+1) libheif 1.23.5  (HEIF/HEIC 파일 해석)
+   - 라이선스: GNU LGPL v3 (라이브러리). 전문: LICENSE-libheif.txt (LGPL v3 + 이를 포함하는 GPL v3 전문 + 예제용 MIT)
+   - 저작권: struktur AG, Dirk Farin 외 기여자
+   - 프로젝트: https://github.com/strukturag/libheif
+   - 소스(이 사이트 사본): source/libheif-1.23.5.tar.gz
+     원본: https://github.com/strukturag/libheif/releases/tag/v1.23.5  (커밋 413e2a87e6a70b3eccc3a3adc5801179dd2d9e00)
+
+2) libde265 1.0.15  (HEVC 영상 디코더, libheif에 정적으로 묶여 있음)
+   - 라이선스: GNU LGPL v3. 전문: LICENSE-libde265.txt
+   - 저작권: struktur AG, Dirk Farin 외 기여자
+   - 프로젝트: https://github.com/strukturag/libde265
+   - 소스(이 사이트 사본): source/libde265-1.0.15.tar.gz
+     원본: https://github.com/strukturag/libde265/releases/tag/v1.0.15
+
+3) 빌드(Emscripten 3.1.61, wasm)
+   - 빌드한 곳: https://github.com/catdad-experiments/libheif-emscripten/releases/tag/v1.23.5 (libheif.tar.gz 안의 libheif-wasm/)
+   - libheif에 들어 있는 build-emscripten.sh 와 post.js 를 고치지 않고 써서 만든 결과물입니다(위 저장소 README).
+   - 빌드 설정: source/libheif-emscripten-v1.23.5_emscripten.yml, source/libheif-emscripten-v1.23.5_dist-prep.sh
+     (libheif 소스의 build-emscripten.sh 기본값: libde265 1.0.15, AOM·OpenJPEG 끔, WASM_ASYNC_COMPILATION=0, USE_UNSAFE_EVAL=0)
+
+SHA-256
+   libheif.js    55983f07e1799a95c4945a3d2bfb5d22d3fff7d40cbd218ee91104593e329df0
+   libheif.wasm  184d3d20f8323877f13e9f5254f9c6a0ce272c9a3a2f823b0b2bcd2ee9f73f80
+                 (npm libheif-js 1.23.5 의 libheif-wasm/libheif.wasm 과도 같음)
+
+라이브러리 교체
+   이 사이트의 변환 코드(t-heic.js, t-heic-worker.js)는 libheif를 별도 파일로 불러와 공개된 JS 인터페이스(HeifDecoder)만 씁니다.
+   같은 인터페이스를 가진 다른 버전의 libheif.js · libheif.wasm 으로 이 두 파일을 바꿔 넣으면 그대로 동작합니다(LGPL v3 제4조).

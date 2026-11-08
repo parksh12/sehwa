@@ -1081,3 +1081,11 @@ li.has-fav{position:relative}
 .im-info{margin:-6px 0 0}
 .im-actions{display:flex;flex-wrap:wrap;gap:10px}
 @media(max-width:480px){.im-thumbs{grid-template-columns:repeat(4,1fr);gap:6px}.im .seg span{padding:7px 12px;font-size:14px}}
+/* P2-47 HEIC JPG 변환 */
+.hc-first{margin:-6px 0 0}
+.hc-meta{display:grid;gap:8px}
+.hc-opts .hc-meta .check{display:inline-flex}
+.hc-meta-hint{margin:0}
+.hc-meta-hint.warn{color:#8a1209;font-weight:700}
+.hc-lic{margin:0;font-size:12.5px}
+.hc-done img{background:#eee}
