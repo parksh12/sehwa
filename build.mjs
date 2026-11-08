@@ -60,6 +60,7 @@ const TOOLS = [
   { id: "life", cat: "story", path: "/story/life/", icon: "", title: "Life Game", seo: "Life Game — 인생 시뮬레이션 게임, 진학·결혼·직업을 직접 고르기", h1: "Life Game — 진학·결혼·직업, 갈림길을 직접 고르는 인생 게임", desc: "한 사람이 되어 일생을 살아 보는 도트 이야기 게임. 진학, 첫 직업, 결혼, 자녀, 이직, 이사, 위기, 은퇴 같은 인생의 터닝포인트를 시간 제한 없이 직접 고르면, 고른 길에 맞는 장면과 엔딩, 내 인생 연표가 나와요.", hook: "결혼할까, 창업할까? 터닝포인트를 직접 고르는 인생.", meta: "5~10분 · 터닝포인트 9번" },
   { id: "hell", cat: "arcade", path: "/arcade/hell-31/", icon: "", title: "지옥에서 살아남기", h1: "지옥에서 살아남기 — Hell Survival 31", desc: "A와 B 중 하나는 살고 하나는 죽는 31단계 병맛 선택 게임. 슬랩스틱 사망 31종을 모으는 사망 도감과 「가장 억울한 죽음」 공유 카드까지, 3~5분이면 한 판.", hook: "A/B 중 하나는 즉사. 상식대로 고르면 대개 죽는 31단계.", meta: "31단계 · 3~5분" }, // P2-27
   { id: "hellchosun", cat: "story", path: "/story/hell-chosun/", icon: "", title: "헬조선에서 살아남기", h1: "헬조선에서 살아남기 — 0세부터 80세까지 40단계", desc: "자산·체력·멘탈·눈치를 지키며 0세부터 80세까지 40단계를 버티는 병맛 인생 생존 게임. 사망 도감 44장, 엔딩 4종, 다음 생 유산 보너스.", hook: "자산·체력·멘탈·눈치 중 하나라도 바닥나면 끝. 80세까지 버티기.", meta: "40단계 · 15~30분" }, // P2-28
+  { id: "draw", cat: "arcade", path: "/arcade/ladder/", icon: "", title: "사다리타기 · 돌림판 · 제비뽑기", seo: "사다리타기 · 돌림판 · 제비뽑기 — 무료 온라인 뽑기", h1: "사다리타기 · 돌림판 · 제비뽑기 — 커피 내기, 점심 메뉴 정하기", desc: "참가자와 결과 항목을 넣고 사다리타기, 돌림판, 제비뽑기 중 하나로 정해요. 같은 결과가 그대로 재생되는 공정성 링크와 결과 이미지 저장을 지원해요.", hook: "커피 내기·점심 메뉴·청소 당번. 공정성 링크로 같은 결과 재생.", meta: "사다리 · 돌림판 · 제비", kw: "사다리타기 사다리 게임 돌림판 룰렛 돌리기 제비뽑기 랜덤 뽑기 추첨 커피 내기 점심 메뉴 정하기 청소 당번 발표 순서 복불복" }, // P2-44
 ];
 // 카드 그림(인라인 SVG). 이모지 대신 사이트 고유 그림을 씁니다.
 const K = "#141414", W = "#fff", RED = "#e5372b", YEL = "#ffc21a", GRN = "#1e9e5a";
@@ -91,6 +92,7 @@ const ART = {
   family: sv(`<path d="M14 24h56a8 8 0 0 1 8 8v26a8 8 0 0 1-8 8H38l-14 12V66h-10a8 8 0 0 1-8-8V32a8 8 0 0 1 8-8z" fill="${YEL}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M50 52h56a8 8 0 0 1 8 8v26a8 8 0 0 1-8 8h-10v12L82 94H50a8 8 0 0 1-8-8V60a8 8 0 0 1 8-8z" fill="${W}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><text x="78" y="80" font-size="15" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">7942</text><path d="M22 40h40M22 50h26" stroke="${K}" stroke-width="4" stroke-linecap="round"/>`),
   pdf2img: sv(`${doc(10, 14, 48, 64, RED)}<text x="34" y="54" font-size="15" font-weight="800" text-anchor="middle" fill="${W}" font-family="sans-serif">PDF</text><path d="M52 90h12" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M60 82l9 8-9 8" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><rect x="66" y="50" width="44" height="56" rx="6" fill="${W}" stroke="${K}" stroke-width="4"/><circle cx="80" cy="66" r="6" fill="${YEL}" stroke="${K}" stroke-width="3"/><path d="M70 100l12-14 8 6 8-10 8 18z" fill="${GRN}" stroke="${K}" stroke-width="3" stroke-linejoin="round"/>`),
   removebg: sv(`<rect x="14" y="14" width="92" height="92" rx="8" fill="${W}"/><g fill="#d6d6d6">${[0, 1, 2, 3].flatMap((r) => [0, 1, 2, 3].filter((c) => (r + c) % 2).map((c) => `<rect x="${14 + c * 23}" y="${14 + r * 23}" width="23" height="23"/>`)).join("")}</g><rect x="14" y="14" width="92" height="92" rx="8" fill="none" stroke="${K}" stroke-width="4"/><path d="M60 30c-13 0-22 10-22 24 0 9 4 15 9 19l-5 21h36l-5-21c5-4 9-10 9-19 0-14-9-24-22-24z" fill="${YEL}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M60 22c-19 0-30 14-30 32 0 10 4 17 9 22l-6 24h54l-6-24c5-5 9-12 9-22 0-18-11-32-30-32z" fill="none" stroke="${RED}" stroke-width="4" stroke-dasharray="7 6" stroke-linejoin="round"/>`), // P2-26
+  draw: sv(`<path d="M18 14v92M48 14v92" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M18 34h30M18 60h30M18 86h30" stroke="${RED}" stroke-width="5" stroke-linecap="round"/><circle cx="84" cy="72" r="28" fill="${W}"/><path d="M84 72V44a28 28 0 0 1 24.2 14z" fill="${YEL}"/><path d="M84 72l24.2 14A28 28 0 0 1 84 100z" fill="${GRN}"/><path d="M84 72 59.8 86A28 28 0 0 1 59.8 58z" fill="${RED}"/><circle cx="84" cy="72" r="28" fill="none" stroke="${K}" stroke-width="4"/><circle cx="84" cy="72" r="4" fill="${K}"/><path d="M78 32h12l-6 11z" fill="${K}"/>`), // P2-44
 };
 function doc(x, y, w, h, fill) {
   const f = Math.min(14, w / 3);
@@ -109,6 +111,7 @@ const RECO = {
   stack: ["reaction", "life", "today"],
   rpg: ["life", "stack", "reaction"],
   life: ["today", "reaction", "personality"],
+  draw: ["reaction", "stack", "today"], // P2-44
 };
 const TTI_KEYS = ["rat", "ox", "tiger", "rabbit", "dragon", "snake", "horse", "goat", "monkey", "rooster", "dog", "pig"];
 const TTI_EMOJI = Object.fromEntries(TTI_KEYS.map((k) => [k, tti[k].hanja])); // 이모지 대신 지지 한자
@@ -409,6 +412,7 @@ const homeOrder = () => Object.entries(UCATS).map((e, i) => [e, homeIn(e[0]).len
 // ★ 새 툴·게임을 만들면 여기에 { id, d: "출시일" }을 맨 위에 추가(대표님 지시: 새 콘텐츠는 메인에 잘 보이게).
 // 출시 30일 이내 항목 중 최신 4개가 홈 맨 위 「NEW」 띠에 나오고, 해당 행·타일에 NEW 표시가 붙음
 const NEW_ITEMS = [
+  { id: "draw", d: "2026-11-09" }, // P2-44
   { id: "hellchosun", d: "2026-11-02" },
   { id: "hell", d: "2026-11-02" },
   { id: "removebg", d: "2026-11-02" },
@@ -442,7 +446,7 @@ const funTile = (id) => {
 // 홈 — 「펭귄 공구함」: 검색 + 카테고리 서랍(열)마다 툴 행. 툴이 늘면 행만 늘어남. 오락실은 한 줄 띠(20% 이하)
 const SEARCH_INDEX = [
   ...UTILS.map((x) => ({ t: x.title, p: u(x.path), c: catName(x.cat), k: `${x.kw} ${x.hook}`, b: x.beta ? 1 : 0 })),
-  ...TOOLS.map((x) => ({ t: x.title, p: u(x.path), c: `${PLAY.name} · ${CATS[x.cat].name}`, k: x.hook })),
+  ...TOOLS.map((x) => ({ t: x.title, p: u(x.path), c: `${PLAY.name} · ${CATS[x.cat].name}`, k: x.kw ? `${x.kw} ${x.hook}` : x.hook })), // P2-44 kw 있으면 검색어 추가
   { t: FAMILY.name, p: FAMILY.url, c: "세화산업 다른 서비스 · 새 창", k: `랜덤7942 랜덤 채팅 익명 채팅 브레인스토밍 random7942 ${FAMILY.hook}`, x: 1 }, // 외부 사이트(대표님 지시)
 ];
 const byUtilRank = UTIL_RANK.map((id) => utilById[id]);
@@ -492,7 +496,7 @@ ${adSlotFixed("home")}`;
 const ZONES = [
   { tone: "luck", name: "오늘", sub: "매일 자정에 바뀌는 운세 · 사주팔자", ids: ["today", "saju"] },
   { tone: "me", name: "테스트", sub: "생일·성향·이름으로 보는 나", ids: ["birthday", "personality", "namematch"] },
-  { tone: "story", name: "게임", sub: "한 판이면 끝나는 짧은 게임", ids: ["rpg", "hell", "hellchosun", "life", "stack", "reaction"] },
+  { tone: "story", name: "게임", sub: "한 판이면 끝나는 짧은 게임", ids: ["rpg", "hell", "hellchosun", "life", "stack", "reaction", "draw"] }, // P2-44 draw
   { tone: "love", name: "같이", sub: "세화산업이 운영하는 다른 서비스(외부 사이트)", ids: [], ext: [FAMILY] },
 ];
 {
@@ -737,6 +741,45 @@ ZODIAC_KEYS.forEach((k, i) => {
   toolPage(toolById.reaction, html, { scripts: ["rank.js", "reaction.js"], extraBelow: `<section class="rank-page" data-rank-game="reaction" aria-label="순위표"></section>` });
 
 
+}
+
+// P2-44 사다리타기 · 돌림판 · 제비뽑기 (src/assets/draw.js). 결과는 추첨 번호(시드) 하나로 정해지고 주소 # 뒤에 담김
+{
+  const html = `
+<div class="dr" id="dr">
+  <p class="dr-from-link" id="dr-from-link" hidden>공유받은 링크로 열었어요. 추첨 번호 <b></b>로 만든 결과를 그대로 다시 볼 수 있어요.</p>
+  <div class="dr-presets" role="group" aria-label="빠른 시작"><span class="hint">빠른 시작</span>${[["coffee", "커피 내기"], ["lunch", "점심 메뉴"], ["clean", "청소 당번"], ["order", "발표 순서"]].map(([k, n]) => `<button type="button" class="chip" data-preset="${k}">${n}</button>`).join("")}</div>
+  <div class="row2 dr-inputs">
+    <label for="dr-p">참가자 <small>한 줄에 하나 · 최대 12명</small><textarea id="dr-p" rows="5" autocomplete="off" spellcheck="false" placeholder="민수&#10;지영&#10;현우"></textarea></label>
+    <label for="dr-r">결과 항목 <small>한 줄에 하나 · 최대 12개</small><textarea id="dr-r" rows="5" autocomplete="off" spellcheck="false" placeholder="커피 쏘기&#10;통과"></textarea></label>
+  </div>
+  <p class="hint dr-note" id="dr-note" aria-live="polite"></p>
+  <div class="dr-seedrow"><span>추첨 번호 <b id="dr-seed"></b></span><button type="button" class="btn ghost" data-dr="reseed">새로 섞기</button></div>
+  <div class="tabs dr-tabs" role="tablist" aria-label="뽑는 방법">
+    <button type="button" role="tab" id="dr-tab-ladder" data-mode="ladder" aria-controls="dr-ladder" aria-selected="true">사다리</button>
+    <button type="button" role="tab" id="dr-tab-wheel" data-mode="wheel" aria-controls="dr-wheel" aria-selected="false" tabindex="-1">돌림판</button>
+    <button type="button" role="tab" id="dr-tab-cards" data-mode="cards" aria-controls="dr-cards" aria-selected="false" tabindex="-1">제비뽑기</button>
+  </div>
+  <section class="dr-panel" id="dr-ladder" role="tabpanel" aria-labelledby="dr-tab-ladder">
+    <div class="dr-scroll"><div class="dr-ladder"><div class="dr-names"></div><canvas id="dr-ladder-cv" aria-label="사다리 그림" role="img"></canvas><div class="dr-ends"></div></div></div>
+    <div class="dr-btns"><button type="button" class="btn" data-dr="all">전체 공개</button><span class="hint">이름을 누르면 한 명씩 열려요.</span></div>
+  </section>
+  <section class="dr-panel" id="dr-wheel" role="tabpanel" aria-labelledby="dr-tab-wheel" hidden>
+    <fieldset class="seg dr-wsrc"><legend>돌림판 칸</legend><label><input type="radio" name="dr-w" value="r"><span>결과 항목</span></label><label><input type="radio" name="dr-w" value="p"><span>참가자 이름</span></label></fieldset>
+    <div class="dr-wheel-box"><span class="dr-pin" aria-hidden="true"></span><canvas id="dr-wheel-cv" aria-label="돌림판" role="img"></canvas></div>
+    <button type="button" class="btn big dr-spin" id="dr-spin">길게 누를수록 세게 돌려요</button>
+    <div class="dr-gauge" aria-hidden="true"><i></i></div>
+  </section>
+  <section class="dr-panel" id="dr-cards" role="tabpanel" aria-labelledby="dr-tab-cards" hidden>
+    <div class="dr-cards"></div>
+    <div class="dr-btns"><button type="button" class="btn" data-dr="flipall">모두 뒤집기</button><span class="hint">카드를 누르면 한 장씩 뒤집혀요.</span></div>
+  </section>
+  <div class="dr-result" id="dr-result" aria-live="polite"></div>
+  <div class="dr-btns dr-share"><button type="button" class="btn" data-dr="link">공정성 링크 복사</button><button type="button" class="btn ghost" data-dr="image">결과 이미지 저장</button></div>
+  <p class="hint" id="dr-link-note" aria-live="polite"></p>
+  <p class="safe">입력한 이름과 항목은 저장하거나 서버로 보내지 않아요. 공정성 링크에는 이름과 항목이 들어가니, 실명 대신 별명을 써도 돼요.</p>
+</div>`;
+  toolPage(toolById.draw, html, { scripts: ["draw.js"] });
 }
 
 // 인생 게임 장면·선택 검사 (어기면 빌드 실패) — P2-21 터닝포인트 구조
@@ -1113,7 +1156,7 @@ for (const k of INFO) {
 <h2>1. 직접 쓰고 사람이 검수해요</h2><p>툴 설명, 해설과 운세 문구는 다른 사이트의 문장을 옮기지 않고 직접 작성합니다. 초안 작성에 도구의 도움을 받더라도, 공개 전에 운영자가 한 문장씩 읽고 사실관계와 표현을 확인해요.</p>
 <h2>2. 단정하지 않아요</h2><p>운세와 성격 해설은 「~할 수 있어요」, 「참고해 보세요」처럼 가능성으로 표현합니다. 건강이 좋아진다거나 돈이 들어온다는 식의 결과를 보장하는 문구, 특정 관계를 맺거나 끊으라고 권하는 문구는 쓰지 않아요.</p>
 <h2>3. 계산은 투명하게 공개해요</h2><p>만 나이, 띠, 별자리, 이름 궁합, 반응속도처럼 계산이 들어가는 도구는 각 페이지의 「결과 해석 가이드」에 계산 방식을 적어 둡니다. 띠는 입춘 기준, 별자리는 일반적으로 쓰이는 날짜 구간을 따르며 경계 날짜는 해마다 하루쯤 달라질 수 있어요.</p>
-<h2>4. 개인정보를 받지 않아요</h2><p>생년월일과 이름은 사용자의 브라우저 안에서만 계산하고 서버로 보내거나 저장하지 않습니다. 공유 링크와 공유 이미지에도 입력한 이름이나 생년월일은 들어가지 않아요.</p>
+<h2>4. 개인정보를 받지 않아요</h2><p>생년월일과 이름은 사용자의 브라우저 안에서만 계산하고 서버로 보내거나 저장하지 않습니다. 운세·궁합 결과의 공유 링크와 공유 이미지에도 입력한 이름이나 생년월일은 들어가지 않아요. 다만 사다리타기·돌림판의 「공정성 링크」는 같은 결과를 다시 보여 주기 위해 입력한 이름과 항목을 링크에 담으니, 실명 대신 별명을 써도 돼요.</p>
 <h2>5. 권리를 존중해요</h2><p>실존 인물의 사진이나 다른 서비스의 이미지·게임 규칙·명칭을 가져다 쓰지 않습니다. 16유형 성격 테스트는 대중적인 4축 모델을 참고한 자체 제작 간이 테스트이며 공식 검사와 무관해요.</p>
 <h2>6. 고칠 점은 바로 고쳐요</h2><p>잘못된 내용이나 불편한 표현을 발견하셨다면 <a href="${u("/contact/")}">문의</a>로 알려 주세요. 확인 후 빠르게 수정하겠습니다.</p>
 <p class="hint">운영: ${esc(cfg.operator)}</p></article>`;

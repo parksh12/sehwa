@@ -967,3 +967,67 @@ li.has-fav{position:relative}
 .rank-err{color:#8a1209;font-weight:700;font-size:13px}
 .rank-btns{display:flex;gap:8px;flex-wrap:wrap}
 .rank-btns .btn{flex:1 1 auto;padding:8px 12px;font-size:14px}
+
+/* P2-44 사다리타기 · 돌림판 · 제비뽑기 */
+.dr{display:grid;gap:14px}
+.dr-from-link{margin:0;padding:10px 14px;border:2px solid var(--ink);border-radius:10px;background:var(--hwang);font-weight:700;font-size:14px}
+.dr-presets{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.dr-presets .chip{font:inherit;font-size:14px;font-weight:800;cursor:pointer}
+.dr-inputs label small{font-weight:600;color:var(--ink-3);font-size:12px;margin-left:4px}
+.dr textarea{font:inherit;font-size:16px;width:100%;padding:10px 12px;border-radius:10px;border:2px solid var(--ink);background:#fff;color:var(--ink);resize:vertical;line-height:1.5;min-height:128px}
+.dr textarea:focus{outline:3px solid var(--hwang);outline-offset:1px}
+.dr-note{margin:-6px 0 0}.dr-note:empty{display:none}
+.dr-seedrow{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-weight:700;font-size:14px}
+.dr-seedrow b{font-family:ui-monospace,Consolas,monospace;font-size:16px;letter-spacing:.06em;background:var(--soft);border:2px solid var(--ink);border-radius:8px;padding:2px 8px;margin-left:4px}
+.dr-seedrow .btn{padding:6px 12px;font-size:14px}
+.dr-tabs{margin:6px 0 0}
+.dr-tabs button{flex:1;font-size:clamp(18px,4.6vw,24px);padding:6px 6px 4px}
+.dr-panel{display:grid;gap:12px}
+.dr-panel[hidden]{display:none}
+.dr-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+.dr-ladder{--n:4;min-width:calc(var(--n)*58px)}
+.dr-ladder canvas{display:block;width:100%}
+.dr-names,.dr-ends{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:4px}
+.dr-name{appearance:none;font:inherit;font-size:14px;font-weight:800;color:var(--ink);background:#fff;border:2px solid var(--ink);border-radius:10px;padding:6px 2px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0;min-height:48px}
+.dr-name i{width:12px;height:12px;border-radius:50%;background:var(--c)}
+.dr-name span,.dr-end b,.dr-end small{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dr-name:hover{background:var(--hwang)}
+.dr-name.done{background:var(--c);color:#fff;border-color:var(--ink)}.dr-name.done i{background:#fff}
+.dr-end{display:flex;flex-direction:column;align-items:center;min-width:0;border:2px dashed var(--ink-3);border-radius:10px;padding:6px 2px;font-size:14px;min-height:52px;justify-content:center}
+.dr-end small{font-size:12px;font-weight:800;color:var(--c)}
+.dr-end.done{border:2px solid var(--c);background:color-mix(in srgb,var(--c) 12%,#fff)}
+.dr-btns{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.dr-wsrc{display:flex;flex-wrap:wrap;gap:8px}
+.dr-wsrc span{padding:6px 14px;font-size:14px}
+.dr-wheel-box{position:relative;display:flex;justify-content:center;padding-top:14px}
+.dr-wheel-box canvas{display:block;max-width:100%}
+.dr-pin{position:absolute;top:0;left:50%;width:0;height:0;margin-left:-14px;border-left:14px solid transparent;border-right:14px solid transparent;border-top:30px solid var(--ink);z-index:1;filter:drop-shadow(0 2px 0 var(--jeok))}
+.dr-spin{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.dr-spin.holding{background:var(--jeok)}
+.dr-gauge{height:10px;border:2px solid var(--ink);border-radius:99px;overflow:hidden;background:var(--soft)}
+.dr-gauge i{display:block;height:100%;background:var(--jeok);transform:scaleX(0);transform-origin:left}
+.dr-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px}
+.dr-card{appearance:none;font:inherit;border:0;padding:0;background:none;cursor:pointer;perspective:700px;aspect-ratio:3/4;min-height:120px}
+.dr-card-in{position:relative;display:block;width:100%;height:100%;transition:transform .55s cubic-bezier(.3,1.4,.5,1);transform-style:preserve-3d}
+.dr-card.flipped .dr-card-in{transform:rotateY(180deg)}
+.dr-card-back,.dr-card-front{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:2.5px solid var(--ink);border-radius:12px;backface-visibility:hidden;-webkit-backface-visibility:hidden;padding:8px;text-align:center;box-shadow:3px 3px 0 var(--ink)}
+.dr-card-back{background:repeating-linear-gradient(45deg,var(--c) 0 10px,color-mix(in srgb,var(--c) 75%,#fff) 10px 20px);color:#fff}
+.dr-card-back b{background:var(--ink);border-radius:8px;padding:2px 8px;font-size:15px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dr-card-back small{font-size:11px;font-weight:800;background:rgba(20,20,20,.55);border-radius:6px;padding:0 6px}
+.dr-card-front{background:#fff;transform:rotateY(180deg)}
+.dr-card-front small{font-size:12px;font-weight:800;color:var(--c)}
+.dr-card-front b{font-size:17px;line-height:1.3;word-break:keep-all}
+.dr-card:focus-visible{outline:3px solid var(--hwang);outline-offset:3px;border-radius:12px}
+.dr-result{min-height:48px}
+.dr-empty{margin:0;color:var(--ink-3);font-weight:700;font-size:14px}
+.dr-big{margin:0;font-size:20px;font-weight:800;text-align:center}
+.dr-big b{display:block;font-family:var(--display);font-weight:400;font-size:clamp(30px,8vw,44px);color:var(--jeok)}
+.dr-sum{margin:0 0 6px;font-size:13px;font-weight:800;color:var(--ink-3)}
+.dr-pairs{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
+.dr-pairs li{display:flex;align-items:center;gap:8px;border:2px solid var(--ink);border-left:8px solid var(--c);border-radius:10px;padding:6px 10px;font-size:15px;min-width:0}
+.dr-pairs span{font-weight:700;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dr-pairs b{margin-left:auto;text-align:right}
+.dr-share{border-top:2px dashed var(--ink-3);padding-top:14px}
+#dr-link-note{margin:-6px 0 0}#dr-link-note:empty{display:none}
+@media(max-width:480px){.dr-inputs{grid-template-columns:1fr 1fr;gap:8px}.dr textarea{min-height:120px;padding:8px 10px}.dr-seedrow{font-size:13px}}
+@media(prefers-reduced-motion:reduce){.dr-card-in{transition:none}}
