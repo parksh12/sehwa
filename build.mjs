@@ -94,6 +94,7 @@ const ART = {
   pdf2img: sv(`${doc(10, 14, 48, 64, RED)}<text x="34" y="54" font-size="15" font-weight="800" text-anchor="middle" fill="${W}" font-family="sans-serif">PDF</text><path d="M52 90h12" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M60 82l9 8-9 8" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><rect x="66" y="50" width="44" height="56" rx="6" fill="${W}" stroke="${K}" stroke-width="4"/><circle cx="80" cy="66" r="6" fill="${YEL}" stroke="${K}" stroke-width="3"/><path d="M70 100l12-14 8 6 8-10 8 18z" fill="${GRN}" stroke="${K}" stroke-width="3" stroke-linejoin="round"/>`),
   removebg: sv(`<rect x="14" y="14" width="92" height="92" rx="8" fill="${W}"/><g fill="#d6d6d6">${[0, 1, 2, 3].flatMap((r) => [0, 1, 2, 3].filter((c) => (r + c) % 2).map((c) => `<rect x="${14 + c * 23}" y="${14 + r * 23}" width="23" height="23"/>`)).join("")}</g><rect x="14" y="14" width="92" height="92" rx="8" fill="none" stroke="${K}" stroke-width="4"/><path d="M60 30c-13 0-22 10-22 24 0 9 4 15 9 19l-5 21h36l-5-21c5-4 9-10 9-19 0-14-9-24-22-24z" fill="${YEL}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M60 22c-19 0-30 14-30 32 0 10 4 17 9 22l-6 24h54l-6-24c5-5 9-12 9-22 0-18-11-32-30-32z" fill="none" stroke="${RED}" stroke-width="4" stroke-dasharray="7 6" stroke-linejoin="round"/>`), // P2-26
   draw: sv(`<path d="M18 14v92M48 14v92" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M18 34h30M18 60h30M18 86h30" stroke="${RED}" stroke-width="5" stroke-linecap="round"/><circle cx="84" cy="72" r="28" fill="${W}"/><path d="M84 72V44a28 28 0 0 1 24.2 14z" fill="${YEL}"/><path d="M84 72l24.2 14A28 28 0 0 1 84 100z" fill="${GRN}"/><path d="M84 72 59.8 86A28 28 0 0 1 59.8 58z" fill="${RED}"/><circle cx="84" cy="72" r="28" fill="none" stroke="${K}" stroke-width="4"/><circle cx="84" cy="72" r="4" fill="${K}"/><path d="M78 32h12l-6 11z" fill="${K}"/>`), // P2-44
+  imgmerge: sv(`<rect x="30" y="10" width="60" height="32" rx="5" fill="${YEL}" stroke="${K}" stroke-width="4"/><rect x="30" y="44" width="60" height="32" rx="5" fill="${GRN}" stroke="${K}" stroke-width="4"/><rect x="30" y="78" width="60" height="32" rx="5" fill="${W}" stroke="${K}" stroke-width="4"/><circle cx="46" cy="94" r="6" fill="${RED}"/><path d="M8 26v68M2 34l6-8 6 8M2 86l6 8 6-8" fill="none" stroke="${RED}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M98 60h18" stroke="${K}" stroke-width="4" stroke-linecap="round" stroke-dasharray="4 5"/>`), // P2-46
   salary: sv(`<rect x="12" y="30" width="96" height="60" rx="8" fill="${GRN}" stroke="${K}" stroke-width="4"/><circle cx="60" cy="60" r="17" fill="${W}" stroke="${K}" stroke-width="4"/><text x="60" y="67" font-size="20" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">₩</text><path d="M24 44h10M86 76h10" stroke="${K}" stroke-width="4" stroke-linecap="round"/>`), // P2-45
   severance: sv(`<rect x="22" y="36" width="76" height="62" rx="8" fill="${YEL}" stroke="${K}" stroke-width="4"/><path d="M44 36v-8a6 6 0 0 1 6-6h20a6 6 0 0 1 6 6v8" fill="none" stroke="${K}" stroke-width="4"/><path d="M22 60h76" stroke="${K}" stroke-width="4"/><rect x="52" y="54" width="16" height="12" rx="3" fill="${W}" stroke="${K}" stroke-width="3"/>`), // P2-45
   unemp: sv(`<path d="M60 16a36 36 0 0 1 36 36H24a36 36 0 0 1 36-36z" fill="${RED}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M60 52v40a8 8 0 0 1-16 0" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round"/><circle cx="88" cy="88" r="14" fill="${YEL}" stroke="${K}" stroke-width="4"/><text x="88" y="94" font-size="15" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">₩</text>`), // P2-45
@@ -132,7 +133,7 @@ const LIFE_SLUG = { adventure: "adventurer", love: "warm-heart", stable: "steady
 const PLAY = { name: "펭귄 오락실", tagline: "운세·테스트·게임, 잠깐 쉬어 가는 재미", path: "/play/", desc: "운세, 성격 테스트, 이름 궁합, Life Game, 반응속도 게임처럼 잠깐 쉬어 가는 재미 콘텐츠를 모았어요." };
 const UCATS = {
   pdf: { name: "PDF·문서", desc: "PDF를 합치고 나누고, 이미지와 워드 문서를 PDF로 바꾸는 툴이에요." },
-  image: { name: "이미지", desc: "사진 용량을 줄이거나 여러 장을 PDF로 묶는 이미지 툴이에요." },
+  image: { name: "이미지", desc: "사진 용량을 줄이고, 여러 장을 한 장으로 이어 붙이거나 PDF로 묶는 이미지 툴이에요." }, // P2-46 desc
   text: { name: "글쓰기", desc: "자기소개서, 리포트, 블로그 글을 쓸 때 필요한 글쓰기 툴이에요." },
   calc: { name: "생활 계산", desc: "D-day, 연봉 실수령액, 퇴직금처럼 생활에서 자주 찾는 계산을 바로 해 주는 툴이에요." }, // P2-45 desc
   time: { name: "시간", desc: "타이머와 스톱워치처럼 시간을 재고 알려 주는 툴이에요." },
@@ -157,8 +158,9 @@ const UTILS = [
   { id: "severance", cat: "calc", path: "/calc/severance/", title: "퇴직금 계산기", seo: "퇴직금 계산기 — 평균임금으로 예상 퇴직금(세전)", h1: "퇴직금 계산기 — 입사일·퇴사일·월급으로 예상 퇴직금", desc: "입사일, 마지막 근무일, 퇴직 전 3개월 임금과 상여금·연차수당을 넣으면 1일 평균임금과 법정 퇴직금(세전)을 계산해요. 재직 1년 미만이면 대상이 아니라고 알려 줘요.", hook: "입사일·퇴사일·월급으로 예상 퇴직금(세전).", meta: "평균임금 × 30일", kw: "퇴직금 퇴직금 계산 퇴직금 계산기 평균임금 퇴직금 계산법 퇴사 퇴직 1년 상여금 연차수당 퇴직급여" }, // P2-45
   { id: "unemp", cat: "calc", path: "/calc/unemployment/", title: "실업급여 계산기", seo: `실업급여 계산기 ${PAY.year} — 구직급여 하루 금액·받는 기간`, h1: `실업급여 계산기 ${PAY.year} — 하루 얼마, 며칠 받을까`, desc: `퇴직 전 평균임금, 나이, 고용보험 가입기간을 넣으면 ${PAY.year}년 상한(하루 ${PAY.unemp.dayCap[PAY.year].toLocaleString("ko-KR")}원)·하한을 적용한 구직급여 하루 금액과 소정급여일수, 총 예상 수급액을 계산해요.`, hook: "하루 얼마, 며칠 동안? 구직급여 예상액.", meta: `상한 ${PAY.unemp.dayCap[PAY.year].toLocaleString("ko-KR")}원/일`, kw: "실업급여 실업급여 계산 실업급여 계산기 구직급여 실업급여 금액 실업급여 기간 실업급여 조건 소정급여일수 권고사직 계약만료 고용보험" }, // P2-45
   { id: "removebg", cat: "image", path: "/image/remove-bg/", title: "배경 지우기", seo: "배경 지우기 — 무료 누끼 따기", h1: "배경 지우기 — 무료 누끼 따기, 투명 PNG로 저장", desc: "사진을 넣으면 사람·물건·동물만 남기고 배경을 지워 투명 PNG나 흰 배경 사진으로 저장해요. 누른 대상만 남기고, 브러시로 다듬을 수 있어요. 사진은 서버로 전송하지 않습니다.", hook: "누끼 따기, 사진 배경을 투명하게.", meta: "투명 PNG · 흰 배경", kw: "배경 지우기 배경 제거 누끼 누끼따기 투명 png 배경 투명 remove bg 배경 삭제 흰 배경 상품 사진" }, // P2-26
+  { id: "imgmerge", cat: "image", path: "/image/merge/", title: "사진 이어붙이기", seo: "사진 이어붙이기 — 사진 합치기·캡처 합치기·긴 캡처 만들기", h1: "사진 이어붙이기 — 여러 장을 세로·가로·격자로 한 장에", desc: "사진과 휴대폰 캡처 여러 장을 세로·가로·격자로 한 장에 이어 붙여요. 캡처의 상태바·주소창·하단 바를 자동으로 잘라 내고, 연속 캡처는 겹친 부분을 빼서 긴 캡처로 만들어요. 사진은 서버로 전송하지 않습니다.", hook: "캡처 여러 장을 한 장으로, 툴바는 자동으로 잘라요.", meta: "세로·가로·격자 · JPG·PNG", kw: "사진 합치기 사진 이어붙이기 사진 붙이기 이미지 합치기 이미지 붙이기 이미지 이어붙이기 캡처 합치기 캡처 이어붙이기 스크린샷 합치기 긴 캡처 스크롤 캡처 긴 스크린샷 사진 연결 콜라주 격자 사진 세로로 붙이기 가로로 붙이기" }, // P2-46
 ];
-const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "word2pdf", "dday"]; // P2-45 돈 계산기 4종
+const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "word2pdf", "dday"]; // P2-45 돈 계산기 4종, P2-46 imgmerge
 const NEXT = {
   pdfmerge: ["pdfsplit", "img2pdf", "imgcompress"],
   pdfsplit: ["pdfmerge", "pdf2img", "img2pdf"],
@@ -173,6 +175,7 @@ const NEXT = {
   pyeong: ["age", "dday", "charcount"],
   pdf2img: ["imgcompress", "img2pdf", "pdfsplit"],
   removebg: ["imgcompress", "img2pdf", "pdf2img"], // P2-26
+  imgmerge: ["imgcompress", "img2pdf", "removebg"], // P2-46
   salary: ["juhyu", "severance", "unemp"], // P2-45
   juhyu: ["salary", "unemp", "severance"], // P2-45
   severance: ["unemp", "salary", "juhyu"], // P2-45
@@ -425,6 +428,7 @@ const homeOrder = () => Object.entries(UCATS).map((e, i) => [e, homeIn(e[0]).len
 // ★ 새 툴·게임을 만들면 여기에 { id, d: "출시일" }을 맨 위에 추가(대표님 지시: 새 콘텐츠는 메인에 잘 보이게).
 // 출시 30일 이내 항목 중 최신 4개가 홈 맨 위 「NEW」 띠에 나오고, 해당 행·타일에 NEW 표시가 붙음
 const NEW_ITEMS = [
+  { id: "imgmerge", d: "2026-11-09" }, // P2-46
   { id: "salary", d: "2026-11-09" }, // P2-45
   { id: "juhyu", d: "2026-11-09" }, // P2-45
   { id: "severance", d: "2026-11-09" }, // P2-45
@@ -1043,6 +1047,43 @@ ${tkTail("")}
   <div class="rb-actions"><button type="button" class="btn big" data-save>PNG 내려받기</button><button type="button" class="btn ghost" data-undo disabled>되돌리기</button><button type="button" class="btn ghost" data-again>처음 결과로</button><button type="button" class="btn ghost" data-new>다른 사진</button></div>
   <p class="rb-stat hint"></p>
 </div>`, { scripts: ["t-removebg.js"] });
+
+// P2-46 사진 이어붙이기(캡처 정리): 넣기(선택·끌어 놓기·붙여 넣기) → 순서(끌기) → 배치·자르기 → 미리보기 → 저장
+utilPage(utilById.imgmerge, `${dropHtml({ accept: ".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp", multiple: true, label: "이어 붙일 사진을 넣어 주세요", limit: "JPG·PNG·WEBP · 장당 30MB · 30장까지 · Ctrl+V로 붙여 넣기" })}
+${tkTail("")}
+<div class="im" hidden>
+  <ol class="im-thumbs" aria-label="사진 순서"></ol>
+  <p class="hint im-drag-hint">사진을 끌어서 순서를 바꿔요. 휴대폰에서는 살짝 길게 누른 뒤 끌어요. ◀ ▶로도 옮길 수 있어요.</p>
+  <div class="tk-opts im-opts">
+    <fieldset class="seg"><legend>붙이는 방향</legend>
+      <label><input type="radio" name="mode" value="v" checked><span>세로</span></label><label><input type="radio" name="mode" value="h"><span>가로</span></label><label><input type="radio" name="mode" value="g"><span>격자</span></label>
+    </fieldset>
+    <label class="im-cols" hidden>열 수<select name="cols"><option value="2" selected>2열</option><option value="3">3열</option><option value="4">4열</option><option value="5">5열</option></select></label>
+    <div class="im-long-row"><label class="check"><input type="checkbox" name="long"> 긴 캡처 만들기 (연속 캡처의 겹치는 부분 빼기)</label><p class="hint im-long-note" aria-live="polite" hidden></p></div>
+    <div class="im-trimrow"><label class="check"><input type="checkbox" name="trim"> 툴바 자동 자르기 (상태바·주소창·하단 바)</label>
+      <div class="im-trim" hidden>
+        <p class="hint im-trim-note" aria-live="polite"></p>
+        <label>위에서 자르기 <output class="im-t-out">0px</output><input type="range" name="trimTop" min="0" max="900" step="1" value="0"></label>
+        <label>아래에서 자르기 <output class="im-b-out">0px</output><input type="range" name="trimBot" min="0" max="900" step="1" value="0"></label>
+        <button type="button" class="btn ghost im-auto" data-auto>자동으로 다시 찾기</button>
+      </div>
+    </div>
+    <div class="im-gaps">
+      <label>간격 <output class="im-gap-out">0px</output><input type="range" name="gap" min="0" max="60" step="2" value="0"></label>
+      <div class="im-row"><label class="im-color">배경색<input type="color" name="bg" value="#ffffff"></label><label class="check"><input type="checkbox" name="border"> 얇은 검정 테두리</label></div>
+    </div>
+    <fieldset class="seg"><legend>저장 크기</legend>
+      <label><input type="radio" name="size" value="orig" checked><span>원본</span></label><label><input type="radio" name="size" value="mid"><span>보통 (1080px)</span></label><label><input type="radio" name="size" value="small"><span>작게 (720px)</span></label>
+    </fieldset>
+    <fieldset class="seg"><legend>형식</legend>
+      <label><input type="radio" name="fmt" value="jpg" checked><span>JPG</span></label><label><input type="radio" name="fmt" value="png"><span>PNG</span></label>
+    </fieldset>
+  </div>
+  <div class="im-preview"><canvas class="im-canvas" role="img" aria-label="미리보기" width="1" height="1"></canvas></div>
+  <p class="im-info hint" aria-live="polite"></p>
+  <p class="tk-msg note im-note" hidden></p>
+  <div class="im-actions"><button type="button" class="btn big" data-save>이미지 저장</button><button type="button" class="btn ghost" data-clear>모두 지우기</button></div>
+</div>`, { scripts: ["t-imgmerge.js"] });
 
 // 글자수 세기 (입력 → 결과 → 결과 복사 → 다음 툴)
 utilPage(utilById.charcount, `<label for="cc-text" class="sr">글자수를 셀 글</label>
