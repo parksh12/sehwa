@@ -1031,3 +1031,26 @@ li.has-fav{position:relative}
 #dr-link-note{margin:-6px 0 0}#dr-link-note:empty{display:none}
 @media(max-width:480px){.dr-inputs{grid-template-columns:1fr 1fr;gap:8px}.dr textarea{min-height:120px;padding:8px 10px}.dr-seedrow{font-size:13px}}
 @media(prefers-reduced-motion:reduce){.dr-card-in{transition:none}}
+/* P2-45 직장인 돈 계산기 4종 (연봉 실수령액 · 주휴수당 · 퇴직금 · 실업급여) */
+.pay{display:grid;gap:14px}
+.pay-form input[type=text],.pay-form input[type=number],.pay-form select{width:100%}
+.pay-form label small.hint{font-weight:600;margin:0}
+.pay-kor{font-size:13px;font-weight:700;color:var(--ink-2);min-height:1em}
+.pay-quick .chip,.pay-links .chip{font:inherit;font-size:13.5px;font-weight:800;cursor:pointer}
+.pay-quick [hidden]{display:none}
+.pay-acts .btn{min-width:130px}
+.pay-more summary{cursor:pointer;font-weight:800;font-size:14.5px}
+.pay-more[open] summary{margin-bottom:8px}
+.pay-dis{align-self:end;padding-bottom:6px}
+.pay-result .age-big span:first-child{font-size:17px;width:100%}
+.pay-table td{text-align:right;white-space:nowrap}
+.pay-table td small{display:block;white-space:normal;color:var(--ink-2);font-size:12px}
+.pay-table th{font-weight:700}
+.pay-ytable td,.pay-ytable th{white-space:nowrap}
+.pay-ytable td{text-align:right}
+.pay-links{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.pay-warn{color:var(--jeok);font-weight:800}
+.pay-note{margin-top:10px!important;border-top:2px dashed var(--ink-3);padding-top:8px;font-size:13.5px;color:var(--ink-2)}
+.pay-src ul{padding-left:1.1em;font-size:14.5px}
+.pay-src li{margin:.35em 0}
+@media(max-width:480px){.pay-form .row2{grid-template-columns:1fr}.pay-table td,.pay-table th{padding:6px;font-size:14px}}

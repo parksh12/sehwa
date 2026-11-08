@@ -18,6 +18,7 @@ const zodiac = await load("zodiac");
 const guides = await load("guides");
 const pages = await load("pages");
 const toolText = await load("tools");
+const PAY = await load("pay-rates-2026"); // P2-45 직장인 돈 계산기 요율(한 파일)
 
 // ---------- 유틸 ----------
 const esc = (s = "") => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -93,6 +94,10 @@ const ART = {
   pdf2img: sv(`${doc(10, 14, 48, 64, RED)}<text x="34" y="54" font-size="15" font-weight="800" text-anchor="middle" fill="${W}" font-family="sans-serif">PDF</text><path d="M52 90h12" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M60 82l9 8-9 8" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><rect x="66" y="50" width="44" height="56" rx="6" fill="${W}" stroke="${K}" stroke-width="4"/><circle cx="80" cy="66" r="6" fill="${YEL}" stroke="${K}" stroke-width="3"/><path d="M70 100l12-14 8 6 8-10 8 18z" fill="${GRN}" stroke="${K}" stroke-width="3" stroke-linejoin="round"/>`),
   removebg: sv(`<rect x="14" y="14" width="92" height="92" rx="8" fill="${W}"/><g fill="#d6d6d6">${[0, 1, 2, 3].flatMap((r) => [0, 1, 2, 3].filter((c) => (r + c) % 2).map((c) => `<rect x="${14 + c * 23}" y="${14 + r * 23}" width="23" height="23"/>`)).join("")}</g><rect x="14" y="14" width="92" height="92" rx="8" fill="none" stroke="${K}" stroke-width="4"/><path d="M60 30c-13 0-22 10-22 24 0 9 4 15 9 19l-5 21h36l-5-21c5-4 9-10 9-19 0-14-9-24-22-24z" fill="${YEL}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M60 22c-19 0-30 14-30 32 0 10 4 17 9 22l-6 24h54l-6-24c5-5 9-12 9-22 0-18-11-32-30-32z" fill="none" stroke="${RED}" stroke-width="4" stroke-dasharray="7 6" stroke-linejoin="round"/>`), // P2-26
   draw: sv(`<path d="M18 14v92M48 14v92" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M18 34h30M18 60h30M18 86h30" stroke="${RED}" stroke-width="5" stroke-linecap="round"/><circle cx="84" cy="72" r="28" fill="${W}"/><path d="M84 72V44a28 28 0 0 1 24.2 14z" fill="${YEL}"/><path d="M84 72l24.2 14A28 28 0 0 1 84 100z" fill="${GRN}"/><path d="M84 72 59.8 86A28 28 0 0 1 59.8 58z" fill="${RED}"/><circle cx="84" cy="72" r="28" fill="none" stroke="${K}" stroke-width="4"/><circle cx="84" cy="72" r="4" fill="${K}"/><path d="M78 32h12l-6 11z" fill="${K}"/>`), // P2-44
+  salary: sv(`<rect x="12" y="30" width="96" height="60" rx="8" fill="${GRN}" stroke="${K}" stroke-width="4"/><circle cx="60" cy="60" r="17" fill="${W}" stroke="${K}" stroke-width="4"/><text x="60" y="67" font-size="20" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">₩</text><path d="M24 44h10M86 76h10" stroke="${K}" stroke-width="4" stroke-linecap="round"/>`), // P2-45
+  severance: sv(`<rect x="22" y="36" width="76" height="62" rx="8" fill="${YEL}" stroke="${K}" stroke-width="4"/><path d="M44 36v-8a6 6 0 0 1 6-6h20a6 6 0 0 1 6 6v8" fill="none" stroke="${K}" stroke-width="4"/><path d="M22 60h76" stroke="${K}" stroke-width="4"/><rect x="52" y="54" width="16" height="12" rx="3" fill="${W}" stroke="${K}" stroke-width="3"/>`), // P2-45
+  unemp: sv(`<path d="M60 16a36 36 0 0 1 36 36H24a36 36 0 0 1 36-36z" fill="${RED}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M60 52v40a8 8 0 0 1-16 0" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round"/><circle cx="88" cy="88" r="14" fill="${YEL}" stroke="${K}" stroke-width="4"/><text x="88" y="94" font-size="15" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">₩</text>`), // P2-45
+  juhyu: sv(`<rect x="14" y="22" width="92" height="76" rx="8" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M14 40h92" stroke="${K}" stroke-width="4"/>${[0, 1, 2, 3, 4, 5, 6].map((i) => `<rect x="${20 + i * 12}" y="50" width="9" height="9" rx="2" fill="${i === 6 ? RED : i < 5 ? GRN : "#d6d6d6"}"/>`).join("")}<text x="60" y="88" font-size="18" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">+주휴</text>`), // P2-45
 };
 function doc(x, y, w, h, fill) {
   const f = Math.min(14, w / 3);
@@ -129,7 +134,7 @@ const UCATS = {
   pdf: { name: "PDF·문서", desc: "PDF를 합치고 나누고, 이미지와 워드 문서를 PDF로 바꾸는 툴이에요." },
   image: { name: "이미지", desc: "사진 용량을 줄이거나 여러 장을 PDF로 묶는 이미지 툴이에요." },
   text: { name: "글쓰기", desc: "자기소개서, 리포트, 블로그 글을 쓸 때 필요한 글쓰기 툴이에요." },
-  calc: { name: "생활 계산", desc: "D-day처럼 생활에서 자주 찾는 계산을 바로 해 주는 툴이에요." },
+  calc: { name: "생활 계산", desc: "D-day, 연봉 실수령액, 퇴직금처럼 생활에서 자주 찾는 계산을 바로 해 주는 툴이에요." }, // P2-45 desc
   time: { name: "시간", desc: "타이머와 스톱워치처럼 시간을 재고 알려 주는 툴이에요." },
 };
 const NAV = [...Object.entries(UCATS).map(([k, c]) => [c.name, `/${k}/`]), [PLAY.name, PLAY.path]];
@@ -147,9 +152,13 @@ const UTILS = [
   { id: "pdf2img", cat: "pdf", also: ["image"], path: "/pdf/pdf-to-jpg/", title: "PDF JPG 변환", seo: "PDF JPG 변환 — 무료, PDF를 이미지로", h1: "PDF JPG 변환 — PDF 페이지를 JPG·PNG 이미지로", desc: "PDF의 각 페이지를 JPG나 PNG 이미지로 바꾸고, 해상도를 고르고, zip으로 한 번에 받을 수 있어요. 파일은 서버로 전송하지 않습니다.", hook: "PDF 한 쪽씩 JPG·PNG 이미지로.", meta: "JPG·PNG · zip", kw: "pdf jpg 변환 pdf 이미지 png 그림 사진 페이지 캡처 pdf를 jpg로" },
   { id: "timer", cat: "time", path: "/time/timer/", title: "타이머", seo: "온라인 타이머 — 무료, 알람 소리·전체 화면", h1: "온라인 타이머 — 시간이 되면 소리로 알려 줘요", desc: "시·분·초를 직접 넣거나 1·3·5·10·15·30·60분 버튼으로 맞춰 시작하는 온라인 타이머예요. 끝나면 알림음과 화면 깜빡임으로 알려 주고, 탭 제목에 남은 시간을 보여 줘요.", hook: "라면 3분, 공부 30분. 끝나면 소리로 알려 줘요.", meta: "알림음 · 전체 화면", kw: "타이머 알람 카운트다운 초시계 뽀모도로 라면 3분 15분 30분 1시간 공부 시간 재기 인터벌" },
   { id: "stopwatch", cat: "time", path: "/time/stopwatch/", title: "스톱워치", seo: "온라인 스톱워치 — 무료, 랩 기록·1/100초", h1: "온라인 스톱워치 — 랩 기록과 1/100초 표시", desc: "시작·정지·랩·초기화를 지원하는 온라인 스톱워치예요. 1/100초까지 보여 주고, 랩마다 구간·누적 시간과 최고·최저 구간을 표시해요. Space·L·R 단축키도 쓸 수 있어요.", hook: "1/100초까지. 랩마다 구간·누적 기록.", meta: "랩 · 단축키", kw: "스톱워치 초시계 랩 타임 기록 시간 측정 달리기 1/100초" },
+  { id: "salary", cat: "calc", path: "/calc/salary/", title: "연봉 실수령액 계산기", seo: `연봉 실수령액 계산기 ${PAY.year} — 4대보험·소득세 공제 후 월급`, h1: `연봉 실수령액 계산기 ${PAY.year} — 세금 떼고 월급 얼마?`, desc: `연봉이나 월급을 넣으면 ${PAY.year}년 국민연금·건강보험·장기요양·고용보험 요율과 국세청 근로소득 간이세액표로 공제액과 월 실수령액을 계산해요. 부양가족·자녀 수와 비과세 식대도 반영해요.`, hook: "연봉 넣으면 4대보험·소득세 떼고 월급이 얼마인지.", meta: `${PAY.year} 요율 · 간이세액표`, kw: "연봉 실수령액 월급 실수령액 연봉 계산기 세후 월급 4대보험 계산 소득세 원천징수 간이세액표 연봉표 월급 계산 세금" }, // P2-45
+  { id: "juhyu", cat: "calc", path: "/calc/weekly-holiday-pay/", title: "주휴수당 계산기", seo: `주휴수당 계산기 ${PAY.year} — 알바 월급, 최저시급 ${PAY.minWage[PAY.year].toLocaleString("ko-KR")}원`, h1: `주휴수당 계산기 ${PAY.year} — 알바 주급·월급까지`, desc: `시급과 일주일 근무시간을 넣으면 주휴수당과 주급, 4.345주로 환산한 알바 월급을 계산해요. 주 15시간 미만 여부와 ${PAY.year}년 최저임금(시급 ${PAY.minWage[PAY.year].toLocaleString("ko-KR")}원)보다 낮은지도 알려 줘요.`, hook: "시급·주 근무시간으로 주휴수당과 알바 월급.", meta: `최저시급 ${PAY.minWage[PAY.year].toLocaleString("ko-KR")}원`, kw: "주휴수당 주휴수당 계산 알바 월급 알바비 계산 시급 계산 최저시급 최저임금 주급 월급 환산 시급 환산 아르바이트 단시간" }, // P2-45
+  { id: "severance", cat: "calc", path: "/calc/severance/", title: "퇴직금 계산기", seo: "퇴직금 계산기 — 평균임금으로 예상 퇴직금(세전)", h1: "퇴직금 계산기 — 입사일·퇴사일·월급으로 예상 퇴직금", desc: "입사일, 마지막 근무일, 퇴직 전 3개월 임금과 상여금·연차수당을 넣으면 1일 평균임금과 법정 퇴직금(세전)을 계산해요. 재직 1년 미만이면 대상이 아니라고 알려 줘요.", hook: "입사일·퇴사일·월급으로 예상 퇴직금(세전).", meta: "평균임금 × 30일", kw: "퇴직금 퇴직금 계산 퇴직금 계산기 평균임금 퇴직금 계산법 퇴사 퇴직 1년 상여금 연차수당 퇴직급여" }, // P2-45
+  { id: "unemp", cat: "calc", path: "/calc/unemployment/", title: "실업급여 계산기", seo: `실업급여 계산기 ${PAY.year} — 구직급여 하루 금액·받는 기간`, h1: `실업급여 계산기 ${PAY.year} — 하루 얼마, 며칠 받을까`, desc: `퇴직 전 평균임금, 나이, 고용보험 가입기간을 넣으면 ${PAY.year}년 상한(하루 ${PAY.unemp.dayCap[PAY.year].toLocaleString("ko-KR")}원)·하한을 적용한 구직급여 하루 금액과 소정급여일수, 총 예상 수급액을 계산해요.`, hook: "하루 얼마, 며칠 동안? 구직급여 예상액.", meta: `상한 ${PAY.unemp.dayCap[PAY.year].toLocaleString("ko-KR")}원/일`, kw: "실업급여 실업급여 계산 실업급여 계산기 구직급여 실업급여 금액 실업급여 기간 실업급여 조건 소정급여일수 권고사직 계약만료 고용보험" }, // P2-45
   { id: "removebg", cat: "image", path: "/image/remove-bg/", title: "배경 지우기", seo: "배경 지우기 — 무료 누끼 따기", h1: "배경 지우기 — 무료 누끼 따기, 투명 PNG로 저장", desc: "사진을 넣으면 사람·물건·동물만 남기고 배경을 지워 투명 PNG나 흰 배경 사진으로 저장해요. 누른 대상만 남기고, 브러시로 다듬을 수 있어요. 사진은 서버로 전송하지 않습니다.", hook: "누끼 따기, 사진 배경을 투명하게.", meta: "투명 PNG · 흰 배경", kw: "배경 지우기 배경 제거 누끼 누끼따기 투명 png 배경 투명 remove bg 배경 삭제 흰 배경 상품 사진" }, // P2-26
 ];
-const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "timer", "pdfsplit", "age", "pyeong", "stopwatch", "word2pdf", "dday"];
+const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "word2pdf", "dday"]; // P2-45 돈 계산기 4종
 const NEXT = {
   pdfmerge: ["pdfsplit", "img2pdf", "imgcompress"],
   pdfsplit: ["pdfmerge", "pdf2img", "img2pdf"],
@@ -164,6 +173,10 @@ const NEXT = {
   pyeong: ["age", "dday", "charcount"],
   pdf2img: ["imgcompress", "img2pdf", "pdfsplit"],
   removebg: ["imgcompress", "img2pdf", "pdf2img"], // P2-26
+  salary: ["juhyu", "severance", "unemp"], // P2-45
+  juhyu: ["salary", "unemp", "severance"], // P2-45
+  severance: ["unemp", "salary", "juhyu"], // P2-45
+  unemp: ["severance", "salary", "juhyu"], // P2-45
 };
 const utilById = Object.fromEntries(UTILS.map((x) => [x.id, x]));
 const anyById = { ...toolById, ...utilById };
@@ -412,6 +425,10 @@ const homeOrder = () => Object.entries(UCATS).map((e, i) => [e, homeIn(e[0]).len
 // ★ 새 툴·게임을 만들면 여기에 { id, d: "출시일" }을 맨 위에 추가(대표님 지시: 새 콘텐츠는 메인에 잘 보이게).
 // 출시 30일 이내 항목 중 최신 4개가 홈 맨 위 「NEW」 띠에 나오고, 해당 행·타일에 NEW 표시가 붙음
 const NEW_ITEMS = [
+  { id: "salary", d: "2026-11-09" }, // P2-45
+  { id: "juhyu", d: "2026-11-09" }, // P2-45
+  { id: "severance", d: "2026-11-09" }, // P2-45
+  { id: "unemp", d: "2026-11-09" }, // P2-45
   { id: "draw", d: "2026-11-09" }, // P2-44
   { id: "hellchosun", d: "2026-11-02" },
   { id: "hell", d: "2026-11-02" },
@@ -1081,6 +1098,98 @@ utilPage(utilById.age, `<form class="dd-form" autocomplete="off">
 <h2 class="dd-h">자주 찾는 면적 표</h2>
 <div class="table-wrap"><table class="dd-table"><thead><tr><th scope="col">㎡</th><th scope="col">평</th><th scope="col">흔히 부르는 말(전용면적 기준)</th></tr></thead><tbody>${COMMON.map((m) => `<tr><th scope="row">${m}㎡</th><td>${(m / R).toFixed(2)}평</td><td>${{ 59: "「국민 평형」 아래 소형(공급 24~25평형 안팎)", 84: "「국민 평형」(공급 33~35평형 안팎)", 114: "중대형(공급 43평형 안팎)" }[m] || ""}</td></tr>`).join("")}</tbody></table></div>
 <p class="hint">1평 = 400/121㎡ ≈ 3.3058㎡. 「OO평형」은 보통 공급면적 기준이라 단지마다 달라요. 정확한 값은 분양 공고나 건축물대장을 확인하세요.</p>`, { scripts: ["t-calc.js"], fileTool: false });
+}
+
+// P2-45 직장인 돈 계산기 4종(연봉 실수령액 · 주휴수당 · 퇴직금 · 실업급여). 요율은 content/pay-rates-2026.mjs 한 곳,
+// 계산식은 src/assets/pay-calc.js 한 벌(빌드의 연봉표도 같은 파일을 vm으로 불러 계산). 흐름: 입력 → 결과 → 한 줄 복사 → 다음 계산기
+{
+  const ctx = {};
+  vm.createContext(ctx);
+  vm.runInContext(fs.readFileSync(path.join(ROOT, "src", "assets", "pay-calc.js"), "utf8"), ctx);
+  const PC = ctx.PAYCALC;
+  const wn = (n) => `${Math.round(n).toLocaleString("ko-KR")}원`;
+  const rates = `<script type="application/json" id="pay-rates">${JSON.stringify(PAY).replace(/</g, "\\u003c")}</script>`;
+  const srcHtml = (keys) => `<section class="prose pay-src" aria-labelledby="pay-src-h"><h2 id="pay-src-h">기준·출처 (확인일 ${esc(PAY.checked)})</h2>
+<ul>${PAY.sources.filter((x) => keys.includes(x.k)).map((x) => `<li><b>${esc(x.name)}</b> — <a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.by)}<span class="sr"> (새 창, 외부 사이트)</span></a> · ${esc(x.date)}${x.check === "보도" ? " · <small>고시 원문 대신 공개 보도로 확인</small>" : ""}</li>`).join("")}</ul>
+<p class="hint">요율은 해마다 바뀌어요. 이 계산기는 ${PAY.year}년 값으로 계산하는 <b>참고용 추정치</b>이고, 정확한 금액은 회사 급여 담당자나 해당 기관(국민연금공단·국민건강보험공단·국세청 홈택스·고용24)에서 확인하세요.</p></section>`;
+  const tail = `<div class="dd-opts pay-acts"><button type="submit" class="btn">계산하기</button><button type="button" class="btn ghost" data-copy>결과 한 줄 복사</button></div>`;
+  const money = (name, label, ph, { value = "", kor = true, help = "" } = {}) => `<label${name === "amt" ? ' class="pay-amt-label"' : name === "wv" ? ' class="pay-wv-label"' : ""}>${label}<input name="${name}" type="text" inputmode="numeric" autocomplete="off" placeholder="${ph}"${value !== "" ? ` value="${value}"` : ""}${kor ? " data-kor" : ""}>${help ? `<small class="hint">${help}</small>` : ""}</label>`;
+  const box = (id, form) => `<div class="pay" data-pay="${id}"><form class="dd-form pay-form" autocomplete="off" novalidate>${form}${tail}</form><div class="dd-result pay-result" aria-live="polite"></div></div>${rates}`;
+  const opts = { scripts: ["pay-calc.js", "t-pay.js"], fileTool: false };
+
+  // 연봉 실수령액
+  {
+    const ANN = [24, 28, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100].map((x) => x * 1e6);
+    const rowsY = ANN.map((a) => { const r = PC.salary(PAY, { annual: a, nontax: 200000, family: 1, kids: 0, ratio: 1, date: PAY.checked }); return `<tr><th scope="row">${(a / 1e4).toLocaleString("ko-KR")}만원</th><td>${wn(r.gross)}</td><td>${wn(r.pension + r.health + r.ltc + r.employ)}</td><td>${wn(r.tax + r.local)}</td><td><b>${wn(r.net)}</b></td></tr>`; }).join("");
+    utilPage(utilById.salary, box("salary", `
+<fieldset class="seg"><legend>무엇을 넣을까요?</legend><label><input type="radio" name="mode" value="year" checked><span>연봉</span></label><label><input type="radio" name="mode" value="month"><span>월급</span></label></fieldset>
+${money("amt", "연봉 (세전)", "예: 40,000,000")}
+<div class="dd-opts pay-quick"><span class="hint">빠르게</span>${[30, 40, 50, 60].map((m) => `<button type="button" class="chip pay-quick-y" data-fill="amt=${m * 1e6}">${m.toLocaleString("ko-KR")}00만</button>`).join("")}${[2.2, 2.5, 3, 4].map((m) => `<button type="button" class="chip pay-quick-m" data-fill="amt=${m * 1e6}" hidden>월 ${m * 100}만</button>`).join("")}</div>
+<div class="row2">
+  ${money("nontax", "비과세 (월)", "예: 200,000", { value: "200000", kor: false, help: "식대는 월 20만원까지 비과세" })}
+  <label>원천징수 비율<select name="ratio"><option value="80">80%</option><option value="100" selected>100% (기본)</option><option value="120">120%</option></select></label>
+</div>
+<div class="row2">
+  <label>부양가족 수 (본인 포함)<input name="family" type="number" min="1" max="20" value="1" inputmode="numeric"></label>
+  <label>8세~20세 자녀 수<input name="kids" type="number" min="0" max="10" value="0" inputmode="numeric"></label>
+</div>
+<label class="check pay-sev"><input type="checkbox" name="sev"> 연봉에 퇴직금이 들어 있어요 (13으로 나누기)</label>`), {
+      ...opts,
+      after: `<h2 class="dd-h">연봉별 실수령액 표 (${PAY.year}년, 본인 1명 · 비과세 식대 월 20만원)</h2>
+<div class="table-wrap"><table class="dd-table pay-ytable"><thead><tr><th scope="col">연봉</th><th scope="col">세전 월급</th><th scope="col">4대보험</th><th scope="col">소득세+지방세</th><th scope="col">월 실수령액</th></tr></thead><tbody>${rowsY}</tbody></table></div>
+<p class="hint">국민연금 기준소득월액 상한은 ${PAY.pension.periods[1].from.slice(0, 7).replace("-", "년 ")}월부터 ${PAY.pension.periods[1].max.toLocaleString("ko-KR")}원이에요. 간이세액표는 ${esc(PAY.sources.find((x) => x.k === "tax").date)} 기준이에요.</p>
+${srcHtml(["pension", "health", "employ", "tax", "wage"])}`
+    });
+  }
+
+  // 주휴수당
+  utilPage(utilById.juhyu, box("juhyu", `
+<div class="row2">
+  ${money("wage", "시급", "예: 10,320", { value: String(PAY.minWage[PAY.year]), kor: false, help: `${PAY.year}년 최저임금 ${PAY.minWage[PAY.year].toLocaleString("ko-KR")}원` })}
+  <label>일주일 근무시간<input name="hours" type="number" min="0" max="80" step="0.5" value="20" inputmode="decimal"></label>
+</div>
+<div class="dd-opts pay-quick"><span class="hint">주 근무시간</span>${[15, 20, 25, 30, 40].map((h) => `<button type="button" class="chip" data-fill="hours=${h}">${h}시간</button>`).join("")}</div>
+<details class="pay-more"><summary>하루 시간 × 일수로 넣기</summary><div class="row2"><label>하루 근무시간<input name="dh" type="number" min="0" max="24" step="0.5" inputmode="decimal" placeholder="예: 5"></label><label>일주일 근무일수<input name="dn" type="number" min="0" max="7" step="1" inputmode="numeric" placeholder="예: 4"></label></div><p class="hint">휴게시간(4시간에 30분 이상)은 빼고 넣으세요.</p></details>`), { ...opts, after: srcHtml(["wage", "weekly"]) });
+
+  // 퇴직금
+  utilPage(utilById.severance, box("severance", `
+<div class="row2">
+  <label>입사일<input type="date" name="start" min="1970-01-01" max="2100-12-31"></label>
+  <label>마지막 근무일<input type="date" name="last" min="1970-01-01" max="2100-12-31"></label>
+</div>
+${money("wage", "월급 (세전, 기본급 + 고정 수당)", "예: 3,000,000")}
+${money("wage3", "퇴직 전 3개월 임금 총액 (세전)", "월급을 넣으면 × 3이 들어가요", { help: "달마다 다르면 실제 3개월 합계로 고쳐 넣으세요" })}
+<div class="row2">
+  ${money("bonus", "1년 동안 받은 상여금", "예: 4,000,000", { help: "3/12만 반영" })}
+  ${money("leave", "연차수당 (전년도 미사용분)", "예: 300,000", { help: "3/12만 반영" })}
+</div>
+<details class="pay-more"><summary>1일 통상임금도 넣기 (선택)</summary>${money("ord", "1일 통상임금", "예: 110,000", { kor: false, help: "평균임금이 통상임금보다 적으면 통상임금으로 계산해요(근로기준법 제2조②)" })}</details>`), {
+    ...opts,
+    after: srcHtml(["severance"])
+  });
+
+  // 실업급여
+  {
+    const D = PAY.unemp.days, H = ["1년 미만", "1년 이상 3년 미만", "3년 이상 5년 미만", "5년 이상 10년 미만", "10년 이상"];
+    utilPage(utilById.unemp, box("unemp", `
+<fieldset class="seg"><legend>퇴사(이직)한 해</legend>${Object.keys(PAY.unemp.dayCap).map((y) => `<label><input type="radio" name="year" value="${y}"${+y === PAY.year ? " checked" : ""}><span>${y}년</span></label>`).join("")}</fieldset>
+<fieldset class="seg"><legend>평균임금 넣는 방법</legend><label><input type="radio" name="wmode" value="month" checked><span>월 평균 임금</span></label><label><input type="radio" name="wmode" value="day"><span>1일 평균임금</span></label></fieldset>
+${money("wv", "퇴직 전 월 평균 임금 (세전)", "예: 3,000,000")}
+<div class="row2">
+  <label>퇴사일 기준 나이 (만)<input name="age" type="number" min="15" max="99" value="35" inputmode="numeric"></label>
+  <label>고용보험 가입기간<select name="period">${H.map((h, i) => `<option value="${i}"${i === 1 ? " selected" : ""}>${h}</option>`).join("")}</select></label>
+</div>
+<div class="row2">
+  <label>1일 소정근로시간<input name="hours" type="number" min="1" max="8" step="0.5" value="8" inputmode="decimal"><small class="hint">하한액 계산에 써요(최대 8시간)</small></label>
+  <label class="check pay-dis"><input type="checkbox" name="dis"> 장애인이에요 (50세 이상 표 적용)</label>
+</div>`), {
+      ...opts,
+      after: `<h2 class="dd-h">소정급여일수 표 (고용보험법 별표 1)</h2>
+<div class="table-wrap"><table class="dd-table"><thead><tr><th scope="col">고용보험 가입기간</th><th scope="col">50세 미만</th><th scope="col">50세 이상·장애인</th></tr></thead><tbody>${H.map((h, i) => `<tr><th scope="row">${h}</th><td>${D.under50[i]}일</td><td>${D.over50[i]}일</td></tr>`).join("")}</tbody></table></div>
+<p class="hint">${PAY.year}년 1월 1일 이후 이직자는 하루 상한 ${wn(PAY.unemp.dayCap[PAY.year])}, 하한 ${wn(PAY.minWage[PAY.year] * PAY.unemp.minRatio * 8)}(1일 8시간 기준)이에요. 상한은 이직일 기준이라 ${PAY.year - 1}년에 그만뒀다면 ${wn(PAY.unemp.dayCap[PAY.year - 1])}이에요.</p>
+${srcHtml(["unemp", "wage"])}`
+    });
+  }
 }
 
 // PDF JPG 변환 (pdf.js + worker 직접 호스팅)
