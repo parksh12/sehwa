@@ -1677,3 +1677,81 @@ li.has-fav{position:relative}
 .pos-tag.is-target rect{fill:var(--nok)}.pos-tag.is-target .avg-lead{stroke:var(--nok)}
 .pos-ex td,.pos-ex th{word-break:keep-all}
 @media(max-width:480px){.pos .seg span{padding:7px 11px;font-size:13.5px}.pos .pos-mini span{padding:4px 11px;font-size:13px}.pos-pl{grid-template-columns:1fr}.pos-pl .avg-pl{padding:6px 12px}.pos-ex th:nth-child(3),.pos-ex td:nth-child(3){display:none}}
+/* ===================== P2-57 줄바꿈 제거 · 공백 정리: 입력 → 빠른 설정 칩 → 옵션(seg·체크) → 정리한 글 → 전후 표, 아래 전후 대조 카드 ===================== */
+.lb{display:grid;gap:12px}
+.lb-lab{font-weight:800;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px}
+.lb-text{min-height:170px}
+.lb-out{background:#fbfaf6}
+.lb-presets{display:flex;flex-wrap:wrap;gap:6px}
+.lb-presets .chip{font:inherit;font-size:13.5px;font-weight:800;cursor:pointer}
+.lb-opts{display:grid;gap:12px;padding:12px;border:2px solid var(--ink);border-radius:12px;background:var(--soft)}
+.lb-opts fieldset{border:0;margin:0;padding:0;min-width:0}
+.lb-opts legend{font-weight:800;font-size:14px;padding:0}
+.lb .seg span{padding:6px 12px;font-size:14px}
+.lb-checks{display:flex;flex-wrap:wrap;gap:6px 16px}
+.lb-checks legend{width:100%;margin-bottom:4px}
+.lb-checks .check{font-size:14px}
+.lb-opts .off{opacity:.45}
+.lb-stat td{text-align:right;font-variant-numeric:tabular-nums}
+.lb-cases{display:grid;gap:12px}
+.lb-case{border:2px solid var(--ink);border-radius:12px;padding:10px 12px;background:var(--white)}
+.lb-case h3{margin:0;font-size:16px}.lb-case h3 small{font-size:12.5px;color:var(--ink-3);font-weight:700}
+.lb-case .hint{margin:4px 0 8px}
+.lb-ba{display:grid;gap:8px}
+@media(min-width:760px){.lb-ba{grid-template-columns:1fr 1fr}}
+.lb-ba b{font-size:12.5px}
+.lb-ba pre{margin:2px 0 0;white-space:pre-wrap;word-break:keep-all;overflow-wrap:anywhere;font:inherit;font-size:13.5px;line-height:1.6;background:var(--soft);border-radius:8px;padding:8px 10px}
+.lb-mk{font-style:normal;font-size:10.5px;font-weight:800;background:#d9d6cc;color:var(--ink-2);border-radius:4px;padding:0 3px;margin:0 1px}
+.lb-nl{font-style:normal;color:var(--jeok);font-weight:800}
+.lb-more summary{cursor:pointer;font-weight:800;font-size:14px}.lb-more summary small{font-weight:600;color:var(--ink-3);font-size:12.5px}
+.lb-more-in{display:grid;gap:12px;margin-top:10px}
+@media(max-width:480px){.lb .seg span{padding:5px 10px;font-size:13.5px}.lb-opts{padding:10px}}
+/* ===================== P2-57 읽기 시간 계산기: 큰 숫자 3개(읽기·발표·원고지) + 보조 숫자, 원고지 표, 긴 문장·빈출 낱말 목록 ===================== */
+.rdt{display:grid;gap:12px}
+.rdt-stats b{font-size:22px}
+@media(min-width:620px){.rdt-stats .main{grid-column:span 1}.rdt-stats{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:900px){.rdt-stats{grid-template-columns:repeat(4,1fr)}.rdt-stats .main b{font-size:26px}}
+.rdt-h{margin:6px 0 0;font-size:17px}
+.rdt-nums{display:grid;gap:8px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.rdt-nums label{display:grid;gap:4px;font-size:13.5px;font-weight:800}
+.rdt-num{display:flex;align-items:center;gap:6px;font-weight:600}
+.rdt-num input{width:100%;min-width:0}
+.rdt-inline{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:14px;font-weight:700}
+.rdt-inline input{width:84px}.rdt-inline select{width:auto}
+.rdt-ms td:nth-child(2){white-space:nowrap;font-weight:800;font-variant-numeric:tabular-nums}
+.rdt-ms td:nth-child(3){font-size:13px;color:var(--ink-2)}
+.rdt-long{margin:0;padding-left:22px;display:grid;gap:6px}
+.rdt-long li{line-height:1.55;font-size:14.5px}.rdt-long li b{color:var(--jeok);margin-right:4px}
+.rdt-long li.hint,.rdt-kw li.hint{list-style:none;margin-left:-22px;font-size:13.5px}
+.rdt-kw{margin:0;padding:0 0 0 22px;display:flex;flex-wrap:wrap;gap:6px}
+.rdt-kw li{list-style:none;display:inline-flex;align-items:center;gap:6px;border:2px solid var(--ink);border-radius:99px;padding:3px 10px 3px 4px;background:var(--white);font-size:14px}
+.rdt-kw li i{font-style:normal;display:inline-grid;place-items:center;min-width:22px;height:22px;border-radius:99px;background:var(--hwang);font-size:12px;font-weight:800}
+.rdt-kw li small{color:var(--ink-3);font-weight:700}
+.rdt-kw{padding-left:0}.rdt-kw li.hint{margin-left:0;border:0;padding:0}
+.rdt-ex td,.rdt-ex th{word-break:keep-all}
+/* ===================== P2-57 이모지 · 특수문자 복사: 찾기 → 분류 칩 → 문자 격자(누르면 복사) → 모음 칸 → 일괄 삽입 ===================== */
+.emj{display:grid;gap:12px}
+.emj-q{width:100%;font:inherit;font-size:16px;padding:10px 12px;border:2.5px solid var(--ink);border-radius:12px}
+.emj-tabs{display:flex;flex-wrap:wrap;gap:6px}
+.emj-tab{font:inherit;font-size:13.5px;font-weight:800;cursor:pointer}
+.emj-tab[aria-pressed="true"]{background:var(--ink);color:var(--white)}
+.emj .seg span{padding:5px 12px;font-size:13.5px}
+.emj-info{margin:0;min-height:1.3em}
+.emj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(46px,1fr));gap:6px;max-height:360px;overflow-y:auto;padding:8px;border:2px solid var(--ink);border-radius:12px;background:var(--soft);overscroll-behavior:contain}
+.emj-b{appearance:none;border:2px solid transparent;border-radius:10px;background:var(--white);height:46px;font-size:24px;line-height:1;cursor:pointer;padding:0;color:var(--ink);font-family:system-ui,"Segoe UI Symbol","Apple Symbols","Noto Sans Symbols 2",sans-serif}
+.emj-b.is-emoji{font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+.emj-b:hover,.emj-b:focus-visible{border-color:var(--ink);background:var(--hwang);outline:none}
+.emj-b:active{transform:scale(.92)}
+.emj-bagrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.emj-bag{flex:1 1 180px;min-width:0;font-size:20px;padding:8px 10px;border:2px solid var(--ink);border-radius:10px}
+.emj-h{margin:10px 0 0;font-size:17px;padding-top:12px;border-top:2px dashed var(--ink)}
+.emj-text{min-height:140px}
+.emj-deco{display:grid;gap:8px;grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(min-width:760px){.emj-deco{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.emj-deco label{display:grid;gap:4px;font-size:13.5px;font-weight:800}
+.emj-deco input,.emj-deco select{width:100%;min-width:0}
+.emj-deco input[type=text]{font-size:18px}
+.emj-fq{font-size:17px;padding:2px 9px;cursor:pointer}
+.emj-ex pre{margin:0;white-space:pre-wrap;font:inherit;font-size:14px;line-height:1.5}
+@media(max-width:480px){.emj-grid{grid-template-columns:repeat(auto-fill,minmax(42px,1fr));max-height:300px}.emj-b{height:42px;font-size:22px}}
+@media(max-width:480px){.emj-bag{flex-basis:110px}.emj-bagrow .btn{padding:8px 12px}}

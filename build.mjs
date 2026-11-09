@@ -105,6 +105,9 @@ const ART = {
   compound: sv(`<path d="M12 104h96" stroke="${K}" stroke-width="4" stroke-linecap="round"/>${[[22, 14], [44, 24], [66, 40], [88, 64]].map(([x, h]) => `<rect x="${x - 9}" y="${100 - h}" width="18" height="${h}" rx="4" fill="${YEL}" stroke="${K}" stroke-width="3"/>`).join("")}<path d="M14 72C40 70 64 58 100 18" fill="none" stroke="#2346d8" stroke-width="6" stroke-linecap="round"/><path d="M84 16h17v17" fill="none" stroke="#2346d8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="30" cy="34" r="14" fill="${W}" stroke="${K}" stroke-width="4"/><text x="30" y="40" font-size="16" font-weight="900" text-anchor="middle" fill="${K}" font-family="sans-serif">%</text>`), // P2-55 복리·배당(점점 커지는 막대 + 위로 휘는 곡선 + %)
   possize: sv(`<rect x="10" y="10" width="100" height="100" rx="10" fill="${W}" stroke="${K}" stroke-width="4"/><rect x="22" y="22" width="62" height="34" fill="${GRN}" stroke="${K}" stroke-width="3"/><rect x="22" y="56" width="62" height="24" fill="${RED}" stroke="${K}" stroke-width="3"/><path d="M16 22h72M16 80h72" stroke="${K}" stroke-width="3" stroke-dasharray="6 5"/><path d="M14 56h80" stroke="${K}" stroke-width="6" stroke-linecap="round"/><circle cx="96" cy="56" r="8" fill="${YEL}" stroke="${K}" stroke-width="3"/><text x="53" y="99" font-size="15" font-weight="900" text-anchor="middle" fill="${K}" font-family="sans-serif">1:3</text>`), // P2-56 손절·익절(진입선 + 위 이익 구간·아래 손실 구간 + 손익비)
   rsibt: sv(`<rect x="8" y="10" width="104" height="100" rx="10" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M8 78h104" stroke="${K}" stroke-width="3"/><rect x="12" y="84" width="96" height="16" fill="${YEL}" opacity=".55"/><path d="M14 86h92M14 100h92" stroke="${K}" stroke-width="2" stroke-dasharray="4 4"/><path d="M16 46 32 58 46 36 62 60 78 30 94 44 104 26" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M62 64l-8 11h16z" fill="${GRN}" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M78 26l-8-11h16z" fill="${RED}" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M16 96 34 88 50 102 66 86 84 98 104 90" fill="none" stroke="${K}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`), // P2-54 RSI 매매 백테스트(가격선 + 매수▲·매도▼ + RSI 30·70 띠)
+  linebreak: sv(`${doc(10, 12, 62, 84, W)}<path d="M22 34h36M22 48h36M22 62h24M22 76h30" stroke="${K}" stroke-width="4" stroke-linecap="round"/><rect x="54" y="58" width="56" height="46" rx="9" fill="${GRN}" stroke="${K}" stroke-width="4"/><path d="M98 68v14H70" fill="none" stroke="${W}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M77 74l-8 8 8 8" fill="none" stroke="${W}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M62 98l42-36" stroke="${RED}" stroke-width="6" stroke-linecap="round"/>`), // P2-57 줄바꿈(↵)에 빨간 빗금
+  readtime: sv(`${doc(10, 12, 58, 78, W)}<path d="M22 34h32M22 48h32M22 62h20" stroke="${K}" stroke-width="4" stroke-linecap="round"/><circle cx="80" cy="78" r="30" fill="${YEL}" stroke="${K}" stroke-width="4"/><path d="M80 60v18l12 8" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M74 42h12" stroke="${K}" stroke-width="5" stroke-linecap="round"/>`), // P2-57 글 + 시계
+  emoji: sv(`<circle cx="50" cy="56" r="38" fill="${YEL}" stroke="${K}" stroke-width="4"/><circle cx="37" cy="48" r="5" fill="${K}"/><circle cx="63" cy="48" r="5" fill="${K}"/><path d="M33 66c8 12 26 12 34 0" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M92 62l6 13 14 2-10 10 2 14-12-7-12 7 2-14-10-10 14-2z" fill="${RED}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/>`), // P2-57 웃는 얼굴 + 별(그림, 이모지 글꼴 아님)
   ostax: sv(`<path d="M24 10h72v92l-12-8-12 8-12-8-12 8-12-8-12 8z" fill="${W}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><circle cx="60" cy="38" r="17" fill="${YEL}" stroke="${K}" stroke-width="4"/><text x="60" y="45.5" font-size="21" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">$</text><text x="60" y="80" font-size="21" font-weight="900" text-anchor="middle" fill="${RED}" font-family="sans-serif">22%</text>`), // P2-53 해외주식 양도세(영수증 + 달러 + 22%)
 };
 function doc(x, y, w, h, fill) {
@@ -153,7 +156,7 @@ const PLAY = { name: "펭귄 오락실", tagline: "RPG·생존 게임·순발력
 const UCATS = {
   pdf: { name: "PDF·문서", desc: "PDF를 합치고 나누고, 이미지와 워드 문서를 PDF로 바꾸는 툴이에요." },
   image: { name: "이미지", desc: "사진 용량을 줄이고, 아이폰 HEIC 사진을 JPG로 바꾸고, 여러 장을 한 장으로 이어 붙이거나 PDF로 묶고, QR코드를 만드는 이미지 툴이에요." }, // P2-46 desc, P2-47 HEIC, P2-48 QR
-  text: { name: "글쓰기", desc: "자기소개서, 리포트, 블로그 글을 쓸 때 필요한 글쓰기 툴이에요." },
+  text: { name: "글쓰기", desc: "자기소개서, 리포트, 블로그 글을 쓸 때 필요한 글쓰기 툴이에요. 글자수 세기, PDF에서 복사한 글의 줄바꿈·공백 정리, 읽기·발표 시간과 원고지 매수 계산, 이모지·특수문자 복사를 브라우저 안에서 바로 해요." }, // P2-57 desc
   calc: { name: "생활 계산", desc: "D-day, 연봉 실수령액, 퇴직금처럼 생활에서 자주 찾는 계산을 바로 해 주는 툴이에요." }, // P2-45 desc
   time: { name: "시간", desc: "타이머와 스톱워치처럼 시간을 재고 알려 주는 툴이에요." },
   fun: { name: "운세·재미", seo: "운세·재미 — 무료 사주·띠별 운세·성격 테스트·사다리타기", desc: "오늘의 띠별 운세, 무료 사주팔자, 16유형 성격 테스트, 생일로 보는 나, 이름 궁합, 사다리타기·돌림판처럼 재미로 보고 가볍게 정하는 툴이에요." }, // P2-49 옛 오락실 운세·테스트·사다리
@@ -189,15 +192,18 @@ const UTILS = [
   { id: "compound", cat: "invest", path: "/invest/compound-dividend/", title: "복리 계산기 · 배당 계산기", seo: "복리 계산기 · 배당 계산기 — 적립식 월복리·연복리, 월배당 100만원 필요 투자금, 배당세 15.4%", h1: "복리 계산기 · 배당 계산기 — 적립식 복리와 월 배당 역계산", desc: "초기 원금, 매달 적립금, 연 수익률, 기간을 넣으면 월복리·연복리로 몇 년 뒤 자산이 얼마인지, 넣은 돈과 수익, 연도별 표와 원금 대비 자산 그래프를 보여 줘요. 72의 법칙과 물가 반영 실질 가치도 계산해요. 배당 탭에서는 투자금과 배당률로 연·월 배당(세전·세후 15.4%)을, 「월 배당 100만 원 받으려면 얼마?」 필요 투자금을 역계산하고 배당 재투자 뒤 월 배당까지 계산해요. 투자 권유가 아니에요.", hook: "매달 50만 원씩 20년 모으면? 월 배당 100만 원엔 얼마?", meta: "월복리·연복리 · 배당세 15.4%", kw: "복리 계산기 복리계산기 적립식 복리 적립식 복리 계산기 월복리 연복리 월복리 계산기 연복리 계산 복리 이자 계산 복리 수익률 복리의 마법 72의 법칙 미래 가치 fv 엑셀 fv 함수 적금 복리 투자 복리 매달 적립 매월 적립 원금 수익 물가 상승률 실질 가치 배당 계산기 배당금 계산기 배당금 계산 월배당 계산 월배당 계산기 배당 수익률 배당률 시가배당률 배당으로 월 100만원 월 100만원 배당 배당 생활 배당 투자 필요 투자금 배당세 배당소득세 15.4% 배당 세금 세후 배당 미국 배당 15% 배당 재투자 고배당 etf schd 금융소득 종합과세 2천만원" }, // P2-55
   { id: "rsibt", cat: "invest", path: "/invest/rsi-backtest/", title: "RSI 매매 백테스트", seo: "RSI 매매 백테스트 — SOXL·TQQQ·KORU RSI 30 매수·70 매도 수익률", h1: "RSI 매매 백테스트 (SOXL·TQQQ·KORU) — RSI 30에 사고 70에 팔았다면", desc: "SOXL·TQQQ·KORU를 RSI가 30 이하일 때 사고 70 이상일 때 팔았다면 수익률이 얼마인지 실제 과거 가격으로 계산해요. 일봉·주봉, 기간, RSI 기간(기본 14), 매수·매도 기준, 손절 %, 수수료를 고르면 매매 횟수, 승률, 누적 수익률, 그냥 보유했을 때 수익률, 최대 낙폭(MDD), 평균 보유 기간과 자산 곡선, 매수·매도 표시 차트, 거래 목록을 보여 줘요. 투자 권유가 아니에요.", hook: "RSI 30에 사고 70에 팔았다면 TQQQ는?", meta: "실제 가격 · 일봉·주봉", kw: "rsi 백테스트 rsi 매매 rsi 30 매수 rsi 70 매도 rsi 전략 rsi 매매법 과매도 매수 과매수 매도 과매도 과매수 tqqq rsi soxl rsi koru rsi 보조지표 백테스트 기술적 지표 백테스팅 와일더 rsi 14 상대강도지수 손절 승률 mdd 최대 낙폭 레버리지 etf 미국 주식 3배 매매 전략 수익률" }, // P2-54
   { id: "possize", cat: "invest", path: "/invest/stop-loss-position-size/", title: "손절·익절·포지션 계산기", seo: "손절·익절·포지션 계산기 — 손절가 계산, 몇 주 사야 하나, 손익비(R:R)·포지션 사이즈", h1: "손절·익절·포지션 계산기 — 손절가와 감당할 손실로 몇 주 살지, 손익비까지", desc: "진입가, 손절가(또는 손절 %), 익절가(또는 목표 %·R 배수), 계좌 금액과 감당할 손실(계좌의 % 또는 금액)을 넣으면 몇 주를 사야 하는지(포지션 사이즈), 포지션 금액과 계좌 대비 비중, 손절 시 손실, 익절 시 이익, 손익비(R:R), 본전 승률을 계산하고 가격 사다리 그림으로 보여 줘요. 롱·숏, 원·달러(환율), 소수 주식, 수수료를 지원해요. 투자 권유가 아니에요.", hook: "계좌 1%만 잃으려면 몇 주? 손익비는?", meta: "롱·숏 · R:R · 본전 승률", kw: "손절 계산기 손절가 계산기 손절가 계산 손절 몇 퍼센트 손절 기준 손절 라인 익절 계산 익절 계산기 익절가 목표가 계산 포지션 사이즈 계산기 포지션 사이즈 포지션 계산기 포지션 크기 몇 주 사야 몇 주 살까 매수 수량 계산 리스크 관리 위험 관리 자금 관리 1% 규칙 2% 규칙 손익비 손익비 계산 손익비 계산기 r:r rr 리스크 리워드 risk reward 본전 승률 손익분기 승률 기대값 롱 숏 공매도 레버리지 마진 소수 주식 미국 주식 수수료 트레이딩 단타 스윙" }, // P2-56
+  { id: "linebreak", cat: "text", path: "/text/line-break-remover/", title: "줄바꿈 제거 · 공백 정리", seo: "줄바꿈 제거 · 공백 정리 — PDF 복사 줄바꿈 없애기, 엔터 제거, 공백 제거", h1: "줄바꿈 제거 · 공백 정리 — PDF에서 복사한 글의 깨진 줄바꿈까지", desc: "PDF에서 복사해 문장 중간마다 끊긴 줄바꿈을 문단은 살린 채 이어 붙여요. 연속 공백, 줄 앞뒤 공백, 빈 줄, 탭, 전각 공백·NBSP, 제로폭 같은 보이지 않는 문자를 정리하고, 줄바꿈(엔터)을 모두 지워 한 줄로도 만들어요. 입력한 글은 저장하지 않습니다.", hook: "PDF 복사 줄바꿈 복구, 엔터·공백 한 번에 정리.", meta: "전후 글자수 비교", kw: "줄바꿈 제거 줄바꿈 없애기 줄바꿈 삭제 줄 바꿈 엔터 제거 엔터 없애기 엔터 삭제 개행 제거 개행문자 줄넘김 한 줄로 만들기 한줄로 PDF 줄바꿈 PDF 복사 줄바꿈 PDF 붙여넣기 PDF 텍스트 정리 공백 제거 공백 없애기 띄어쓰기 제거 연속 공백 스페이스 제거 빈 줄 제거 빈줄 삭제 탭 제거 전각 공백 nbsp 제로폭 공백 보이지 않는 문자 특수 공백 하이픈 텍스트 정리 글 정리 문단 정리 line break remover remove line breaks whitespace" }, // P2-57
+  { id: "readtime", cat: "text", path: "/text/reading-time/", title: "읽기 시간 계산기", seo: "읽기 시간 계산기 — 읽는 시간·발표 시간, 원고지 매수 계산", h1: "읽기 시간 계산기 — 읽는 시간, 발표 시간, 원고지 매수까지", desc: "글을 붙여 넣으면 예상 읽기 시간과 발표(말하기) 시간, 200자 원고지 매수(공백 포함·제외·칸 채우기), 문장 수와 평균 문장 길이, 60자 넘는 긴 문장, 자주 나온 낱말을 바로 알려 줘요. 기준 속도는 직접 바꿀 수 있어요. 입력한 글은 저장하지 않습니다.", hook: "읽는 시간·발표 시간·원고지 매수를 한 번에.", meta: "읽기·발표 · 원고지 · 긴 문장", kw: "읽기 시간 읽는 시간 읽는데 걸리는 시간 독서 시간 리딩 타임 reading time 발표 시간 발표 시간 계산 말하기 시간 스피치 시간 대본 시간 원고 시간 1분 스피치 3분 스피치 5분 발표 몇 자 원고지 원고지 매수 원고지 계산 200자 원고지 원고지 몇 장 매수 계산 문장 수 문장 길이 평균 문장 길이 긴 문장 가독성 가독성 검사 키워드 빈도 단어 빈도 빈출 단어 키워드 분석 블로그 글 분석 글 분석 단어 수 wpm 분당 글자" }, // P2-57
+  { id: "emoji", cat: "text", path: "/text/emoji-special-characters/", title: "이모지 · 특수문자 복사", seo: "이모지 · 특수문자 복사 — 하트 특수문자, 화살표, 별, 원문자 모음과 일괄 삽입", h1: "이모지 · 특수문자 복사 — 누르면 바로 복사, 목록 꾸미기까지", desc: "표정·사람·동물·음식·사물·기호 이모지와 하트·화살표·별(★※→)·괄호·원문자(①㉠) 같은 특수문자를 한글로 찾아 누르면 바로 복사해요. 글을 넣으면 줄마다 이모지·기호를 붙이고 1\uFE0F⃣ 2\uFE0F⃣ 번호도 자동으로 매겨요. 유니코드 표준 문자만 써요.", hook: "하트·화살표·별 특수문자, 누르면 바로 복사.", meta: "1,000여 개 · 일괄 삽입", kw: "이모지 이모지 복사 이모티콘 이모티콘 복사 특수문자 특수문자 복사 특수기호 기호 모음 특수문자 모음 특수문자표 하트 특수문자 하트 이모지 하트 기호 하트 복사 ♥ ♡ 별 특수문자 별 기호 ★ ☆ 화살표 특수문자 화살표 기호 → 당구장 표시 ※ 체크 표시 체크 이모지 ✔ ✅ 동그라미 숫자 원문자 원숫자 ① 괄호 숫자 낫표 겹낫표 「」 『』 꺾쇠 말머리 기호 글머리 기호 블로그 꾸미기 인스타 꾸미기 목록 꾸미기 번호 이모지 1\uFE0F⃣ 숫자 이모지 일괄 삽입 줄 앞에 이모지 구분선 emoji copy special characters symbols" }, // P2-57
 ];
-const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "heic", "qr", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "word2pdf", "dday", "stockquiz", "avgdown", "dca", "ostax", "rsibt", "compound", "possize"]; // P2-56 possize // P2-55 compound // P2-50 stockquiz(투자) // P2-51 avgdown // P2-52 dca // P2-53 ostax // P2-54 rsibt // P2-45 돈 계산기 4종, P2-46 imgmerge, P2-47 heic, P2-48 qr
+const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "heic", "qr", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "word2pdf", "dday", "stockquiz", "avgdown", "dca", "ostax", "rsibt", "compound", "possize", "linebreak", "readtime", "emoji"]; // P2-57 linebreak·readtime·emoji // P2-56 possize // P2-55 compound // P2-50 stockquiz(투자) // P2-51 avgdown // P2-52 dca // P2-53 ostax // P2-54 rsibt // P2-45 돈 계산기 4종, P2-46 imgmerge, P2-47 heic, P2-48 qr
 const NEXT = {
   pdfmerge: ["pdfsplit", "img2pdf", "imgcompress"],
   pdfsplit: ["pdfmerge", "pdf2img", "img2pdf"],
   img2pdf: ["pdfmerge", "imgcompress", "pdfsplit"],
   word2pdf: ["pdfmerge", "charcount", "pdfsplit"],
   imgcompress: ["img2pdf", "pdfmerge", "charcount"],
-  charcount: ["word2pdf", "dday", "pdfmerge"],
+  charcount: ["readtime", "linebreak", "emoji"], // P2-57 글쓰기 툴끼리 잇기
   dday: ["age", "timer", "charcount"],
   timer: ["stopwatch", "dday", "charcount"],
   stopwatch: ["timer", "dday", "reaction"],
@@ -219,6 +225,9 @@ const NEXT = {
   rsibt: ["possize", "stockquiz", "dca"], // P2-54 // P2-56 RSI 손절 → 수량 계산, 같은 데이터 주가 예측·적립식
   compound: ["dca", "ostax", "avgdown"], // P2-55 복리로 본 적립 → 실제 가격 적립식 백테스트 → 세금
   possize: ["avgdown", "rsibt", "stockquiz"], // P2-56 손절 대신 물타기? 평단 비교 → 손절 넣은 RSI 백테스트 → 차트 연습
+  linebreak: ["charcount", "readtime", "emoji"], // P2-57 정리한 글 → 글자수 → 읽기 시간 → 꾸미기
+  readtime: ["charcount", "linebreak", "emoji"], // P2-57 글자수 ↔ 읽기 시간 ↔ 정리 ↔ 꾸미기
+  emoji: ["linebreak", "charcount", "readtime"], // P2-57 꾸미기 전 정리 → 글자수 → 읽기 시간
 };
 const utilById = Object.fromEntries(UTILS.map((x) => [x.id, x]));
 const anyById = { ...toolById, ...utilById };
@@ -472,6 +481,9 @@ const cabCls = (i, n) => (n > 6 && i === n - 1 && (n - 3) % 3 === 1 ? "cab-full"
 // ★ 새 툴·게임을 만들면 여기에 { id, d: "출시일" }을 맨 위에 추가(대표님 지시: 새 콘텐츠는 메인에 잘 보이게).
 // 출시 30일 이내 항목 중 최신 4개가 홈 맨 위 「NEW」 띠에 나오고, 해당 행·타일에 NEW 표시가 붙음
 const NEW_ITEMS = [
+  { id: "emoji", d: "2026-11-10" }, // P2-57
+  { id: "readtime", d: "2026-11-10" }, // P2-57
+  { id: "linebreak", d: "2026-11-10" }, // P2-57
   { id: "possize", d: "2026-11-10" }, // P2-56
   { id: "compound", d: "2026-11-10" }, // P2-55
   { id: "rsibt", d: "2026-11-10" }, // P2-54
@@ -1848,8 +1860,256 @@ utilPage(utilById.charcount, `<label for="cc-text" class="sr">글자수를 셀 �
 </dl>
 <div class="cc-tools"><label>목표 글자수(선택)<input name="limit" type="number" min="0" max="1000000" inputmode="numeric" placeholder="예: 1000"></label><button type="button" class="btn" data-copy>결과 복사</button><button type="button" class="btn ghost" data-clear>글 지우기</button></div>
 <p class="cc-limit" hidden></p>
-<p class="safe">입력한 글은 서버로 전송하지 않고, 저장하지도 않습니다.</p>`, { scripts: ["t-text.js"], fileTool: false });
+<p class="hint">읽는 데 걸리는 시간·발표 시간·원고지 매수는 <a href="${u(utilById.readtime.path)}">읽기 시간 계산기</a>, PDF에서 복사해 줄바꿈이 깨진 글은 <a href="${u(utilById.linebreak.path)}">줄바꿈 제거 · 공백 정리</a>에서 먼저 다듬어 보세요.</p>
+<p class="safe">입력한 글은 서버로 전송하지 않고, 저장하지도 않습니다.</p>`, { scripts: ["t-text.js"], fileTool: false }); // P2-57 글쓰기 툴 서로 잇기
 
+// P2-57 줄바꿈 제거 · 공백 정리: 변환식은 src/assets/text-clean.js 한 벌(화면 t-linebreak.js와 아래 대조가 같은 파일을 vm으로 씀)
+// 흐름: 붙여 넣기 → 빠른 설정(PDF·한 줄·공백만) 또는 옵션 → 정리한 글(실시간) → 전후 글자수 표 → 복사 → 다음 툴
+// 빌드 때 아래 전후 대조 사례(PDF 깨진 문단 포함)를 다시 돌려 기대값과 다르면 빌드를 멈추고, 같은 사례를 페이지에 표로 보여 줌
+{
+  const ctx = {};
+  vm.createContext(ctx);
+  vm.runInContext(fs.readFileSync(path.join(ROOT, "src", "assets", "text-clean.js"), "utf8"), ctx);
+  const TC = ctx.TEXTCLEAN;
+  const ch = (n) => String.fromCharCode(n);
+  const NB = ch(0xa0), ZW = ch(0x200b), BOM = ch(0xfeff), FW = ch(0x3000), ZWJ = ch(0x200d);
+  const LB_CASES = [
+    { name: "PDF 한글 문단", note: "문장 중간 줄바꿈은 붙이고, 마침표로 끝난 줄과 빈 줄(3줄 → 1줄)은 문단 경계로 남김", o: { join: "pdf" },
+      a: "개인정보 처리방침은 이용자의 개인정보를\n어떻게 수집하고 이용하는지 설명합니다.\n이 문서는 2026년 11월부터\n적용됩니다.\n\n\n\n두 번째 문단은 여기서\n시작합니다.",
+      b: "개인정보 처리방침은 이용자의 개인정보를 어떻게 수집하고 이용하는지 설명합니다.\n이 문서는 2026년 11월부터 적용됩니다.\n\n두 번째 문단은 여기서 시작합니다." },
+    { name: "PDF 영문 하이픈 줄바꿈", note: "infor-|mation처럼 줄 끝 하이픈으로 끊긴 단어를 합치고, 마침표로 끝난 줄은 남김", o: { join: "pdf" },
+      a: "Reading speed varies with the type of infor-\nmation and the reader's purpose. Most\nadults read silently at about 238 words\nper minute.\n\nA second para-\ngraph follows here.",
+      b: "Reading speed varies with the type of information and the reader's purpose. Most adults read silently at about 238 words per minute.\n\nA second paragraph follows here." },
+    { name: "PDF 한글 단어 중간 하이픈", note: "데이터베이-|스 → 데이터베이스(하이픈 빼고 띄어쓰기 없이)", o: { join: "pdf" },
+      a: "관계형 데이터베이-\n스는 표 형태로 자료를 저장하고 SQL로\n조회합니다.",
+      b: "관계형 데이터베이스는 표 형태로 자료를 저장하고 SQL로 조회합니다." },
+    { name: "PDF 목록·번호", note: "• 1) 같은 머리 기호로 시작하는 줄은 앞 줄과 붙이지 않고, 항목 안에서 끊긴 줄만 붙임", o: { join: "pdf" },
+      a: "준비물은 다음과 같습니다:\n• 신분증 사본\n•\t통장 사본 1부와\n재직 증명서\n1) 온라인 접수\n2) 방문 접수",
+      b: "준비물은 다음과 같습니다:\n• 신분증 사본\n• 통장 사본 1부와 재직 증명서\n1) 온라인 접수\n2) 방문 접수" },
+    { name: "PDF 빈 줄 없는 문단", note: "빈 줄이 없어도 다른 줄보다 눈에 띄게 짧은 줄(폭의 60% 미만)은 문단 끝으로 봄", o: { join: "pdf" },
+      a: "빈 줄 없이 문단이 이어지는 PDF는 줄 길이로 문단 끝을 찾아요. 첫\n문단의 둘째 줄도 길이가 다른 줄과 비슷하게 이어지고 있어요 그래서\n짧은 줄에서 끝나요\n두 번째 문단은 바로 다음 줄에서 시작하지만 앞 줄이 짧아서 경계로\n보고 줄바꿈을 남겨 둡니다",
+      b: "빈 줄 없이 문단이 이어지는 PDF는 줄 길이로 문단 끝을 찾아요. 첫 문단의 둘째 줄도 길이가 다른 줄과 비슷하게 이어지고 있어요 그래서 짧은 줄에서 끝나요\n두 번째 문단은 바로 다음 줄에서 시작하지만 앞 줄이 짧아서 경계로 보고 줄바꿈을 남겨 둡니다" },
+    { name: "글자 단위로 끊긴 PDF", note: "「한글 줄은 띄어쓰기 없이 붙이기」를 켜면 예시입니|다 → 예시입니다", o: { join: "pdf", krNoSpace: true },
+      a: "이 문서는 글자 단위로 줄이 바뀌는 PDF에서 복사한 예시입니\n다 단어 중간에서 끊겨도 붙여 줍니다",
+      b: "이 문서는 글자 단위로 줄이 바뀌는 PDF에서 복사한 예시입니다 단어 중간에서 끊겨도 붙여 줍니다" },
+    { name: "특수 공백·보이지 않는 문자", note: "BOM·제로폭 공백 삭제, NBSP·전각 공백·탭 → 공백, 연속 공백 1칸, 줄 앞뒤 공백 삭제. 이모지를 묶는 제로폭 결합자는 남김", o: { join: "none" },
+      a: `${ZW}${BOM}  이름:\t홍길동  ${NB}${NB}나이:${FW}30세 \n\n\n\n  메모${ZW}입니다   \n👨${ZWJ}👩${ZWJ}👧 가족`,
+      b: `이름: 홍길동 나이: 30세\n\n메모입니다\n👨${ZWJ}👩${ZWJ}👧 가족` },
+    { name: "빈 줄 모두 지우기", note: "줄바꿈은 그대로 두고 빈 줄만 없앰", o: { join: "none", blank: "none" }, a: "첫째 줄\n\n\n둘째 줄\n\n셋째 줄", b: "첫째 줄\n둘째 줄\n셋째 줄" },
+    { name: "한 줄로 (띄어쓰기)", note: "줄바꿈을 모두 띄어쓰기 1칸으로", o: { join: "space" }, a: "서울특별시 중구\n세종대로 110\n\n서울시청", b: "서울특별시 중구 세종대로 110 서울시청" },
+    { name: "한 줄로 (모두 지우기)", note: "줄바꿈을 지우고 그대로 붙임(엔터 제거)", o: { join: "remove" }, a: "010-\n1234-\n5678", b: "010-1234-5678" },
+  ];
+  for (const c of LB_CASES) {
+    const got = TC.clean(c.a, c.o);
+    if (got !== c.b) throw new Error(`P2-57 줄바꿈 정리 「${c.name}」 대조 불일치:\n  결과 ${JSON.stringify(got)}\n  기대 ${JSON.stringify(c.b)}`);
+  }
+  const MK = { [NB]: "NBSP", [ZW]: "제로폭", [BOM]: "BOM", [FW]: "전각", "\t": "탭" };
+  const vis = (s) => esc(s).replace(new RegExp(`[${NB}${ZW}${BOM}${FW}\t]`, "g"), (m) => `<i class="lb-mk">${MK[m]}</i>`).replace(/ (?=\n|$)/g, '<i class="lb-mk">·</i>').replace(/\n/g, '<i class="lb-nl" aria-hidden="true">↵</i>\n');
+  const OPT_NAME = { pdf: "PDF 깨진 줄바꿈 복구", none: "줄바꿈 그대로", space: "띄어쓰기로 한 줄", remove: "모두 지워 붙이기" };
+  const radio = (name, items, on) => items.map(([v, label]) => `<label><input type="radio" name="${name}" value="${v}"${v === on ? " checked" : ""}><span>${label}</span></label>`).join("");
+  const check = (name, label, on = true) => `<label class="check"><input type="checkbox" name="${name}"${on ? " checked" : ""}> ${label}</label>`;
+  utilPage(utilById.linebreak, `<div class="lb">
+<label for="lb-in" class="lb-lab">정리할 글 <small class="hint">PDF·웹페이지·메신저에서 복사한 글을 붙여 넣으세요</small></label>
+<textarea id="lb-in" class="cc-text lb-text" rows="8" placeholder="여기에 글을 붙여 넣으세요. 입력하는 동안 아래에 정리한 글이 바로 나와요." autocomplete="off" spellcheck="false"></textarea>
+<div class="lb-presets" role="group" aria-label="빠른 설정"><button type="button" class="chip" data-preset="pdf">PDF 붙여넣기 정리</button><button type="button" class="chip" data-preset="line">한 줄로 만들기</button><button type="button" class="chip" data-preset="space">공백만 정리</button><button type="button" class="chip" data-example>예시 넣기</button></div>
+<div class="lb-opts">
+  <fieldset class="seg"><legend>줄바꿈(엔터)</legend>${radio("join", [["pdf", "PDF 깨진 줄바꿈 복구"], ["none", "그대로"], ["space", "띄어쓰기로 바꿔 한 줄로"], ["remove", "모두 지워 붙이기"]], "pdf")}</fieldset>
+  <details class="lb-more"><summary>세부 옵션 <small>빈 줄 · 공백 · 보이지 않는 문자 · 하이픈</small></summary><div class="lb-more-in">
+  <fieldset class="seg lb-blank"><legend>빈 줄</legend>${radio("blank", [["keep", "그대로"], ["one", "여러 줄 → 1줄"], ["none", "모두 지우기"]], "one")}</fieldset>
+  <fieldset class="lb-checks"><legend>공백·보이지 않는 문자</legend>${check("collapse", "연속 공백을 1칸으로")}${check("trim", "줄 앞뒤 공백 지우기")}${check("tabs", "탭을 공백으로")}${check("oddSpace", "전각 공백·NBSP를 일반 공백으로")}${check("invisible", "보이지 않는 문자(제로폭·BOM 등) 지우기")}</fieldset>
+  <fieldset class="lb-checks" data-pdf><legend>PDF 복구 옵션</legend>${check("hyphen", "줄 끝 하이픈(-)으로 끊긴 단어 합치기")}${check("krNoSpace", "한글 줄은 띄어쓰기 없이 붙이기 (글자 단위로 끊긴 PDF)", false)}</fieldset>
+  </div></details>
+</div>
+<label for="lb-out" class="lb-lab">정리한 글</label>
+<textarea id="lb-out" class="cc-text lb-text lb-out" rows="8" readonly placeholder="정리한 글이 여기에 나와요."></textarea>
+<div class="cc-tools"><button type="button" class="btn" data-copy>결과 복사</button><button type="button" class="btn ghost" data-swap>결과를 입력 칸으로</button><button type="button" class="btn ghost" data-clear>글 지우기</button></div>
+<div class="table-wrap"><table class="dd-table lb-stat" aria-live="polite"><thead><tr><th scope="col">정리 전후</th><th scope="col">전</th><th scope="col">후</th><th scope="col">차이</th></tr></thead><tbody>${[["all", "글자(공백 포함)"], ["noSpace", "글자(공백 제외)"], ["lines", "줄"], ["invisible", "보이지 않는 문자"]].map(([k, n]) => `<tr data-st="${k}"><th scope="row">${n}</th><td>0</td><td>0</td><td>0</td></tr>`).join("")}</tbody></table></div>
+<p class="hint" data-empty>글을 붙여 넣으면 바로 정리돼요. 「예시 넣기」로 PDF에서 복사한 글이 어떻게 바뀌는지 먼저 볼 수 있어요.</p>
+<p class="safe">입력한 글은 서버로 전송하지 않고, 저장하지도 않습니다. 지금 쓰는 브라우저 안에서만 정리해요.</p>
+</div>`, {
+    scripts: ["text-clean.js", "t-linebreak.js"], fileTool: false,
+    after: `<h2 class="dd-h">정리 전후 대조 (${LB_CASES.length}가지 예시)</h2>
+<p class="hint">↵는 줄바꿈, ·는 줄 끝 공백, 회색 칸은 눈에 보이지 않는 문자(NBSP·전각 공백·제로폭·BOM·탭)를 표시한 거예요. 사이트를 만들 때마다 아래 예시를 다시 정리해 결과가 같은지 자동으로 확인해요.</p>
+<div class="lb-cases">${LB_CASES.map((c, i) => `<section class="lb-case"><h3>${i + 1}. ${esc(c.name)} <small>${esc(OPT_NAME[c.o.join])}${c.o.blank === "none" ? " · 빈 줄 모두 지우기" : ""}${c.o.krNoSpace ? " · 한글 띄어쓰기 없이" : ""}</small></h3><p class="hint">${esc(c.note)}</p><div class="lb-ba"><div><b>전</b><pre>${vis(c.a)}</pre></div><div><b>후</b><pre>${vis(c.b)}</pre></div></div></section>`).join("")}</div>`,
+  });
+}
+
+
+// P2-57 읽기 시간 계산기(가독성·원고지): 계산식은 src/assets/read-calc.js 한 벌(화면 t-readtime.js와 아래 대조가 같은 파일을 vm으로 씀)
+// 흐름: 글 붙여 넣기 → 읽기·발표 시간·원고지(큰 숫자) → 글자·문장·문단·평균 문장 길이 → 원고지 3방식 → 긴 문장 → 빈출 키워드 → 복사 → 다음 툴
+// 빌드 때 손계산 8건(한글·영문·혼합 시간, 원고지 칸 채우기, 문장 나누기, 긴 문장 기준, 조사 떼기)과 대조하고 다르면 빌드를 멈춤
+{
+  const ctx = {};
+  vm.createContext(ctx);
+  vm.runInContext(fs.readFileSync(path.join(ROOT, "src", "assets", "read-calc.js"), "utf8"), ctx);
+  const RC = ctx.READCALC, D = RC.DEFAULTS;
+  const near = (a, b) => Math.abs(a - b) <= 1e-9 * Math.max(1, Math.abs(b));
+  const chk = (name, got, want) => { if (!(got === want || (typeof got === "number" && typeof want === "number" && near(got, want)))) throw new Error(`P2-57 읽기 시간 「${name}」 계산 불일치: ${JSON.stringify(got)} ≠ ${JSON.stringify(want)}`); };
+  // 손계산 1: 「안녕하세요. 반갑습니다.」 공백 포함 13자, 공백 제외 12자, 한글 10자, 문장 2개(평균 6자). 읽기 10 ÷ 500 = 0.02분 = 1.2초 → 1초, 발표 10 ÷ 300분 = 2초
+  const r1 = RC.analyze("안녕하세요. 반갑습니다.");
+  chk("1 공백 포함", r1.chars, 13); chk("1 공백 제외", r1.noSpace, 12); chk("1 한글", r1.ko, 10); chk("1 문장", r1.sentences, 2); chk("1 평균", r1.avgSentence, 6); chk("1 읽기", r1.readMin, 0.02); chk("1 읽기 표시", RC.fmtTime(r1.readMin), "1초"); chk("1 발표 표시", RC.fmtTime(r1.speakMin), "2초"); chk("1 원고지 A", r1.ms.withSpace, 0.065);
+  // 손계산 2: 한글 1,000자(띄어쓰기 없음) → 읽기 1,000 ÷ 500 = 2분, 발표 1,000 ÷ 300 = 3.33분 = 3분 20초, 원고지 A 5매, C ⌈1,001 ÷ 20⌉ = 51줄 = 5.1매
+  const r2 = RC.analyze("가".repeat(1000));
+  chk("2 읽기", RC.fmtTime(r2.readMin), "2분"); chk("2 발표", RC.fmtTime(r2.speakMin), "3분 20초"); chk("2 원고지 A", r2.ms.withSpace, 5); chk("2 원고지 C 줄", r2.ms.gridLines, 51); chk("2 원고지 C", r2.ms.grid, 5.1);
+  // 손계산 3: 영어 238단어 → 읽기 238 ÷ 238 = 1분, 발표 238 ÷ 183 = 1.3005분 = 78초 = 1분 18초
+  const r3 = RC.analyze(Array(238).fill("word").join(" "));
+  chk("3 단어", r3.words, 238); chk("3 읽기", RC.fmtTime(r3.readMin), "1분"); chk("3 발표", RC.fmtTime(r3.speakMin), "1분 18초");
+  // 손계산 4: 한글 500자 + 영어 238단어 → 읽기 500 ÷ 500 + 238 ÷ 238 = 2분
+  const r4 = RC.analyze("나".repeat(500) + " " + Array(238).fill("text").join(" "));
+  chk("4 혼합 읽기", r4.readMin, 2);
+  // 손계산 5: 원고지 칸 채우기 — 문단 19자·20자·45자 → 들여쓰기 1칸 더해 ⌈20/20⌉ + ⌈21/20⌉ + ⌈46/20⌉ = 1 + 2 + 3 = 6줄 = 0.6매. 문단(빈 줄 기준) 2개, 문장 3개
+  const r5 = RC.analyze("가".repeat(19) + "\n\n" + "나".repeat(20) + "\n" + "다".repeat(45));
+  chk("5 원고지 C 줄", r5.ms.gridLines, 6); chk("5 원고지 C", r5.ms.grid, 0.6); chk("5 원고지 B", r5.ms.noSpace, 84 / 200); chk("5 문단", r5.paragraphs, 2); chk("5 문장", r5.sentences, 3);
+  // 손계산 6: 문장 나누기 — 3.14처럼 공백 없는 마침표는 나누지 않고, 닫는 따옴표 뒤에서 나눔 → 5문장, 숫자 1개는 단어로 셈
+  const r6 = RC.analyze('원주율은 3.14입니다. 정말요? 네! "그렇군요." 다음 문장');
+  chk("6 문장", r6.sentences, 5); chk("6 단어(숫자)", r6.words, 1);
+  // 손계산 7: 긴 문장 기준 60자 — 59자 문장은 아니고 60자 문장은 긴 문장
+  const r7 = RC.analyze("가".repeat(58) + ". " + "나".repeat(59) + ".");
+  chk("7 긴 문장 수", r7.long.length, 1); chk("7 긴 문장 길이", r7.long[0].len, 60); chk("7 최대", r7.maxSentence, 60);
+  // 손계산 8: 조사 떼기 — 회사가·회사는·회사를 → 회사 3번, 고양이·고양이가 → 고양이 2번(「고양」으로 자르지 않음), 사이·사이가 → 사이 2번, Data·data → data 2번, 서술어 「있습니다」는 뺌
+  const r8 = RC.analyze("회사가 좋다. 회사는 크다. 회사를 다닌다. 고양이 고양이가 사이 사이가 기도 데이터 데이터를 Data data 있습니다 있습니다");
+  const kw8 = Object.fromEntries(r8.keywords);
+  chk("8 회사", kw8["회사"], 3); chk("8 고양이", kw8["고양이"], 2); chk("8 고양 없음", kw8["고양"], undefined); chk("8 사이", kw8["사이"], 2); chk("8 데이터", kw8["데이터"], 2); chk("8 data", kw8["data"], 2); chk("8 서술어 뺌", kw8["있습니다"], undefined); chk("8 개수", r8.keywords.length, 5);
+  const RT_EX = [
+    ["한글 짧은 글", "「안녕하세요. 반갑습니다.」 (한글 10자, 문장 2개)", "읽기 10 ÷ 500 = 0.02분, 발표 10 ÷ 300 = 0.033분", `읽기 ${RC.fmtTime(r1.readMin)} · 발표 ${RC.fmtTime(r1.speakMin)} · 평균 문장 ${r1.avgSentence}자`],
+    ["한글 1,000자", "띄어쓰기 없는 한글 1,000자", "읽기 1,000 ÷ 500, 발표 1,000 ÷ 300", `읽기 ${RC.fmtTime(r2.readMin)} · 발표 ${RC.fmtTime(r2.speakMin)} · 원고지 ${r2.ms.withSpace}매(단순) / ${r2.ms.grid}매(칸 채우기)`],
+    ["영어 238단어", "영어 단어 238개", "읽기 238 ÷ 238, 발표 238 ÷ 183", `읽기 ${RC.fmtTime(r3.readMin)} · 발표 ${RC.fmtTime(r3.speakMin)}`],
+    ["한글 + 영어", "한글 500자 + 영어 238단어", "500 ÷ 500 + 238 ÷ 238", `읽기 ${RC.fmtTime(r4.readMin)}`],
+    ["원고지 칸 채우기", "문단 3개(19자·20자·45자)", "⌈20/20⌉ + ⌈21/20⌉ + ⌈46/20⌉ = 6줄", `${r5.ms.gridLines}줄 = ${r5.ms.grid}매 (단순 계산은 ${r5.ms.withSpace}매)`],
+    ["문장 나누기", "원주율은 3.14입니다. 정말요? 네! \"그렇군요.\" 다음 문장", "3.14의 마침표는 문장 끝이 아님", `문장 ${r6.sentences}개`],
+    ["긴 문장 기준", "59자 문장 + 60자 문장", "60자 이상이면 긴 문장", `긴 문장 ${r7.long.length}개 (${r7.long[0].len}자)`],
+    ["조사 떼기", "회사가 회사는 회사를 고양이 고양이가 …", "을·를은 떼고, 은·는·이·가는 같은 말이 다른 꼴로도 나올 때만 뗌", r8.keywords.map(([w, n]) => `${w} ${n}번`).join(" · ")],
+  ];
+  const numIn = (name, label, v, unit) => `<label><span>${label}</span><span class="rdt-num"><input name="${name}" type="number" inputmode="numeric" min="1" max="5000" value="${v}"> ${unit}</span></label>`;
+  utilPage(utilById.readtime, `<div class="rdt">
+<label for="rdt-in" class="lb-lab">읽기 시간을 잴 글 <small class="hint">블로그 글, 발표 원고, 리포트를 붙여 넣으세요</small></label>
+<textarea id="rdt-in" class="cc-text" rows="9" placeholder="여기에 글을 붙여 넣거나 입력하세요. 입력한 글은 저장하지 않아요." autocomplete="off" spellcheck="false"></textarea>
+<div class="lb-presets"><button type="button" class="chip" data-example>예시 넣기</button><button type="button" class="chip" data-clear>글 지우기</button></div>
+<dl class="cc-stats rdt-stats" aria-live="polite">
+  <div class="main"><dt>읽기 시간</dt><dd><b data-out="read">0초</b></dd></div>
+  <div class="main"><dt>발표(말하기) 시간</dt><dd><b data-out="speak">0초</b></dd></div>
+  <div class="main"><dt>200자 원고지</dt><dd><b data-out="ms">0매</b></dd></div>
+  <div><dt>공백 포함</dt><dd><b data-out="chars">0</b>자</dd></div>
+  <div><dt>공백 제외</dt><dd><b data-out="noSpace">0</b>자</dd></div>
+  <div><dt>한글·한자 글자</dt><dd><b data-out="ko">0</b>자</dd></div>
+  <div><dt>영문 단어·숫자</dt><dd><b data-out="words">0</b>개</dd></div>
+  <div><dt>문장</dt><dd><b data-out="sentences">0</b>개</dd></div>
+  <div><dt>문단</dt><dd><b data-out="paragraphs">0</b>개</dd></div>
+  <div><dt>평균 문장 길이</dt><dd><b data-out="avg">0자</b></dd></div>
+  <div><dt>긴 문장</dt><dd><b data-out="longN">0개</b></dd></div>
+</dl>
+<div class="cc-tools"><button type="button" class="btn" data-copy>결과 한 줄 복사</button></div>
+<details class="lb-more rdt-base"><summary>기준값 바꾸기 <small>분당 읽기 한글 ${D.koRead}자·영어 ${D.enRead}단어, 발표 한글 ${D.koSpeak}자·영어 ${D.enSpeak}단어</small></summary><div class="lb-more-in">
+  <div class="rdt-nums">${numIn("koRead", "읽기 · 한글", D.koRead, "자/분")}${numIn("enRead", "읽기 · 영어", D.enRead, "단어/분")}${numIn("koSpeak", "발표 · 한글", D.koSpeak, "자/분")}${numIn("enSpeak", "발표 · 영어", D.enSpeak, "단어/분")}</div>
+  <div class="lb-presets" role="group" aria-label="발표 속도 빠르게 고르기"><button type="button" class="chip" data-speed="250,150">발표 천천히</button><button type="button" class="chip" data-speed="${D.koSpeak},${D.enSpeak}">발표 보통</button><button type="button" class="chip" data-speed="350,210">발표 빠르게</button><button type="button" class="chip" data-reset>처음 값으로</button></div>
+  <p class="hint">한글은 한글·한자 글자(음절) 수, 영어는 단어 수(숫자 포함)로 나눠 더해요. 기준값의 출처와 가정은 아래 「기준값과 출처」에 적어 두었어요. 1분 동안 소리 내어 읽은 글자 수를 넣으면 내 속도로 계산돼요.</p>
+</div></details>
+<h3 class="rdt-h">200자 원고지 매수</h3>
+<div class="table-wrap"><table class="dd-table rdt-ms"><thead><tr><th scope="col">방식</th><th scope="col">매수</th><th scope="col">가정</th></tr></thead><tbody>
+  <tr><th scope="row">공백 포함 ÷ 200</th><td data-out="msA">0매</td><td>띄어쓰기도 1칸, 줄바꿈은 세지 않음. 흔히 쓰는 단순 계산</td></tr>
+  <tr><th scope="row">공백 제외 ÷ 200</th><td data-out="msB">0매</td><td>띄어쓰기·줄바꿈을 빼고 글자만</td></tr>
+  <tr><th scope="row">칸 채우기 (근사)</th><td data-out="msC">0매</td><td>20칸 × 10줄. 줄(문단)마다 첫 칸 들여쓰기, 문단이 끝나면 남은 칸은 비움. 문장부호·영문·숫자도 1칸</td></tr>
+</tbody></table></div>
+<h3 class="rdt-h">긴 문장 (<span data-long-n>${D.longLen}</span>자 이상)</h3>
+<label class="rdt-inline">긴 문장 기준 <input name="longLen" type="number" inputmode="numeric" min="20" max="300" value="${D.longLen}"> 자 이상</label>
+<ol class="rdt-long"></ol>
+<h3 class="rdt-h">자주 나온 낱말</h3>
+<label class="rdt-inline">보여 줄 개수 <select name="topN"><option value="5">5개</option><option value="10" selected>10개</option><option value="20">20개</option></select></label>
+<ol class="rdt-kw"></ol>
+<p class="hint">두 번 이상 나온 낱말만 보여 줘요. 을·를·에서·으로 같은 조사는 떼고, 은·는·이·가·도·의처럼 낱말 끝 글자나 꾸미는 말(작은·걸리는)과 헷갈리는 조사는 같은 말이 글 안에 다른 꼴로도 나올 때만 떼요(「고양이」를 「고양」으로 자르지 않게). 「그리고·것·수」 같은 흔한 말과 「합니다·했어요」 같은 서술어는 뺐어요.</p>
+<p class="hint">글자 수와 바이트를 더 자세히 보려면 <a href="${u(utilById.charcount.path)}">글자수 세기</a>, 붙여 넣은 글의 줄바꿈·공백이 지저분하면 <a href="${u(utilById.linebreak.path)}">줄바꿈 제거 · 공백 정리</a>를 먼저 써 보세요.</p>
+<p class="safe">입력한 글은 서버로 전송하지 않고, 저장하지도 않습니다.</p>
+</div>`, {
+    scripts: ["read-calc.js", "t-readtime.js"], fileTool: false,
+    after: `<section class="prose pay-src" aria-labelledby="rdt-src-h"><h2 id="rdt-src-h">기준값과 출처</h2>
+<ul>
+<li><b>영어 읽기 ${D.enRead}단어/분, 소리 내어 읽기 ${D.enSpeak}단어/분</b> — Brysbaert, M. (2019). How many words do we read per minute? A review and meta-analysis of reading rate. <i>Journal of Memory and Language</i>, 109, 104047. 성인 190개 연구(18,573명)를 묶은 메타분석으로, 논픽션 묵독 238단어/분, 소설 260단어/분, 소리 내어 읽기 183단어/분이에요. <a href="https://doi.org/10.1016/j.jml.2019.104047" target="_blank" rel="noopener">논문 보기<span class="sr"> (새 창, 외부 사이트)</span></a></li>
+<li><b>한글 읽기 ${D.koRead}자/분, 발표 ${D.koSpeak}자/분 (가정)</b> — 한국어 읽기·말하기 속도는 널리 인정된 공식 기준값을 찾지 못해, 흔히 쓰는 어림값을 기본으로 두었어요. 글의 난이도와 사람에 따라 크게 달라지니 「기준값 바꾸기」에서 직접 1분 동안 읽은 글자 수로 바꿔 쓰세요.</li>
+<li><b>200자 원고지</b> — 한 장에 20칸 × 10줄. 실제 원고지 쓰기에서는 영문 소문자·아라비아 숫자를 한 칸에 두 자씩 쓰고 줄 끝 문장부호를 마지막 칸에 함께 쓰는 규칙이 있지만, 이 계산기는 모든 글자를 1칸으로 세는 근사예요. 제출처가 정한 계산 방식이 있으면 그 방식을 따르세요.</li>
+</ul></section>
+<h2 class="dd-h">계산 예시 (손계산과 대조)</h2>
+<div class="table-wrap"><table class="dd-table rdt-ex"><thead><tr><th scope="col">경우</th><th scope="col">입력</th><th scope="col">계산</th><th scope="col">결과</th></tr></thead><tbody>${RT_EX.map((r) => `<tr><th scope="row">${esc(r[0])}</th><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td></tr>`).join("")}</tbody></table></div>
+<p class="hint">사이트를 만들 때마다 위 ${RT_EX.length}가지 예시를 다시 계산해 손계산과 같은지 자동으로 확인해요.</p>`,
+  });
+}
+
+// P2-57 이모지 · 특수문자 복사: 데이터·일괄 삽입은 src/assets/emoji-data.js 한 벌(화면 t-emoji.js와 아래 검사가 같은 파일을 vm으로 씀)
+// 흐름: 검색 또는 분류 탭 → 누르면 복사(모음 칸에도 담김, 최근 사용은 이 기기 localStorage) → 일괄 삽입(줄 앞·뒤 기호, 번호) → 복사 → 다음 툴
+// 빌드 때 ① 이모지 분류의 모든 문자가 유니코드 RGI 이모지인지 ② 모든 문자가 한 글자(grapheme)·배정된 코드포인트·사설 영역 아님·분류 안 중복 없음인지 ③ 일괄 삽입 사례를 확인하고 다르면 빌드를 멈춤
+{
+  const ctx = {};
+  vm.createContext(ctx);
+  const EMJ_FILE = path.join(ROOT, "src", "assets", "emoji-data.js");
+  vm.runInContext(fs.readFileSync(EMJ_FILE, "utf8"), ctx);
+  const ED = ctx.EMOJIDATA;
+  const cats = ED.items();
+  const gseg = new Intl.Segmenter("ko", { granularity: "grapheme" });
+  let rgi = null;
+  try { rgi = new RegExp("^\\p{RGI_Emoji}$", "v"); } catch (e) { rgi = /^(?:\p{Extended_Pictographic}|[#*0-9]\uFE0F⃣)/u; } // Node 20 미만이면 느슨한 검사
+  let total = 0;
+  for (const c of cats) {
+    const seen = new Set();
+    for (const it of c.list) {
+      total++;
+      const tag = `P2-57 이모지 데이터 「${c.name}」 ${it.c} (${[...it.c].map((x) => "U+" + x.codePointAt(0).toString(16).toUpperCase()).join(" ")})`;
+      if ([...gseg.segment(it.c)].length !== 1) throw new Error(`${tag}: 한 글자가 아님`);
+      if (!/^\p{Assigned}+$/u.test(it.c) || /\p{Co}/u.test(it.c)) throw new Error(`${tag}: 유니코드 표준 문자가 아님`);
+      if (c.emoji && !rgi.test(it.c)) throw new Error(`${tag}: RGI 이모지가 아님`);
+      if (seen.has(it.c)) throw new Error(`${tag}: 같은 분류 안 중복`);
+      if (!it.n) throw new Error(`${tag}: 한글 이름 없음`);
+      seen.add(it.c);
+    }
+  }
+  const emjBytes = fs.statSync(EMJ_FILE).size;
+  const chk = (name, got, want) => { if (got !== want) throw new Error(`P2-57 일괄 삽입 「${name}」 불일치: ${JSON.stringify(got)} ≠ ${JSON.stringify(want)}`); };
+  const K = (d) => d + String.fromCodePoint(0xfe0f, 0x20e3);
+  const EM_CASES = [
+    ["줄 앞 기호", "사과\n바나나\n포도", { front: "✅" }, "✅ 사과\n✅ 바나나\n✅ 포도"],
+    ["번호 이모지 (빈 줄 건너뛰기)", "기상\n\n운동\n독서", { num: "keycap" }, `${K(1)} 기상\n\n${K(2)} 운동\n${K(3)} 독서`],
+    ["10 넘는 번호 이모지", Array.from({ length: 12 }, (_, i) => `항목${i + 1}`).join("\n"), { num: "keycap" }, Array.from({ length: 12 }, (_, i) => `${i + 1 === 10 ? "🔟" : String(i + 1).split("").map(K).join("")} 항목${i + 1}`).join("\n")],
+    ["원문자 번호 + 앞뒤 기호", "  첫째\n  둘째", { num: "circle", front: "▶", back: "✨" }, "  ① ▶ 첫째 ✨\n  ② ▶ 둘째 ✨"],
+    ["시작 번호·띄어쓰기 없이", "가\n나", { num: "dot", start: 5, space: false }, "5.가\n6.나"],
+    ["가나다 번호 범위 넘음", Array.from({ length: 15 }, () => "x").join("\n"), { num: "ganada" }, [..."가나다라마바사아자차카타파하"].map((g) => `${g}. x`).join("\n") + "\n15. x"],
+  ];
+  for (const [name, a, o, want] of EM_CASES) chk(name, ED.decorate(a, o), want);
+  chk("원문자 21", ED.number("circle", 21), String.fromCodePoint(0x3251)); chk("원문자 50", ED.number("circle", 50), String.fromCodePoint(0x32bf)); chk("검은 원문자 11", ED.number("black", 11), String.fromCodePoint(0x24eb));
+  chk("검색 하트 첫 결과", ED.search("하트")[0].c, "❤\uFE0F"); chk("검색 체크", ED.search("체크").some((x) => x.c === "✅"), true); chk("검색 없음", ED.search("없는검색어").length, 0);
+  const TAB_ORDER = ["recent", ...cats.map((c) => c.id)];
+  const catLabel = (id) => (id === "recent" ? "최근" : cats.find((c) => c.id === id).name);
+  const fmtKB = (n) => `${(n / 1024).toFixed(1)}KB`;
+  utilPage(utilById.emoji, `<div class="emj">
+<label for="emj-q" class="lb-lab">이모지·특수문자 찾기 <small class="hint">한글로 찾아 보세요: 하트, 별, 화살표, 체크, 웃음</small></label>
+<input id="emj-q" type="search" class="emj-q" placeholder="예: 하트, 별, 화살표, 체크, 동그라미숫자" autocomplete="off">
+<div class="emj-tabs" role="group" aria-label="분류">${TAB_ORDER.map((id) => `<button type="button" class="chip emj-tab" data-cat="${id}" aria-pressed="${id === "face"}">${esc(catLabel(id))}</button>`).join("")}</div>
+<fieldset class="seg emj-pick"><legend>문자를 누르면</legend><label><input type="radio" name="pick" value="copy" checked><span>바로 복사</span></label><label><input type="radio" name="pick" value="front"><span>줄 앞 기호로</span></label><label><input type="radio" name="pick" value="back"><span>줄 뒤 기호로</span></label></fieldset>
+<p class="emj-info hint" aria-live="polite"></p>
+<div class="emj-grid"></div>
+<div class="emj-bagrow"><label for="emj-bag" class="sr">모음 칸</label><input id="emj-bag" class="emj-bag" type="text" placeholder="누른 문자가 여기에 차례로 모여요" autocomplete="off"><button type="button" class="btn" data-bag-copy>모음 복사</button><button type="button" class="btn ghost" data-bag-clear>비우기</button></div>
+<h3 class="emj-h">일괄 삽입 · 목록 꾸미기</h3>
+<p class="hint">글을 넣으면 줄마다 앞이나 뒤에 기호를 붙이고, 1\uFE0F⃣ 2\uFE0F⃣ 3\uFE0F⃣ 같은 번호를 자동으로 매겨요. 블로그·인스타그램 목록, 공지사항 정리에 쓰세요.</p>
+<label for="emj-src" class="sr">꾸밀 글</label>
+<textarea id="emj-src" class="cc-text emj-text" rows="6" placeholder="한 줄에 하나씩 적어 주세요.&#10;예: 아침 7시 기상&#10;물 한 잔 마시기" autocomplete="off" spellcheck="false"></textarea>
+<div class="emj-deco">
+  <label><span>줄 앞에 붙일 기호</span><input id="emj-front" type="text" value="✅" autocomplete="off"></label>
+  <label><span>줄 뒤에 붙일 기호 <small class="hint">(선택)</small></span><input id="emj-back" type="text" autocomplete="off"></label>
+  <label><span>번호 매기기</span><select name="num"><option value="">번호 없음</option>${Object.entries(ED.NUMS).map(([k, v]) => `<option value="${k}">${esc(v.name)}</option>`).join("")}</select></label>
+  <label><span>시작 번호</span><input name="start" type="number" inputmode="numeric" min="0" max="999" value="1"></label>
+</div>
+<div class="lb-presets" role="group" aria-label="줄 앞 기호 빠르게 고르기">${["✅", "✔\uFE0F", "▶", "•", "★", "👉", "💡", "📌", "🔹", "➤", "※", "❤\uFE0F"].map((x) => `<button type="button" class="chip emj-fq" data-front="${x}">${x}</button>`).join("")}<button type="button" class="chip" data-front="">기호 없음</button></div>
+<div class="lb-checks"><label class="check"><input type="checkbox" name="skipBlank" checked> 빈 줄은 건너뛰기</label><label class="check"><input type="checkbox" name="space" checked> 기호와 글 사이 띄어쓰기</label></div>
+<label for="emj-out" class="lb-lab">꾸민 결과</label>
+<textarea id="emj-out" class="cc-text emj-text lb-out" rows="6" readonly></textarea>
+<div class="cc-tools"><button type="button" class="btn" data-deco-copy>결과 복사</button><button type="button" class="btn ghost" data-deco-example>예시 넣기</button><button type="button" class="btn ghost" data-deco-clear>글 지우기</button><button type="button" class="chip" data-recent-clear>최근 사용 지우기</button></div>
+<p class="safe">입력한 글은 서버로 보내지 않고 저장하지 않아요. 최근 사용한 문자 ${30}개만 이 기기의 브라우저에 저장돼요.</p>
+<p class="hint">이모지·특수문자 ${total.toLocaleString("ko-KR")}개 · 유니코드 표준 문자만 씀(이미지 없음) · 데이터 ${fmtKB(emjBytes)}. 같은 이모지도 기기와 앱마다 모양이 조금 달라 보일 수 있어요.</p>
+</div>`, {
+    scripts: ["emoji-data.js", "t-emoji.js"], fileTool: false,
+    after: `<h2 class="dd-h">일괄 삽입 예시 (자동 확인)</h2>
+<div class="table-wrap"><table class="dd-table emj-ex"><thead><tr><th scope="col">경우</th><th scope="col">넣은 글</th><th scope="col">결과</th></tr></thead><tbody>${EM_CASES.slice(0, 5).map(([name, a, , want]) => `<tr><th scope="row">${esc(name)}</th><td><pre>${esc(a.split("\n").slice(0, 4).join("\n"))}${a.split("\n").length > 4 ? "\n…" : ""}</pre></td><td><pre>${esc(want.split("\n").slice(0, 4).join("\n"))}${want.split("\n").length > 4 ? "\n…" : ""}</pre></td></tr>`).join("")}</tbody></table></div>
+<p class="hint">사이트를 만들 때마다 위 예시와 모든 문자(${total.toLocaleString("ko-KR")}개)가 유니코드 표준 문자인지, 이모지 분류는 유니코드 RGI 이모지 목록에 있는지 자동으로 확인해요.</p>`,
+  });
+  console.log(`✔ P2-57 이모지 데이터: ${total}개 (분류 ${cats.length}개), emoji-data.js ${emjBytes.toLocaleString("en-US")}바이트`);
+}
 // 디데이 계산기
 utilPage(utilById.dday, `<form class="dd-form" autocomplete="off">
   <div class="row2">
