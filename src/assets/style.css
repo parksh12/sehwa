@@ -1216,8 +1216,6 @@ li.has-fav{position:relative}
 .sq-tk{font-family:var(--display);font-weight:400;font-size:24px;letter-spacing:.02em}
 .sq-score{margin-left:auto;font-size:14px;font-weight:700;color:var(--ink-2)}
 .sq-look{margin:-6px 0 0}
-.sq-chart{border:var(--bd);border-radius:12px;background:var(--white);padding:8px 6px 4px}
-.sq-canvas{display:block;width:100%;height:220px}
 .sq-q{margin:0;font-size:17px;line-height:1.5}
 .sq-q small{color:var(--ink-3);font-size:14px;white-space:nowrap}
 .sq-ans{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -1252,3 +1250,61 @@ li.has-fav{position:relative}
 .sq-again{display:flex;flex-wrap:wrap;gap:10px}
 .sq-again .btn.big{flex:1 1 100%}
 @media(max-width:620px){.sq-table{font-size:12.5px}.sq-table th,.sq-table td{padding:6px 5px}.sq-tk{font-size:21px}.sq-q{font-size:16px}}
+
+/* ===================== P2-50b 주가 예측 차트: 펭귄 툴즈 스타일(굵은 먹선·노란 채움·칩·도장) ===================== */
+.sq{--up:var(--nok);--dn:var(--jeok)}
+.sq-chart{position:relative;border:var(--bd);border-radius:var(--radius);background:#fffdf5;box-shadow:var(--drop);padding:6px;overflow:hidden}
+.sq-svg{display:block;width:100%;height:auto;font-family:"Pretendard Variable",Pretendard,system-ui,sans-serif;font-weight:800}
+.sqc-stripe-a{fill:var(--white)}.sqc-stripe-b{fill:var(--hwang);opacity:.5}
+.sqc-zone{fill:url(#sqc-stripe);stroke:var(--ink);stroke-width:2.5;stroke-dasharray:7 5}
+.sqc-zone.is-open{fill:var(--soft);stroke-dasharray:none;stroke-width:2}
+.sqc-q circle{fill:var(--ink)}.sqc-q text{fill:var(--hwang);text-anchor:middle;font-family:var(--display);font-weight:400}
+.sqc-base{stroke:var(--ink);stroke-width:2.5;stroke-linecap:round}
+.sqc-area{fill:var(--hwang);opacity:.55}
+.sqc-line{fill:none;stroke:var(--ink);stroke-width:4;stroke-linejoin:round;stroke-linecap:round}
+.sqc-line.is-long{stroke-width:2.8}
+.sqc-thr{stroke:var(--ink);stroke-width:3;stroke-dasharray:9 6;stroke-linecap:round}
+.sqc-chip rect{fill:var(--white);stroke:var(--ink);stroke-width:2}
+.sqc-chip text{fill:var(--ink);text-anchor:middle}
+.sqc-chip.is-thr rect{fill:var(--hwang);stroke-width:2.5}
+.sqc-pt{fill:var(--white);stroke:var(--ink);stroke-width:2.5}
+.sqc-dot{fill:var(--white);stroke:var(--ink);stroke-width:3.5}
+.sqc-bub rect,.sqc-bub path{fill:var(--ink);stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.sqc-bub text{fill:var(--white);text-anchor:middle}
+.sqc-bub .sqc-bub-sub{fill:var(--hwang);font-weight:700}
+.sqc-bub.is-up rect,.sqc-bub.is-up path{fill:var(--up)}.sqc-bub.is-dn rect,.sqc-bub.is-dn path{fill:var(--dn)}
+.sqc-bub.is-up .sqc-bub-sub,.sqc-bub.is-dn .sqc-bub-sub{fill:var(--white);opacity:.9}
+.sqc-fut{fill:none;stroke-width:4.5;stroke-linejoin:round;stroke-linecap:round}
+.sqc-fut.is-up{stroke:var(--up)}.sqc-fut.is-dn{stroke:var(--dn)}
+.sqc-farea{opacity:.22}.sqc-farea.is-up{fill:var(--up)}.sqc-farea.is-dn{fill:var(--dn)}
+.sqc-end.is-up{stroke:var(--up)}.sqc-end.is-dn{stroke:var(--dn)}
+/* 공개 애니메이션: 선이 그려지고 → 끝 점·말풍선 → 도장 */
+.sq-svg:not(.no-anim) .sqc-fut{stroke-dasharray:1;stroke-dashoffset:1;animation:sqc-draw .8s ease-out forwards}
+.sq-svg:not(.no-anim) .sqc-farea{opacity:0;animation:sqc-fade .4s .6s forwards}
+.sq-svg:not(.no-anim) .sqc-end,.sq-svg:not(.no-anim) .sqc-endbub{opacity:0;animation:sqc-show .25s .75s forwards}
+@keyframes sqc-draw{to{stroke-dashoffset:0}}
+@keyframes sqc-fade{to{opacity:.22}}
+@keyframes sqc-show{to{opacity:1}}
+.sq-stamp{position:absolute;left:16px;top:14px;font-family:var(--display);font-size:clamp(22px,6vw,30px);line-height:1;padding:7px 14px 6px;border:4px solid currentColor;border-radius:10px;background:rgba(255,255,255,.9);transform:rotate(-9deg);pointer-events:none;box-shadow:inset 0 0 0 2px rgba(255,255,255,.9),inset 0 0 0 4px currentColor}
+.sq-stamp.is-ok{color:var(--nok)}.sq-stamp.is-no{color:var(--jeok)}
+.sq-stamp:not(.no-anim){opacity:0;animation:sq-stamp .35s .9s cubic-bezier(.2,1.6,.4,1) forwards}
+@keyframes sq-stamp{from{opacity:0;transform:rotate(-9deg) scale(1.8)}to{opacity:1;transform:rotate(-9deg) scale(1)}}
+@media(prefers-reduced-motion:reduce){.sq-svg .sqc-fut,.sq-svg .sqc-farea,.sq-svg .sqc-end,.sq-svg .sqc-endbub,.sq-stamp{animation:none!important;opacity:1!important;stroke-dashoffset:0!important}.sq-svg .sqc-farea{opacity:.22!important}}
+/* 답 버튼: 오른다·예 = 초록, 내린다·아니요 = 빨강(차트 색과 같음) */
+.sq-yes{background:var(--nok);box-shadow:var(--drop)}
+.sq-yes:hover{box-shadow:6px 6px 0 var(--ink)}
+.sq-no-btn{background:var(--jeok)!important;color:var(--white)!important;box-shadow:var(--drop)!important}
+.sq-reveal{border:var(--bd);border-radius:var(--radius);background:var(--white);box-shadow:var(--drop)}
+.sq-ok.is-ok{color:var(--nok)}.sq-ok.is-no{color:var(--jeok)}
+.sq .up{color:var(--nok)}.sq .dn{color:var(--jeok)}
+.sq-no{background:var(--hwang)}
+/* 결과: 요약·표도 같은 톤 */
+.sq-bt-list,.sq-tablewrap{box-shadow:var(--drop);border-radius:var(--radius)}
+.sq-bt-list li:first-child{background:#fffdf5}
+.sq-table caption{background:var(--hwang);border-bottom:var(--bd);padding:8px 12px}
+.sq-table thead th{background:var(--soft)}
+.sq-table td.ok,.sq-table td.no{font-family:var(--display);font-weight:400;font-size:18px}
+.sq-td-tk b{display:block}
+.sq-spark{display:block;margin-top:4px;background:#fffdf5;border:2px solid var(--ink);border-radius:6px}
+.sq-spark .sqc-line{stroke-width:1.8}.sq-spark .sqc-fut{stroke-width:2.4}
+@media(max-width:620px){.sq-chart{padding:4px;box-shadow:4px 4px 0 var(--ink)}.sq-spark{width:62px;height:26px}}

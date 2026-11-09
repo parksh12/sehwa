@@ -1142,6 +1142,7 @@ const STOCK = ["SOXL", "TQQQ", "KORU"].map((t) => {
   return { t, n: j.c.length, d0: j.d0, asOf: j.asOf, src: j.src, basis: j.basis };
 });
 const STOCK_NAME = { SOXL: "반도체 3배", TQQQ: "나스닥100 3배", KORU: "한국 3배" };
+// P2-50b 차트를 canvas → 사이트 스타일 SVG(.sq-svg)로 바꾸고, 결과 도장(.sq-stamp) 자리를 둠
 utilPage(utilById.stockquiz, `<div class="sq">
   <div class="sq-start">
     <p class="sq-warn" role="note">${esc(STOCK_WARN)}</p>
@@ -1155,7 +1156,7 @@ utilPage(utilById.stockquiz, `<div class="sq">
   <div class="sq-play" hidden>
     <div class="sq-top"><span class="sq-no">1 / 10</span><b class="sq-tk">SOXL</b><span class="sq-score">맞힌 개수 0</span></div>
     <p class="sq-look hint"></p>
-    <div class="sq-chart"><canvas class="sq-canvas" role="img" aria-label="종가 차트"></canvas></div>
+    <div class="sq-chart"><svg class="sq-svg" role="img" aria-label="종가 차트" xmlns="http://www.w3.org/2000/svg"></svg><div class="sq-stamp" aria-hidden="true" hidden></div></div>
     <p class="sq-q" aria-live="polite"></p>
     <div class="sq-ans"></div>
     <div class="sq-reveal" aria-live="polite" hidden></div>
