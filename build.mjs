@@ -1146,6 +1146,7 @@ const STOCK = ["SOXL", "TQQQ", "KORU"].map((t) => {
 const STOCK_NAME = { SOXL: "반도체 3배", TQQQ: "나스닥100 3배", KORU: "한국 3배" };
 // P2-50b 차트를 canvas → 사이트 스타일 SVG(.sq-svg)로 바꾸고, 결과 도장(.sq-stamp) 자리를 둠
 // P2-50d .sq-chips는 차트 위 일반 줄(겹침 없음), 공개 결과 칩도 여기에
+// P2-50f 시작 화면에 「±5% 이상 변동만 출제」 안내(.sq-rule)
 // P2-50e 차트 아래 색 범례 한 줄(.sq-legend): 종가(파랑)·최고(빨강)·최저(초록)·기준가(검정)
 // P2-50c 봉 종류·RSI 칩(.sq-chips)과 RSI(14) 패널(.sq-rsi) 자리 추가, 모드 「3개월 → 일주일(5거래일) 뒤」(w1) 추가
 utilPage(utilById.stockquiz, `<div class="sq">
@@ -1154,6 +1155,7 @@ utilPage(utilById.stockquiz, `<div class="sq">
     <fieldset class="seg"><legend>종목</legend>${STOCK.map((x, i) => `<label><input type="radio" name="tk" value="${x.t}"${i ? "" : " checked"}><span>${x.t} <small>${STOCK_NAME[x.t]}</small></span></label>`).join("")}<label><input type="radio" name="tk" value="MIX"><span>섞어서</span></label></fieldset>
     <fieldset class="seg"><legend>보여 줄 차트 → 맞힐 때</legend><label><input type="radio" name="mode" value="m1" checked><span>1개월 → 다음 거래일</span></label><label><input type="radio" name="mode" value="m3"><span>3개월 → 다음 거래일</span></label><label><input type="radio" name="mode" value="w1"><span>3개월 → 일주일 뒤</span></label><label><input type="radio" name="mode" value="y1"><span>1년 → 한 달 뒤</span></label></fieldset>
     <fieldset class="seg"><legend>질문</legend><label><input type="radio" name="kind" value="ud" checked><span>오를까 내릴까</span></label><label><input type="radio" name="kind" value="th"><span>$○○ 이상일까</span></label></fieldset>
+    <p class="hint sq-rule">정답이 뚜렷하도록 정답 시점 종가가 마지막 날 종가보다 <b>±5% 이상</b> 움직인 경우만 문제로 나와요. 오르는 문제와 내리는 문제가 고르게 섞여 나와요.</p>
     <button class="btn big" type="button" data-start>10문제 시작</button>
     <p class="tk-msg sq-msg" role="alert" hidden></p>
     <p class="hint sq-src">가격: ${esc(STOCK[0].src)} 일봉 ${esc(STOCK[0].basis)} · 기준일 ${esc(STOCK.map((x) => x.asOf).sort()[0])} · ${STOCK.map((x) => `${x.t} ${x.d0.slice(0, 4)}년 상장 이후 ${x.n.toLocaleString("ko-KR")}거래일`).join(", ")}. 문제의 실제 날짜는 답한 뒤에 공개해요.</p>

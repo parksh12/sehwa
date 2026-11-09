@@ -44,29 +44,48 @@
 
   // ---------- 문제 만들기 ----------
   let set = null; // { mode, kind, qs:[], i }
-  function sigma(c, a, b) { // 로그 일간 수익률 표준편차
-    const r = []; for (let i = a + 1; i <= b; i++) r.push(Math.log(c[i] / c[i - 1]));
-    const m = r.reduce((x, y) => x + y, 0) / r.length;
-    return Math.max(0.008, Math.sqrt(r.reduce((x, y) => x + (y - m) ** 2, 0) / Math.max(1, r.length - 1)));
+  // P2-50f 정답이 뚜렷한 문제만: 정답 시점 종가가 마지막으로 보여 준 날 종가 대비 ±5% 이상 변한 경우만 후보
+  // (다음 거래일 모드 = 그날 하루 변동, 일주일·한 달 뒤 모드 = 마지막 날 종가 → 정답 시점 종가 누적 변동)
+  const MOVE = 0.05, THR_GAP = 0.03;
+  const cands = {}; // "티커|모드" → { up:[마지막 날 인덱스], dn:[...] }
+  function candsFor(t, mode) {
+    const key = t + "|" + mode;
+    if (cands[key]) return cands[key];
+    const { L, H } = MODES[mode], c = data[t].c, up = [], dn = [];
+    for (let last = L - 1; last + H < c.length; last++) {
+      const r = c[last + H] / c[last] - 1;
+      if (r >= MOVE) up.push(last); else if (r <= -MOVE) dn.push(last);
+    }
+    return (cands[key] = { up, dn });
   }
   function makeQs(mode, kind, pick) {
     const { L, H } = MODES[mode];
     const used = {}; const qs = [];
+    // 오름 개수를 세트마다 4·5·6 중 무작위(내림은 나머지), 순서는 피셔-예이츠로 섞음. 한쪽 후보가 비면 다른 쪽으로
+    const nUp = 4 + Math.floor(Math.random() * 3), dirs = Array.from({ length: N_Q }, (_, k) => (k < nUp ? "up" : "dn"));
+    for (let i = dirs.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [dirs[i], dirs[j]] = [dirs[j], dirs[i]]; }
     for (let k = 0; k < N_Q; k++) {
       const t = pick === "MIX" ? TICKERS[Math.floor(Math.random() * 3)] : pick;
-      const c = data[t].c, maxS = c.length - L - H;
-      let s = 0;
-      for (let tries = 0; tries < 60; tries++) { // 같은 종목 안에서 구간이 겹치지 않게
-        s = Math.floor(Math.random() * (maxS + 1));
-        if (!(used[t] || []).some(([a, b]) => s <= b && s + L - 1 + H >= a)) break;
+      const c = data[t].c, cs = candsFor(t, mode);
+      const list = cs[dirs[k]].length ? cs[dirs[k]] : cs[dirs[k] === "up" ? "dn" : "up"];
+      let last = list[0];
+      for (let tries = 0; tries < 80; tries++) { // 같은 종목 안에서 구간이 겹치지 않게
+        last = list[Math.floor(Math.random() * list.length)];
+        if (!(used[t] || []).some(([a, b]) => last - L + 1 <= b && last + H >= a)) break;
       }
-      (used[t] = used[t] || []).push([s, s + L - 1 + H]);
-      const last = s + L - 1, tgt = last + H;
+      const s = last - L + 1, tgt = last + H;
+      (used[t] = used[t] || []).push([s, tgt]);
       let thr = null;
-      if (kind === "th") { // 기준가: 마지막 종가 근처(최근 변동성 × 기간에 맞춘 소폭)에서 랜덤, 위·아래 반반
-        const z = (0.15 + Math.random() * 0.75) * (Math.random() < 0.5 ? -1 : 1);
-        thr = roundP(c[last] * Math.exp(z * sigma(c, s, last) * Math.sqrt(H)));
-        if (thr === roundP(c[last])) thr = roundP(c[last] * (z > 0 ? 1.005 : 0.995));
+      if (kind === "th") { // 기준가: 마지막 종가 ±0.5~(2.5%·3.5%·5%) 근처에서 랜덤, 위·아래 반반. 정답 종가와 3% 이상 떨어진 값만 씀
+        const umax = H === 1 ? 0.025 : H === 5 ? 0.035 : 0.05, far = (v) => Math.abs(c[tgt] / v - 1) >= THR_GAP && v !== roundP(c[last]);
+        for (let tries = 0; tries < 60 && thr == null; tries++) {
+          const v = roundP(c[last] * (1 + (0.005 + Math.random() * (umax - 0.005)) * (Math.random() < 0.5 ? -1 : 1)));
+          if (far(v)) thr = v;
+        }
+        if (thr == null) { // 드물게 못 찾으면 마지막 종가 쪽으로 붙임(정답 종가와는 5% 가까이 떨어짐)
+          const v = roundP(c[last] * (c[tgt] > c[last] ? 0.995 : 1.005));
+          thr = far(v) ? v : roundP(c[last] * (c[tgt] > c[last] ? 0.98 : 1.02));
+        }
       }
       qs.push({ t, s, last, tgt, thr, a: null });
     }
