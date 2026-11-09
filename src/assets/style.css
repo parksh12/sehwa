@@ -1437,3 +1437,17 @@ li.has-fav{position:relative}
 .avg-tag.is-target rect{fill:var(--hwang)}.avg-tag.is-target text{fill:var(--ink)}.avg-tag.is-target .avg-lead{stroke:var(--ink)}
 .avg-tag.is-cur rect{fill:var(--jeok)}.avg-tag.is-cur text{fill:var(--white)}.avg-tag.is-cur .avg-lead{stroke:var(--jeok)}
 @media(max-width:480px){.avg .seg span{padding:7px 12px;font-size:14px}.avg-hold{grid-template-columns:1fr 1fr!important}.avg [data-pane].row2{grid-template-columns:1fr 1fr}.avg-pl b{font-size:24px}.avg-ex td,.avg-ex th{font-size:13px;padding:5px}}
+
+/* ===================== P2-50g 캔들 등장 효과(왼쪽부터 차례로 솟아오름, 약 1.5초) ===================== */
+@keyframes sqc-rise{0%{opacity:0;transform:scaleY(0)}55%{opacity:1;transform:scaleY(1.18)}78%{transform:scaleY(.94)}100%{opacity:1;transform:scaleY(1)}}
+@keyframes sqc-in{from{opacity:0}to{opacity:1}}
+@keyframes sqc-zin{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+.sq-svg.is-intro .sqc-scdls .sqc-cdl{opacity:0;transform-box:fill-box;transform-origin:50% 100%;animation:sqc-rise .34s calc(var(--i) * var(--step)) cubic-bezier(.3,1.4,.5,1) both}
+.sq-svg.is-intro .sqc-pline,.sq-svg.is-intro .sqc-thr,.sq-svg.is-intro .sqc-zone{opacity:0;animation:sqc-in .3s var(--after) ease-out both}
+.sq-svg.is-intro .sqc-rtag{opacity:0;animation:sqc-in .3s calc(var(--after) + .1s) ease-out both}
+.sq-svg.is-intro .sqc-q{opacity:0;transform-box:fill-box;transform-origin:50% 50%;animation:sqc-zin .35s calc(var(--after) + .15s) cubic-bezier(.3,1.6,.5,1) both}
+.sq-rsi.is-intro .sqr-line{stroke-dasharray:1;stroke-dashoffset:1;animation:sqc-draw var(--after) linear forwards}
+.sq-chart{cursor:default}.sq-chart:has(.is-intro){cursor:pointer}
+/* 정답 공개 봉도 같은 방식(아래에서 솟고 살짝 튐) */
+.sq-svg:not(.no-anim) .sqc-fc{animation:sqc-rise .34s calc(.12s + var(--i) * .14s) cubic-bezier(.3,1.4,.5,1) both}
+@media(prefers-reduced-motion:reduce){.sq-svg.is-intro *,.sq-rsi.is-intro *{animation:none!important;opacity:1!important}.sq-rsi .sqr-line{stroke-dashoffset:0!important}}

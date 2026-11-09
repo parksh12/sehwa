@@ -144,7 +144,12 @@
     const lead = Math.abs(ly0 - y) > 3 ? `<path class="sqc-lead" d="M${f1(x0 - 12)} ${f1(ly0)}L${f1(x0 - 3)} ${f1(y)}"/>` : "";
     return `<g class="sqc-rtag ${cls}">${lead}<rect x="${f1(x0)}" y="${f1(y - h / 2)}" width="${f1(w)}" height="${h}" rx="${h / 2}"/><text x="${f1(x0 + w / 2)}" y="${f1(y + fs * 0.36)}" font-size="${fs}">${esc(price)}</text><text class="sqc-rtag-lab" x="${f1(R0 - 2)}" y="${f1(ly)}" font-size="11">${esc(label)}</text></g>`;
   }
-  function draw(q, revealed, animate) {
+  // P2-50g 문제 차트가 열릴 때 캔들이 왼쪽(오래된 봉)부터 차례로 솟아오르는 등장 효과. 봉 수와 상관없이 약 1.5초
+  const INTRO_TOTAL = 1.5, RISE = 0.34;
+  const reduceMotion = () => window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let introTimer = 0;
+  function endIntro() { clearTimeout(introTimer); svgBox.classList.remove("is-intro"); rsiBox.classList.remove("is-intro"); }
+  function draw(q, revealed, animate, intro = false) {
     const D = data[q.t], { c } = D, { H } = MODES[set.mode], weekly = set.mode === "y1";
     const W = Math.max(280, Math.round(svgBox.getBoundingClientRect().width || svgBox.parentNode.clientWidth || 340));
     const Ht = Math.round(Math.max(260, Math.min(390, W * 0.64)));
@@ -179,7 +184,7 @@
     // P2-50e 차트 안에는 캔들과 가격선만: 마지막 날 종가(파랑)·기간 최고가(빨강)·기간 최저가(초록) 점선, 기준가(검정 끊긴 선). 캔들 밑에 깔기
     s += lines.map((t) => `<line class="${t.cls === "is-thr" ? "sqc-thr" : "sqc-pline " + t.cls}" x1="${L0}" y1="${f1(t.y)}" x2="${R0}" y2="${f1(t.y)}"/>`).join("");
     // 보여 준 봉
-    s += `<g class="sqc-cdls${dense}">${sb.map((b, i) => candle(b, X(i), bw, Y, "")).join("")}</g>`;
+    s += `<g class="sqc-cdls sqc-scdls${dense}">${sb.map((b, i) => candle(b, X(i), bw, Y, "", ` style="--i:${i}"`)).join("")}</g>`;
     // 공개 구간: 봉으로 이어 그림(다음 거래일 = 봉 1개, 일주일 뒤 = 일봉 5개, 21거래일 뒤 = 주봉 약 4~5개)
     if (revealed) {
       const fslot = (zoneW - 16) / Math.max(fb.length, H > 1 ? 5 : 2), fbw = Math.max(3, Math.min(fslot * 0.66, Math.max(bw, 10) * 1.4));
@@ -190,6 +195,13 @@
     svgBox.setAttribute("viewBox", `0 0 ${W} ${Ht}`);
     svgBox.setAttribute("width", W); svgBox.setAttribute("height", Ht);
     svgBox.classList.toggle("no-anim", !animate);
+    // P2-50g 등장 효과: 봉 사이 간격 = (전체 − 한 봉 솟는 시간) ÷ (봉 수 − 1) → 21봉은 길게, 63봉은 짧게
+    endIntro();
+    if (intro && !reduceMotion()) {
+      const step = (INTRO_TOTAL - RISE) / Math.max(1, n - 1);
+      for (const el of [svgBox, rsiBox]) { el.style.setProperty("--step", step.toFixed(4) + "s"); el.style.setProperty("--after", INTRO_TOTAL.toFixed(2) + "s"); el.classList.add("is-intro"); }
+      introTimer = setTimeout(endIntro, (INTRO_TOTAL + 0.5) * 1000);
+    }
     svgBox.innerHTML = s;
     // 봉 종류·RSI 칩 + RSI 패널
     const rs = rsiFor(q, sb, weekly), rNow = rs[n - 1];
@@ -202,7 +214,7 @@
     let r = `<rect class="sqr-band" x="${L0}" y="${f1(RY(70))}" width="${f1(xl - 8 - L0)}" height="${f1(RY(30) - RY(70))}"/>`;
     r += [70, 30].map((v) => `<line class="sqr-lv" x1="${L0}" y1="${f1(RY(v))}" x2="${f1(xl - 8)}" y2="${f1(RY(v))}"/><text class="sqr-lvt" x="${f1(xl + 2)}" y="${f1(RY(v) + 5)}" font-size="13.5">${v}</text>`).join("");
     const rp = rs.map((v, i) => (v == null ? null : `${f1(X(i))},${f1(RY(v))}`)).filter(Boolean);
-    if (rp.length > 1) r += `<polyline class="sqr-line" points="${rp.join(" ")}"/>`;
+    if (rp.length > 1) r += `<polyline class="sqr-line" pathLength="1" points="${rp.join(" ")}"/>`;
     r += `<text class="sqr-h" x="${L0 + 2}" y="17" font-size="13.5">RSI(14) · ${weekly ? "주봉" : "일봉"}</text>`;
     rsiBox.setAttribute("viewBox", `0 0 ${W} ${RH}`); rsiBox.setAttribute("width", W); rsiBox.setAttribute("height", RH);
     rsiBox.innerHTML = r;
@@ -235,7 +247,7 @@
     const [yes, no] = q.thr == null ? ["오른다 ▲", "내린다 ▼"] : ["예, 이상", "아니요, 미만"];
     ans.innerHTML = `<button type="button" class="btn big sq-yes" data-a="1">${yes}</button><button type="button" class="btn big ghost sq-no-btn" data-a="0">${no}</button>`;
     ans.hidden = false; rev.hidden = true; rev.innerHTML = ""; nextBtn.hidden = true;
-    draw(q, false, false);
+    draw(q, false, false, true); // P2-50g 캔들 등장 효과
   }
   function answer(a) {
     const q = set.qs[set.i]; if (q.a != null) return;
@@ -293,6 +305,7 @@
   nextBtn.addEventListener("click", next);
   $("[data-again]").addEventListener("click", begin);
   $("[data-setup]").addEventListener("click", () => { result.hidden = true; play.hidden = true; start.hidden = false; start.scrollIntoView({ block: "start" }); });
+  $(".sq-chart").addEventListener("click", endIntro); // P2-50g 차트를 누르면 등장 효과 건너뛰기(답 버튼은 잠그지 않음: 누르면 공개 차트로 바로 다시 그림)
   $("[data-quit]").addEventListener("click", () => { play.hidden = true; start.hidden = false; set = null; });
   $("[data-copy]").addEventListener("click", async (e) => {
     const t = `${set.summary}\n${location.href.split("#")[0]}`;
