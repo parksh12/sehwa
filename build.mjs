@@ -57,6 +57,7 @@ const TOOLS = [
   { id: "reaction", cat: "arcade", path: "/arcade/reaction/", icon: "⚡", title: "반응속도 게임", h1: "반응속도 게임 — 초록색이 되는 순간 터치!", desc: "빨간 화면이 초록색으로 바뀌는 순간을 다섯 번 잡아 보세요. 평균 기록과 등급, 내 최고 기록을 알려 드려요.", hook: "초록색 되는 순간 누르기. 다섯 번 평균으로 등급이 매겨져요.", meta: "터치 5번" },
   { id: "rpg", cat: "story", path: "/story/penguin-rpg/", icon: "", title: "펭귄 RPG 뽀득이와 오색 연", h1: "펭귄 RPG — 뽀득이와 오색 연", desc: "색을 잃은 얼음 군도에서 펭귄 뽀득이가 오색 실 네 가닥을 찾아 떠나는 약 1시간짜리 턴제 RPG. 지역 4곳과 보스 5마리, 동료 2명, 자동 저장.", hook: "색을 잃은 얼음 군도, 오색 실을 찾아 떠나는 1시간 모험.", meta: "턴제 RPG · 약 1시간 · 자동 저장" },
   { id: "stack", cat: "arcade", path: "/arcade/stack/", icon: "", title: "블록 쌓기 게임", h1: "블록 쌓기 게임 — 탭 한 번으로 높이 쌓기", desc: "좌우로 움직이는 블록을 탭해서 멈추고, 아래 블록과 겹친 만큼만 남겨 높이 쌓는 게임이에요. 딱 맞추면 PERFECT, 이 기기의 최고 기록을 남겨 다시 도전할 수 있어요.", hook: "탭 한 번에 한 층. 딱 맞추면 PERFECT.", meta: "탭 · Space" },
+  { id: "mines", cat: "arcade", path: "/arcade/minesweeper/", icon: "", title: "지뢰찾기", seo: "지뢰찾기 — 무료 온라인 지뢰 찾기 게임 (초급·중급·고급)", h1: "지뢰찾기 — 첫 칸은 언제나 안전한 무료 지뢰 찾기", desc: "숫자를 단서로 지뢰를 피해 모든 칸을 여는 퍼즐 게임이에요. 초급 9×9, 중급 16×16, 고급 16×30과 사용자 지정 판, 첫 칸 안전, 숫자 칸 동시 열기, 휴대폰 깃발 모드와 길게 누르기를 지원하고, 난이도별 최고 기록이 이 기기에 남아요.", hook: "숫자 보고 지뢰 피하기. 첫 칸은 언제나 안전해요.", meta: "초급 · 중급 · 고급", kw: "지뢰찾기 지뢰 찾기 지뢰 찾기 게임 지뢰찾기 게임 무료 지뢰찾기 온라인 지뢰찾기 지뢰찾기 하기 지뢰찾기 초급 중급 고급 지뢰 게임 퍼즐 게임 minesweeper mine sweeper" }, // P2-60
   { id: "life", cat: "story", path: "/story/life/", icon: "", title: "Life Game", seo: "Life Game — 인생 시뮬레이션 게임, 진학·결혼·직업을 직접 고르기", h1: "Life Game — 진학·결혼·직업, 갈림길을 직접 고르는 인생 게임", desc: "한 사람이 되어 일생을 살아 보는 도트 이야기 게임. 진학, 첫 직업, 결혼, 자녀, 이직, 이사, 위기, 은퇴 같은 인생의 터닝포인트를 시간 제한 없이 직접 고르면, 고른 길에 맞는 장면과 엔딩, 내 인생 연표가 나와요.", hook: "결혼할까, 창업할까? 터닝포인트를 직접 고르는 인생.", meta: "5~10분 · 터닝포인트 9번" },
   { id: "hell", cat: "arcade", path: "/arcade/hell-31/", icon: "", title: "지옥에서 살아남기", h1: "지옥에서 살아남기 — Hell Survival 31", desc: "A와 B 중 하나는 살고 하나는 죽는 31단계 병맛 선택 게임. 슬랩스틱 사망 31종을 모으는 사망 도감과 「가장 억울한 죽음」 공유 카드까지, 3~5분이면 한 판.", hook: "A/B 중 하나는 즉사. 상식대로 고르면 대개 죽는 31단계.", meta: "31단계 · 3~5분" }, // P2-27
   { id: "hellchosun", cat: "story", path: "/story/hell-chosun/", icon: "", title: "헬조선에서 살아남기", h1: "헬조선에서 살아남기 — 0세부터 80세까지 40단계", desc: "자산·체력·멘탈·눈치를 지키며 0세부터 80세까지 40단계를 버티는 병맛 인생 생존 게임. 사망 도감 44장, 엔딩 4종, 다음 생 유산 보너스.", hook: "자산·체력·멘탈·눈치 중 하나라도 바닥나면 끝. 80세까지 버티기.", meta: "40단계 · 15~30분" }, // P2-28
@@ -72,6 +73,7 @@ const ART = {
   saju: sv(`<rect x="14" y="16" width="92" height="88" rx="8" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M37 16v88M60 16v88M83 16v88M14 60h92" stroke="${K}" stroke-width="3"/><text x="25.5" y="49" font-size="20" font-weight="800" text-anchor="middle" fill="${GRN}" font-family="serif">甲</text><text x="48.5" y="49" font-size="20" font-weight="800" text-anchor="middle" fill="${RED}" font-family="serif">丙</text><text x="71.5" y="49" font-size="20" font-weight="800" text-anchor="middle" fill="${K}" font-family="serif">戊</text><text x="94.5" y="49" font-size="20" font-weight="800" text-anchor="middle" fill="${YEL}" font-family="serif">庚</text><text x="25.5" y="92" font-size="20" font-weight="800" text-anchor="middle" fill="${K}" font-family="serif">子</text><text x="48.5" y="92" font-size="20" font-weight="800" text-anchor="middle" fill="${RED}" font-family="serif">午</text><text x="71.5" y="92" font-size="20" font-weight="800" text-anchor="middle" fill="${GRN}" font-family="serif">寅</text><text x="94.5" y="92" font-size="20" font-weight="800" text-anchor="middle" fill="${K}" font-family="serif">申</text>`), // P2-22
   today: sv(`<path d="M30 84a30 30 0 0 1 60 0z" fill="${YEL}" stroke="${K}" stroke-width="4"/><path d="M22.4 70.3 11.1 66.2M37.1 51.2l-6.9-9.8M60 44V32M82.9 51.2l6.9-9.8M97.6 70.3l11.3-4.1" stroke="${RED}" stroke-width="6" stroke-linecap="round"/><path d="M12 84h96M30 96h22M68 96h22M44 107h32" stroke="${K}" stroke-width="4" stroke-linecap="round"/>`),
   rpg: sv(`<path d="M60 10l38 38-38 38-38-38z" fill="${YEL}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M60 10v76M22 48h76" stroke="${K}" stroke-width="3"/><path d="M60 86c-6 8 4 12-2 20" fill="none" stroke="${RED}" stroke-width="4" stroke-linecap="round"/><circle cx="60" cy="48" r="13" fill="${K}"/><path d="M60 42c-2-3-8-3-9 2-1 5 3 10 9 10s10-5 9-10c-1-5-7-5-9-2z" fill="${W}"/><path d="M58 50h4l-2 2.5z" fill="${YEL}"/>`),
+  mines: sv(`<rect x="10" y="10" width="100" height="100" rx="12" fill="#f2f1ec" stroke="${K}" stroke-width="4"/>${[0, 1, 2].flatMap((r) => [0, 1, 2].map((c) => { const open = (r + c) % 2 === 0 || (r === 2 && c === 1); return `<rect x="${17 + c * 30}" y="${17 + r * 30}" width="26" height="26" rx="5" fill="${open ? W : "#ffd75e"}" stroke="${K}" stroke-width="3"/>`; })).join("")}<text x="30" y="39" font-size="20" font-weight="900" text-anchor="middle" fill="#2346d8" font-family="sans-serif">1</text><text x="90" y="39" font-size="20" font-weight="900" text-anchor="middle" fill="${GRN}" font-family="sans-serif">2</text><text x="30" y="99" font-size="20" font-weight="900" text-anchor="middle" fill="${RED}" font-family="sans-serif">3</text><path d="M56 19v20" stroke="${K}" stroke-width="3.5" stroke-linecap="round"/><path d="M58 20l13 5-6 2 6 2-13 5z" fill="${RED}" stroke="${K}" stroke-width="2" stroke-linejoin="round"/><g transform="translate(90 90)"><path d="M0-14V14M-14 0H14" stroke="${K}" stroke-width="4" stroke-linecap="round"/><path d="M-10-10 10 10M10-10-10 10" stroke="${K}" stroke-width="3" stroke-linecap="round"/><circle r="9" fill="${K}"/><circle r="3.6" fill="${YEL}"/></g>`), // P2-60 판 3×3(열린 칸 숫자 1·2·3, 깃발, 지뢰) — 직접 그림
   stack: sv(`<rect x="22" y="84" width="76" height="18" rx="4" fill="${RED}" stroke="${K}" stroke-width="4"/><rect x="30" y="64" width="62" height="18" rx="4" fill="${YEL}" stroke="${K}" stroke-width="4"/><rect x="36" y="44" width="50" height="18" rx="4" fill="${W}" stroke="${K}" stroke-width="4"/><rect x="50" y="18" width="50" height="18" rx="4" fill="${GRN}" stroke="${K}" stroke-width="4"/><path d="M16 27h22M24 20l-8 7 8 7" fill="none" stroke="${K}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`),
   reaction: sv(`<rect x="51" y="10" width="18" height="10" rx="3" fill="${YEL}"/><rect x="57" y="18" width="6" height="10" fill="${W}"/><circle cx="60" cy="68" r="38" fill="${W}"/><path d="M60 68V38a30 30 0 0 1 21.2 8.8z" fill="${GRN}"/><circle cx="60" cy="68" r="30" fill="none" stroke="${K}" stroke-width="3" stroke-dasharray="2 13.7"/><path d="M60 68 78 50" stroke="${RED}" stroke-width="6" stroke-linecap="round"/><circle cx="60" cy="68" r="5" fill="${K}"/>`),
   life: sv(`<path d="M34 16h52M34 104h52" stroke="${K}" stroke-width="6" stroke-linecap="round"/><path d="M40 18h40c0 22-18 30-18 42s18 20 18 42H40c0-22 18-30 18-42S40 40 40 18z" fill="${W}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M47 30h26q-6 14-13 21-7-7-13-21z" fill="${YEL}"/><path d="M60 54v40" stroke="${YEL}" stroke-width="3"/><path d="M45 101q15-20 30 0z" fill="${RED}"/>`),
@@ -137,8 +139,9 @@ const RECO = {
   personality: ["birthday", "namematch", "reaction"],
   namematch: ["birthday", "personality", "today"],
   today: ["tarot", "life", "birthday"], // P2-58 띠별 운세 → 타로
-  reaction: ["stack", "life", "personality"],
-  stack: ["reaction", "life", "today"],
+  reaction: ["mines", "stack", "life"], // P2-60 지뢰찾기 먼저
+  stack: ["mines", "reaction", "life"], // P2-60
+  mines: ["stack", "reaction", "hell"], // P2-60
   rpg: ["life", "stack", "reaction"],
   life: ["today", "reaction", "personality"],
   draw: ["reaction", "stack", "today"], // P2-44
@@ -155,7 +158,7 @@ const LIFE_SLUG = { adventure: "adventurer", love: "warm-heart", stable: "steady
 
 // ---------- 펭귄 툴즈: 실용 툴 카테고리·목록 ----------
 // 기존 콘텐츠(CATS: me·love·luck·story·arcade)는 주소를 그대로 두고 「펭귄 오락실」(/play/)로 묶습니다.
-const PLAY = { name: "펭귄 오락실", tagline: "RPG·생존 게임·순발력 게임, 잠깐 쉬어 가는 한 판", path: "/play/", desc: "펭귄 RPG, 지옥에서 살아남기, 헬조선에서 살아남기, Life Game, 블록 쌓기, 반응속도 게임처럼 잠깐 쉬어 가는 게임을 모았어요." }; // P2-49 게임만
+const PLAY = { name: "펭귄 오락실", tagline: "RPG·생존 게임·순발력 게임, 잠깐 쉬어 가는 한 판", path: "/play/", desc: "펭귄 RPG, 지옥에서 살아남기, 헬조선에서 살아남기, Life Game, 지뢰찾기, 블록 쌓기, 반응속도 게임처럼 잠깐 쉬어 가는 게임을 모았어요." }; // P2-49 게임만
 const UCATS = {
   pdf: { name: "PDF·문서", desc: "PDF를 합치고 나누고, 이미지와 워드 문서를 PDF로 바꾸는 툴이에요." },
   image: { name: "이미지", desc: "사진 용량을 줄이고, 아이폰 HEIC 사진을 JPG로 바꾸고, 여러 장을 한 장으로 이어 붙이거나 PDF로 묶고, QR코드를 만드는 이미지 툴이에요." }, // P2-46 desc, P2-47 HEIC, P2-48 QR
@@ -484,6 +487,7 @@ const cabCls = (i, n) => (n > 6 && i === n - 1 && (n - 3) % 3 === 1 ? "cab-full"
 // ★ 새 툴·게임을 만들면 여기에 { id, d: "출시일" }을 맨 위에 추가(대표님 지시: 새 콘텐츠는 메인에 잘 보이게).
 // 출시 30일 이내 항목 중 최신 4개가 홈 맨 위 「NEW」 띠에 나오고, 해당 행·타일에 NEW 표시가 붙음
 const NEW_ITEMS = [
+  { id: "mines", d: "2026-11-10" }, // P2-60
   { id: "tarot", d: "2026-11-10" }, // P2-58
   { id: "emoji", d: "2026-11-10" }, // P2-57
   { id: "readtime", d: "2026-11-10" }, // P2-57
@@ -586,7 +590,7 @@ ${adSlotFixed("home")}`;
 // 펭귄 오락실 허브 — 같은 서랍 시스템으로 「오늘 / 테스트 / 게임」 3구역. 기존 주소는 그대로
 // P2-49 오락실 = 게임만. 운세·사주·테스트·사다리는 툴 「운세·재미」(/fun/)로 옮기고 허브에는 안내 한 줄만 남김
 const ZONES = [
-  { tone: "story", name: "게임", sub: "한 판이면 끝나는 짧은 게임", ids: ["rpg", "hell", "hellchosun", "life", "stack", "reaction"] },
+  { tone: "story", name: "게임", sub: "한 판이면 끝나는 짧은 게임", ids: ["rpg", "hell", "mines", "hellchosun", "life", "stack", "reaction"] }, // P2-60 지뢰찾기는 특집 카드 2개 바로 다음(작은 타일 첫 칸)
   { tone: "love", name: "같이", sub: "세화산업이 운영하는 다른 서비스(외부 사이트)", ids: [], ext: [FAMILY] },
 ];
 {
@@ -867,6 +871,48 @@ ZODIAC_KEYS.forEach((k, i) => {
   toolPage(toolById.draw, html, { scripts: ["draw.js"] });
 }
 
+// P2-60 지뢰찾기 (/arcade/minesweeper/). 규칙은 src/assets/mines-core.js 한 파일(화면 mines.js와 scripts/mines-test.mjs가 같이 씀).
+// 빌드 때마다 규칙 자동 시험(첫 클릭 안전 1,000판·지뢰 수·자동 펼침·코드·승리 판정)을 돌리고, 하나라도 틀리면 빌드를 멈춤
+{
+  const { run } = await import("./scripts/mines-test.mjs");
+  const r = run();
+  if (r.fails.length) throw new Error("P2-60 지뢰찾기 규칙 시험 실패 (src/assets/mines-core.js):\n  " + r.fails.join("\n  "));
+  const LV = [["beginner", "초급", "9×9 · 지뢰 10"], ["intermediate", "중급", "16×16 · 지뢰 40"], ["expert", "고급", "16×30 · 지뢰 99"], ["custom", "사용자 지정", "가로·세로·지뢰"]];
+  const html = `
+<div class="mn" id="mn" data-state="ready">
+  <div class="mn-levels" role="group" aria-label="난이도">${LV.map(([k, n, d]) => `<button type="button" data-lv="${k}" aria-pressed="${k === "beginner"}"><b>${n}</b><small>${d}</small></button>`).join("")}</div>
+  <form class="mn-custom" hidden>
+    <label>가로<input name="w" type="number" inputmode="numeric" min="5" max="30" value="20"></label>
+    <label>세로<input name="h" type="number" inputmode="numeric" min="5" max="30" value="20"></label>
+    <label>지뢰<input name="n" type="number" inputmode="numeric" min="1" max="891" value="60"></label>
+    <button class="btn" type="submit">이 판으로 시작</button>
+    <p class="hint">가로·세로는 5~30칸, 지뢰는 1개부터 가로×세로−9개(지금 <b>391</b>개)까지예요. 첫 칸과 주변 8칸은 비워 둬야 해서 9칸을 빼요.</p>
+  </form>
+  <div class="mn-bar">
+    <span class="mn-stat" title="남은 지뢰(지뢰 수 − 꽂은 깃발 수)"><i data-icon="flag"></i><span class="sr">남은 지뢰</span><b id="mn-left">10</b></span>
+    <button class="btn mn-newgame" type="button" data-act="new">새 판</button>
+    <span class="mn-stat" title="걸린 시간(초)"><i data-icon="clock"></i><span class="sr">걸린 시간(초)</span><b id="mn-time" role="timer">0</b></span>
+  </div>
+  <div class="mn-tools">
+    <button class="mn-mode" type="button" data-act="mode" aria-pressed="false" aria-label="누르면 깃발 꽂기 모드"><span class="mn-m-open">열기</span><span class="mn-m-flag"><i data-icon="flag"></i>깃발</span></button>
+    <span class="mn-zoom" role="group" aria-label="판 크기"><button type="button" data-act="zoom-out" aria-label="축소">−</button><button type="button" data-act="fit" aria-pressed="true">맞춤</button><button type="button" data-act="zoom-in" aria-label="확대">+</button></span>
+  </div>
+  <div class="mn-stage">
+    <div class="mn-result" id="mn-result" hidden aria-live="polite"></div>
+    <p class="mn-toast" hidden role="status"></p>
+    <div class="mn-scroll" id="mn-scroll"><div class="mn-board" id="mn-board" role="application" tabindex="0" aria-label="지뢰찾기 판"></div></div>
+  </div>
+  <p class="hint mn-help"><b>PC</b> 왼쪽 클릭 열기 · 오른쪽 클릭 깃발 · 숫자 클릭 동시 열기 · 키보드 방향키·Enter·F<br><b>휴대폰</b> 탭 열기 · 길게 누르면 깃발 · 「깃발」 모드로 바꾸면 탭이 깃발 · 판이 크면 끌어서 스크롤, −/+로 크기 조절</p>
+  <section class="mn-best" aria-labelledby="mn-best-h"><h3 id="mn-best-h">내 최고 기록 <small>이 기기에만 저장</small></h3>
+    <table><thead><tr><th scope="col">난이도</th><th scope="col">최고 기록</th><th scope="col">성공 / 판</th></tr></thead><tbody id="mn-best"></tbody></table>
+    <button class="mn-reset" type="button" data-act="reset-best">기록 지우기</button>
+  </section>
+</div>
+<noscript><p class="hint">지뢰찾기는 자바스크립트를 켜야 할 수 있어요.</p></noscript>`;
+  toolPage(toolById.mines, html, { scripts: ["mines-core.js", "mines.js"] });
+  console.log(`✔ P2-60 지뢰찾기: 규칙 자동 시험 ${Object.values(r.counts).reduce((a, c) => a + c, 0).toLocaleString("en-US")}건 통과(첫 클릭 안전 ${r.games.toLocaleString("en-US")}판 포함)`);
+}
+
 // P2-58 무료 타로 (/fun/tarot/). 카드 데이터·해석은 src/assets/tarot-data.js, 카드 그림(SVG 22장 + 뒷면)은 src/assets/tarot-art.js 한 벌
 // (화면 tarot.js와 아래 검사가 같은 파일을 vm으로 씀). 결과 링크 # 뒤에는 질문 종류(q)와 카드 번호·방향(c)만 담음
 // 빌드 때 22장 × 정·역 × (키워드 3 + 기본 해석 + 질문 4종: 오늘 하루·연애·재물·일·학업) 누락·중복, 그림 22장·뒷면을 검사하고 어긋나면 빌드를 멈춤
@@ -1083,7 +1129,7 @@ ${runLabel ? `<button class="btn big tk-run" type="button" data-run${disabled ? 
 <div class="tk-progress" role="status" hidden><span class="spin" aria-hidden="true"></span><span class="tk-progress-text">처리 중…</span><span class="tk-bar" aria-hidden="true"><i></i></span></div>
 <div class="tk-result" hidden><div class="tk-result-body" aria-live="polite"></div></div>`;
 // 툴 페이지에 항상 보이는 「잠깐 쉬어 가기」 게임 카드: 체류시간 긴 게임으로 안내(대표님 지시)
-const REST_GAMES = ["rpg", "hellchosun", "hell", "life"];
+const REST_GAMES = ["rpg", "hellchosun", "hell", "life", "mines"]; // P2-60 지뢰찾기 후보 추가
 const restCard = (id) => {
   const g = toolById[REST_GAMES[[...id].reduce((a, c) => a + c.charCodeAt(0), 0) % REST_GAMES.length]];
   const lg = LONG_GAMES.find((x) => x.id === g.id);
