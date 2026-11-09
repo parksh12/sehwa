@@ -364,6 +364,13 @@ function cleanLd(list) {
   });
 }
 
+// P2-62 다크/라이트 모드(랜덤7942와 같은 방식). 키 pt_theme = "dark" | "light" | 없음(시스템 설정 따름)
+// ① <head> 맨 앞 인라인 스크립트가 CSS를 그리기 전에 html[data-theme]을 정함 → 첫 프레임부터 고른 모드(깜빡임 없음)
+//    CSP: script-src에 이미 'unsafe-inline'이 있어(애드센스 push·GA 초기화용) 그대로 허용됨. 해시를 추가하면 'unsafe-inline'이 무시돼 광고 인라인 코드가 막히므로 해시는 넣지 않음
+// ② 버튼 글자는 「눌렀을 때 바뀔 모드」. 두 글자를 모두 넣고 CSS가 data-theme으로 하나만 보여 줌(스크립트 실행 전에도 글자가 맞음)
+const THEME_HEAD = `<script>(function(){var d=document.documentElement,t=null;try{t=localStorage.getItem("pt_theme")}catch(e){}if(t!=="dark"&&t!=="light")t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";d.setAttribute("data-theme",t)})()</script>`; // P2-62
+const THEME_BTN = `<button type="button" class="theme-btn" data-theme-toggle aria-label="다크 모드로 바꾸기" title="다크/라이트 전환"><span class="tt-to-dark">다크</span><span class="tt-to-light">라이트</span></button>`; // P2-62
+
 function layout({ title: title0, desc: desc0, path: p, body, scripts = [], jsonld = [], noindex = false, ogType = "website", fullTitle = false, wide = false, csp = false, vendor = [] }) {
   const title = fullTitle ? title0 : seoTitle(p, title0);
   const desc = SEO_DESC[p] ? SEO_DESC[p]() : desc0;
@@ -377,6 +384,7 @@ function layout({ title: title0, desc: desc0, path: p, body, scripts = [], jsonl
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 ${csp ? `<meta http-equiv="Content-Security-Policy" content="${CSP}">` : ""}
+${THEME_HEAD}
 <title>${esc(pageTitle)}</title>
 <meta name="description" content="${esc(desc)}">
 <link rel="canonical" href="${abs(p)}">
@@ -410,6 +418,7 @@ ${cfg.gaId ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${e
   <div class="wrap header-inner">
     <a class="logo" href="${u("/")}">${LOGO(34)}${esc(cfg.siteName)}</a>
     <button type="button" class="fav-menu" data-fav-menu aria-haspopup="dialog" aria-expanded="false" aria-controls="fav-pop" aria-label="내 즐겨찾기">${STAR_SVG}<span class="fav-count" hidden>0</span></button>
+    ${THEME_BTN}
     <nav class="nav" aria-label="카테고리">
       ${NAV.map(([n, h]) => `<a href="${u(h)}"${p.startsWith(h) || (h === PLAY.path && Object.keys(CATS).some((k) => p.startsWith(`/${k}/`))) ? ' aria-current="true"' : ""}>${esc(n)}</a>`).join("")}
     </nav>

@@ -2,7 +2,7 @@
 :root{
   --white:#fff; --ink:#141414; --ink-2:#3d3d3d; --ink-3:#767676; --line:#141414; --soft:#f2f1ec;
   --cheong:#2346d8; --jeok:#e5372b; --hwang:#ffc21a; --heuk:#141414; --nok:#1e9e5a;
-  --bd:2.5px solid var(--ink); --drop:5px 5px 0 var(--ink); --radius:14px;
+  --bd:2.5px solid var(--ink); --shd:var(--ink); --drop:5px 5px 0 var(--shd); --radius:14px; /* P2-62 --shd: 하드 섀도 색(다크에서는 황색) */
   --display:"Black Han Sans","Pretendard Variable",sans-serif;
   font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
 }
@@ -46,8 +46,8 @@ h3{font-size:17px;margin:1.4em 0 .4em}
 .btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--jeok)}
 .btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--jeok)}
 .btn:disabled{opacity:.6;cursor:default}
-.btn.ghost{background:var(--white);color:var(--ink);box-shadow:3px 3px 0 var(--ink)}
-.btn.ghost:hover{box-shadow:4px 4px 0 var(--ink)}
+.btn.ghost{background:var(--white);color:var(--ink);box-shadow:3px 3px 0 var(--shd)}
+.btn.ghost:hover{box-shadow:4px 4px 0 var(--shd)}
 .btn.big{width:100%;padding:14px 20px;font-size:17px}
 .text-link{font-weight:700;color:var(--ink)}
 
@@ -55,7 +55,7 @@ h3{font-size:17px;margin:1.4em 0 .4em}
 .cards{display:grid;gap:16px}
 @media(min-width:620px){.cards{grid-template-columns:1fr 1fr}}
 .card{display:flex;gap:14px;align-items:center;border:var(--bd);border-radius:var(--radius);padding:14px 16px;text-decoration:none;color:var(--ink);box-shadow:var(--drop);transition:transform .12s,box-shadow .12s;background:var(--white)}
-.card:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink)}
+.card:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--shd)}
 .card-art{flex:none;width:64px;height:64px;display:block}
 .card-art svg{width:100%;height:100%;display:block}
 .card-body{display:flex;flex-direction:column;min-width:0}
@@ -122,7 +122,7 @@ h3{font-size:17px;margin:1.4em 0 .4em}
 .type{display:flex;flex-direction:column;border:var(--bd);border-radius:12px;padding:12px 14px;text-decoration:none;transition:transform .12s,box-shadow .12s}
 .type b{font-family:var(--display);font-weight:400;font-size:28px;line-height:1.1;letter-spacing:.02em}
 .type span{font-size:13px;font-weight:700;opacity:.9}
-.type:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--ink)}
+.type:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--shd)}
 .type.c-arcade:hover{box-shadow:4px 4px 0 var(--hwang)}
 .home-about{display:grid;gap:18px 32px;border:var(--bd);border-radius:20px;padding:26px 24px;background:var(--hwang);box-shadow:var(--drop)}
 @media(min-width:880px){.home-about{grid-template-columns:.9fr 1.1fr;padding:32px}}
@@ -582,7 +582,7 @@ details.opt summary{cursor:pointer;color:var(--cheong);font-weight:700;font-size
 
 /* 놀이터 기존 카드(툴 페이지 추천 등)도 원색 바탕 대신 흰 바탕 + 왼쪽 색 띠 */
 .card[class*=" c-"],.card[class^="c-"]{background:var(--white);color:var(--ink);border-left:12px solid var(--tone)}
-.card.c-arcade:hover{box-shadow:7px 7px 0 var(--ink)}
+.card.c-arcade:hover{box-shadow:7px 7px 0 var(--shd)}
 .card .card-cat{opacity:1;color:var(--ink-3)}
 /* P2-14 보정: 2열 행 목록에서 홀수 개면 마지막 행을 두 칸으로(빈칸 없음), 모바일 홈은 행을 촘촘하게 */
 @media(min-width:700px){.rows-flow li:last-child:nth-child(odd),.drawers-1.open .rows li:last-child:nth-child(odd){grid-column:1/-1;border-right:0}}
@@ -692,7 +692,7 @@ details.opt summary{cursor:pointer;color:var(--cheong);font-weight:700;font-size
 .tm-view{margin-top:-4px}
 .tm-view .btn{flex:1 1 auto}
 .tm-fs-close{display:none}
-.tk.vfs .tm-fs-close:not([hidden]),.tk:fullscreen .tm-fs-close:not([hidden]){display:inline-flex;align-items:center;gap:6px;position:absolute;top:max(10px,env(safe-area-inset-top));right:max(10px,env(safe-area-inset-right));z-index:2;font:inherit;font-weight:800;font-size:15px;padding:8px 14px;border:2.5px solid var(--ink);border-radius:10px;background:var(--white);color:var(--ink);cursor:pointer;box-shadow:3px 3px 0 var(--ink)}
+.tk.vfs .tm-fs-close:not([hidden]),.tk:fullscreen .tm-fs-close:not([hidden]){display:inline-flex;align-items:center;gap:6px;position:absolute;top:max(10px,env(safe-area-inset-top));right:max(10px,env(safe-area-inset-right));z-index:2;font:inherit;font-weight:800;font-size:15px;padding:8px 14px;border:2.5px solid var(--ink);border-radius:10px;background:var(--white);color:var(--ink);cursor:pointer;box-shadow:3px 3px 0 var(--shd)}
 html.vfs-lock,html.vfs-lock body{overflow:hidden}
 .tk.vfs{position:fixed;inset:0;z-index:60;margin:0;width:100vw;height:100vh;height:100dvh;max-width:none;border-radius:0;border:0;box-shadow:none;background:var(--white);overflow-y:auto;display:flex;flex-direction:column;justify-content:center;gap:12px;padding:max(56px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
 .tk.vfs .clock,.tk:fullscreen .clock{font-size:min(26vw,40vh);font-size:min(26vw,40dvh)}
@@ -772,7 +772,7 @@ html.vfs-lock,html.vfs-lock body{overflow:hidden}
 .sj-dw{flex:0 0 76px;display:grid;justify-items:center;gap:3px;border:2px solid var(--ink);border-radius:12px;padding:6px 4px;background:#fff;font-size:12px;text-align:center}
 .sj-dw .sj-char{width:46px}.sj-dw .sj-char b{font-size:24px}
 .sj-dw em{font-style:normal;font-weight:700;color:var(--ink-2);font-size:11px}
-.sj-dw.now{background:var(--hwang);box-shadow:3px 3px 0 var(--ink)}
+.sj-dw.now{background:var(--hwang);box-shadow:3px 3px 0 var(--shd)}
 .sj-dw strong{font-size:11px;background:var(--ink);color:#fff;border-radius:99px;padding:0 8px}
 .sj-stars{color:var(--jeok);letter-spacing:1px;font-size:15px;white-space:nowrap}
 .sj-year{border:var(--bd);border-radius:14px;padding:12px 16px;background:#fffbea}
@@ -981,7 +981,7 @@ li.has-fav{position:relative}
 .dr-card{appearance:none;font:inherit;border:0;padding:0;background:none;cursor:pointer;perspective:700px;aspect-ratio:3/4;min-height:120px}
 .dr-card-in{position:relative;display:block;width:100%;height:100%;transition:transform .55s cubic-bezier(.3,1.4,.5,1);transform-style:preserve-3d}
 .dr-card.flipped .dr-card-in{transform:rotateY(180deg)}
-.dr-card-back,.dr-card-front{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:2.5px solid var(--ink);border-radius:12px;backface-visibility:hidden;-webkit-backface-visibility:hidden;padding:8px;text-align:center;box-shadow:3px 3px 0 var(--ink)}
+.dr-card-back,.dr-card-front{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:2.5px solid var(--ink);border-radius:12px;backface-visibility:hidden;-webkit-backface-visibility:hidden;padding:8px;text-align:center;box-shadow:3px 3px 0 var(--shd)}
 .dr-card-back{background:repeating-linear-gradient(45deg,var(--c) 0 10px,color-mix(in srgb,var(--c) 75%,#fff) 10px 20px);color:#fff}
 .dr-card-back b{background:var(--ink);border-radius:8px;padding:2px 8px;font-size:15px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dr-card-back small{font-size:11px;font-weight:800;background:rgba(20,20,20,.55);border-radius:6px;padding:0 6px}
@@ -1035,7 +1035,7 @@ li.has-fav{position:relative}
 .im-btns{position:absolute;left:0;right:0;bottom:0;display:flex;background:rgba(255,255,255,.92);border-top:2px solid var(--ink)}
 .im-btns button{appearance:none;border:0;background:none;font:inherit;font-size:13px;font-weight:800;color:var(--ink);padding:0;flex:1;min-height:30px;cursor:pointer}
 .im-btns button:disabled{color:#bbb;cursor:default}
-.im-th.dragging{z-index:5;opacity:.85;box-shadow:4px 4px 0 var(--ink);cursor:grabbing}
+.im-th.dragging{z-index:5;opacity:.85;box-shadow:4px 4px 0 var(--shd);cursor:grabbing}
 .im-th.im-target{outline:3px solid var(--jeok);outline-offset:2px}
 .im-drag-hint{margin:-6px 0 0}
 .im-opts .check{display:inline-flex}
@@ -1192,8 +1192,8 @@ li.has-fav{position:relative}
 .sq-q small{color:var(--ink-3);font-size:14px;white-space:nowrap}
 .sq-ans{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .sq-ans .btn.big{width:100%}
-.sq-yes{background:var(--jeok);box-shadow:3px 3px 0 var(--ink)}
-.sq-yes:hover{box-shadow:4px 4px 0 var(--ink)}
+.sq-yes{background:var(--jeok);box-shadow:3px 3px 0 var(--shd)}
+.sq-yes:hover{box-shadow:4px 4px 0 var(--shd)}
 .sq-no-btn{color:var(--cheong)!important}
 .sq-reveal{border:2px solid var(--ink);border-radius:12px;padding:10px 14px;background:var(--soft)}
 .sq-reveal p{margin:4px 0}
@@ -1264,7 +1264,7 @@ li.has-fav{position:relative}
 @media(prefers-reduced-motion:reduce){.sq-svg .sqc-fut,.sq-svg .sqc-farea,.sq-svg .sqc-end,.sq-svg .sqc-endbub,.sq-stamp{animation:none!important;opacity:1!important;stroke-dashoffset:0!important}.sq-svg .sqc-farea{opacity:.22!important}}
 /* 답 버튼: 오른다·예 = 초록, 내린다·아니요 = 빨강(차트 색과 같음) */
 .sq-yes{background:var(--nok);box-shadow:var(--drop)}
-.sq-yes:hover{box-shadow:6px 6px 0 var(--ink)}
+.sq-yes:hover{box-shadow:6px 6px 0 var(--shd)}
 .sq-no-btn{background:var(--jeok)!important;color:var(--white)!important;box-shadow:var(--drop)!important}
 .sq-reveal{border:var(--bd);border-radius:var(--radius);background:var(--white);box-shadow:var(--drop)}
 .sq-ok.is-ok{color:var(--nok)}.sq-ok.is-no{color:var(--jeok)}
@@ -1279,7 +1279,7 @@ li.has-fav{position:relative}
 .sq-td-tk b{display:block}
 .sq-spark{display:block;margin-top:4px;background:#fffdf5;border:2px solid var(--ink);border-radius:6px}
 .sq-spark .sqc-line{stroke-width:1.8}.sq-spark .sqc-fut{stroke-width:2.4}
-@media(max-width:620px){.sq-chart{padding:4px;box-shadow:4px 4px 0 var(--ink)}.sq-spark{width:62px;height:26px}}
+@media(max-width:620px){.sq-chart{padding:4px;box-shadow:4px 4px 0 var(--shd)}.sq-spark{width:62px;height:26px}}
 
 /* ===================== P2-50c 캔들(일봉·주봉) + RSI(14) 패널 ===================== */
 .sqc-cdl line{stroke:var(--ink);stroke-width:1.8;stroke-linecap:round}
@@ -1505,7 +1505,7 @@ li.has-fav{position:relative}
 .dca-lg.is-main{color:var(--ink)}.dca-lg.is-lump{color:var(--ink-3)}.dca-lg.is-soxl{color:var(--cheong)}.dca-lg.is-tqqq{color:var(--jeok)}.dca-lg.is-koru{color:var(--nok)}
 .dca-lg.is-inv{color:var(--cheong)}.dca-lg.is-inv i{border-top-style:dashed!important;border-top-width:3px!important}
 .dca-lg.is-mdd{color:var(--jeok)}.dca-lg.is-mdd i{height:10px;border:0!important;background:var(--jeok);opacity:.25}
-@media(max-width:620px){.dca-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.dca-stats b{font-size:21px}.dca-chart{padding:4px;box-shadow:4px 4px 0 var(--ink)}}
+@media(max-width:620px){.dca-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.dca-stats b{font-size:21px}.dca-chart{padding:4px;box-shadow:4px 4px 0 var(--shd)}}
 @media(max-width:480px){.dca-cmp3 th,.dca-cmp3 td{font-size:11.5px;padding:5px 3px}.dca-cmp3 tbody th{white-space:normal;word-break:keep-all;min-width:3.6em}.dca-cmp3 td{white-space:normal;word-break:keep-all;overflow-wrap:normal}.dca-cmp th,.dca-cmp td{padding:5px 5px}.dca-stats b{font-size:18px;overflow-wrap:normal}.dca-stats li{padding:7px 8px}.dca .seg span{padding:7px 11px;font-size:14px}.dca-period{grid-template-columns:1fr}.dca-money{grid-template-columns:1fr 1fr}.dca-ex td,.dca-ex th{font-size:13px;padding:5px}.dca-ytable th,.dca-ytable td{font-size:12.5px;padding:4px 5px}}
 
 /* ===================== P2-53 해외주식 양도소득세 계산기: 종목 줄(종목명·통화 / 매수·매도 / 환율 2칸) + 결과 표 + 공제·세금 막대(P2-51 줄 톤 재사용) ===================== */
@@ -1886,3 +1886,92 @@ li.has-fav{position:relative}
 .t-play,.c-play{--tone:#ff7a1a}
 .t-chat,.c-chat{--tone:#e0408a}
 @media(min-width:1000px){.cab-full .rows li:nth-child(n+4){border-top:2px solid var(--soft)}.cab-full .rows li:not(:nth-child(3n+1)){border-left:2px solid var(--soft)}}
+
+/* ===================== P2-62 다크/라이트 모드 (랜덤7942와 같은 규칙) =====================
+   - html[data-theme]은 <head> 인라인 스크립트가 첫 프레임 전에 정함(저장값 pt_theme → 없으면 시스템 설정)
+   - 다크는 화면(screen)에서만 적용: 인쇄(@media print)·결과 이미지(canvas 고정색)는 항상 라이트
+   - 라이트 모드 규칙은 건드리지 않고, 다크에서 덮어쓰는 규칙만 여기에 모음
+   - 앞머리는 :where([data-theme="dark"])(우선순위 0) → 원래 규칙과 우선순위가 같고 뒤에 있어서 이기며, 더 구체적인 상태 규칙(눌림·선택)은 그대로 이김
+     (rpg-style.css·hell-style.css처럼 뒤에 읽는 파일의 규칙만 [data-theme="dark"]로 한 단계 높임) */
+.theme-btn{appearance:none;display:inline-flex;align-items:center;justify-content:center;min-width:40px;height:40px;padding:0 9px;border:2px solid var(--ink);border-radius:10px;background:var(--white);color:var(--ink);font:inherit;font-size:13px;font-weight:800;line-height:1;cursor:pointer;order:3;flex:none;white-space:nowrap}
+.theme-btn:hover{background:var(--hwang);color:#141414}
+.theme-btn:focus-visible{outline:3px solid var(--cheong);outline-offset:2px}
+.tt-to-light,[data-theme="dark"] .tt-to-dark{display:none}
+[data-theme="dark"] .tt-to-light{display:inline}
+@media(max-width:620px){.theme-btn{order:1;min-width:36px;height:36px;padding:0 7px}}
+@media print{.theme-btn{display:none!important}}
+
+@media screen{
+  /* 팔레트: 배경만 어둡게, 굵은 선은 밝게, 하드 섀도는 황색(랜덤7942 다크와 같음). 오방색 면(청·적·황·녹)은 그대로 */
+  [data-theme="dark"]{
+    color-scheme:dark;
+    --white:#1e1e1e; --ink:#f2f1ec; --ink-2:#d2d1ca; --ink-3:#a9a8a1; --line:#f2f1ec; --soft:#2a2a28;
+    --heuk:#0b0b0b; --shd:var(--hwang);
+    --bd:2.5px solid var(--ink); --drop:5px 5px 0 var(--shd);
+    --link:#8fa6ff; --jeok-t:#ff7b6e; --nok-t:#4cc985;
+    /* 적·녹 면은 흰 글자 대비 4.5 이상이 되게 조금 짙게(글자로 쓰는 적·녹은 위 -t 색으로 따로) */
+    --jeok:#d42e22; --nok:#17804a;
+    --t-yel:#2e2710; --t-red:#3a1a17; --t-grn:#12301f; --t-cream:#1b1a16;
+  }
+  :where([data-theme="dark"]) body{background:#141414}
+  :where([data-theme="dark"]) a{color:var(--link)}
+
+  /* 「라이트 섬」: 노랑(황) 면 전부·게임 고유 화면·인쇄용 카드 미리보기는 안쪽 글자·선 팔레트를 라이트로 유지 */
+  :where([data-theme="dark"]) .home-about,:where([data-theme="dark"]) .search,:where([data-theme="dark"]) .fun-feature,:where([data-theme="dark"]) .today-top,:where([data-theme="dark"]) .life-event,:where([data-theme="dark"]) .mn-result.won,:where([data-theme="dark"]) .c-luck:not(.card),:where([data-theme="dark"]) .c-text:not(.card),:where([data-theme="dark"]) .c-fun:not(.card),:where([data-theme="dark"]) .rpg-screen,:where([data-theme="dark"]) .qr-card,:where([data-theme="dark"]) .w2p-paper,:where([data-theme="dark"]) .rank-board,:where([data-theme="dark"]) .hell-box,:where([data-theme="dark"]) .nav a:hover,:where([data-theme="dark"]) .nav a[aria-current],:where([data-theme="dark"]) .eyebrow,:where([data-theme="dark"]) .chip:hover,:where([data-theme="dark"]) .tti-grid a:hover,:where([data-theme="dark"]) .tags span,:where([data-theme="dark"]) .q-scale button:hover,:where([data-theme="dark"]) .q-scale button:focus-visible,:where([data-theme="dark"]) .rt.early,:where([data-theme="dark"]) .cc-stats div.main,:where([data-theme="dark"]) .dd-table tr.on td,:where([data-theme="dark"]) .dd-table tr.on th,:where([data-theme="dark"]) .tm-quick .chip.on,:where([data-theme="dark"]) [data-state="pause"] .tm-state,:where([data-theme="dark"]) .stack-overlay .go-new,:where([data-theme="dark"]) .sj-dw.now,:where([data-theme="dark"]) .fav-menu[aria-expanded="true"],:where([data-theme="dark"]) .rest-card .ff-go,:where([data-theme="dark"]) .rank-list .nm em,:where([data-theme="dark"]) .dr-from-link,:where([data-theme="dark"]) .dr-name:hover,:where([data-theme="dark"]) .sq-no,:where([data-theme="dark"]) .sq-table caption,:where([data-theme="dark"]) .sq-chip-bar,:where([data-theme="dark"]) .dca-cmp td.on,:where([data-theme="dark"]) .rsb-vs-a,:where([data-theme="dark"]) .cmp-72,:where([data-theme="dark"]) .pos .dca-quick .chip.on,:where([data-theme="dark"]) .emj-b:hover,:where([data-theme="dark"]) .emj-b:focus-visible,:where([data-theme="dark"]) .tr-tone,:where([data-theme="dark"]) .mn-zoom button[aria-pressed="true"],:where([data-theme="dark"]) .mc,:where([data-theme="dark"]) .mc:not(.o):hover,:where([data-theme="dark"]) .fl-b:hover,:where([data-theme="dark"]) .life-clock.stop,:where([data-theme="dark"]) .rpg-b{
+    color-scheme:light;
+    --white:#fff; --ink:#141414; --ink-2:#3d3d3d; --ink-3:#545454; --line:#141414; --soft:#f2f1ec; --heuk:#141414;
+    --shd:#141414; --bd:2.5px solid #141414; --drop:5px 5px 0 #141414; --link:#2346d8; --jeok-t:#a3170c; --nok-t:#0f6136; --jeok:#e5372b; --nok:#1e9e5a;
+    --t-yel:#fffbea; --t-red:#ffe9e6; --t-grn:#effaf3; --t-cream:#fffdf5; color:#141414;
+  }
+  :where([data-theme="dark"]) .c-luck:not(.card) .card-meta,:where([data-theme="dark"]) .c-text:not(.card) .card-meta,:where([data-theme="dark"]) .c-fun:not(.card) .card-meta{border-color:#141414}
+
+/* 자동: 라이트에서 적색·청색 글자인 규칙 → 어두운 바탕에서 AA가 되는 밝은 적·청 */
+  :where([data-theme="dark"]) .hero-kicker,:where([data-theme="dark"]) .stamp-hanja,:where([data-theme="dark"]) .faq summary::before,:where([data-theme="dark"]) .today-top b,:where([data-theme="dark"]) .stars,:where([data-theme="dark"]) .today-years b,:where([data-theme="dark"]) .flist.done .pct,:where([data-theme="dark"]) .cc-limit.over,:where([data-theme="dark"]) .dd-big,:where([data-theme="dark"]) .w2p-note,:where([data-theme="dark"]) .age-big b,:where([data-theme="dark"]) .mini-stamps b,:where([data-theme="dark"]) .stack-pop,:where([data-theme="dark"]) .ff-body em,:where([data-theme="dark"]) .sj-pc b,:where([data-theme="dark"]) .sj-stars,:where([data-theme="dark"]) .dr-big b,:where([data-theme="dark"]) .pay-warn,:where([data-theme="dark"]) .sq-ok.is-no,:where([data-theme="dark"]) .sq .up,:where([data-theme="dark"]) .sq-table td.no,:where([data-theme="dark"]) .sq-stamp.is-no,:where([data-theme="dark"]) .sq-ok.is-no,:where([data-theme="dark"]) .sq .dn,:where([data-theme="dark"]) .sq-lg.is-hi,:where([data-theme="dark"]) .avg .dn,:where([data-theme="dark"]) .avg-pl.dn b,:where([data-theme="dark"]) .dca .dn,:where([data-theme="dark"]) .dca-stats li.dn b,:where([data-theme="dark"]) .dca-chip small.dn,:where([data-theme="dark"]) .dca-lg.is-tqqq,:where([data-theme="dark"]) .dca-lg.is-mdd,:where([data-theme="dark"]) .ost .dn,:where([data-theme="dark"]) .ost-amt.dn,:where([data-theme="dark"]) .rsb-vs .dn b,:where([data-theme="dark"]) .rsb-lg.is-sell,:where([data-theme="dark"]) .rsb-lg.is-stop,:where([data-theme="dark"]) .cmp .dn,:where([data-theme="dark"]) .pos .dn,:where([data-theme="dark"]) .lb-nl,:where([data-theme="dark"]) .rdt-long li b,:where([data-theme="dark"]) .tr-read-pos{color:var(--jeok-t)}
+  :where([data-theme="dark"]) a,:where([data-theme="dark"]) details.opt summary,:where([data-theme="dark"]) .life-log li.mile,:where([data-theme="dark"]) .tk-each summary,:where([data-theme="dark"]) .sj-adv summary,:where([data-theme="dark"]) .sj-table .sj-god td,:where([data-theme="dark"]) .qc-ico,:where([data-theme="dark"]) .sq .dn,:where([data-theme="dark"]) .sq-lg.is-last,:where([data-theme="dark"]) .dca-lg.is-soxl,:where([data-theme="dark"]) .dca-lg.is-inv,:where([data-theme="dark"]) .rsb-lg-hold,:where([data-theme="dark"]) .cmp-kr{color:var(--link)}
+  :where([data-theme="dark"]) .sq-no-btn{color:var(--link)!important}
+  :where([data-theme="dark"]) .cc-limit,:where([data-theme="dark"]) .sq-ok.is-ok,:where([data-theme="dark"]) .sq-table td.ok,:where([data-theme="dark"]) .sq-stamp.is-ok,:where([data-theme="dark"]) .sq-ok.is-ok,:where([data-theme="dark"]) .sq .up,:where([data-theme="dark"]) .sq-lg.is-lo,:where([data-theme="dark"]) .avg .up,:where([data-theme="dark"]) .avg-pl.up b,:where([data-theme="dark"]) .dca .up,:where([data-theme="dark"]) .dca-stats li.up b,:where([data-theme="dark"]) .dca-chip small .up,:where([data-theme="dark"]) .dca-chip small.up,:where([data-theme="dark"]) .dca-lg.is-koru,:where([data-theme="dark"]) .ost .up,:where([data-theme="dark"]) .ost-amt.up,:where([data-theme="dark"]) .rsb-vs .up b,:where([data-theme="dark"]) .rsb-lg.is-buy,:where([data-theme="dark"]) .cmp .up,:where([data-theme="dark"]) .pos .up{color:var(--nok-t)}
+
+
+  /* 오방색 면 위 흰 글자(라이트에서 var(--white)로 쓰던 곳)는 다크에서도 흰색 */
+  :where([data-theme="dark"]) .seg input:checked+span,:where([data-theme="dark"]) .life-fast[aria-pressed="true"],:where([data-theme="dark"]) .mini-stamps a:hover b,:where([data-theme="dark"]) [data-state="run"] .tm-state,:where([data-theme="dark"]) [data-state="done"] .tm-state,:where([data-theme="dark"]) .ff-go,:where([data-theme="dark"]) .arcade,:where([data-theme="dark"]) .arcade details.drawer-extra,:where([data-theme="dark"]) .new-tag,:where([data-theme="dark"]) .rest-card,:where([data-theme="dark"]) .rest-card .ff-body b,:where([data-theme="dark"]) .sq-rsi-tag,:where([data-theme="dark"]) .sq-chip-res,:where([data-theme="dark"]) .avg-del:hover,:where([data-theme="dark"]) .tr-grid em,:where([data-theme="dark"]) .tk.ringing .clock,:where([data-theme="dark"]) .rsb-chip-act{color:#fff}
+  :where([data-theme="dark"]) .sq-no-btn,:where([data-theme="dark"]) .dca-chip-res{color:#fff!important}
+  :where([data-theme="dark"]) .btn.sq-yes{color:#fff}
+  :where([data-theme="dark"]) .beta-tag{color:#fff;--jeok:#d42e22}
+
+  /* 검정 면(var(--ink)) 반전 요소: 다크에서는 밝은 면 + 어두운 글자 */
+  :where([data-theme="dark"]) .btn,:where([data-theme="dark"]) .toast,:where([data-theme="dark"]) .fl-no,:where([data-theme="dark"]) .sj-table thead th,:where([data-theme="dark"]) .sj-dw strong,:where([data-theme="dark"]) .im-no,:where([data-theme="dark"]) .mn-levels button[aria-pressed="true"],:where([data-theme="dark"]) .mn-stat,:where([data-theme="dark"]) .mn-mode .mn-m-open,:where([data-theme="dark"]) .mn-toast,:where([data-theme="dark"]) .dr-card-back b{color:var(--white)}
+  [data-theme="dark"] .rpg-dpad span,[data-theme="dark"] .rpg-toast{color:var(--white)}
+  :where([data-theme="dark"]) .btn.ghost{color:var(--ink)}
+  :where([data-theme="dark"]) .avg-no{background:var(--hwang);color:#141414}
+
+  /* 하드코딩된 흰 바탕 → 다크 면 */
+  :where([data-theme="dark"]) .skip:focus,:where([data-theme="dark"]) select,:where([data-theme="dark"]) input,:where([data-theme="dark"]) .tti-grid a,:where([data-theme="dark"]) .q-scale button,:where([data-theme="dark"]) .cc-text,:where([data-theme="dark"]) .sj-eight span,:where([data-theme="dark"]) .sj-bt,:where([data-theme="dark"]) .sj-meter,:where([data-theme="dark"]) .sj-dw,:where([data-theme="dark"]) .sj-f,:where([data-theme="dark"]) .dr textarea,:where([data-theme="dark"]) .dr-name,:where([data-theme="dark"]) .dr-card-front,:where([data-theme="dark"]) .qr-ta,:where([data-theme="dark"]) .mn-levels button,:where([data-theme="dark"]) .mn-custom input,:where([data-theme="dark"]) .mn-mode,:where([data-theme="dark"]) .mn-zoom button,:where([data-theme="dark"]) .mn-result{background:var(--white)}
+  /* 위 덮어쓰기와 우선순위가 같은 상태 규칙(눌림·선택·hover)은 다시 원래 색으로 */
+  :where([data-theme="dark"]) .tti-grid a:hover,:where([data-theme="dark"]) .q-scale button:hover,:where([data-theme="dark"]) .q-scale button:focus-visible,:where([data-theme="dark"]) .sj-dw.now,:where([data-theme="dark"]) .dr-name:hover,:where([data-theme="dark"]) .mn-zoom button[aria-pressed="true"],:where([data-theme="dark"]) .mn-result.won{background:var(--hwang);color:#141414}
+  :where([data-theme="dark"]) .q-scale button.sel{background:var(--cheong);color:#fff}
+  :where([data-theme="dark"]) .dr-name.done{background:var(--c);color:#fff}
+  :where([data-theme="dark"]) .mn-levels button[aria-pressed="true"]{background:var(--ink);color:var(--white)}
+  :where([data-theme="dark"]) .mn-levels button[aria-pressed="true"] small{color:#4a4a46}
+  :where([data-theme="dark"]) .mn-mode[aria-pressed="true"] .mn-m-open{color:var(--ink)}
+  :where([data-theme="dark"]) .dr-name.done i{background:#fff}
+  :where([data-theme="dark"]) .prose p{color:var(--ink-2)}
+  :where([data-theme="dark"]) .axis-bar{background:rgba(255,255,255,.12)}
+  /* 연한 색 바탕(노랑·빨강·초록·크림) → 같은 계열의 어두운 바탕 */
+  :where([data-theme="dark"]) .today-card:target,:where([data-theme="dark"]) .today-card.mine,:where([data-theme="dark"]) .row:hover,:where([data-theme="dark"]) .row:focus-visible,:where([data-theme="dark"]) .sj-year,:where([data-theme="dark"]) .fav:hover,:where([data-theme="dark"]) .fav-chip:hover,:where([data-theme="dark"]) .rank-list li.me,:where([data-theme="dark"]) .mn-best tr.hot,:where([data-theme="dark"]) .drop.over,:where([data-theme="dark"]) .drop:hover,:where([data-theme="dark"]) .tk-msg.note,:where([data-theme="dark"]) .tk-warn,:where([data-theme="dark"]) .sj-warn{background:var(--t-yel)}
+  :where([data-theme="dark"]) .tk-msg,:where([data-theme="dark"]) .laps tr.worst td,:where([data-theme="dark"]) .laps tr.worst th,:where([data-theme="dark"]) .fav-x:hover,:where([data-theme="dark"]) .sq-warn{background:var(--t-red)}
+  :where([data-theme="dark"]) .tk-msg{color:#ffb4ab}
+  :where([data-theme="dark"]) .tk-msg.note{color:var(--ink)}
+  :where([data-theme="dark"]) .tk-result,:where([data-theme="dark"]) .laps tr.best td,:where([data-theme="dark"]) .laps tr.best th{background:var(--t-grn)}
+  :where([data-theme="dark"]) .sq-chart,:where([data-theme="dark"]) .sq-bt-list li:first-child,:where([data-theme="dark"]) .sq-spark,:where([data-theme="dark"]) .avg-row,:where([data-theme="dark"]) .avg-chart,:where([data-theme="dark"]) .dca-note,:where([data-theme="dark"]) .dca-chart,:where([data-theme="dark"]) .ost-row,:where([data-theme="dark"]) .rsb-assume,:where([data-theme="dark"]) .rsb-ttable tr.rsb-open td,:where([data-theme="dark"]) .rsb-ttable tr.rsb-open th,:where([data-theme="dark"]) .lb-out{background:var(--t-cream)}
+  :where([data-theme="dark"]) .sj-rel li.good{background:var(--t-grn)}
+  :where([data-theme="dark"]) .sj-rel li.bad{background:var(--t-red)}
+  :where([data-theme="dark"]) .e0{background:#173a26;color:#9be7bb}
+  :where([data-theme="dark"]) .e1{background:#43201b;color:#ffb0a6}
+  :where([data-theme="dark"]) .e2{background:#3d3110;color:#ffd970}
+  :where([data-theme="dark"]) .e3{background:#333;color:#e6e6e6}
+  :where([data-theme="dark"]) .lb-mk{background:#3a3934;color:var(--ink-2)}
+  :where([data-theme="dark"]) .im-btns{background:rgba(30,30,30,.92)}
+  :where([data-theme="dark"]) .qr-empty,:where([data-theme="dark"]) .sq-stamp{background:rgba(30,30,30,.9)}
+  :where([data-theme="dark"]) .hc-done img{background:#333}
+  [data-theme="dark"] .hell-page .hl-warn{background:var(--t-yel)}
+}

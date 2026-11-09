@@ -1,3 +1,28 @@
+// P2-62 다크/라이트 모드(랜덤7942 app.js와 같은 규칙). 첫 적용은 <head> 인라인 스크립트가 하고, 여기서는 버튼·시스템 변경만 처리
+(function () {
+  const THEME_KEY = "pt_theme"; // "dark" | "light" | 없음(시스템 설정 따름)
+  const root = document.documentElement;
+  const mq = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+  const saved = () => { try { const t = localStorage.getItem(THEME_KEY); return t === "dark" || t === "light" ? t : null; } catch (e) { return null; } };
+  const currentDark = () => root.getAttribute("data-theme") === "dark";
+  function applyTheme(theme) {
+    root.setAttribute("data-theme", theme || (mq && mq.matches ? "dark" : "light"));
+    const dark = currentDark();
+    // 버튼 글자(다크/라이트)는 CSS가 data-theme으로 바꿔 보여 줌. 여기서는 스크린리더용 이름과 브라우저 상단 색만
+    document.querySelectorAll("[data-theme-toggle]").forEach((b) => b.setAttribute("aria-label", dark ? "라이트 모드로 바꾸기" : "다크 모드로 바꾸기"));
+    const meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute("content", dark ? "#121212" : "#ffffff");
+  }
+  function toggleTheme() {
+    const next = currentDark() ? "light" : "dark";
+    try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+    applyTheme(next);
+  }
+  applyTheme(saved());
+  document.addEventListener("click", (ev) => { if (ev.target.closest("[data-theme-toggle]")) toggleTheme(); });
+  // 저장값이 없으면 OS 설정이 바뀔 때 따라감
+  if (mq) { const on = () => { if (!saved()) applyTheme(null); }; mq.addEventListener ? mq.addEventListener("change", on) : mq.addListener && mq.addListener(on); }
+})();
+
 // 공통: 공유(링크/네이티브), 결과 이미지 저장, 토스트, 페이지 데이터
 (function () {
   const root = document.documentElement;
