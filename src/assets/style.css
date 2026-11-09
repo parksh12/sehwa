@@ -668,13 +668,6 @@ details.opt summary{cursor:pointer;color:var(--cheong);font-weight:700;font-size
 @media(min-width:1000px){.cabinet{grid-template-columns:repeat(6,minmax(0,1fr))}.cab-big{grid-column:span 2}.cab-wide{grid-column:span 3}
   .cab-wide .rows{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.cab-wide .rows li+li{border-top:0}.cab-wide .rows li:nth-child(2n){border-left:2px solid var(--soft)}.cab-wide .rows li:nth-child(n+3){border-top:2px solid var(--soft)}
   .cabinet .row-body small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}}
-.fun-band{margin:34px 0 8px;background:var(--heuk);color:var(--white);border-radius:20px;padding:22px 18px 24px;box-shadow:var(--drop)}
-@media(min-width:880px){.fun-band{padding:28px 28px 30px}}
-.fun-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;margin:0 0 16px}
-.fun-head h2{margin:0;font-family:var(--display);font-weight:400;font-size:clamp(26px,3.4vw,36px);line-height:1.1}
-.fun-head h2 a{color:var(--hwang);text-decoration:none}
-.fun-head p{margin:0;color:#d9d9d4;font-weight:600}
-.fun-head .more{margin-left:auto;color:var(--white);font-weight:800;text-decoration:none;border:2px solid var(--white);border-radius:999px;padding:4px 12px}
 .fun-grid{list-style:none;margin:0;padding:0;display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
 @media(min-width:880px){.fun-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}}
 .fun-tile{display:flex;flex-direction:column;gap:4px;height:100%;box-sizing:border-box;background:var(--white);color:var(--ink);text-decoration:none;border:var(--bd);border-top:8px solid var(--tone);border-radius:14px;padding:12px 12px 14px;transition:transform .12s}
@@ -682,7 +675,6 @@ details.opt summary{cursor:pointer;color:var(--cheong);font-weight:700;font-size
 .fun-art{width:52px;height:52px;display:block}
 .fun-art svg{width:100%;height:100%}
 .fun-tile b{font-size:16px;line-height:1.3}
-.fun-tile b .ext{font-size:11px;font-weight:700;color:var(--ink-3)}
 .fun-tile span:last-child{font-size:13px;line-height:1.45;color:var(--ink-2)}
 @media(max-width:620px){.fun-tile span:last-child{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.fun-art{width:42px;height:42px}}
 .fun-feature{display:flex;align-items:center;gap:14px;background:var(--hwang);color:var(--ink);text-decoration:none;border:var(--bd);border-radius:14px;padding:14px 16px;margin:0 0 14px;transition:transform .12s}
@@ -879,9 +871,6 @@ li.has-fav{position:relative}
 .arc-grid{margin:0}
 @media(min-width:880px){.arc-grid{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}.arc-5{grid-template-columns:repeat(5,minmax(0,1fr))}}
 @media(min-width:620px) and (max-width:879px){.arc-5{grid-template-columns:repeat(3,minmax(0,1fr))}}
-.arc-1{grid-template-columns:minmax(0,1fr)!important}
-@media(min-width:620px){.arc-1 .fun-tile{flex-direction:row;align-items:center;gap:14px}}
-.arc-1 .fun-tile b{white-space:nowrap}
 .arc-stamps{margin-top:14px;background:var(--white);color:var(--ink);border:var(--bd);border-radius:14px;padding:10px 12px}
 .arc-stamps .drawer-extra{border:0;padding:0;margin:0}
 .arcade details.drawer-extra{margin-top:12px;background:#222;border:2px solid #444;border-radius:12px;padding:10px 12px;color:var(--white)}
@@ -890,7 +879,7 @@ li.has-fav{position:relative}
 .arcade .has-fav{position:relative}
 .arcade details.drawer-extra summary,.arcade details.drawer-extra summary *{color:var(--hwang)!important;opacity:1}
 .arc-feat.t-arcade{--tone:var(--jeok)}
-@media(max-width:879px){.arc-grid:not(.arc-1)>li:last-child:nth-child(odd){grid-column:1/-1}}
+@media(max-width:879px){.arc-grid>li:last-child:nth-child(odd){grid-column:1/-1}}
 @media(min-width:620px) and (max-width:879px){.arc-5>li:last-child:nth-child(odd){grid-column:auto}}
 @media(min-width:880px){.arc-stamps .mini-stamps{grid-template-columns:repeat(12,minmax(0,1fr))}}
 
@@ -909,24 +898,6 @@ li.has-fav{position:relative}
 .new-card small{margin-top:auto;padding-top:6px;font-size:12px;font-weight:700;color:var(--ink-3)}
 @media(max-width:620px){.new-card span:not(.new-tag):not(.fun-art){display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.new-card .fun-art{width:44px;height:44px}}
 
-/* === COO 홈 「오래 즐기는 게임」 (2026-11-02) === */
-.long-band{margin:4px 0 24px;background:var(--heuk);border-radius:20px;padding:18px 16px 20px;box-shadow:var(--drop)}
-@media(min-width:880px){.long-band{padding:22px 24px 24px}}
-.long-band h2{margin:0 0 12px;color:var(--hwang);font-family:var(--display);font-weight:400;font-size:clamp(24px,3vw,32px)}
-.long-band h2 small{font-family:"Pretendard Variable",sans-serif;font-size:14px;font-weight:600;color:#d9d9d4;margin-left:6px}
-.long-grid{list-style:none;margin:0;padding:0;display:grid;gap:14px}
-@media(min-width:880px){.long-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-.long-card{display:flex;flex-direction:column;gap:10px;height:100%;box-sizing:border-box;background:var(--white);color:var(--ink);text-decoration:none;border:var(--bd);border-top:10px solid var(--tone);border-radius:16px;padding:18px 16px 16px;transition:transform .12s}
-.long-card:hover,.long-card:focus-visible{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--hwang)}
-.long-art{width:84px;height:84px;display:block}
-.long-art svg{width:100%;height:100%}
-.long-body{display:flex;flex-direction:column;gap:3px}
-.long-body em{font-style:normal;font-size:12px;font-weight:800;color:var(--jeok)}
-.long-body b{font-family:var(--display);font-weight:400;font-size:clamp(22px,2.4vw,28px);line-height:1.15}
-.long-body>span:not(.new-tag){font-size:14px;color:var(--ink-2)}
-.long-card .ff-go{align-self:flex-start;margin:auto 0 0}
-@media(max-width:879px){.long-card{flex-direction:row;align-items:center}.long-art{width:60px;height:60px;flex:none}.long-card .ff-go{display:none}}
-.long-body .new-tag{align-self:flex-start}
 
 /* === COO 툴 완료 후 「잠깐 쉬어 가기」 게임 카드 (2026-11-02) === */
 .rest-card{display:flex;align-items:center;gap:12px;margin-top:10px;background:var(--heuk);color:var(--white);text-decoration:none;border:var(--bd);border-left:10px solid var(--tone);border-radius:14px;padding:12px 14px;transition:transform .12s}
@@ -1192,7 +1163,8 @@ li.has-fav{position:relative}
 .cab-jump .dot{width:10px;height:10px;border-radius:50%;background:var(--tone);border:2px solid var(--ink)}
 .cab{scroll-margin-top:72px}
 .row-body b .new-tag{font-size:10px;padding:3px 6px;margin-left:4px;vertical-align:2px}
-.toolbox+.new-band{margin-top:30px}
+/* P2-61 NEW 띠가 서랍 위로 → 띠 아래 간격 */
+.new-band+.toolbox{margin-top:30px}
 .arc-moved{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0 0 26px;padding:12px 16px;border:2px solid #4a4a46;border-radius:12px;color:#d9d9d4;font-size:14.5px}
 .arc-moved .dot{width:12px;height:12px;border-radius:50%;background:var(--tone);border:2px solid var(--white)}
 .arc-moved a{color:var(--hwang);font-weight:800}
@@ -1909,3 +1881,8 @@ li.has-fav{position:relative}
 .mn-reset{appearance:none;background:none;border:0;color:var(--ink-3);text-decoration:underline;font:inherit;font-size:13px;cursor:pointer;padding:6px 0}
 @media(max-width:480px){.mn-scroll{margin:0 -12px;padding:6px;border-radius:10px}.mn-levels small{font-size:10px}.mn-stat{min-width:74px;font-size:21px}}
 @media(prefers-reduced-motion:reduce){.mn-won .mc,.mn-lost,.mn-lost .mc,.mc.boom,.mc.nudge,.mn-result{animation:none!important}}
+
+/* ===================== P2-61 홈 통일: 오락실·랜덤채팅도 툴과 같은 서랍 ===================== */
+.t-play,.c-play{--tone:#ff7a1a}
+.t-chat,.c-chat{--tone:#e0408a}
+@media(min-width:1000px){.cab-full .rows li:nth-child(n+4){border-top:2px solid var(--soft)}.cab-full .rows li:not(:nth-child(3n+1)){border-left:2px solid var(--soft)}}

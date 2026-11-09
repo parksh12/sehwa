@@ -312,9 +312,11 @@ const drawerHtml = ({ tone, name, href = "", sub = "", tools, ext = [], extra = 
   `<section class="drawer t-${tone}"><header class="drawer-head"><span class="drawer-pull" aria-hidden="true"></span><${tag} class="drawer-name">${href ? `<a href="${u(href)}">${esc(name)}</a>` : esc(name)}</${tag}><small>${tools.length + ext.length}개</small>${sub ? `<p>${esc(sub)}</p>` : ""}</header><ul class="rows">${tools.map(rowHtml).join("")}${ext.map(extRowHtml).join("")}</ul>${extra}</section>`;
 const utilsIn = (k) => TOOL_RANK.map((id) => anyById[id]).filter((x) => x.cat === k || (x.also || []).includes(k)); // P2-49 운세·재미 포함
 // 세화산업의 다른 서비스(외부 사이트, 새 창). iframe·코드 가져오기 없이 링크만 검
-const FAMILY = { name: "랜덤7942", url: "https://www.random7942.com/", hook: "가입 없이 낯선 사람과 아이디어 나누기 · 익명 브레인스토밍" };
+const FAMILY = { id: "family", name: "랜덤7942", url: "https://www.random7942.com/", hook: "가입 없이 낯선 사람과 아이디어 나누기 · 익명 브레인스토밍" };
+const CHAT = { name: "랜덤채팅" }; // P2-61 랜덤7942 단독 서랍 이름(「세화 패밀리」보다 하는 일이 바로 보임). 홈 서랍·검색·즐겨찾기 분류명
+// P2-61 외부 행도 툴 행과 같은 형식(즐겨찾기 별 + 아이콘 + 이름 + 한 줄 설명 + ›). 새 창은 「새 창 ↗」 표시와 sr 문구로 알림
 const extRowHtml = (f) =>
-  `<li><a class="row ext" href="${f.url}" target="_blank" rel="noopener"><span class="row-art">${ART.family}</span><span class="row-body"><b>${esc(f.name)} <em class="ext-tag">새 창 ↗</em></b><small>${esc(f.hook)}</small></span><span class="row-go" aria-hidden="true">↗</span></a></li>`;
+  `<li class="has-fav">${favBtn({ id: f.id, title: f.name }, "fav-row")}<a class="row ext" href="${f.url}" target="_blank" rel="noopener"><span class="row-art">${ART[f.id]}</span><span class="row-body"><b>${esc(f.name)} <em class="ext-tag">새 창 ↗</em><span class="sr"> (새 창, 외부 사이트)</span></b><small>${esc(f.hook)}</small></span><span class="row-go" aria-hidden="true">›</span></a></li>`;
 const recoRows = (ids, heading) => `<section class="reco"><h2>${heading}</h2><ul class="rows rows-flow">${ids.map((id) => rowHtml(anyById[id])).join("")}</ul></section>`;
 
 const shareBar = (opts = {}) =>
@@ -482,8 +484,10 @@ const homeIn = (k) => TOOL_RANK.map((id) => anyById[id]).filter((x) => ((x.also 
 // 서랍 순서: 툴이 많은 서랍부터(같으면 UCATS 순서). 위 3개는 윗줄, 나머지는 아랫줄
 const homeOrder = () => Object.entries(UCATS).map((e, i) => [e, homeIn(e[0]).length, i]).sort((a, b) => b[1] - a[1] || a[2] - b[2]).map((x) => x[0]);
 // P2-49 데스크톱 줄 배치: 윗줄 3개(넓이 1/3). 아랫줄이 2개면 반씩, 그 밖에는 1/3씩
-const cabCls = (i, n) => (n > 6 && i === n - 1 && (n - 3) % 3 === 1 ? "cab-full" : i < 3 || n - 3 !== 2 ? "cab-big" : "cab-wide"); // P2-50 서랍 7개면 마지막에 혼자 남는 서랍은 한 줄 전체
-// 오락실 타일: 홈에서 놀이 콘텐츠를 한눈에(4×2)
+const cabCls0 = (i, n) => (n > 6 && i === n - 1 && (n - 3) % 3 === 1 ? "cab-full" : i < 3 || n - 3 !== 2 ? "cab-big" : "cab-wide"); // P2-50 서랍 7개면 마지막에 혼자 남는 서랍은 한 줄 전체
+const nToolCabs = Object.keys(UCATS).length;
+const cabCls = (i, n) => (i < nToolCabs ? cabCls0(i, nToolCabs) : "cab-full"); // P2-61 툴 카테고리 배치는 그대로, 뒤에 붙는 오락실·랜덤채팅 서랍은 한 줄 전체(데스크톱 3열 행)
+// P2-61 홈 NEW 띠: 맨 위(검색·즐겨찾기 바로 아래)
 // ★ 새 툴·게임을 만들면 여기에 { id, d: "출시일" }을 맨 위에 추가(대표님 지시: 새 콘텐츠는 메인에 잘 보이게).
 // 출시 30일 이내 항목 중 최신 4개가 홈 맨 위 「NEW」 띠에 나오고, 해당 행·타일에 NEW 표시가 붙음
 const NEW_ITEMS = [
@@ -515,12 +519,10 @@ const NEW_ITEMS = [
   { id: "stack", d: "2026-11-02" },
   { id: "timer", d: "2026-11-02" },
 ];
-// ★ 체류시간이 긴 게임은 홈 맨 위 큰 카드로(대표님 지시). 새 장편 게임을 만들면 여기에도 추가
-const LONG_GAMES = [
-  { id: "rpg", t: "약 1시간 · 자동 저장" },
-  { id: "hellchosun", t: "한 판 15~30분" },
-  { id: "life", t: "한 판 5~10분" },
-];
+// P2-61 「오래 즐기는 게임」 띠(LONG_GAMES) 폐지(대표님 지시: 게임도 툴과 같은 서랍 형식). 「잠깐 쉬어 가기」 카드의 플레이 시간 표시만 남김
+const PLAY_TIME = { rpg: "약 1시간 · 자동 저장", hellchosun: "한 판 15~30분", life: "한 판 5~10분" };
+// P2-61 홈 「모든 툴」의 툴 카테고리 다음 서랍: 펭귄 오락실(게임 7종) → 랜덤채팅(랜덤7942 단독, 새 창)
+const HOME_GAMES = ["rpg", "hell", "hellchosun", "life", "stack", "reaction", "mines"];
 const NEW_DAYS = 30;
 const newList = (() => {
   const now = Date.parse(kstDate());
@@ -531,18 +533,23 @@ const newCard = (id) => {
   const x = anyById[id], util = !!utilById[id];
   return `<li class="has-fav">${favBtn(x, "fav-tile")}<a class="new-card" href="${u(x.path)}"><span class="new-tag">NEW</span><span class="fun-art">${ART[x.id]}</span><b>${esc(x.title)}</b><span>${esc(x.hook)}</span><small>${util || !CATS[x.cat] ? esc(catName(x.cat)) : esc(PLAY.name)}</small></a></li>`; // P2-58 운세·재미(TOOLS cat fun)는 「펭귄 오락실」 대신 분류 이름
 };
-const FUN_TILES = ["hell", "stack", "reaction", "family"]; // P2-49 게임만(rpg·hellchosun·life는 바로 위 「오래 즐기는 게임」에 있음)
+// P2-61 홈 오락실 띠(FUN_TILES) 폐지. 타일은 /play/ 허브에서만 씀(랜덤7942 타일은 허브에서도 뺌)
 const funTile = (id) => {
-  if (id === "family") return `<li class="has-fav">${favBtn({ id: "family", title: FAMILY.name }, "fav-tile")}<a class="fun-tile t-love" href="${FAMILY.url}" target="_blank" rel="noopener"><span class="fun-art">${ART.family || ""}</span><b>${esc(FAMILY.name)} <small class="ext">새 창 ↗</small></b><span>${esc(FAMILY.hook)}</span></a></li>`;
   const x = toolById[id];
   return `<li class="has-fav">${favBtn(x, "fav-tile")}<a class="fun-tile t-${x.cat}" href="${u(x.path)}"><span class="fun-art">${ART[x.id]}</span><b>${esc(x.title)}</b><span>${esc(x.hook)}</span></a></li>`;
 };
-// 홈 — 「펭귄 공구함」: 검색 + 카테고리 서랍(열)마다 툴 행. 툴이 늘면 행만 늘어남. 오락실은 한 줄 띠(20% 이하)
+// 홈 — 「펭귄 공구함」: 검색 → NEW 띠 → 카테고리 서랍마다 툴 행(게임·랜덤채팅도 같은 서랍, P2-61). 툴이 늘면 행만 늘어남
+// P2-61 홈 서랍 목록: 툴 카테고리(툴 많은 순) → 펭귄 오락실(게임 7종) → 랜덤채팅(랜덤7942 단독, 새 창). 모두 drawerHtml 한 부품
+const homeCabs = () => [
+  ...homeOrder().map(([k, c]) => ({ k, name: c.name, n: homeIn(k).length, html: drawerHtml({ tone: k, name: c.name, href: `/${k}/`, tools: homeIn(k), tag: "h3" }) })),
+  { k: "play", name: PLAY.name, n: HOME_GAMES.length, html: drawerHtml({ tone: "play", name: PLAY.name, href: PLAY.path, tools: HOME_GAMES.map((id) => toolById[id]), tag: "h3" }) },
+  { k: "chat", name: CHAT.name, n: 1, html: drawerHtml({ tone: "chat", name: CHAT.name, tools: [], ext: [FAMILY], tag: "h3" }) },
+];
 const playCat = (x) => (CATS[x.cat] ? `${PLAY.name} · ${CATS[x.cat].name}` : catName(x.cat)); // P2-49 게임은 「오락실 · 분류」, 운세·재미는 툴 분류 이름
 const SEARCH_INDEX = [
   ...UTILS.map((x) => ({ t: x.title, p: u(x.path), c: catName(x.cat), k: `${x.kw} ${x.hook}`, b: x.beta ? 1 : 0 })),
   ...TOOLS.map((x) => ({ t: x.title, p: u(x.path), c: playCat(x), k: x.kw ? `${x.kw} ${x.hook}` : x.hook })), // P2-44 kw 있으면 검색어 추가, P2-49 분류 이름
-  { t: FAMILY.name, p: FAMILY.url, c: "세화산업 다른 서비스 · 새 창", k: `랜덤7942 랜덤 채팅 익명 채팅 브레인스토밍 random7942 ${FAMILY.hook}`, x: 1 }, // 외부 사이트(대표님 지시)
+  { t: FAMILY.name, p: FAMILY.url, c: `${CHAT.name} · 새 창`, k: `랜덤7942 랜덤 채팅 익명 채팅 브레인스토밍 random7942 ${FAMILY.hook}`, x: 1 }, // 외부 사이트(대표님 지시)
 ];
 const byUtilRank = UTIL_RANK.map((id) => utilById[id]);
 {
@@ -563,17 +570,11 @@ const byUtilRank = UTIL_RANK.map((id) => utilById[id]);
 </section>
 <script type="application/json" id="tool-index">${JSON.stringify(SEARCH_INDEX).replace(/</g, String.fromCharCode(92) + "u003c")}</script>
 
-<!-- P2-49 툴이 주인공: 검색·즐겨찾기 바로 아래에 모든 툴을 서랍별로 펼침 → 그 아래 NEW 띠 → 오래 즐기는 게임 → 오락실(게임만) -->
+<!-- P2-61 홈 순서: 검색·즐겨찾기 → NEW 띠 → 모든 툴 서랍(툴 카테고리 → 펭귄 오락실 → 랜덤채팅) → 소개. 게임·랜덤7942도 툴과 같은 서랍 형식 -->
+${newList.length ? `<section class="new-band" aria-labelledby="new-h"><h2 id="new-h"><span class="new-tag">NEW</span> 새로 나왔어요</h2><ul class="new-grid">${newList.slice(0, 4).map((x) => newCard(x.id)).join("")}</ul></section>` : ""}
 <section class="toolbox" aria-labelledby="toolbox-h">
-  <div class="toolbox-head"><h2 id="toolbox-h">모든 툴 <small>${TOOL_RANK.length}개 · 서랍별</small></h2><nav class="cab-jump" aria-label="툴 서랍 바로 가기">${homeOrder().map(([k, c]) => `<a class="chip" href="#cab-${k}"><i class="dot t-${k}" aria-hidden="true"></i>${esc(c.name)} <small>${homeIn(k).length}</small></a>`).join("")}</nav></div>
-  <div class="cabinet">${homeOrder().map(([k, c], i, all) => `<div class="cab ${cabCls(i, all.length)}" id="cab-${k}">${drawerHtml({ tone: k, name: c.name, href: `/${k}/`, tools: homeIn(k), tag: "h3" })}</div>`).join("")}</div>
-</section>
-${newList.filter((x) => !LONG_GAMES.some((g) => g.id === x.id)).length ? `<section class="new-band" aria-labelledby="new-h"><h2 id="new-h"><span class="new-tag">NEW</span> 새로 나왔어요</h2><ul class="new-grid">${newList.filter((x) => !LONG_GAMES.some((g) => g.id === x.id)).slice(0, 4).map((x) => newCard(x.id)).join("")}</ul></section>` : ""}
-<section class="long-band" aria-labelledby="long-h"><h2 id="long-h">오래 즐기는 게임 <small>${esc(PLAY.name)}의 대표 게임</small></h2><ul class="long-grid">${LONG_GAMES.map(({ id, t }) => { const x = toolById[id]; return `<li class="has-fav">${favBtn(x, "fav-tile")}<a class="long-card t-${x.cat}" href="${u(x.path)}"><span class="long-art">${ART[x.id]}</span><span class="long-body">${isNew(id) ? '<span class="new-tag">NEW</span> ' : ""}<em>${esc(t)}</em><b>${esc(x.title)}</b><span>${esc(x.hook)}</span></span><span class="ff-go">플레이 ›</span></a></li>`; }).join("")}</ul></section>
-
-<section class="fun-band" aria-labelledby="play-h">
-  <div class="fun-head"><h2 id="play-h"><a href="${u(PLAY.path)}">${esc(PLAY.name)}</a></h2><p>${esc(PLAY.tagline)}</p><a class="more" href="${u(PLAY.path)}">게임 전체 보기 ›</a></div>
-  <ul class="fun-grid">${FUN_TILES.map((id) => funTile(id)).join("")}</ul>
+  <div class="toolbox-head"><h2 id="toolbox-h">모든 툴 <small>툴 ${TOOL_RANK.length}개 · 게임 ${HOME_GAMES.length}개 · 서랍별</small></h2><nav class="cab-jump" aria-label="서랍 바로 가기">${homeCabs().map(({ k, name, n }) => `<a class="chip" href="#cab-${k}"><i class="dot t-${k}" aria-hidden="true"></i>${esc(name)} <small>${n}</small></a>`).join("")}</nav></div>
+  <div class="cabinet">${homeCabs().map(({ k, html }, i, all) => `<div class="cab ${cabCls(i, all.length)}" id="cab-${k}">${html}</div>`).join("")}</div>
 </section>
 
 <section class="home-block home-about">
@@ -591,8 +592,7 @@ ${adSlotFixed("home")}`;
 // P2-49 오락실 = 게임만. 운세·사주·테스트·사다리는 툴 「운세·재미」(/fun/)로 옮기고 허브에는 안내 한 줄만 남김
 const ZONES = [
   { tone: "story", name: "게임", sub: "한 판이면 끝나는 짧은 게임", ids: ["rpg", "hell", "mines", "hellchosun", "life", "stack", "reaction"] }, // P2-60 지뢰찾기는 특집 카드 2개 바로 다음(작은 타일 첫 칸)
-  { tone: "love", name: "같이", sub: "세화산업이 운영하는 다른 서비스(외부 사이트)", ids: [], ext: [FAMILY] },
-];
+]; // P2-61 「같이」(랜덤7942) 구역 삭제: 랜덤7942는 오락실에서 떼어 홈 「랜덤채팅」 단독 서랍으로(대표님 지시)
 {
   const items = [["홈", "/"], [PLAY.name, PLAY.path]];
   const extra = {
@@ -618,9 +618,7 @@ ${(() => {
     <ul class="arc-feats">${feat.map(featCard).join("")}</ul>
     <ul class="fun-grid arc-grid">${mini.map(tile).join("")}</ul>${extra["게임"]}</div>
   <p class="arc-moved"><span class="dot t-fun" aria-hidden="true"></span>오늘의 운세·사주·성격 테스트·이름 궁합·사다리타기는 툴로 옮겼어요. <a href="${u("/fun/")}">운세·재미 툴 보기 ›</a></p>
-  <div class="arc-sec"><h2 class="arc-h"><span class="dot t-love"></span>같이 <small>세화산업이 운영하는 다른 서비스</small></h2>
-    <ul class="fun-grid arc-grid arc-1">${tile("family")}</ul></div>
-</section>`;
+</section>`; // P2-61 랜덤7942 「같이」 배너 삭제
 })()}
 ${recoRows(["charcount", "dday", "pdfmerge"], "쉬었다면, 일하러 갈 때 쓰는 툴")}
 ${adSlot("play")}`;
@@ -1132,8 +1130,8 @@ ${runLabel ? `<button class="btn big tk-run" type="button" data-run${disabled ? 
 const REST_GAMES = ["rpg", "hellchosun", "hell", "life", "mines"]; // P2-60 지뢰찾기 후보 추가
 const restCard = (id) => {
   const g = toolById[REST_GAMES[[...id].reduce((a, c) => a + c.charCodeAt(0), 0) % REST_GAMES.length]];
-  const lg = LONG_GAMES.find((x) => x.id === g.id);
-  return `<a class="rest-card t-${g.cat}" href="${u(g.path)}"><span class="fun-art">${ART[g.id]}</span><span class="ff-body"><em>잠깐 쉬어 가기${lg ? ` · ${esc(lg.t)}` : ""}</em><b>${esc(g.title)}</b><span>${esc(g.hook)}</span></span><span class="ff-go">한 판 ›</span></a>`;
+  const lt = PLAY_TIME[g.id]; // P2-61
+  return `<a class="rest-card t-${g.cat}" href="${u(g.path)}"><span class="fun-art">${ART[g.id]}</span><span class="ff-body"><em>잠깐 쉬어 가기${lt ? ` · ${esc(lt)}` : ""}</em><b>${esc(g.title)}</b><span>${esc(g.hook)}</span></span><span class="ff-go">한 판 ›</span></a>`;
 };
 const nextHtml = (id, hidden) => `<nav class="tk-next" aria-label="다음 툴"${hidden ? " hidden" : ""}><b>다음으로 많이 쓰는 툴</b>${NEXT[id].map((x) => `<a class="chip" href="${u(anyById[x].path)}">${esc(anyById[x].title)}</a>`).join("")}</nav>${restCard(id)}`; // 쉬어 가기 카드는 결과 전에도 항상 보임(대표님 지시)
 
@@ -2474,7 +2472,7 @@ write("/404.html", layout({ title: "페이지를 찾을 수 없어요", desc: "�
   const favIdx = {};
   UTILS.forEach((x) => { favIdx[x.id] = { t: x.title, p: u(x.path), c: catName(x.cat) }; });
   TOOLS.forEach((x) => { favIdx[x.id] = { t: x.title, p: u(x.path), c: playCat(x) }; }); // P2-49 id는 그대로, 주소·분류만 새로
-  favIdx.family = { t: FAMILY.name, p: FAMILY.url, c: "세화산업 다른 서비스 · 새 창", x: 1 }; // 외부 사이트
+  favIdx.family = { t: FAMILY.name, p: FAMILY.url, c: `${CHAT.name} · 새 창`, x: 1 }; // 외부 사이트 // P2-61 분류명 = 새 서랍 이름
   fs.writeFileSync(path.join(DIST, "assets", "fav-index.js"), `window.FAV_INDEX=${JSON.stringify(favIdx).replace(/</g, String.fromCharCode(92) + "u003c")};\n`);
 }
 

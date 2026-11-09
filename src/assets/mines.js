@@ -73,11 +73,12 @@
     fit();
   }
 
-  // 칸 크기: 「맞춤」은 판 너비에 맞춤, −/+는 4px씩
+  // 칸 크기: 「맞춤」은 판 너비에 맞추되 최소 22px(P2-61: 390px 중급판 약 17px는 누르기 어려워서). 넘치면 판 안에서 가로 스크롤. −/+는 4px씩(−로 14px까지 줄여 전체 보기)
+  const FIT_MIN = 22;
   function fit() {
     const pad = 10, gap = 2;
     const avail = scroll.clientWidth - pad * 2 - (b.w - 1) * gap - 6;
-    const f = Math.max(14, Math.min(42, Math.floor(avail / b.w)));
+    const f = Math.max(FIT_MIN, Math.min(42, Math.floor(avail / b.w)));
     if (fitMode) cs = f;
     boardEl.style.setProperty("--cs", cs + "px");
     $('[data-act="fit"]').setAttribute("aria-pressed", String(fitMode));
@@ -236,7 +237,12 @@
   });
   boardEl.addEventListener("pointercancel", cancelPress);
   boardEl.addEventListener("pointerleave", (e) => { if (press && e.pointerType === "mouse") cancelPress(); });
-  boardEl.addEventListener("contextmenu", (e) => e.preventDefault());
+  // P2-61 우클릭 메뉴 막기: 판 칸뿐 아니라 게임 영역 전체(상태줄·스크롤 테두리·결과 덮개·확대 상태 포함). 입력칸·링크만 브라우저 메뉴 허용(복사·붙여넣기용)
+  // 칸 위 우클릭 = 깃발(위 pointerdown 단계에서 처리, 판이 끝났으면 아무 일 없음). 칸 밖 우클릭 = 아무 일 없음
+  const area = root.closest(".tool-box") || root;
+  const menuOk = (t) => !!(t && t.closest && t.closest("input, textarea, select, a, [contenteditable]"));
+  area.addEventListener("contextmenu", (e) => { if (!menuOk(e.target)) e.preventDefault(); });
+  area.addEventListener("pointerdown", (e) => { if (e.pointerType === "mouse" && e.button === 2 && !menuOk(e.target)) e.preventDefault(); }); // 칸 밖 우클릭: 글자 선택·초점 이동 없이 끝
 
   // ---- 키보드 ----
   boardEl.addEventListener("keydown", (e) => {
