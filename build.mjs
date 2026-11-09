@@ -19,6 +19,7 @@ const guides = await load("guides");
 const pages = await load("pages");
 const toolText = await load("tools");
 const PAY = await load("pay-rates-2026"); // P2-45 직장인 돈 계산기 요율(한 파일)
+const OST = await load("tax-overseas-2026"); // P2-53 해외주식 양도소득세 요율·규칙(한 파일)
 
 // ---------- 유틸 ----------
 const esc = (s = "") => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -101,6 +102,7 @@ const ART = {
   stockquiz: sv(`<rect x="10" y="14" width="100" height="92" rx="10" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M22 84 40 66l14 10 22-30 12 10" fill="none" stroke="${K}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="88" cy="56" r="7" fill="${YEL}" stroke="${K}" stroke-width="4"/><path d="M90 36c0-6 4-9 8-9s8 3 8 8c0 6-8 6-8 12" fill="none" stroke="${RED}" stroke-width="5" stroke-linecap="round"/>`), // P2-50
   dca: sv(`<path d="M10 104h100" stroke="${K}" stroke-width="4" stroke-linecap="round"/>${[[16, 1], [42, 2], [68, 3], [94, 4]].map(([x, h]) => Array.from({ length: h }, (_, k) => `<rect x="${x - 12}" y="${92 - k * 13}" width="24" height="11" rx="5" fill="${YEL}" stroke="${K}" stroke-width="3"/>`).join("")).join("")}<path d="M12 62 40 48l26 6 40-38" fill="none" stroke="#2346d8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M90 14h17v17" fill="none" stroke="#2346d8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>`), // P2-52 적립식 백테스트(매달 쌓이는 동전 + 자산 곡선)
   avgdown: sv(`<path d="M60 10C60 10 26 48 26 72a34 34 0 0 0 68 0C94 48 60 10 60 10z" fill="#2346d8" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M40 62h40" stroke="${W}" stroke-width="5" stroke-dasharray="7 5" stroke-linecap="round"/><path d="M40 88h40" stroke="${YEL}" stroke-width="6" stroke-linecap="round"/><path d="M60 66v14m-7-7 7 7 7-7" fill="none" stroke="${W}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`), // P2-51 물타기(물방울 + 평단 내려감)
+  ostax: sv(`<path d="M24 10h72v92l-12-8-12 8-12-8-12 8-12-8-12 8z" fill="${W}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><circle cx="60" cy="38" r="17" fill="${YEL}" stroke="${K}" stroke-width="4"/><text x="60" y="45.5" font-size="21" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">$</text><text x="60" y="80" font-size="21" font-weight="900" text-anchor="middle" fill="${RED}" font-family="sans-serif">22%</text>`), // P2-53 해외주식 양도세(영수증 + 달러 + 22%)
 };
 function doc(x, y, w, h, fill) {
   const f = Math.min(14, w / 3);
@@ -152,7 +154,7 @@ const UCATS = {
   calc: { name: "생활 계산", desc: "D-day, 연봉 실수령액, 퇴직금처럼 생활에서 자주 찾는 계산을 바로 해 주는 툴이에요." }, // P2-45 desc
   time: { name: "시간", desc: "타이머와 스톱워치처럼 시간을 재고 알려 주는 툴이에요." },
   fun: { name: "운세·재미", seo: "운세·재미 — 무료 사주·띠별 운세·성격 테스트·사다리타기", desc: "오늘의 띠별 운세, 무료 사주팔자, 16유형 성격 테스트, 생일로 보는 나, 이름 궁합, 사다리타기·돌림판처럼 재미로 보고 가볍게 정하는 툴이에요." }, // P2-49 옛 오락실 운세·테스트·사다리
-  invest: { name: "투자", seo: "투자 툴 — 적립식 백테스트, 물타기 계산기, SOXL·TQQQ·KORU 주가 예측", desc: "SOXL·TQQQ·KORU를 매달 샀다면 지금 얼마인지 보는 적립식 백테스트, 물타기 평단가 계산처럼 주식 투자에서 자주 하는 계산과, 레버리지 ETF의 실제 과거 차트로 오를까 내릴까를 맞혀 보는 투자 툴이에요. 투자 권유가 아니에요." }, // P2-50 새 툴 카테고리(앞으로 주식투자 툴을 여기에 모음) // P2-51 seo·desc에 물타기 계산기 // P2-52 적립식 백테스트
+  invest: { name: "투자", seo: "투자 툴 — 해외주식 양도세 계산기, 적립식 백테스트, 물타기 계산기, SOXL·TQQQ·KORU 주가 예측", desc: "미국주식 양도소득세 계산, SOXL·TQQQ·KORU를 매달 샀다면 지금 얼마인지 보는 적립식 백테스트, 물타기 평단가 계산처럼 주식 투자에서 자주 하는 계산과, 레버리지 ETF의 실제 과거 차트로 오를까 내릴까를 맞혀 보는 투자 툴이에요. 투자 권유가 아니에요." }, // P2-50 새 툴 카테고리(앞으로 주식투자 툴을 여기에 모음) // P2-51 seo·desc에 물타기 계산기 // P2-52 적립식 백테스트 // P2-53 해외주식 양도세
 };
 const NAV = [...Object.entries(UCATS).map(([k, c]) => [c.name, `/${k}/`]), [PLAY.name, PLAY.path]];
 // seo: <title> 앞부분(검색어 그대로) / also: 다른 카테고리 페이지에도 함께 노출 / beta: 베타 표시 / kw: 홈 검색용 동의어
@@ -180,8 +182,9 @@ const UTILS = [
   { id: "stockquiz", cat: "invest", path: "/invest/soxl-tqqq-koru/", title: "SOXL·TQQQ·KORU 주가 예측", seo: "SOXL·TQQQ·KORU 주가 예측 — 날짜 가린 실제 차트, 오를까 내릴까", h1: "SOXL·TQQQ·KORU 주가 예측 — 날짜를 가린 실제 차트로 오를까 내릴까", desc: "SOXL·TQQQ·KORU의 상장 이후 실제 일봉 종가에서 날짜를 가린 1개월·3개월·1년 차트를 보여 드려요. 다음 거래일·일주일 뒤·한 달 뒤 종가가 오를지, 기준가 이상일지 맞히면 실제 결과와 날짜를 공개하고, 10문제 뒤 백테스팅 요약을 보여 줘요. 교육·재미용이며 투자 권유가 아니에요.", hook: "날짜를 가린 실제 차트. 내일 종가는 오를까 내릴까?", meta: "10문제 · 3분", kw: "soxl tqqq koru 주가 예측 주식 차트 맞히기 레버리지 etf 3배 반도체 나스닥 한국 백테스팅 투자 연습 오를까 내릴까 미국 주식" }, // P2-50
   { id: "dca", cat: "invest", path: "/invest/dca-backtest/", title: "SOXL·TQQQ·KORU 적립식 백테스트", seo: "SOXL·TQQQ·KORU 적립식 백테스트 — 매달 사면 지금 얼마? 적립식 투자 계산", h1: "SOXL·TQQQ·KORU 적립식 백테스트 — 매달 샀다면 지금 얼마일까", desc: "SOXL·TQQQ·KORU를 시작 연월부터 매달 첫 거래일 종가에 같은 금액씩 샀다면 지금 평가액, 총 투자금, 수익률, 연환산 수익률, 최대 낙폭(MDD)이 얼마인지 실제 과거 가격으로 계산해요. 같은 돈을 처음에 한 번에 넣은 거치식과 비교하고 연도별 표와 자산 곡선을 보여 줘요. 원·달러, 3종목 비교. 투자 권유가 아니에요.", hook: "매달 30만 원씩 TQQQ를 샀다면 지금 얼마?", meta: "실제 가격 · 3종목 비교", kw: "적립식 백테스트 적립식 투자 계산 적립식 계산기 적립식 투자 수익률 tqqq 적립식 soxl 적립식 koru 적립식 레버리지 etf 적립 매달 사면 매달 투자 매월 적립 dca 정액 적립 분할 매수 백테스트 백테스팅 거치식 비교 mdd 최대 낙폭 연환산 수익률 미국 주식 3배 나스닥 반도체 한국" }, // P2-52
   { id: "avgdown", cat: "invest", path: "/invest/average-down/", title: "물타기 계산기", seo: "물타기 계산기 — 평단가 계산, 평균단가·추가매수 수량 역계산", h1: "물타기 계산기 — 주식 평단가 계산과 목표 평단 역계산", desc: "지금 평단과 보유 수량에 추가 매수 가격·수량을 여러 줄 넣으면 새 평단(평균단가), 총 수량, 총 투자금과 현재가 기준 수익률을 계산해요. 「평단을 얼마로 낮추려면 몇 주를 사야 하나」 역계산도 돼요. 원화·달러, 소수점 수량을 지원해요. 투자 권유가 아니에요.", hook: "추가 매수하면 평단이 얼마? 목표 평단까지 몇 주?", meta: "원화·달러 · 역계산", kw: "물타기 계산기 물타기 평단가 계산기 평단가 계산 평균단가 계산 평균 단가 평단 낮추기 평단 계산 추가매수 계산 추가 매수 주식 평단 주식 평균단가 불타기 분할매수 소수점 주식 미국 주식 국내 주식 목표 평단 역계산" }, // P2-51
+  { id: "ostax", cat: "invest", path: "/invest/overseas-stock-tax/", title: "해외주식 양도소득세 계산기", seo: `해외주식 양도소득세 계산기 ${OST.defaultYear} — 미국주식 양도세, 250만원 공제·22% 계산`, h1: "해외주식 양도소득세 계산기 — 미국주식 양도세, 250만 원 공제 뒤 22%", desc: "해외주식을 판 종목별 매수·매도 금액(원, 또는 달러와 매수·매도 결제일 환율)을 넣으면 손익을 통산하고 기본공제 250만 원을 뺀 뒤 양도소득세 20%와 지방소득세 2%를 계산해요. 과세 연도별 신고·납부 기한(다음 해 5월)도 알려 줘요. 참고용 추정치이고 투자 권유가 아니에요.", hook: "미국주식 팔았는데 세금 얼마? 250만 원 공제 뒤 22%", meta: "손익 통산 · 환율 반영", kw: "해외주식 양도세 해외주식 양도소득세 미국주식 세금 미국주식 양도세 미국 주식 양도세 계산기 양도소득세 계산 양도세 계산기 250만원 공제 기본공제 해외주식 세금 신고 해외주식 세금 계산 해외 주식 세금 22% 손익통산 손익 통산 환차익 환율 결제일 기준환율 5월 신고 홈택스 양도세 신고 절세 서학개미 나스닥 미장 해외 etf 세금 soxl tqqq 세금" }, // P2-53
 ];
-const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "heic", "qr", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "word2pdf", "dday", "stockquiz", "avgdown", "dca"]; // P2-50 stockquiz(투자) // P2-51 avgdown // P2-52 dca // P2-45 돈 계산기 4종, P2-46 imgmerge, P2-47 heic, P2-48 qr
+const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "heic", "qr", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "word2pdf", "dday", "stockquiz", "avgdown", "dca", "ostax"]; // P2-50 stockquiz(투자) // P2-51 avgdown // P2-52 dca // P2-53 ostax // P2-45 돈 계산기 4종, P2-46 imgmerge, P2-47 heic, P2-48 qr
 const NEXT = {
   pdfmerge: ["pdfsplit", "img2pdf", "imgcompress"],
   pdfsplit: ["pdfmerge", "pdf2img", "img2pdf"],
@@ -206,6 +209,7 @@ const NEXT = {
   stockquiz: ["avgdown", "dca", "salary"], // P2-50 // P2-51 물타기 계산기로 이어지게 // P2-52 둘째 칸 적립식 백테스트
   avgdown: ["stockquiz", "dca", "salary"], // P2-51 // P2-52 둘째 칸 적립식 백테스트
   dca: ["stockquiz", "avgdown", "salary"], // P2-52
+  ostax: ["avgdown", "dca", "salary"], // P2-53
 };
 const utilById = Object.fromEntries(UTILS.map((x) => [x.id, x]));
 const anyById = { ...toolById, ...utilById };
@@ -459,6 +463,7 @@ const cabCls = (i, n) => (n > 6 && i === n - 1 && (n - 3) % 3 === 1 ? "cab-full"
 // ★ 새 툴·게임을 만들면 여기에 { id, d: "출시일" }을 맨 위에 추가(대표님 지시: 새 콘텐츠는 메인에 잘 보이게).
 // 출시 30일 이내 항목 중 최신 4개가 홈 맨 위 「NEW」 띠에 나오고, 해당 행·타일에 NEW 표시가 붙음
 const NEW_ITEMS = [
+  { id: "ostax", d: "2026-11-10" }, // P2-53
   { id: "dca", d: "2026-11-10" }, // P2-52
   { id: "avgdown", d: "2026-11-10" }, // P2-51
   { id: "stockquiz", d: "2026-11-10" }, // P2-50
@@ -1331,6 +1336,84 @@ utilPage(utilById.stockquiz, `<div class="sq">
     after: `<h2 class="dd-h">계산 검증 (손계산·독립 계산과 대조)</h2>
 <div class="table-wrap"><table class="dd-table avg-ex dca-ex"><thead><tr><th scope="col">경우</th><th scope="col">입력</th><th scope="col">계산</th><th scope="col">결과</th></tr></thead><tbody>${EXR.map((r) => `<tr><th scope="row">${r[0]}</th><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${r[3]}</td></tr>`).join("")}</tbody></table></div>
 <p class="hint">손계산 2건과, 실제 가격 구간 5건을 이 계산기와 따로 만든 계산(파이썬)으로 다시 계산한 값이 같은지 사이트를 만들 때마다 자동으로 확인해요(표에는 3건). 실제 가격 구간 표는 달러 기준이에요.</p>`
+  });
+}
+
+// P2-53 해외주식 양도소득세 계산기: 요율은 content/tax-overseas-2026.mjs(OST) 한 곳, 계산식은 src/assets/ostax-calc.js 한 벌(화면 t-ostax.js와 아래 대조가 같은 파일을 vm으로 씀)
+// 흐름: 과세 연도 → 종목 줄(원 또는 달러 + 매수·매도 결제일 환율) → 수수료(선택) → 통산 → 기본공제 → 과세표준 × 20% → 지방소득세 10% → 한 줄 복사 → 다음 툴
+// 빌드 때 ① 국세청 안내서 사례 2건 ② 증권사(삼성증권) 안내 사례 3건 ③ 손계산 2건과 대조하고, 다르면 빌드를 멈춤
+{
+  const ctx = {};
+  vm.createContext(ctx);
+  vm.runInContext(fs.readFileSync(path.join(ROOT, "src", "assets", "ostax-calc.js"), "utf8"), ctx);
+  const OC = ctx.OSTAX;
+  const Y = OST.defaultYear;
+  if (!OST.years[Y]) throw new Error(`P2-53 요율 파일에 ${Y}년 값이 없음`);
+  const chk = (name, got, want) => { if (Math.abs(got - want) > 1e-6) throw new Error(`P2-53 「${name}」 계산 불일치: ${got} ≠ ${want}`); };
+  const K = (buy, sell, name = "") => ({ name, cur: "krw", buy, sell });
+  const D = (buy, sell, bfx, sfx, name = "") => ({ name, cur: "usd", buy, sell, bfx, sfx });
+  const run = (rows, o = {}) => OC.calc(OST, { year: Y, rows, ...o });
+  // 국세청 「2025년 해외주식과 세금」 p.13 사례 2: 국외주식(일반법인) 양도소득금액 1억원, 기본공제는 국내 주식 예정신고에서 이미 받음 → 과세표준 1억원 × 20% = 2,000만원
+  const n1 = run([K(100000000, 200000000)], { dedUsed: true });
+  chk("국세청 사례2 과세표준", n1.base, 100000000); chk("국세청 사례2 산출세액", n1.tax, 20000000); chk("국세청 사례2 기본공제", n1.ded, 0);
+  // 국세청 같은 쪽 사례 1: 국내 주식 1억1천만원 + 국외 주식 −6,700만원 통산 = 4,300만원 − 기본공제 250만원 = 과세표준 4,050만원(사례 세율은 국내 중소기업 주식 10%라 세율은 대조하지 않음)
+  const n2 = run([K(200000000, 310000000, "국내"), K(100000000, 33000000, "국외")]);
+  chk("국세청 사례1 통산", n2.net, 43000000); chk("국세청 사례1 기본공제", n2.ded, 2500000); chk("국세청 사례1 과세표준", n2.base, 40500000);
+  // 삼성증권 안내 사례 1: 양도가액 7,000만원 − 취득가액 6,000만원 − 수수료 등 100만원 = 900만원 − 250만원 = 650만원 × 20% = 130만원, 지방소득세 13만원
+  const s1 = run([K(60000000, 70000000)], { fee: { mode: "krw", krw: 1000000 } });
+  chk("증권사 사례1 양도차익", s1.net, 9000000); chk("증권사 사례1 과세표준", s1.base, 6500000); chk("증권사 사례1 세액", s1.tax, 1300000); chk("증권사 사례1 지방소득세", s1.local, 130000);
+  // 삼성증권 사례 2·3: 주가 100 → 120 × 1,000주, 환율 170 → 187(상승)이면 양도차익 544만원, 170 → 153(하락)이면 136만원
+  const s2 = run([D(100000, 120000, 170, 187)]), s3 = run([D(100000, 120000, 170, 153)]);
+  chk("증권사 사례2 환율 상승", s2.net, 5440000); chk("증권사 사례3 환율 하락", s3.net, 1360000); chk("증권사 사례3 세금", s3.total, 0);
+  // 손계산 1(화면 「예시 넣기」와 같음): 엔비디아 $10,000×1,350 → $14,000×1,420 = +6,380,000 / 테슬라 $8,000×1,300 → $6,500×1,400 = −1,300,000 / 애플(원) 300만 → 390만 = +900,000
+  // 통산 5,980,000 − 2,500,000 = 3,480,000 × 20% = 696,000, 지방 69,600, 합계 765,600
+  const h1 = run([D(10000, 14000, 1350, 1420, "엔비디아"), D(8000, 6500, 1300, 1400, "테슬라"), K(3000000, 3900000, "애플")]);
+  chk("손계산1 이익 합", h1.gains, 7280000); chk("손계산1 손실 합", h1.losses, -1300000); chk("손계산1 통산", h1.net, 5980000);
+  chk("손계산1 과세표준", h1.base, 3480000); chk("손계산1 양도세", h1.tax, 696000); chk("손계산1 지방세", h1.local, 69600); chk("손계산1 합계", h1.total, 765600);
+  // 손계산 2(수수료율·원 미만 버림): $20,000×1,300 = 26,000,000 → $25,000×1,450 = 36,250,000, 수수료 0.25% × 62,250,000 = 155,625
+  // 손익 10,094,375 − 2,500,000 = 7,594,375 × 20% = 1,518,875, 지방 151,887.5 → 151,887, 합계 1,670,762
+  const h2 = run([D(20000, 25000, 1300, 1450)], { fee: { mode: "rate", rate: 0.0025 } });
+  chk("손계산2 수수료", h2.fees, 155625); chk("손계산2 통산", h2.net, 10094375); chk("손계산2 과세표준", h2.base, 7594375); chk("손계산2 양도세", h2.tax, 1518875); chk("손계산2 지방세", h2.local, 151887); chk("손계산2 합계", h2.total, 1670762);
+  // 신고 기한: 2025년 양도 → 2026.5.31.이 일요일이라 6.1.까지, 2026년 양도 → 2027.5.1.~5.31.
+  const d25 = OC.deadline(OST, 2025), d26 = OC.deadline(OST, 2026);
+  if (d25.to !== "2026-06-01" || d26.from !== "2027-05-01" || d26.to !== "2027-05-31") throw new Error(`P2-53 신고 기한 불일치: ${d25.to} / ${d26.from}~${d26.to}`);
+  const wn = (n) => `${n < 0 ? "−" : ""}${Math.abs(Math.round(n)).toLocaleString("ko-KR")}원`;
+  const EXR = [
+    ["국세청 사례 (국외주식, 공제 이미 사용)", "국외주식 양도소득금액 100,000,000원, 기본공제는 국내 주식 예정신고에서 받음", "100,000,000 × 20%", `과세표준 ${wn(n1.base)} · 양도세 <b>${wn(n1.tax)}</b> (안내서 20,000천원과 같음)`],
+    ["국세청 사례 (국내·국외 통산)", "국내 주식 +110,000,000원, 국외 주식 −67,000,000원", "110,000,000 − 67,000,000 − 2,500,000", `통산 ${wn(n2.net)} · 과세표준 <b>${wn(n2.base)}</b> (안내서 40,500천원과 같음, 사례 세율 10%는 대조 제외)`],
+    ["증권사 사례 (수수료)", "양도가액 70,000,000원, 취득가액 60,000,000원, 수수료 등 1,000,000원", "(9,000,000 − 2,500,000) × 20%", `과세표준 ${wn(s1.base)} · 양도세 <b>${wn(s1.tax)}</b> · 지방세 ${wn(s1.local)} (안내 130만·13만원과 같음)`],
+    ["증권사 사례 (환율)", "외화 100 → 120 × 1,000주, 환율 170 → 187 / 170 → 153", "120,000 × 187 − 100,000 × 170", `환율 상승 양도차익 <b>${wn(s2.net)}</b> · 하락 ${wn(s3.net)} (안내 544만·136만원과 같음)`],
+    ["손계산 1 (예시 넣기)", "엔비디아 $10,000(1,350원) → $14,000(1,420원), 테슬라 $8,000(1,300원) → $6,500(1,400원), 애플 3,000,000원 → 3,900,000원", "6,380,000 − 1,300,000 + 900,000 − 2,500,000", `과세표준 ${wn(h1.base)} · 양도세 ${wn(h1.tax)} + 지방세 ${wn(h1.local)} = <b>${wn(h1.total)}</b>`],
+    ["손계산 2 (수수료율 0.25%)", "$20,000(1,300원) → $25,000(1,450원), 수수료율 0.25%", "10,250,000 − 155,625 − 2,500,000", `과세표준 ${wn(h2.base)} · 양도세 ${wn(h2.tax)} + 지방세 ${wn(h2.local)} = <b>${wn(h2.total)}</b>`],
+  ];
+  const OST_WARN = "참고용 추정치예요. 실제 신고는 홈택스(국세청)나 세무사에게 확인하세요. 투자 권유나 매도 추천이 아니에요. 국내시장 복귀계좌(RIA) 공제, 외국납부세액공제, 중소기업 주식 10% 세율 같은 특례는 넣지 않았어요.";
+  const y0 = OST.years[Y];
+  const due = OC.deadline(OST, Y);
+  const rates = `<script type="application/json" id="ostax-rates">${JSON.stringify(OST).replace(/</g, "\\u003c")}</script>`;
+  utilPage(utilById.ostax, `<div class="ost">
+<form class="dd-form pay-form avg-form ost-form" autocomplete="off" novalidate>
+  <label class="ost-year"><span>과세 연도 (판 해)</span><select name="year"></select></label>
+  <p class="ost-sub"><b>판 종목</b> <small class="hint">그해 판 종목을 줄마다 넣으세요. 손실 난 종목도 함께 넣어야 통산돼요.</small></p>
+  <ol class="ost-rows"></ol>
+  <button type="button" class="btn ghost avg-add" data-add>+ 종목 줄 추가</button>
+  <p class="hint ost-fxnote">달러 종목은 <b>매수·매도 결제일의 기준환율</b>을 넣어요. 증권사 「해외주식 양도소득세 계산 자료」의 원화 금액이 있으면 통화를 원으로 바꿔 그 금액을 넣는 게 가장 정확해요.</p>
+  <fieldset class="seg ost-fee"><legend>수수료 (필요경비, 선택)</legend><label><input type="radio" name="feemode" value="none" checked><span>안 넣음</span></label><label><input type="radio" name="feemode" value="rate"><span>수수료율 %</span></label><label><input type="radio" name="feemode" value="krw"><span>합계 금액(원)</span></label></fieldset>
+  <label data-fee="rate" hidden><span>매매 수수료율 (%) <small class="hint">매수·매도 금액에 각각 적용</small></span><input name="feerate" type="text" inputmode="decimal" autocomplete="off" placeholder="예: 0.25"></label>
+  <label data-fee="krw" hidden><span>그해 수수료 등 합계 (원)</span><input name="feekrw" type="text" inputmode="numeric" autocomplete="off" placeholder="예: 150,000"></label>
+  <label class="check"><input type="checkbox" name="dedused"> 기본공제 250만 원을 이미 받았어요 (같은 해 국내 대주주·비상장 주식 양도 신고 등)</label>
+  <div class="dd-opts pay-acts"><button type="submit" class="btn">계산하기</button><button type="button" class="btn ghost" data-copy>결과 한 줄 복사</button><button type="button" class="chip" data-example>예시 넣기</button><button type="button" class="chip" data-reset>모두 지우기</button></div>
+</form>
+<div class="dd-result pay-result avg-result ost-result" aria-live="polite"></div>
+<p class="sq-warn" role="note">${esc(OST_WARN)}</p>
+</div>${rates}`, {
+    scripts: ["ostax-calc.js", "t-ostax.js"], fileTool: false,
+    after: `<h2 class="dd-h">계산 검증 (국세청·증권사 안내 사례, 손계산과 대조)</h2>
+<div class="table-wrap"><table class="dd-table avg-ex ost-ex"><thead><tr><th scope="col">경우</th><th scope="col">입력</th><th scope="col">계산</th><th scope="col">결과</th></tr></thead><tbody>${EXR.map((r) => `<tr><th scope="row">${esc(r[0])}</th><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${r[3]}</td></tr>`).join("")}</tbody></table></div>
+<p class="hint">세금 = (통산 손익 − 기본공제 ${(y0.deduction / 1e4).toLocaleString("ko-KR")}만 원) × ${Math.round(y0.rate * 100)}% + 그 세액의 ${Math.round(y0.localRatio * 100)}%(지방소득세). 위 사례는 사이트를 만들 때마다 이 계산기로 다시 계산해 같은지 자동으로 확인해요. 과세표준과 세액은 원 미만을 버렸어요(가정). ${Y}년에 판 주식은 ${due.from.slice(0, 4)}년 5월 ${+due.from.slice(8)}일 ~ ${+due.to.slice(5, 7)}월 ${+due.to.slice(8)}일에 신고·납부해요.</p>
+<section class="prose pay-src" aria-labelledby="ost-src-h"><h2 id="ost-src-h">기준·출처 (확인일 ${esc(OST.checked)})</h2>
+<ul>${OST.sources.map((x) => `<li><b>${esc(x.name)}</b> — <a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.by)}<span class="sr"> (새 창, 외부 사이트)</span></a> · ${esc(x.date)}${x.check === "2차" ? " · <small>법령 원문 대신 증권사·언론 안내로 확인</small>" : ""}</li>`).join("")}</ul>
+<p class="hint">이 계산기에 넣지 않은 것: ${OST.notIncluded.map((x) => esc(x)).join(" / ")}.</p>
+<p class="hint">세법은 해마다 바뀔 수 있어요. 이 계산기는 ${Object.keys(OST.years).join("·")}년 양도분 기준으로 계산하는 <b>참고용 추정치</b>이고, 실제 신고 금액은 국세청 홈택스(국번 없이 126)나 세무사에게 확인하세요.</p></section>`
   });
 }
 

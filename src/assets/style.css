@@ -1535,3 +1535,39 @@ li.has-fav{position:relative}
 .dca-lg.is-mdd{color:var(--jeok)}.dca-lg.is-mdd i{height:10px;border:0!important;background:var(--jeok);opacity:.25}
 @media(max-width:620px){.dca-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.dca-stats b{font-size:21px}.dca-chart{padding:4px;box-shadow:4px 4px 0 var(--ink)}}
 @media(max-width:480px){.dca-cmp3 th,.dca-cmp3 td{font-size:11.5px;padding:5px 3px}.dca-cmp3 tbody th{white-space:normal;word-break:keep-all;min-width:3.6em}.dca-cmp3 td{white-space:normal;word-break:keep-all;overflow-wrap:normal}.dca-cmp th,.dca-cmp td{padding:5px 5px}.dca-stats b{font-size:18px;overflow-wrap:normal}.dca-stats li{padding:7px 8px}.dca .seg span{padding:7px 11px;font-size:14px}.dca-period{grid-template-columns:1fr}.dca-money{grid-template-columns:1fr 1fr}.dca-ex td,.dca-ex th{font-size:13px;padding:5px}.dca-ytable th,.dca-ytable td{font-size:12.5px;padding:4px 5px}}
+
+/* ===================== P2-53 해외주식 양도소득세 계산기: 종목 줄(종목명·통화 / 매수·매도 / 환율 2칸) + 결과 표 + 공제·세금 막대(P2-51 줄 톤 재사용) ===================== */
+.ost{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+.ost [hidden]{display:none!important}
+.ost .up{color:var(--nok)}.ost .dn{color:var(--jeok)}
+.ost-form>label,.ost-form [data-fee]{display:grid;gap:6px;font-weight:700}
+.ost-year select{max-width:360px}
+.ost-sub{margin:4px 0 0}
+.ost-rows{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.ost-row{display:grid;grid-template-columns:26px minmax(0,1fr) minmax(0,1fr) 40px;grid-template-areas:"no nm cur del" ". buy sell ." ". bfx sfx ." ". amt amt .";gap:6px 8px;align-items:end;padding:8px 8px 6px;border:2px solid var(--ink);border-radius:12px;background:#fffdf5}
+.ost-row .avg-no{grid-area:no;align-self:end;margin-bottom:8px}
+.ost-row .avg-del{grid-area:del}
+.ost-f{display:grid;gap:3px;font-weight:700;min-width:0}
+.ost-f small{font-weight:600;color:var(--ink-3)}
+.ost-f i[data-u]{font-style:normal;color:var(--ink-3)}
+.ost-nm{grid-area:nm}.ost-cur{grid-area:cur}.ost-buy{grid-area:buy}.ost-sell{grid-area:sell}.ost-bfx{grid-area:bfx}.ost-sfx{grid-area:sfx}
+.ost-row input,.ost-row select{width:100%;min-width:0}
+.ost-amt{grid-area:amt;font-size:12.5px;font-weight:700;color:var(--ink-3);min-height:1.2em;font-variant-numeric:tabular-nums}
+.ost-amt.up{color:var(--nok)}.ost-amt.dn{color:var(--jeok)}
+.ost-fxnote{margin:0}
+.ost-big b{font-variant-numeric:tabular-nums}
+.ost-bar{display:flex;height:22px;margin:10px 0 4px;border:2px solid var(--ink);border-radius:8px;overflow:hidden;background:var(--white)}
+.ost-bar span{display:block;height:100%}
+.ost-bar .b-ded,.ost-legend .b-ded{background:var(--hwang)}
+.ost-bar .b-tax,.ost-legend .b-tax{background:var(--jeok)}
+.ost-bar .b-keep,.ost-legend .b-keep{background:var(--nok)}
+.ost-bar span+span{border-left:2px solid var(--ink)}
+.ost-bar span[style="width:0.00%"]{display:none}
+.ost-legend{display:flex;flex-wrap:wrap;gap:2px 12px;margin:0 0 6px;font-size:13px;font-weight:700;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.ost-legend i{display:inline-block;width:12px;height:12px;border:2px solid var(--ink);border-radius:3px;margin-right:4px;vertical-align:-1px}
+.ost-table td{text-align:right;font-variant-numeric:tabular-nums}
+.ost-ptable .ost-nmcell{text-align:left;white-space:normal;max-width:12em;overflow-wrap:anywhere}
+.ost-tips ul{margin:6px 0 0;padding-left:1.1em}
+.ost-tips li{margin:.3em 0}
+.ost-ex td,.ost-ex th{word-break:keep-all}
+@media(max-width:480px){.ost-ex th:nth-child(3),.ost-ex td:nth-child(3){display:none}.ost .seg span{padding:7px 10px;font-size:13.5px}.ost-row{gap:5px 6px;padding:7px 6px 6px}.ost-ptable th,.ost-ptable td{font-size:12.5px;padding:5px 4px}.ost-ex td,.ost-ex th{font-size:13px;padding:5px}.ost-legend{font-size:12px}}
