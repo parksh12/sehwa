@@ -1,4 +1,4 @@
-// P2-22 사주팔자 페이지 /luck/saju/ — build.mjs가 빌드 도구를 넘겨 호출합니다.
+// P2-22 사주팔자 페이지 /fun/saju/ (P2-49 이동, 옛 /luck/saju/) — build.mjs가 빌드 도구를 넘겨 호출합니다.
 // 계산: src/assets/saju-calc.js (+ vendor/saju-vsop87d-earth.js, vendor/saju-kr-lunar.js), 문장: src/assets/saju-read.js, 화면: src/assets/saju.js
 // 빌드할 때마다 verifySaju()로 검증표(content/saju-cases.mjs)를 브라우저와 같은 파일로 돌려 보고, 하나라도 어긋나면 빌드를 멈춥니다.
 import fs from "node:fs";
@@ -8,7 +8,7 @@ import { CASES, HIDDEN_WIKI, STAGE_6TAIL, KASI_TERMS, USNO_SEASONS, KASI_NEWYEAR
 
 export const SAJU_PAGE = {
   id: "saju",
-  path: "/luck/saju/",
+  path: "/fun/saju/", // P2-49 옛 /luck/saju/는 build.mjs 리디렉트
   title: "무료 사주팔자",
   seo: "무료 사주팔자 — 만세력·대운·연애운·재물운·취업운까지, 사주 보는 법",
   h1: "무료 사주팔자 — 만세력부터 올해 운세까지",
@@ -168,7 +168,7 @@ export default function buildSaju(h) {
   if (v.errors.length) throw new Error("사주 검증 실패 (content/saju-cases.mjs):\n  " + v.errors.join("\n  "));
 
   const P = SAJU_PAGE;
-  const items = [["홈", "/"], ["나의 운", "/luck/"], [P.title, P.path]];
+  const items = [["홈", "/"], ["운세·재미", "/fun/"], [P.title, P.path]] /* P2-49 */;
   const words = textLen(HOWTO) + BASIS.join("").length + LIMITS.length + FAQ.reduce((n, f) => n + f.a.length, 0);
   if (words < 1500) warnings.push(`사주 페이지 원고 ${words}자(1500자 미만)`);
   const nowY = new Date().getFullYear();
@@ -211,7 +211,7 @@ export default function buildSaju(h) {
 ${crumbHtml(items)}
 <article class="tool saju-page">
   <header class="page-head">
-    <span class="eyebrow">나의 운</span>
+    <span class="eyebrow">운세·재미</span>
     <h1>${esc(P.h1)}</h1>
     <p class="lead">${esc(P.desc)}</p>
     <p class="fun-badge">재미·참고용 콘텐츠예요</p>

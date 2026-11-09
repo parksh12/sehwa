@@ -39,29 +39,26 @@ function write(p, html) {
 const pageHtml = new Map();
 
 // ---------- 사이트 구조 ----------
+// P2-49 펭귄 오락실 = 게임만. 옛 오락실 카테고리 me(나의 성격)·love(나의 관계)·luck(나의 운)은 툴 카테고리 「운세·재미」(UCATS.fun, /fun/)로 합침
 const CATS = {
-  me: { name: "나의 성격", icon: "🪞", desc: "생일과 성향으로 나를 들여다보는 공간이에요." },
-  love: { name: "나의 관계", icon: "💞", desc: "나와 상대가 어떻게 어울리는지 가볍게 살펴봐요." },
-  luck: { name: "나의 운", icon: "🍀", desc: "전통 상징을 바탕으로 한 해의 흐름을 재미로 읽어 봐요." },
   story: { name: "이야기 게임", icon: "", desc: "생각은 짧게, 여운은 길게. 한 판이면 끝나는 짧은 이야기 게임이에요." },
   arcade: { name: "순발력 게임", icon: "", desc: "머리보다 손이 먼저 움직이는 짧은 게임이에요." },
 };
 // hook: 홈·추천 카드에 쓰는 짧은 한 줄 / meta: 소요 시간·분량
 // 노출 순위(RANK): 홈 오락실 띠와 오락실 순서 참고값. 지금은 운영진 추정치이고, GA4·서치콘솔 데이터가 쌓이면 실측 노출 순으로 바꿉니다.
-const RANK = ["today", "rpg", "life", "personality", "stack", "birthday", "namematch", "reaction"];
 const TOOLS = [
-  { id: "birthday", cat: "me", path: "/me/birthday/", icon: "🎂", title: "생일로 보는 나", h1: "생일로 보는 나 — 만 나이·띠·별자리 한 번에", desc: "생년월일만 넣으면 만 나이, 띠, 별자리, 다음 생일 D-day까지 한 번에 알려 드려요.", hook: "만 나이, 띠, 별자리, 다음 생일까지 며칠 남았는지. 생일만 넣으면 끝.", meta: "10초" },
-  { id: "personality", cat: "me", path: "/me/personality/", icon: "🧩", title: "16유형 성격 테스트", h1: "16유형 성격 테스트 — 20문항으로 보는 나의 성향", desc: "20개 문항에 답하면 4가지 축의 비율과 16유형 중 나와 가까운 유형을 알려 드려요.", hook: "20문항이면 네 가지 축이 몇 대 몇인지까지 나와요.", meta: "20문항 · 3분" },
-  { id: "namematch", cat: "love", path: "/love/name-match/", icon: "💌", title: "이름 궁합 테스트", h1: "이름 궁합 테스트 — 획수로 보는 두 사람의 케미", desc: "두 사람의 이름 획수를 더해 가며 궁합 점수를 계산하는 추억의 이름 궁합 놀이예요.", hook: "공책 귀퉁이에 획수 적어 가며 하던 그 궁합, 기억나요?", meta: "이름 두 개" },
-  { id: "today", cat: "luck", path: "/luck/today/", icon: "", title: "오늘의 띠별 운세", h1: "오늘의 띠별 운세 — 매일 자정에 바뀌는 12띠 하루 운세", desc: "열두 띠의 오늘 하루 흐름과 일·관계 팁, 행운의 색·숫자를 매일 새로 정리해요.", hook: "매일 자정에 바뀌어요. 내 띠의 오늘 하루는?", meta: "매일 업데이트" },
-  { id: "saju", cat: "luck", path: "/luck/saju/", icon: "", title: "무료 사주팔자", h1: "무료 사주팔자 — 만세력부터 올해 운세까지", desc: "생년월일시로 사주 여덟 글자를 계산하고 오행·십신·대운과 연애운·재물운·직업운 등 6가지 운, 올해 운세를 풀어 드려요.", hook: "절기·출생지 경도까지 반영한 만세력. 연애운·재물운·취업운까지.", meta: "생년월일시 · 1분" }, // P2-22
+  { id: "birthday", cat: "fun", path: "/fun/birthday/", icon: "🎂", title: "생일로 보는 나", h1: "생일로 보는 나 — 만 나이·띠·별자리 한 번에", desc: "생년월일만 넣으면 만 나이, 띠, 별자리, 다음 생일 D-day까지 한 번에 알려 드려요.", hook: "만 나이, 띠, 별자리, 다음 생일까지 며칠 남았는지. 생일만 넣으면 끝.", meta: "10초" },
+  { id: "personality", cat: "fun", path: "/fun/personality/", icon: "🧩", title: "16유형 성격 테스트", h1: "16유형 성격 테스트 — 20문항으로 보는 나의 성향", desc: "20개 문항에 답하면 4가지 축의 비율과 16유형 중 나와 가까운 유형을 알려 드려요.", hook: "20문항이면 네 가지 축이 몇 대 몇인지까지 나와요.", meta: "20문항 · 3분" },
+  { id: "namematch", cat: "fun", path: "/fun/name-match/", icon: "💌", title: "이름 궁합 테스트", h1: "이름 궁합 테스트 — 획수로 보는 두 사람의 케미", desc: "두 사람의 이름 획수를 더해 가며 궁합 점수를 계산하는 추억의 이름 궁합 놀이예요.", hook: "공책 귀퉁이에 획수 적어 가며 하던 그 궁합, 기억나요?", meta: "이름 두 개" },
+  { id: "today", cat: "fun", path: "/fun/today/", icon: "", title: "오늘의 띠별 운세", h1: "오늘의 띠별 운세 — 매일 자정에 바뀌는 12띠 하루 운세", desc: "열두 띠의 오늘 하루 흐름과 일·관계 팁, 행운의 색·숫자를 매일 새로 정리해요.", hook: "매일 자정에 바뀌어요. 내 띠의 오늘 하루는?", meta: "매일 업데이트" },
+  { id: "saju", cat: "fun", path: "/fun/saju/", icon: "", title: "무료 사주팔자", h1: "무료 사주팔자 — 만세력부터 올해 운세까지", desc: "생년월일시로 사주 여덟 글자를 계산하고 오행·십신·대운과 연애운·재물운·직업운 등 6가지 운, 올해 운세를 풀어 드려요.", hook: "절기·출생지 경도까지 반영한 만세력. 연애운·재물운·취업운까지.", meta: "생년월일시 · 1분" }, // P2-22
   { id: "reaction", cat: "arcade", path: "/arcade/reaction/", icon: "⚡", title: "반응속도 게임", h1: "반응속도 게임 — 초록색이 되는 순간 터치!", desc: "빨간 화면이 초록색으로 바뀌는 순간을 다섯 번 잡아 보세요. 평균 기록과 등급, 내 최고 기록을 알려 드려요.", hook: "초록색 되는 순간 누르기. 다섯 번 평균으로 등급이 매겨져요.", meta: "터치 5번" },
   { id: "rpg", cat: "story", path: "/story/penguin-rpg/", icon: "", title: "펭귄 RPG 뽀득이와 오색 연", h1: "펭귄 RPG — 뽀득이와 오색 연", desc: "색을 잃은 얼음 군도에서 펭귄 뽀득이가 오색 실 네 가닥을 찾아 떠나는 약 1시간짜리 턴제 RPG. 지역 4곳과 보스 5마리, 동료 2명, 자동 저장.", hook: "색을 잃은 얼음 군도, 오색 실을 찾아 떠나는 1시간 모험.", meta: "턴제 RPG · 약 1시간 · 자동 저장" },
   { id: "stack", cat: "arcade", path: "/arcade/stack/", icon: "", title: "블록 쌓기 게임", h1: "블록 쌓기 게임 — 탭 한 번으로 높이 쌓기", desc: "좌우로 움직이는 블록을 탭해서 멈추고, 아래 블록과 겹친 만큼만 남겨 높이 쌓는 게임이에요. 딱 맞추면 PERFECT, 이 기기의 최고 기록을 남겨 다시 도전할 수 있어요.", hook: "탭 한 번에 한 층. 딱 맞추면 PERFECT.", meta: "탭 · Space" },
   { id: "life", cat: "story", path: "/story/life/", icon: "", title: "Life Game", seo: "Life Game — 인생 시뮬레이션 게임, 진학·결혼·직업을 직접 고르기", h1: "Life Game — 진학·결혼·직업, 갈림길을 직접 고르는 인생 게임", desc: "한 사람이 되어 일생을 살아 보는 도트 이야기 게임. 진학, 첫 직업, 결혼, 자녀, 이직, 이사, 위기, 은퇴 같은 인생의 터닝포인트를 시간 제한 없이 직접 고르면, 고른 길에 맞는 장면과 엔딩, 내 인생 연표가 나와요.", hook: "결혼할까, 창업할까? 터닝포인트를 직접 고르는 인생.", meta: "5~10분 · 터닝포인트 9번" },
   { id: "hell", cat: "arcade", path: "/arcade/hell-31/", icon: "", title: "지옥에서 살아남기", h1: "지옥에서 살아남기 — Hell Survival 31", desc: "A와 B 중 하나는 살고 하나는 죽는 31단계 병맛 선택 게임. 슬랩스틱 사망 31종을 모으는 사망 도감과 「가장 억울한 죽음」 공유 카드까지, 3~5분이면 한 판.", hook: "A/B 중 하나는 즉사. 상식대로 고르면 대개 죽는 31단계.", meta: "31단계 · 3~5분" }, // P2-27
   { id: "hellchosun", cat: "story", path: "/story/hell-chosun/", icon: "", title: "헬조선에서 살아남기", h1: "헬조선에서 살아남기 — 0세부터 80세까지 40단계", desc: "자산·체력·멘탈·눈치를 지키며 0세부터 80세까지 40단계를 버티는 병맛 인생 생존 게임. 사망 도감 44장, 엔딩 4종, 다음 생 유산 보너스.", hook: "자산·체력·멘탈·눈치 중 하나라도 바닥나면 끝. 80세까지 버티기.", meta: "40단계 · 15~30분" }, // P2-28
-  { id: "draw", cat: "arcade", path: "/arcade/ladder/", icon: "", title: "사다리타기 · 돌림판 · 제비뽑기", seo: "사다리타기 · 돌림판 · 제비뽑기 — 무료 온라인 뽑기", h1: "사다리타기 · 돌림판 · 제비뽑기 — 커피 내기, 점심 메뉴 정하기", desc: "참가자와 결과 항목을 넣고 사다리타기, 돌림판, 제비뽑기 중 하나로 정해요. 같은 결과가 그대로 재생되는 공정성 링크와 결과 이미지 저장을 지원해요.", hook: "커피 내기·점심 메뉴·청소 당번. 공정성 링크로 같은 결과 재생.", meta: "사다리 · 돌림판 · 제비", kw: "사다리타기 사다리 게임 돌림판 룰렛 돌리기 제비뽑기 랜덤 뽑기 추첨 커피 내기 점심 메뉴 정하기 청소 당번 발표 순서 복불복" }, // P2-44
+  { id: "draw", cat: "fun", path: "/fun/ladder/", icon: "", title: "사다리타기 · 돌림판 · 제비뽑기", seo: "사다리타기 · 돌림판 · 제비뽑기 — 무료 온라인 뽑기", h1: "사다리타기 · 돌림판 · 제비뽑기 — 커피 내기, 점심 메뉴 정하기", desc: "참가자와 결과 항목을 넣고 사다리타기, 돌림판, 제비뽑기 중 하나로 정해요. 같은 결과가 그대로 재생되는 공정성 링크와 결과 이미지 저장을 지원해요.", hook: "커피 내기·점심 메뉴·청소 당번. 공정성 링크로 같은 결과 재생.", meta: "사다리 · 돌림판 · 제비", kw: "사다리타기 사다리 게임 돌림판 룰렛 돌리기 제비뽑기 랜덤 뽑기 추첨 커피 내기 점심 메뉴 정하기 청소 당번 발표 순서 복불복" }, // P2-44
 ];
 // 카드 그림(인라인 SVG). 이모지 대신 사이트 고유 그림을 씁니다.
 const K = "#141414", W = "#fff", RED = "#e5372b", YEL = "#ffc21a", GRN = "#1e9e5a";
@@ -109,7 +106,19 @@ function doc(x, y, w, h, fill) {
 // 로고: 코드로 그린 단순한 펭귄(둥근 사각 몸통 + 흰 배 + 점 눈 + 노란 부리). 실존 캐릭터·로고를 본뜨지 않음
 const LOGO = (size = 34) => `<svg class="logo-mark" width="${size}" height="${size}" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><circle cx="32" cy="32" r="28" fill="#141414"/><path d="M32 20.5c-4-7-19-7-20.5 6C10 40 18.5 53 32 53s22-13 20.5-26.5C51 13.5 36 13.5 32 20.5z" fill="#fff"/><ellipse cx="23.5" cy="33" rx="3.2" ry="4" fill="#141414"/><ellipse cx="40.5" cy="33" rx="3.2" ry="4" fill="#141414"/><circle cx="24.6" cy="31.6" r="1.1" fill="#fff"/><circle cx="41.6" cy="31.6" r="1.1" fill="#fff"/><path d="M28.6 39.5h6.8l-3.4 4.4z" fill="#ffc21a" stroke="#141414" stroke-width="1.6" stroke-linejoin="round"/><circle cx="18" cy="41" r="2.8" fill="#e5372b" opacity=".4"/><circle cx="46" cy="41" r="2.8" fill="#e5372b" opacity=".4"/></svg>`;
 const toolById = Object.fromEntries(TOOLS.map((x) => [x.id, x]));
-const byRank = RANK.map((id) => toolById[id]).concat(TOOLS.filter((x) => !RANK.includes(x.id)));
+// P2-49 TOOLS는 toolPage(해설 원고 guides) 틀을 쓰는 항목 묶음. cat이 CATS(story·arcade)면 오락실 게임, "fun"이면 「운세·재미」 툴. id는 그대로(즐겨찾기·랭킹·GA)
+const GAMES = TOOLS.filter((x) => CATS[x.cat]);
+const FUN_RANK = ["today", "saju", "personality", "birthday", "namematch", "draw"]; // P2-49 「운세·재미」 서랍 순서
+const FUN_PATH = { today: "/fun/today/", tti: (k) => `/fun/tti/${k}/`, zodiac: (k) => `/fun/zodiac/${k}/`, type: (k) => `/fun/personality/${k.toLowerCase()}/` }; // P2-49 하위 페이지 주소 한 곳
+// P2-49 옛 주소 → 새 주소(리디렉트 도우미가 사용). 옛 오락실 카테고리 3곳 + 툴 6개 + 하위 해설(띠 12·별자리 12·16유형 16)
+const FUN_MOVED = [
+  ["/me/", "/fun/"], ["/love/", "/fun/"], ["/luck/", "/fun/"],
+  ["/me/birthday/", "/fun/birthday/"], ["/me/personality/", "/fun/personality/"], ["/love/name-match/", "/fun/name-match/"],
+  ["/luck/today/", "/fun/today/"], ["/luck/saju/", "/fun/saju/"], ["/arcade/ladder/", "/fun/ladder/"],
+  ...["rat", "ox", "tiger", "rabbit", "dragon", "snake", "horse", "goat", "monkey", "rooster", "dog", "pig"].map((k) => [`/me/tti/${k}/`, `/fun/tti/${k}/`]),
+  ...["aries", "taurus", "gemini", "cancer", "leo", "virgo", "libra", "scorpio", "sagittarius", "capricorn", "aquarius", "pisces"].map((k) => [`/me/zodiac/${k}/`, `/fun/zodiac/${k}/`]),
+  ...["ISTJ", "ISFJ", "INFJ", "INTJ", "ISTP", "ISFP", "INFP", "INTP", "ESTP", "ESFP", "ENFP", "ENTP", "ESTJ", "ESFJ", "ENFJ", "ENTJ"].map((k) => [`/me/personality/${k.toLowerCase()}/`, `/fun/personality/${k.toLowerCase()}/`]),
+];
 const RECO = {
   birthday: ["today", "personality", "reaction"],
   personality: ["birthday", "namematch", "reaction"],
@@ -132,13 +141,14 @@ const LIFE_SLUG = { adventure: "adventurer", love: "warm-heart", stable: "steady
 
 // ---------- 펭귄 툴즈: 실용 툴 카테고리·목록 ----------
 // 기존 콘텐츠(CATS: me·love·luck·story·arcade)는 주소를 그대로 두고 「펭귄 오락실」(/play/)로 묶습니다.
-const PLAY = { name: "펭귄 오락실", tagline: "운세·테스트·게임, 잠깐 쉬어 가는 재미", path: "/play/", desc: "운세, 성격 테스트, 이름 궁합, Life Game, 반응속도 게임처럼 잠깐 쉬어 가는 재미 콘텐츠를 모았어요." };
+const PLAY = { name: "펭귄 오락실", tagline: "RPG·생존 게임·순발력 게임, 잠깐 쉬어 가는 한 판", path: "/play/", desc: "펭귄 RPG, 지옥에서 살아남기, 헬조선에서 살아남기, Life Game, 블록 쌓기, 반응속도 게임처럼 잠깐 쉬어 가는 게임을 모았어요." }; // P2-49 게임만
 const UCATS = {
   pdf: { name: "PDF·문서", desc: "PDF를 합치고 나누고, 이미지와 워드 문서를 PDF로 바꾸는 툴이에요." },
   image: { name: "이미지", desc: "사진 용량을 줄이고, 아이폰 HEIC 사진을 JPG로 바꾸고, 여러 장을 한 장으로 이어 붙이거나 PDF로 묶고, QR코드를 만드는 이미지 툴이에요." }, // P2-46 desc, P2-47 HEIC, P2-48 QR
   text: { name: "글쓰기", desc: "자기소개서, 리포트, 블로그 글을 쓸 때 필요한 글쓰기 툴이에요." },
   calc: { name: "생활 계산", desc: "D-day, 연봉 실수령액, 퇴직금처럼 생활에서 자주 찾는 계산을 바로 해 주는 툴이에요." }, // P2-45 desc
   time: { name: "시간", desc: "타이머와 스톱워치처럼 시간을 재고 알려 주는 툴이에요." },
+  fun: { name: "운세·재미", seo: "운세·재미 — 무료 사주·띠별 운세·성격 테스트·사다리타기", desc: "오늘의 띠별 운세, 무료 사주팔자, 16유형 성격 테스트, 생일로 보는 나, 이름 궁합, 사다리타기·돌림판처럼 재미로 보고 가볍게 정하는 툴이에요." }, // P2-49 옛 오락실 운세·테스트·사다리
 };
 const NAV = [...Object.entries(UCATS).map(([k, c]) => [c.name, `/${k}/`]), [PLAY.name, PLAY.path]];
 // seo: <title> 앞부분(검색어 그대로) / also: 다른 카테고리 페이지에도 함께 노출 / beta: 베타 표시 / kw: 홈 검색용 동의어
@@ -189,10 +199,12 @@ const NEXT = {
 };
 const utilById = Object.fromEntries(UTILS.map((x) => [x.id, x]));
 const anyById = { ...toolById, ...utilById };
+const TOOL_RANK = [...UTIL_RANK, ...FUN_RANK]; // P2-49 툴 전체(실용 + 운세·재미) 노출 순서
 const catName = (k) => (UCATS[k] || CATS[k]).name;
 
 // ---------- 공통 조각 ----------
-const DISCLAIMER = "툴로 만든 결과물은 원본과 함께 확인한 뒤 사용해 주세요. 펭귄 오락실의 테스트와 운세는 재미로 보는 콘텐츠이며, 의학·심리·재정·법률적 판단의 근거가 될 수 없어요.";
+// P2-49 운세·재미 툴 / 오락실 게임으로 문구 분리
+const DISCLAIMER = "툴로 만든 결과물은 원본과 함께 확인한 뒤 사용해 주세요. 운세·재미 툴의 테스트와 운세, 펭귄 오락실의 게임 결과는 재미로 보는 콘텐츠이며, 의학·심리·재정·법률적 판단의 근거가 될 수 없어요.";
 const SAFE = "파일은 서버로 전송하지 않습니다. 지금 쓰는 브라우저 안에서 처리해요.";
 // 툴 페이지 CSP: 스크립트는 자체 파일 + 애드센스·GA 도메인만. 파일 데이터를 보낼 수 있는 connect-src도 자체·Google 광고/통계로 한정
 const GDOM = "https://*.google.com https://*.google.co.kr https://*.googlesyndication.com https://*.doubleclick.net https://*.googleadservices.com https://*.adtrafficquality.google https://*.gstatic.com https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com";
@@ -255,11 +267,12 @@ const recoHtml = (ids, heading = "이것도 해 보세요") =>
 // P2-25 즐겨찾기 별 버튼(SVG). 상태(aria-pressed)는 favs.js가 이 기기의 저장값으로 맞춤
 const STAR_SVG = '<svg class="fav-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.9 6 6.5.8-4.8 4.5 1.2 6.5L12 17.2l-5.8 3.2 1.2-6.5L2.6 9.4l6.5-.8z"/></svg>';
 const favBtn = (x, cls = "") => `<button type="button" class="fav${cls ? " " + cls : ""}" data-fav="${esc(x.id)}" aria-pressed="false" aria-label="${esc(x.title)} 즐겨찾기에 추가">${STAR_SVG}</button>`;
+// P2-49 새 툴(NEW_ITEMS 30일 이내)은 행 제목 옆에 NEW
 const rowHtml = (x) =>
-  `<li class="has-fav">${favBtn(x, "fav-row")}<a class="row" href="${u(x.path)}"><span class="row-art">${ART[x.id]}</span><span class="row-body"><b>${esc(x.title)}${x.beta ? ' <em class="beta">베타</em>' : ""}</b><small>${esc(x.hook)}</small></span><span class="row-go" aria-hidden="true">›</span></a></li>`;
+  `<li class="has-fav">${favBtn(x, "fav-row")}<a class="row" href="${u(x.path)}"><span class="row-art">${ART[x.id]}</span><span class="row-body"><b>${esc(x.title)}${x.beta ? ' <em class="beta">베타</em>' : ""}${isNew(x.id) ? ' <span class="new-tag">NEW</span>' : ""}</b><small>${esc(x.hook)}</small></span><span class="row-go" aria-hidden="true">›</span></a></li>`;
 const drawerHtml = ({ tone, name, href = "", sub = "", tools, ext = [], extra = "", tag = "h2" }) =>
   `<section class="drawer t-${tone}"><header class="drawer-head"><span class="drawer-pull" aria-hidden="true"></span><${tag} class="drawer-name">${href ? `<a href="${u(href)}">${esc(name)}</a>` : esc(name)}</${tag}><small>${tools.length + ext.length}개</small>${sub ? `<p>${esc(sub)}</p>` : ""}</header><ul class="rows">${tools.map(rowHtml).join("")}${ext.map(extRowHtml).join("")}</ul>${extra}</section>`;
-const utilsIn = (k) => UTIL_RANK.map((id) => utilById[id]).filter((x) => x.cat === k || (x.also || []).includes(k));
+const utilsIn = (k) => TOOL_RANK.map((id) => anyById[id]).filter((x) => x.cat === k || (x.also || []).includes(k)); // P2-49 운세·재미 포함
 // 세화산업의 다른 서비스(외부 사이트, 새 창). iframe·코드 가져오기 없이 링크만 검
 const FAMILY = { name: "랜덤7942", url: "https://www.random7942.com/", hook: "가입 없이 낯선 사람과 아이디어 나누기 · 익명 브레인스토밍" };
 const extRowHtml = (f) =>
@@ -279,7 +292,7 @@ const SEO_DESC = {
   "/about/": () => `${cfg.siteName} 소개: PDF·이미지·글쓰기·생활 계산 툴과 펭귄 오락실을 어떤 원칙(브라우저 안에서 처리, 한계까지 적는 설명)으로 운영하는지, 운영자 ${cfg.operator} 안내.`,
   "/privacy/": () => `${cfg.siteName} 개인정보처리방침: 툴에 넣은 파일과 입력값을 서버로 보내지 않는 원칙, Google AdSense 광고 쿠키${cfg.gaId ? "와 Google Analytics 방문 통계" : ""}, 국외 이전, 문의처 안내.`,
   "/terms/": () => `${cfg.siteName} 이용약관: 서비스 내용, 서비스 변경·중단, 이용자의 의무, 저작권, 책임의 제한, 준거법과 분쟁 해결 안내.`,
-  "/disclaimer/": () => `${cfg.siteName} 면책고지: 툴 결과물은 원본과 함께 확인해 주세요. 펭귄 오락실의 운세·테스트는 재미로 보는 콘텐츠이며 의학·법률·재정·심리 진단을 대신하지 않아요.`,
+  "/disclaimer/": () => `${cfg.siteName} 면책고지: 툴 결과물은 원본과 함께 확인해 주세요. 운세·재미 툴의 운세·테스트는 재미로 보는 콘텐츠이며 의학·법률·재정·심리 진단을 대신하지 않아요.`,
   "/contact/": () => `${cfg.siteName} 문의: 오류 제보, 의견, 제휴 문의는 이메일 ${cfg.contactEmail}로 보내 주세요. 문의할 때 알려 주시면 좋은 내용과 답변 안내.`,
   "/licenses/": () => `${cfg.siteName}가 쓰는 오픈소스 라이브러리(pdf-lib, pdf.js, mammoth, fflate, libheif, qrcode-generator 등)와 글꼴(Pretendard, Black Han Sans)의 버전·라이선스 안내.`, // P2-47 libheif, P2-48 qrcode-generator
   "/editorial/": () => `${cfg.siteName}가 툴 설명과 오락실 해설을 만들고 검수하는 기준: 실제 파일로 확인, 직접 작성과 사람 검수, 단정하지 않는 표현, 계산 방식 공개.`,
@@ -388,7 +401,7 @@ ${scripts.map((s) => `<script src="${u(`/assets/${s}`)}?v=${BUILD_V}" defer></sc
 function toolPage(tool, toolHtml, { scripts = [], extraBelow = "", dataJson = null } = {}) {
   const g = guides[tool.id];
   if (!g) throw new Error(`guides.${tool.id} 없음`);
-  const cat = CATS[tool.cat];
+  const cat = CATS[tool.cat] || UCATS[tool.cat]; // P2-49 운세·재미(UCATS.fun) 항목도 같은 틀
   const items = [["홈", "/"], [cat.name, `/${tool.cat}/`], [tool.title, tool.path]];
   const body = `
 ${crumbHtml(items)}
@@ -427,9 +440,11 @@ fs.mkdirSync(DIST, { recursive: true });
 fs.cpSync(path.join(ROOT, "src", "assets"), path.join(DIST, "assets"), { recursive: true });
 
 // 홈 배치(COO 개편): 툴은 홈에서 대표 서랍 한 곳에만 보임(also가 있으면 also[0]) → 중복 행 없음
-const homeIn = (k) => UTIL_RANK.map((id) => utilById[id]).filter((x) => ((x.also || [])[0] || x.cat) === k);
+const homeIn = (k) => TOOL_RANK.map((id) => anyById[id]).filter((x) => ((x.also || [])[0] || x.cat) === k); // P2-49 운세·재미 포함
 // 서랍 순서: 툴이 많은 서랍부터(같으면 UCATS 순서). 위 3개는 윗줄, 나머지는 아랫줄
 const homeOrder = () => Object.entries(UCATS).map((e, i) => [e, homeIn(e[0]).length, i]).sort((a, b) => b[1] - a[1] || a[2] - b[2]).map((x) => x[0]);
+// P2-49 데스크톱 줄 배치: 윗줄 3개(넓이 1/3). 아랫줄이 2개면 반씩, 그 밖에는 1/3씩
+const cabCls = (i, n) => (i < 3 || n - 3 !== 2 ? "cab-big" : "cab-wide");
 // 오락실 타일: 홈에서 놀이 콘텐츠를 한눈에(4×2)
 // ★ 새 툴·게임을 만들면 여기에 { id, d: "출시일" }을 맨 위에 추가(대표님 지시: 새 콘텐츠는 메인에 잘 보이게).
 // 출시 30일 이내 항목 중 최신 4개가 홈 맨 위 「NEW」 띠에 나오고, 해당 행·타일에 NEW 표시가 붙음
@@ -466,16 +481,17 @@ const newCard = (id) => {
   const x = anyById[id], util = !!utilById[id];
   return `<li class="has-fav">${favBtn(x, "fav-tile")}<a class="new-card" href="${u(x.path)}"><span class="new-tag">NEW</span><span class="fun-art">${ART[x.id]}</span><b>${esc(x.title)}</b><span>${esc(x.hook)}</span><small>${util ? esc(catName(x.cat)) : esc(PLAY.name)}</small></a></li>`;
 };
-const FUN_TILES = ["today", "saju", "personality", "birthday", "namematch", "stack", "reaction", "family"];
+const FUN_TILES = ["hell", "stack", "reaction", "family"]; // P2-49 게임만(rpg·hellchosun·life는 바로 위 「오래 즐기는 게임」에 있음)
 const funTile = (id) => {
   if (id === "family") return `<li class="has-fav">${favBtn({ id: "family", title: FAMILY.name }, "fav-tile")}<a class="fun-tile t-love" href="${FAMILY.url}" target="_blank" rel="noopener"><span class="fun-art">${ART.family || ""}</span><b>${esc(FAMILY.name)} <small class="ext">새 창 ↗</small></b><span>${esc(FAMILY.hook)}</span></a></li>`;
   const x = toolById[id];
   return `<li class="has-fav">${favBtn(x, "fav-tile")}<a class="fun-tile t-${x.cat}" href="${u(x.path)}"><span class="fun-art">${ART[x.id]}</span><b>${esc(x.title)}</b><span>${esc(x.hook)}</span></a></li>`;
 };
 // 홈 — 「펭귄 공구함」: 검색 + 카테고리 서랍(열)마다 툴 행. 툴이 늘면 행만 늘어남. 오락실은 한 줄 띠(20% 이하)
+const playCat = (x) => (CATS[x.cat] ? `${PLAY.name} · ${CATS[x.cat].name}` : catName(x.cat)); // P2-49 게임은 「오락실 · 분류」, 운세·재미는 툴 분류 이름
 const SEARCH_INDEX = [
   ...UTILS.map((x) => ({ t: x.title, p: u(x.path), c: catName(x.cat), k: `${x.kw} ${x.hook}`, b: x.beta ? 1 : 0 })),
-  ...TOOLS.map((x) => ({ t: x.title, p: u(x.path), c: `${PLAY.name} · ${CATS[x.cat].name}`, k: x.kw ? `${x.kw} ${x.hook}` : x.hook })), // P2-44 kw 있으면 검색어 추가
+  ...TOOLS.map((x) => ({ t: x.title, p: u(x.path), c: playCat(x), k: x.kw ? `${x.kw} ${x.hook}` : x.hook })), // P2-44 kw 있으면 검색어 추가, P2-49 분류 이름
   { t: FAMILY.name, p: FAMILY.url, c: "세화산업 다른 서비스 · 새 창", k: `랜덤7942 랜덤 채팅 익명 채팅 브레인스토밍 random7942 ${FAMILY.hook}`, x: 1 }, // 외부 사이트(대표님 지시)
 ];
 const byUtilRank = UTIL_RANK.map((id) => utilById[id]);
@@ -483,9 +499,9 @@ const byUtilRank = UTIL_RANK.map((id) => utilById[id]);
   const body = `
 <section class="hero hero-tools">
   <div class="hero-text">
-    <p class="hero-kicker">펭귄 공구함 · 툴 ${UTILS.length}개</p>
+    <p class="hero-kicker">펭귄 공구함 · 툴 ${TOOL_RANK.length}개</p>
     <h1>자주 쓰는 툴, <br>설치 없이 바로</h1>
-    <p class="lead">PDF·이미지·글쓰기·생활 계산 툴을 서랍별로 정리해 두었어요. 가입 없이 쓰고, 파일은 서버로 전송하지 않습니다.</p>
+    <p class="lead">PDF·이미지·글쓰기·생활 계산·운세 툴을 서랍별로 정리해 두었어요. 가입 없이 쓰고, 파일은 서버로 전송하지 않습니다.</p>
   </div>
   <form class="search" role="search" action="${u("/")}">
     <label for="tool-q">어떤 툴을 찾으세요?</label>
@@ -497,16 +513,16 @@ const byUtilRank = UTIL_RANK.map((id) => utilById[id]);
 </section>
 <script type="application/json" id="tool-index">${JSON.stringify(SEARCH_INDEX).replace(/</g, String.fromCharCode(92) + "u003c")}</script>
 
-<section class="long-band" aria-labelledby="long-h"><h2 id="long-h">오래 즐기는 게임 <small>${esc(PLAY.name)}의 대표 게임</small></h2><ul class="long-grid">${LONG_GAMES.map(({ id, t }) => { const x = toolById[id]; return `<li class="has-fav">${favBtn(x, "fav-tile")}<a class="long-card t-${x.cat}" href="${u(x.path)}"><span class="long-art">${ART[x.id]}</span><span class="long-body">${isNew(id) ? '<span class="new-tag">NEW</span> ' : ""}<em>${esc(t)}</em><b>${esc(x.title)}</b><span>${esc(x.hook)}</span></span><span class="ff-go">플레이 ›</span></a></li>`; }).join("")}</ul></section>
-${newList.filter((x) => !LONG_GAMES.some((g) => g.id === x.id)).length ? `<section class="new-band" aria-labelledby="new-h"><h2 id="new-h"><span class="new-tag">NEW</span> 새로 나왔어요</h2><ul class="new-grid">${newList.filter((x) => !LONG_GAMES.some((g) => g.id === x.id)).slice(0, 4).map((x) => newCard(x.id)).join("")}</ul></section>` : ""}
+<!-- P2-49 툴이 주인공: 검색·즐겨찾기 바로 아래에 모든 툴을 서랍별로 펼침 → 그 아래 NEW 띠 → 오래 즐기는 게임 → 오락실(게임만) -->
 <section class="toolbox" aria-labelledby="toolbox-h">
-  <h2 class="sr" id="toolbox-h">툴 서랍</h2>
-  <div class="cabinet">${homeOrder().map(([k, c], i, all) => `<div class="cab ${i < 3 && all.length > 3 ? "cab-big" : "cab-wide"}">${drawerHtml({ tone: k, name: c.name, href: `/${k}/`, tools: homeIn(k), tag: "h3" })}</div>`).join("")}</div>
+  <div class="toolbox-head"><h2 id="toolbox-h">모든 툴 <small>${TOOL_RANK.length}개 · 서랍별</small></h2><nav class="cab-jump" aria-label="툴 서랍 바로 가기">${homeOrder().map(([k, c]) => `<a class="chip" href="#cab-${k}"><i class="dot t-${k}" aria-hidden="true"></i>${esc(c.name)} <small>${homeIn(k).length}</small></a>`).join("")}</nav></div>
+  <div class="cabinet">${homeOrder().map(([k, c], i, all) => `<div class="cab ${cabCls(i, all.length)}" id="cab-${k}">${drawerHtml({ tone: k, name: c.name, href: `/${k}/`, tools: homeIn(k), tag: "h3" })}</div>`).join("")}</div>
 </section>
+${newList.filter((x) => !LONG_GAMES.some((g) => g.id === x.id)).length ? `<section class="new-band" aria-labelledby="new-h"><h2 id="new-h"><span class="new-tag">NEW</span> 새로 나왔어요</h2><ul class="new-grid">${newList.filter((x) => !LONG_GAMES.some((g) => g.id === x.id)).slice(0, 4).map((x) => newCard(x.id)).join("")}</ul></section>` : ""}
+<section class="long-band" aria-labelledby="long-h"><h2 id="long-h">오래 즐기는 게임 <small>${esc(PLAY.name)}의 대표 게임</small></h2><ul class="long-grid">${LONG_GAMES.map(({ id, t }) => { const x = toolById[id]; return `<li class="has-fav">${favBtn(x, "fav-tile")}<a class="long-card t-${x.cat}" href="${u(x.path)}"><span class="long-art">${ART[x.id]}</span><span class="long-body">${isNew(id) ? '<span class="new-tag">NEW</span> ' : ""}<em>${esc(t)}</em><b>${esc(x.title)}</b><span>${esc(x.hook)}</span></span><span class="ff-go">플레이 ›</span></a></li>`; }).join("")}</ul></section>
 
 <section class="fun-band" aria-labelledby="play-h">
-  <div class="fun-head"><h2 id="play-h"><a href="${u(PLAY.path)}">${esc(PLAY.name)}</a></h2><p>${esc(PLAY.tagline)}</p><a class="more" href="${u(PLAY.path)}">전체 보기 ›</a></div>
-  <a class="fun-feature" href="${u(toolById.rpg.path)}"><span class="fun-art">${ART.rpg}</span><span class="ff-body"><em>NEW · 약 1시간 RPG</em><b>${esc(toolById.rpg.title)}</b><span>${esc(toolById.rpg.hook)}</span></span><span class="ff-go">플레이 ›</span></a>
+  <div class="fun-head"><h2 id="play-h"><a href="${u(PLAY.path)}">${esc(PLAY.name)}</a></h2><p>${esc(PLAY.tagline)}</p><a class="more" href="${u(PLAY.path)}">게임 전체 보기 ›</a></div>
   <ul class="fun-grid">${FUN_TILES.map((id) => funTile(id)).join("")}</ul>
 </section>
 
@@ -522,60 +538,54 @@ ${adSlotFixed("home")}`;
 }
 
 // 펭귄 오락실 허브 — 같은 서랍 시스템으로 「오늘 / 테스트 / 게임」 3구역. 기존 주소는 그대로
+// P2-49 오락실 = 게임만. 운세·사주·테스트·사다리는 툴 「운세·재미」(/fun/)로 옮기고 허브에는 안내 한 줄만 남김
 const ZONES = [
-  { tone: "luck", name: "오늘", sub: "매일 자정에 바뀌는 운세 · 사주팔자", ids: ["today", "saju"] },
-  { tone: "me", name: "테스트", sub: "생일·성향·이름으로 보는 나", ids: ["birthday", "personality", "namematch"] },
-  { tone: "story", name: "게임", sub: "한 판이면 끝나는 짧은 게임", ids: ["rpg", "hell", "hellchosun", "life", "stack", "reaction", "draw"] }, // P2-44 draw
+  { tone: "story", name: "게임", sub: "한 판이면 끝나는 짧은 게임", ids: ["rpg", "hell", "hellchosun", "life", "stack", "reaction"] },
   { tone: "love", name: "같이", sub: "세화산업이 운영하는 다른 서비스(외부 사이트)", ids: [], ext: [FAMILY] },
 ];
 {
   const items = [["홈", "/"], [PLAY.name, PLAY.path]];
   const extra = {
-    오늘: `<div class="drawer-extra"><p class="hint">띠를 누르면 오늘 운세로 바로 가요.</p><div class="mini-stamps">${TTI_KEYS.map((k) => `<a href="${u(`/luck/today/#${k}`)}" title="${esc(tti[k].name)} 오늘의 운세"><b>${esc(tti[k].hanja)}</b>${esc(tti[k].name.replace(/띠$/, ""))}</a>`).join("")}</div></div>`,
-    테스트: `<details class="drawer-extra"><summary>해설 모아 보기 (띠별 성격 · 별자리 · 16유형)</summary><div class="chips">${TTI_KEYS.map((k) => `<a class="chip" href="${u(`/me/tti/${k}/`)}">${esc(tti[k].name)}</a>`).join("")}</div><div class="chips">${ZODIAC_KEYS.map((k) => `<a class="chip" href="${u(`/me/zodiac/${k}/`)}">${esc(zodiac[k].name)}</a>`).join("")}</div><div class="chips">${TYPE_KEYS.map((k) => `<a class="chip" href="${u(`/me/personality/${k.toLowerCase()}/`)}">${k}</a>`).join("")}</div></details>`,
     게임: `<details class="drawer-extra"><summary>Life Game 엔딩 5가지</summary><div class="chips">${LIFE_KEYS.map((k) => `<a class="chip" href="${u(`/story/life/${LIFE_SLUG[k]}/`)}">${esc(guides.lifeTypes[k].name)}</a>`).join("")}</div></details>`,
   };
   const pool = ZONES.flatMap((z) => z.ids);
   const body = `${crumbHtml(items)}
 <header class="page-head play-head">
-  <span class="eyebrow">오늘 · 테스트 · 게임</span>
+  <span class="eyebrow">게임</span>
   <h1>${esc(PLAY.name)}</h1>
   <p class="lead">${esc(PLAY.desc)} 가입은 필요 없고, 입력한 건 어디에도 저장하지 않아요.</p>
-  <div class="hero-actions"><button class="btn" type="button" data-act="draw">아무거나 한 판</button><span class="fun-badge">오락실의 모든 테스트와 운세는 재미로 보는 콘텐츠예요</span></div>
+  <div class="hero-actions"><button class="btn" type="button" data-act="draw">아무거나 한 판</button><span class="fun-badge">가입 없이 바로 한 판</span></div>
   <ul hidden data-draw-pool>${pool.map((id) => `<li><a href="${u(toolById[id].path)}">${esc(toolById[id].title)}</a></li>`).join("")}</ul>
 </header>
 ${(() => {
   // ZONES는 그대로 두고(다른 작업자가 게임 id를 추가함) 화면 배치만 새로: 게임 구역의 앞 2개는 특집 카드
   const z = Object.fromEntries(ZONES.map((x) => [x.name, x]));
   const games = z["게임"].ids, feat = games.slice(0, 2), mini = games.slice(2);
-  const fortune = [...z["오늘"].ids, ...z["테스트"].ids];
   const tile = (id) => funTile(id);
   const featCard = (id) => { const x = toolById[id]; return `<li class="has-fav">${favBtn(x, "fav-tile")}<a class="arc-feat t-${x.cat}" href="${u(x.path)}"><span class="fun-art">${ART[x.id]}</span><span class="ff-body"><em>${esc(x.meta || "게임")}</em><b>${esc(x.title)}</b><span>${esc(x.hook)}</span></span><span class="ff-go">플레이 ›</span></a></li>`; };
   return `<section class="arcade" aria-label="${esc(PLAY.name)} 콘텐츠">
   <div class="arc-sec"><h2 class="arc-h"><span class="dot t-story"></span>게임 <small>한 판이면 끝나는 짧은 게임부터 1시간 RPG까지</small></h2>
     <ul class="arc-feats">${feat.map(featCard).join("")}</ul>
     <ul class="fun-grid arc-grid">${mini.map(tile).join("")}</ul>${extra["게임"]}</div>
-  <div class="arc-sec"><h2 class="arc-h"><span class="dot t-luck"></span>운세 · 테스트 <small>오늘의 운세, 사주, 생일·성향·이름으로 보는 나</small></h2>
-    <ul class="fun-grid arc-grid arc-5">${fortune.map(tile).join("")}</ul>
-    <div class="arc-stamps">${extra["오늘"]}</div>${extra["테스트"]}</div>
+  <p class="arc-moved"><span class="dot t-fun" aria-hidden="true"></span>오늘의 운세·사주·성격 테스트·이름 궁합·사다리타기는 툴로 옮겼어요. <a href="${u("/fun/")}">운세·재미 툴 보기 ›</a></p>
   <div class="arc-sec"><h2 class="arc-h"><span class="dot t-love"></span>같이 <small>세화산업이 운영하는 다른 서비스</small></h2>
     <ul class="fun-grid arc-grid arc-1">${tile("family")}</ul></div>
 </section>`;
 })()}
 ${recoRows(["charcount", "dday", "pdfmerge"], "쉬었다면, 일하러 갈 때 쓰는 툴")}
 ${adSlot("play")}`;
-  write(PLAY.path, layout({ title: `${PLAY.name} — 운세·성격 테스트·짧은 게임`, wide: true, scripts: ["home.js"], desc: `${PLAY.desc} 오늘의 띠별 운세, 생일로 보는 나, 16유형 성격 테스트, 이름 궁합, Life Game, 반응속도 게임.`, path: PLAY.path, body, jsonld: [crumbs(items)] }));
+  write(PLAY.path, layout({ title: `${PLAY.name} — 무료 RPG·생존 게임·짧은 게임`, wide: true, scripts: ["home.js"], desc: `${PLAY.desc} 가입 없이 브라우저에서 바로 한 판.`, path: PLAY.path, body, jsonld: [crumbs(items)] }));
 }
 
 // 카테고리 페이지
+// P2-49 me·luck 하위 칩은 「운세·재미」(/fun/) 페이지로 옮김(FUN_EXTRA)
+const FUN_EXTRA = () => `<section class="cat-block"><div class="cat-head"><h2>띠별 성격</h2></div><div class="chips">${TTI_KEYS.map((k) => `<a class="chip" href="${u(FUN_PATH.tti(k))}">${TTI_EMOJI[k]} ${esc(tti[k].name)}</a>`).join("")}</div></section>
+<section class="cat-block"><div class="cat-head"><h2>별자리별 성향</h2></div><div class="chips">${ZODIAC_KEYS.map((k) => `<a class="chip" href="${u(FUN_PATH.zodiac(k))}">${zodiac[k].symbol} ${esc(zodiac[k].name)}</a>`).join("")}</div></section>
+<section class="cat-block"><div class="cat-head"><h2>16유형 해설</h2></div><div class="chips">${TYPE_KEYS.map((k) => `<a class="chip" href="${u(FUN_PATH.type(k))}">${esc(personality[k].name)}</a>`).join("")}</div></section>
+<section class="cat-block"><div class="cat-head"><h2>띠별 오늘의 운세 바로가기</h2></div><div class="chips">${TTI_KEYS.map((k) => `<a class="chip" href="${u(`${FUN_PATH.today}#${k}`)}">${TTI_EMOJI[k]} ${esc(tti[k].name)}</a>`).join("")}</div></section>`;
 const CAT_EXTRA = {
-  me: () => `<section class="cat-block"><div class="cat-head"><h2>띠별 성격</h2></div><div class="chips">${TTI_KEYS.map((k) => `<a class="chip" href="${u(`/me/tti/${k}/`)}">${TTI_EMOJI[k]} ${esc(tti[k].name)}</a>`).join("")}</div></section>
-<section class="cat-block"><div class="cat-head"><h2>별자리별 성향</h2></div><div class="chips">${ZODIAC_KEYS.map((k) => `<a class="chip" href="${u(`/me/zodiac/${k}/`)}">${zodiac[k].symbol} ${esc(zodiac[k].name)}</a>`).join("")}</div></section>
-<section class="cat-block"><div class="cat-head"><h2>16유형 해설</h2></div><div class="chips">${TYPE_KEYS.map((k) => `<a class="chip" href="${u(`/me/personality/${k.toLowerCase()}/`)}">${esc(personality[k].name)}</a>`).join("")}</div></section>`,
-  luck: () => `<section class="cat-block"><div class="cat-head"><h2>띠별 오늘의 운세 바로가기</h2></div><div class="chips">${TTI_KEYS.map((k) => `<a class="chip" href="${u(`/luck/today/#${k}`)}">${TTI_EMOJI[k]} ${esc(tti[k].name)}</a>`).join("")}</div></section>`,
   story: () => `<section class="cat-block"><div class="cat-head"><h2>Life Game 엔딩 5가지</h2></div><div class="chips">${LIFE_KEYS.map((k) => `<a class="chip" href="${u(`/story/life/${LIFE_SLUG[k]}/`)}">${esc(guides.lifeTypes[k].name)}</a>`).join("")}</div></section>`,
   arcade: () => "",
-  love: () => "",
 };
 for (const [k, c] of Object.entries(CATS)) {
   const list = TOOLS.filter((x) => x.cat === k);
@@ -584,7 +594,7 @@ for (const [k, c] of Object.entries(CATS)) {
 <header class="page-head"><span class="eyebrow">${esc(PLAY.name)}</span><h1>${esc(c.name)}</h1><p class="lead">${esc(c.desc)}</p></header>
 <div class="drawers drawers-1">${drawerHtml({ tone: k, name: c.name, tools: list })}</div>
 ${CAT_EXTRA[k]()}
-${recoRows(TOOLS.filter((x) => x.cat !== k).map((x) => x.id), "오락실의 다른 콘텐츠")}`;
+${recoRows(GAMES.filter((x) => x.cat !== k).map((x) => x.id), "오락실의 다른 게임")}`;
   write(`/${k}/`, layout({ title: c.name, desc: `${c.name} — ${c.desc} ${list.map((x) => x.title).join(", ")}`, path: `/${k}/`, body, jsonld: [crumbs(items)] }));
 }
 
@@ -625,7 +635,7 @@ ${recoRows(TOOLS.filter((x) => x.cat !== k).map((x) => x.id), "오락실의 다�
 <p class="hint">1월~2월 초에 태어났다면 앞 해의 띠일 수 있어요. 띠는 입춘을 기준으로 바뀌어요.</p>
 <div id="today" aria-live="polite">${renderDay(kstDate())}</div>
 <div class="share"><button type="button" class="btn" data-act="threads">오늘의 운세 이미지 저장</button></div>
-${shareBar({ title: "오늘의 띠별 운세", text: "매일 자정에 바뀌는 12띠 오늘의 운세", path: "/luck/today/" })}
+${shareBar({ title: "오늘의 띠별 운세", text: "매일 자정에 바뀌는 12띠 오늘의 운세", path: toolById.today.path })}
 <script type="module" src="${u("/assets/today.js")}?v=${BUILD_V}"></script>`;
   toolPage(toolById.today, html);
 }
@@ -633,8 +643,8 @@ ${shareBar({ title: "오늘의 띠별 운세", text: "매일 자정에 바뀌는
 // 띠별 성격 페이지
 TTI_KEYS.forEach((k) => {
   const d = tti[k];
-  const p = `/me/tti/${k}/`;
-  const items = [["홈", "/"], ["나의 성격", "/me/"], [`${d.name} 성격`, p]];
+  const p = FUN_PATH.tti(k);
+  const items = [["홈", "/"], ["운세·재미", "/fun/"], [`${d.name} 성격`, p]];
   const len = textLen(d.personality);
   const born = d.years.filter((y) => y >= 1936 && y <= 2031);
   const body = `${crumbHtml(items)}
@@ -643,8 +653,8 @@ TTI_KEYS.forEach((k) => {
   <section class="prose">${blocks(d.personality, "h2")}
   <h2>${esc(d.name)} 출생연도</h2><p>${born.map((y) => `${y}년`).join(" · ")}생 (입춘 기준)</p></section>
   ${shareBar({ title: `${d.name} 성격`, text: fill(d.summary), path: p })}
-  <section class="prose"><p><a href="${u(`/luck/today/#${k}`)}">${esc(d.name)} 오늘의 운세 보기</a></p></section>
-  <div class="chips">${TTI_KEYS.filter((x) => x !== k).map((x) => `<a class="chip" href="${u(`/me/tti/${x}/`)}">${TTI_EMOJI[x]} ${esc(tti[x].name)}</a>`).join("")}</div>
+  <section class="prose"><p><a href="${u(`${FUN_PATH.today}#${k}`)}">${esc(d.name)} 오늘의 운세 보기</a></p></section>
+  <div class="chips">${TTI_KEYS.filter((x) => x !== k).map((x) => `<a class="chip" href="${u(FUN_PATH.tti(x))}">${TTI_EMOJI[x]} ${esc(tti[x].name)}</a>`).join("")}</div>
   ${recoHtml(["birthday", "today", "personality"])}
 </article>`;
   write(p, layout({ title: `${d.name} 성격과 특징`, desc: `${d.name} 성격: ${fill(d.summary)} ${d.name} 출생연도와 오늘의 운세까지 함께 확인해 보세요.`, path: p, body, ogType: "article", noindex: len < 300, jsonld: [crumbs(items)] }));
@@ -653,8 +663,8 @@ TTI_KEYS.forEach((k) => {
 // 별자리 페이지
 ZODIAC_KEYS.forEach((k, i) => {
   const d = zodiac[k];
-  const p = `/me/zodiac/${k}/`;
-  const items = [["홈", "/"], ["나의 성격", "/me/"], [`${d.name}`, p]];
+  const p = FUN_PATH.zodiac(k);
+  const items = [["홈", "/"], ["운세·재미", "/fun/"], [`${d.name}`, p]];
   const len = textLen(d.body);
   const same = ZODIAC_KEYS.filter((x) => x !== k && zodiac[x].element === d.element);
   const body = `${crumbHtml(items)}
@@ -667,8 +677,8 @@ ZODIAC_KEYS.forEach((k, i) => {
   </div>
   ${shareBar({ title: `${d.name} 성격`, text: fill(d.summary), path: p })}
   <section class="prose">${blocks(d.body, "h2")}
-  <h2>같은 「${esc(d.element)}」 원소의 별자리</h2><p>${same.map((x) => `<a href="${u(`/me/zodiac/${x}/`)}">${esc(zodiac[x].name)}</a>`).join(", ")}는 ${esc(d.name)}와 같은 원소로 묶여요. 별자리 경계 날짜는 해마다 하루쯤 달라질 수 있어요.</p></section>
-  <div class="chips">${ZODIAC_KEYS.filter((x) => x !== k).map((x) => `<a class="chip" href="${u(`/me/zodiac/${x}/`)}">${zodiac[x].symbol} ${esc(zodiac[x].name)}</a>`).join("")}</div>
+  <h2>같은 「${esc(d.element)}」 원소의 별자리</h2><p>${same.map((x) => `<a href="${u(FUN_PATH.zodiac(x))}">${esc(zodiac[x].name)}</a>`).join(", ")}는 ${esc(d.name)}와 같은 원소로 묶여요. 별자리 경계 날짜는 해마다 하루쯤 달라질 수 있어요.</p></section>
+  <div class="chips">${ZODIAC_KEYS.filter((x) => x !== k).map((x) => `<a class="chip" href="${u(FUN_PATH.zodiac(x))}">${zodiac[x].symbol} ${esc(zodiac[x].name)}</a>`).join("")}</div>
   ${recoHtml(["birthday", "namematch", "personality"])}
 </article>`;
   write(p, layout({ title: `${d.name} 성격과 특징 (${d.dates})`, desc: `${d.name}(${d.dates}) 성격: ${fill(d.summary)}`, path: p, body, ogType: "article", noindex: len < 300, jsonld: [crumbs(items)] }));
@@ -683,14 +693,14 @@ ZODIAC_KEYS.forEach((k, i) => {
     <button class="btn big" type="button" data-act="start">테스트 시작하기</button>
   </div>
 </div>`;
-  const typeGrid = `<section class="prose"><h2>16가지 유형 둘러보기</h2></section><div class="chips">${TYPE_KEYS.map((k) => `<a class="chip" href="${u(`/me/personality/${k.toLowerCase()}/`)}">${k} · ${esc(personality[k].name)}</a>`).join("")}</div>`;
+  const typeGrid = `<section class="prose"><h2>16가지 유형 둘러보기</h2></section><div class="chips">${TYPE_KEYS.map((k) => `<a class="chip" href="${u(FUN_PATH.type(k))}">${k} · ${esc(personality[k].name)}</a>`).join("")}</div>`;
   toolPage(toolById.personality, html, { scripts: ["personality.js"], extraBelow: typeGrid, dataJson: { questions } });
 
   const AXES = { E: "외향", I: "내향", S: "감각", N: "직관", T: "사고", F: "감정", J: "판단", P: "인식" };
   TYPE_KEYS.forEach((k) => {
     const d = personality[k];
-    const p = `/me/personality/${k.toLowerCase()}/`;
-    const items = [["홈", "/"], ["나의 성격", "/me/"], ["16유형 성격 테스트", "/me/personality/"], [d.name, p]];
+    const p = FUN_PATH.type(k);
+    const items = [["홈", "/"], ["운세·재미", "/fun/"], ["16유형 성격 테스트", toolById.personality.path], [d.name, p]];
     const len = textLen(d.body) + [...d.strengths, ...d.cautions, d.match?.note || ""].join(" ").length;
     if (len < 800) warnings.push(`${p} 본문 ${len}자 (<800, noindex)`);
     const g = d.match?.good;
@@ -704,13 +714,13 @@ ZODIAC_KEYS.forEach((k, i) => {
     <div class="tags">${(d.keywords || []).map((x) => `<span>#${t(x)}</span>`).join("")}</div>
   </div>
   ${shareBar({ title: `나의 16유형: ${d.name}`, text: fill(d.summary), path: p })}
-  <p class="center"><a class="btn ghost" href="${u("/me/personality/")}">테스트 다시 하기</a></p>
+  <p class="center"><a class="btn ghost" href="${u(toolById.personality.path)}">테스트 다시 하기</a></p>
   <section class="prose">${blocks(d.body, "h2")}
   <div class="two-col"><div><h2>이런 점이 빛나요</h2><ul>${d.strengths.map((x) => `<li>${t(x)}</li>`).join("")}</ul></div><div><h2>이런 점은 챙겨 보세요</h2><ul>${d.cautions.map((x) => `<li>${t(x)}</li>`).join("")}</ul></div></div>
-  ${g && personality[g] ? `<h2>잘 통한다고 알려진 유형</h2><p><a href="${u(`/me/personality/${g.toLowerCase()}/`)}">${esc(personality[g].name)} (${g})</a> — ${t(d.match.note)}</p>` : ""}
+  ${g && personality[g] ? `<h2>잘 통한다고 알려진 유형</h2><p><a href="${u(FUN_PATH.type(g))}">${esc(personality[g].name)} (${g})</a> — ${t(d.match.note)}</p>` : ""}
   </section>
   ${adSlot("mid")}
-  <div class="chips">${TYPE_KEYS.filter((x) => x !== k).map((x) => `<a class="chip" href="${u(`/me/personality/${x.toLowerCase()}/`)}">${x} · ${esc(personality[x].name)}</a>`).join("")}</div>
+  <div class="chips">${TYPE_KEYS.filter((x) => x !== k).map((x) => `<a class="chip" href="${u(FUN_PATH.type(x))}">${x} · ${esc(personality[x].name)}</a>`).join("")}</div>
   ${recoHtml(["birthday", "namematch", "reaction"])}
   <p class="legal">이 테스트는 칼 융의 심리 유형론에서 출발한 대중적인 4축 모델을 참고해 ${esc(cfg.siteName)}가 자체 제작한 간이 테스트입니다. 공식 성격유형 검사가 아니며, 해당 검사의 상표 권리자 및 국내 판권사와 관련이 없습니다.</p>
 </article>`;
@@ -911,23 +921,28 @@ function checkLife() {
 // 옛 주소(/brain/…, 폐지된 반응 스타일 결과 페이지) → 새 주소로 이동 (색인 제외)
 {
   const moved = [["/brain/", "/arcade/"], ["/brain/reaction/", "/arcade/reaction/"], ...REACTION_KEYS.flatMap((k) => [[`/brain/reaction/${REACTION_SLUG[k]}/`, "/arcade/reaction/"], [`/arcade/reaction/${REACTION_SLUG[k]}/`, "/arcade/reaction/"]])];
+  moved.push(...FUN_MOVED); // P2-49 운세·재미 이동
+  if (moved.some(([f]) => pageHtml.has(f))) throw new Error("P2-49 리디렉트가 실제 페이지를 덮어씀");
   for (const [from, to] of moved) {
     const file = path.join(DIST, from, "index.html");
     fs.mkdirSync(path.dirname(file), { recursive: true });
-    fs.writeFileSync(file, `<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex"><link rel="canonical" href="${abs(to)}"><meta http-equiv="refresh" content="0;url=${u(to)}"><a href="${u(to)}">이동했어요</a>`);
+    // P2-49 쿼리·# 뒤(사주·사다리 공유 링크, 16유형 #r= 점수, 띠 앵커)를 그대로 붙여 이동. 스크립트가 꺼져 있으면 meta refresh로 주소만 이동
+    fs.writeFileSync(file, `<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex"><link rel="canonical" href="${abs(to)}"><script>location.replace(${JSON.stringify(u(to))}+location.search+location.hash)</script><meta http-equiv="refresh" content="0;url=${u(to)}"><a href="${u(to)}">이동했어요</a>`);
   }
 }
 
 // ---------- 펭귄 툴즈 실용 툴 ----------
 // 실용 툴 카테고리 페이지 (/pdf/ /image/ /text/ /calc/)
 for (const [k, c] of Object.entries(UCATS)) {
-  const list = UTILS.filter((x) => x.cat === k || (x.also || []).includes(k));
+  const list = utilsIn(k); // P2-49 운세·재미 포함
   const items = [["홈", "/"], [c.name, `/${k}/`]];
+  const fun = k === "fun"; // P2-49 운세·재미: 파일 안내 대신 입력값 안내 + 띠·별자리·16유형·띠별 운세 바로가기
   const body = `${crumbHtml(items)}
-<header class="page-head"><span class="eyebrow">펭귄 공구함</span><h1>${esc(c.name)} 툴</h1><p class="lead">${esc(c.desc)} ${esc(SAFE)}</p></header>
+<header class="page-head"><span class="eyebrow">펭귄 공구함</span><h1>${esc(c.name)} 툴</h1><p class="lead">${esc(c.desc)} ${esc(fun ? "입력한 생년월일과 이름은 브라우저 안에서만 계산하고 저장하지 않아요." : SAFE)}</p>${fun ? '<p class="fun-badge">운세와 테스트는 재미로 보는 콘텐츠예요</p>' : ""}</header>
 <div class="drawers drawers-1 open">${drawerHtml({ tone: k, name: `${c.name} 서랍`, tools: utilsIn(k) })}</div>
+${fun ? FUN_EXTRA() : ""}
 <section class="reco"><h2>다른 서랍</h2><div class="drawers drawers-mini">${Object.entries(UCATS).filter(([kk]) => kk !== k).map(([kk, cc]) => drawerHtml({ tone: kk, name: cc.name, href: `/${kk}/`, tools: utilsIn(kk), tag: "h3" })).join("")}</div></section>`;
-  write(`/${k}/`, layout({ title: `${c.name} 툴 — 무료`, desc: `${c.name} 툴 모음: ${list.map((x) => x.title).join(", ")}. ${c.desc}`, path: `/${k}/`, body, jsonld: [crumbs(items)] }));
+  write(`/${k}/`, layout({ title: c.seo || `${c.name} 툴 — 무료` /* P2-49 seo */, desc: `${c.name} 툴 모음: ${list.map((x) => x.title).join(", ")}. ${c.desc}`, path: `/${k}/`, body, jsonld: [crumbs(items)] }));
 }
 
 // 파일 넣는 칸(공통). input이 칸 전체를 덮어서 누르거나 끌어다 놓으면 파일이 들어감
@@ -1445,7 +1460,7 @@ write("/404.html", layout({ title: "페이지를 찾을 수 없어요", desc: "�
 {
   const favIdx = {};
   UTILS.forEach((x) => { favIdx[x.id] = { t: x.title, p: u(x.path), c: catName(x.cat) }; });
-  TOOLS.forEach((x) => { favIdx[x.id] = { t: x.title, p: u(x.path), c: `${PLAY.name} · ${CATS[x.cat].name}` }; });
+  TOOLS.forEach((x) => { favIdx[x.id] = { t: x.title, p: u(x.path), c: playCat(x) }; }); // P2-49 id는 그대로, 주소·분류만 새로
   favIdx.family = { t: FAMILY.name, p: FAMILY.url, c: "세화산업 다른 서비스 · 새 창", x: 1 }; // 외부 사이트
   fs.writeFileSync(path.join(DIST, "assets", "fav-index.js"), `window.FAV_INDEX=${JSON.stringify(favIdx).replace(/</g, String.fromCharCode(92) + "u003c")};\n`);
 }
@@ -1474,7 +1489,7 @@ for (const p of sitemap) {
 if (!process.env.CI) fs.writeFileSync(LASTMOD_FILE, "{\n" + sitemap.map((p) => `${JSON.stringify(p)}: ${JSON.stringify(lastmodDb[p])}`).join(",\n") + "\n}\n");
 fs.writeFileSync(path.join(DIST, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemap.map((p) => `  <url><loc>${abs(p)}</loc><lastmod>${lastmod[p]}</lastmod></url>`).join("\n")}\n</urlset>\n`);
 fs.writeFileSync(path.join(DIST, "robots.txt"), `User-agent: *\nAllow: /\n\nSitemap: ${abs("/sitemap.xml")}\n`);
-const rssItems = [...UTILS.map((x) => [x.title, x.path, x.desc]), ...TOOLS.map((x) => [x.title, x.path, x.desc]), ...TYPE_KEYS.map((k) => [`${personality[k].name}(${k}) 성격 특징`, `/me/personality/${k.toLowerCase()}/`, fill(personality[k].summary)])];
+const rssItems = [...UTILS.map((x) => [x.title, x.path, x.desc]), ...TOOLS.map((x) => [x.title, x.path, x.desc]), ...TYPE_KEYS.map((k) => [`${personality[k].name}(${k}) 성격 특징`, FUN_PATH.type(k), fill(personality[k].summary)])];
 fs.writeFileSync(path.join(DIST, "rss.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"><channel><title>${esc(cfg.siteName)}</title><link>${abs("/")}</link><description>${esc(cfg.tagline)}</description><language>ko</language>\n${rssItems.map(([ti, p, d]) => `<item><title>${esc(ti)}</title><link>${abs(p)}</link><guid>${abs(p)}</guid><description>${esc(d)}</description><pubDate>${new Date(`${lastmod[p] || today}T00:00:00+09:00`).toUTCString()}</pubDate></item>`).join("\n")}\n</channel></rss>\n`);
 // 자체 도메인(basePath "")이면 CNAME도 만들어 둠. GitHub Actions로 배포할 때는 이 파일이 쓰이지 않고 저장소 Settings → Pages의 Custom domain 값이 기준(문서 확인)
 { const host = new URL(cfg.siteUrl).hostname; if (cfg.basePath === "" && !host.endsWith(".github.io")) fs.writeFileSync(path.join(DIST, "CNAME"), host + "\n"); }

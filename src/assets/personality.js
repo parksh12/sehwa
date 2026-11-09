@@ -20,7 +20,7 @@
     const code = (per.EI >= 50 ? "E" : "I") + (per.SN >= 50 ? "S" : "N") + (per.TF >= 50 ? "T" : "F") + (per.JP >= 50 ? "J" : "P");
     const r = `E${per.EI}S${per.SN}T${per.TF}J${per.JP}`;
     box.innerHTML = `<p class="center">결과를 정리하고 있어요…</p>`;
-    location.href = NALGI.url(`/me/personality/${code.toLowerCase()}/`) + `#r=${r}`; // 점수는 # 뒤에 붙여 서버 요청에 실리지 않게 함
+    location.href = NALGI.url(`/fun/personality/${code.toLowerCase()}/`) + `#r=${r}`; // P2-49 /me/ → /fun/. 점수는 # 뒤에 붙여 서버 요청에 실리지 않게 함
   }
   box.addEventListener("click", (e) => {
     if (e.target.closest("[data-act=start]")) { render(); box.scrollIntoView({ behavior: "smooth", block: "start" }); return; }

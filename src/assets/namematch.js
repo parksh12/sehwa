@@ -1,3 +1,4 @@
+// P2-49 공유 주소 /love/name-match/ → /fun/name-match/
 (function () {
   const form = document.getElementById("name-form");
   const out = document.getElementById("name-result");
@@ -47,7 +48,7 @@
 </div>
 <p class="hint center">이름 순서를 바꾸면 점수가 달라질 수 있어요. 대화 성향을 참고하는 재미용 결과예요.</p>
 ${elemHtml}
-${NALGI.shareBar({ title: "이름 궁합 테스트", text: `우리 이름 궁합은 ${score}%! 너도 해 봐`, path: "/love/name-match/" })}`;
+${NALGI.shareBar({ title: "이름 궁합 테스트", text: `우리 이름 궁합은 ${score}%! 너도 해 봐`, path: "/fun/name-match/" })}`;
     out.hidden = false;
     out.scrollIntoView({ behavior: "smooth", block: "start" });
   });

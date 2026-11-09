@@ -1,3 +1,4 @@
+// P2-49 주소 이동: /me/ → /fun/ (띠·별자리·운세 링크, 공유 주소)
 (function () {
   const form = document.getElementById("birthday-form");
   const out = document.getElementById("birthday-result");
@@ -36,12 +37,12 @@
 </div>
 ${ipchun}
 <div class="result-grid">
-  <div class="stat"><span>나의 띠</span><b>${t.emoji} ${esc(t.name)}</b><a href="${U(`/me/tti/${tk}/`)}">띠 성격 보기 →</a></div>
-  <div class="stat"><span>나의 별자리</span><b>${z.symbol} ${esc(z.name)}</b><a href="${U(`/me/zodiac/${zk}/`)}">별자리 성향 보기 →</a></div>
+  <div class="stat"><span>나의 띠</span><b>${t.emoji} ${esc(t.name)}</b><a href="${U(`/fun/tti/${tk}/`)}">띠 성격 보기 →</a></div>
+  <div class="stat"><span>나의 별자리</span><b>${z.symbol} ${esc(z.name)}</b><a href="${U(`/fun/zodiac/${zk}/`)}">별자리 성향 보기 →</a></div>
   <div class="stat"><span>태어난 지</span><b>${lived.toLocaleString()}일째</b><span>${lived >= 10000 ? "1만 일을 넘겼어요!" : `1만 일까지 ${(10000 - lived).toLocaleString()}일`}</span></div>
-  <div class="stat"><span>${esc(t.name)}의 오늘</span><b>오늘의 운세</b><a href="${U(`/luck/today/#${tk}`)}">오늘 운세 보기 →</a></div>
+  <div class="stat"><span>${esc(t.name)}의 오늘</span><b>오늘의 운세</b><a href="${U(`/fun/today/#${tk}`)}">오늘 운세 보기 →</a></div>
 </div>
-${NALGI.shareBar({ title: "생일로 보는 나 — 만 나이·띠·별자리", text: "생일만 넣으면 만 나이, 띠, 별자리를 한 번에!", path: "/me/birthday/" })}`;
+${NALGI.shareBar({ title: "생일로 보는 나 — 만 나이·띠·별자리", text: "생일만 넣으면 만 나이, 띠, 별자리를 한 번에!", path: "/fun/birthday/" })}`;
     out.hidden = false;
     out.scrollIntoView({ behavior: "smooth", block: "start" });
   });

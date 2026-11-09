@@ -1,4 +1,4 @@
-// 사주팔자 화면 (P2-22) — 계산은 saju-calc.js, 문장은 saju-read.js. 입력값은 저장·전송하지 않고 주소에도 넣지 않습니다.
+// 사주팔자 화면 (P2-22) · P2-49 공유 주소 /fun/saju/ — 계산은 saju-calc.js, 문장은 saju-read.js. 입력값은 저장·전송하지 않고 주소에도 넣지 않습니다.
 (function () {
   const form = document.getElementById("saju-form");
   const out = document.getElementById("saju-result");
@@ -119,7 +119,7 @@ ${res.notKnownTime ? '<p class="hint">출생 시각을 모르면 시주를 빼�
   <section class="sj-sec"><h2>대운 흐름</h2>${daeunRow(res, rd)}</section>
   <section class="sj-sec sj-year"><h2>${year}년 ${esc(rd.year.name)}(${esc(rd.year.kor)})년 운세 ${stars(yr.stars)}</h2>${yr.lines.map((l) => `<p>${esc(l)}</p>`).join("")}<p class="sj-why">근거: ${esc(yr.basis)}</p></section>
   <section class="sj-sec"><h2>운세 6가지</h2><div class="sj-fortunes">${rd.fortunes.map((f) => `<article class="sj-f sj-f-${f.key}"><h3>${f.name} ${stars(f.stars)}</h3>${f.lines.map((l) => `<p>${esc(l)}</p>`).join("")}<p class="sj-why">근거: ${esc(f.basis)}</p></article>`).join("")}</div></section>
-  ${NALGI.shareBar({ title: "무료 사주팔자 — 만세력과 운세 6가지", text: `나는 ${day.name} 일주! 내 사주팔자도 확인해 보세요`, path: "/luck/saju/" })}
+  ${NALGI.shareBar({ title: "무료 사주팔자 — 만세력과 운세 6가지", text: `나는 ${day.name} 일주! 내 사주팔자도 확인해 보세요`, path: "/fun/saju/" })}
   <p class="hint">공유 링크와 결과 이미지에는 생년월일과 출생 시각이 들어가지 않아요. 이미지에는 일주와 한 줄 요약만 담겨요.</p>
   <p class="legal">이 결과는 전통 명리학의 계산 규칙에 따라 자동으로 만든 재미·참고용 콘텐츠입니다. 과학적으로 검증된 예측이 아니며, 같은 생년월일시라도 해석 방식(자시·시간 보정 등)에 따라 결과가 달라질 수 있습니다. 건강·법률·재정·진로처럼 중요한 결정은 해당 분야 전문가와 상의하세요. 입력한 정보는 이 브라우저 안에서만 계산되며 저장하거나 전송하지 않습니다.</p>
 </div>`;
