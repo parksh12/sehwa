@@ -1,6 +1,6 @@
 // SOXL·TQQQ·KORU 주가 예측 (P2-50): 날짜를 가린 실제 일봉 종가 차트 → 오를까·내릴까 / $○○ 이상일까 → 실제 결과와 날짜 공개 → 10문제 뒤 백테스팅 요약
 // 데이터: /assets/data/stock-<티커>.json (scripts/update-prices.mjs로 갱신, 분할·병합 반영 종가). 문제의 날짜는 답하기 전에는 화면·DOM에 넣지 않습니다.
-// 차트는 SVG로 직접 그림(외부 라이브러리 없음, P2-50b 사이트 스타일). 입력값은 어디에도 보내지 않습니다.
+// 차트는 SVG로 직접 그림(외부 라이브러리 없음, P2-50b 사이트 스타일). P2-50c 캔들(1·3개월 일봉, 1년 주봉) + RSI(14) 패널. 입력값은 어디에도 보내지 않습니다.
 (function () {
   const box = document.querySelector('[data-tool="stockquiz"]');
   if (!box) return;
@@ -9,9 +9,10 @@
   const BASE = document.documentElement.dataset.base || "";
   const TICKERS = ["SOXL", "TQQQ", "KORU"];
   const MODES = {
-    m1: { L: 21, H: 1, look: "1개월(21거래일)", when: "다음 거래일" },
-    m3: { L: 63, H: 1, look: "3개월(63거래일)", when: "다음 거래일" },
-    y1: { L: 252, H: 21, look: "1년(252거래일)", when: "21거래일(약 한 달) 뒤" },
+    m1: { L: 21, H: 1, look: "1개월(21거래일)", when: "다음 거래일", short: "다음 거래일" },
+    m3: { L: 63, H: 1, look: "3개월(63거래일)", when: "다음 거래일", short: "다음 거래일" },
+    w1: { L: 63, H: 5, look: "3개월(63거래일)", when: "일주일(5거래일) 뒤", short: "5거래일 뒤" }, // P2-50c 대표님 「일주일 후 주가는 상승할까요?」
+    y1: { L: 252, H: 21, look: "1년(252거래일)", when: "21거래일(약 한 달) 뒤", short: "21거래일 뒤" },
   };
   const N_Q = 10;
   const data = {}; // 티커 → { c:[종가], d:[날짜 문자열] }
@@ -31,10 +32,14 @@
     const r = await fetch(`${BASE}/assets/data/stock-${t.toLowerCase()}.json`);
     if (!r.ok) throw new Error("데이터를 불러오지 못했어요");
     const j = await r.json();
-    // 날짜: 첫날 + 간격(일). 공개할 때만 꺼내 씀
-    const d = [j.d0]; let ms = Date.parse(j.d0 + "T00:00:00Z");
-    for (const g of j.g) { ms += g * 864e5; d.push(new Date(ms).toISOString().slice(0, 10)); }
-    return (data[t] = { c: j.c, d });
+    // 날짜: 첫날 + 간격(일). 공개할 때만 꺼내 씀. dn(일수)은 주봉 묶기에만 씀
+    const d = [j.d0], dn = [Date.parse(j.d0 + "T00:00:00Z") / 864e5]; let ms = dn[0] * 864e5;
+    for (const g of j.g) { ms += g * 864e5; d.push(new Date(ms).toISOString().slice(0, 10)); dn.push(dn[dn.length - 1] + g); }
+    // P2-50c 정수 열 형식 풀기: 종가 = 차분 누적, 시가 = 종가 + o, 고가 = max(시가, 종가) + h, 저가 = min(시가, 종가) − l (÷k)
+    const k = j.k, n = j.c.length, c = new Array(n), o = new Array(n), h = new Array(n), l = new Array(n);
+    let ci = 0;
+    for (let i = 0; i < n; i++) { ci += j.c[i]; const oi = ci + j.o[i]; c[i] = ci / k; o[i] = oi / k; h[i] = (Math.max(oi, ci) + j.h[i]) / k; l[i] = (Math.min(oi, ci) - j.l[i]) / k; }
+    return (data[t] = { c, o, h, l, d, dn });
   }
 
   // ---------- 문제 만들기 ----------
@@ -77,7 +82,7 @@
   // ---------- 차트 (P2-50b: 펭귄 툴즈 스타일 SVG) ----------
   // 굵은 먹선 + 노란 채움, 줄무늬 「?」 예측 칸, 마지막 종가 말풍선, 최고·최저 칩, 기준가 굵은 점선 + 칩.
   // 공개하면 이어지는 구간을 오르면 초록·내리면 빨강으로 그려 나가고 도장을 찍음. 날짜는 그리지 않음
-  const svgBox = $(".sq-svg"), stamp = $(".sq-stamp");
+  const svgBox = $(".sq-svg"), stamp = $(".sq-stamp"), rsiBox = $(".sq-rsi"), chips = $(".sq-chips"); // P2-50c 봉 종류·RSI 칩, RSI 패널
   const NS = "http://www.w3.org/2000/svg";
   const f1 = (n) => Math.round(n * 10) / 10;
   const tw = (s, px) => [...s].reduce((w, ch) => w + (/[0-9$.,]/.test(ch) ? px * 0.6 : ch === " " ? px * 0.3 : px * 0.98), 0); // 글자 폭 어림(측정 없이)
@@ -95,61 +100,101 @@
     const tx = Math.max(cx - w / 2 + 10, Math.min(cx + w / 2 - 10, px));
     return `<g class="sqc-bub ${cls}"><path d="M${f1(tx - 7)} ${f1(base)}L${f1(px)} ${f1(tip)}L${f1(tx + 7)} ${f1(base)}Z"/><rect x="${f1(cx - w / 2)}" y="${f1(top)}" width="${f1(w)}" height="${h}" rx="10"/><text class="sqc-bub-sub" x="${f1(cx)}" y="${f1(top + 14)}" font-size="10.5">${esc(sub)}</text><text x="${f1(cx)}" y="${f1(top + 14 + fs)}" font-size="${fs}">${esc(txt)}</text></g>`;
   }
+  // P2-50c 봉 만들기: 일봉은 하루가 봉 1개, 주봉은 달력 주(월~일)로 묶음. 일 인덱스 [a, b]만 씀
+  function bars(D, a, b, weekly) {
+    const out = [];
+    for (let i = a; i <= b; i++) {
+      const k = weekly ? Math.floor((D.dn[i] + 3) / 7) : i; // dn = 1970-01-01(목)부터 일수 → +3이면 월요일에 주가 바뀜
+      const p = out[out.length - 1];
+      if (p && p.k === k) { p.h = Math.max(p.h, D.h[i]); p.l = Math.min(p.l, D.l[i]); p.c = D.c[i]; p.e = i; }
+      else out.push({ k, o: D.o[i], h: D.h[i], l: D.l[i], c: D.c[i], s: i, e: i });
+    }
+    return out;
+  }
+  // P2-50c RSI(14), 와일더 방식: 첫 14개 변화의 단순 평균 → 이후 (이전×13 + 이번)/14. 배열 길이 그대로(앞 14개는 null)
+  function rsi14(cl) {
+    const out = new Array(cl.length).fill(null); let ag = 0, al = 0;
+    const v = () => (al === 0 ? 100 : 100 - 100 / (1 + ag / al));
+    for (let i = 1; i < cl.length; i++) {
+      const ch = cl[i] - cl[i - 1], g = ch > 0 ? ch : 0, l = ch < 0 ? -ch : 0;
+      if (i <= 14) { ag += g; al += l; if (i === 14) { ag /= 14; al /= 14; out[i] = v(); } }
+      else { ag = (ag * 13 + g) / 14; al = (al * 13 + l) / 14; out[i] = v(); }
+    }
+    return out;
+  }
+  // 보여 준 봉마다 RSI. 상장일부터 마지막으로 보여 준 날(q.last)까지만 씀 → 미래 정보 없음
+  function rsiFor(q, shownBars, weekly) {
+    const D = data[q.t];
+    const hist = bars(D, 0, q.last, weekly), r = rsi14(hist.map((b) => b.c)), byKey = new Map(hist.map((b, i) => [b.k, r[i]]));
+    return shownBars.map((b) => byKey.get(b.k) ?? null);
+  }
+  function candle(b, x, bw, Y, cls, style = "") {
+    const up = b.c > b.o, dn = b.c < b.o, yt = Y(Math.max(b.o, b.c)), yb = Y(Math.min(b.o, b.c)), hgt = Math.max(1.6, yb - yt);
+    return `<g class="sqc-cdl ${up ? "is-up" : dn ? "is-dn" : "is-eq"}${cls}"${style}><line x1="${f1(x)}" y1="${f1(Y(b.h))}" x2="${f1(x)}" y2="${f1(Y(b.l))}"/><rect x="${f1(x - bw / 2)}" y="${f1(yt - (hgt - (yb - yt)) / 2)}" width="${f1(bw)}" height="${f1(hgt)}"/></g>`;
+  }
   function draw(q, revealed, animate) {
-    const { c } = data[q.t], { H } = MODES[set.mode];
+    const D = data[q.t], { c } = D, { H } = MODES[set.mode], weekly = set.mode === "y1";
     const W = Math.max(280, Math.round(svgBox.getBoundingClientRect().width || svgBox.parentNode.clientWidth || 340));
-    const Ht = Math.round(Math.max(250, Math.min(380, W * 0.62)));
-    const shown = c.slice(q.s, q.last + 1), fut = c.slice(q.last, q.tgt + 1), n = shown.length;
-    const vals = shown.concat(revealed ? fut : []).concat(q.thr != null ? [q.thr] : []);
+    const Ht = Math.round(Math.max(260, Math.min(390, W * 0.64)));
+    const sb = bars(D, q.s, q.last, weekly), fb = revealed ? bars(D, q.last + 1, q.tgt, weekly) : [], n = sb.length;
+    const vals = sb.flatMap((b) => [b.h, b.l]).concat(fb.flatMap((b) => [b.h, b.l])).concat(q.thr != null ? [q.thr] : []);
     let lo = Math.min(...vals), hi = Math.max(...vals); const pad = (hi - lo || hi * 0.02) * 0.06; lo -= pad; hi += pad;
-    const L0 = 12, R0 = W - 12, T0 = 58, B0 = Ht - 34; // 위: 말풍선·최고 칩 자리, 아래: 최저 칩 자리
+    const L0 = 10, R0 = W - 10, T0 = 58, B0 = Ht - 34;
     const zoneW = Math.max(H > 1 ? 74 : 58, (R0 - L0) * (H > 1 ? 0.17 : 0.1));
     const xl = R0 - zoneW, xr = R0;
-    const X = (i) => L0 + ((xl - 10 - L0) * i) / (n - 1);
-    const XF = (j) => xl - 10 + ((xr - 14 - (xl - 10)) * j) / H; // 공개 구간 j=0..H
+    const slot = (xl - 8 - L0) / n, bw = Math.max(1.6, slot * 0.66);
+    const X = (i) => L0 + slot * (i + 0.5);
     const Y = (v) => B0 - ((B0 - T0) * (v - lo)) / (hi - lo);
-    const pts = shown.map((v, i) => `${f1(X(i))},${f1(Y(v))}`);
+    const dense = slot < 4 ? " is-thin" : slot < 8 ? " is-mid" : "";
     const xLast = X(n - 1), yLast = Y(c[q.last]);
     let s = `<defs><pattern id="sqc-stripe" patternUnits="userSpaceOnUse" width="12" height="12" patternTransform="rotate(45)"><rect class="sqc-stripe-a" width="12" height="12"/><rect class="sqc-stripe-b" width="6" height="12"/></pattern></defs>`;
-    // 예측 칸
-    s += `<rect class="sqc-zone${revealed ? " is-open" : ""}" x="${f1(xl)}" y="${T0 - 18}" width="${f1(zoneW)}" height="${f1(B0 - T0 + 30)}" rx="12"/>`;
-    if (!revealed) { // 「?」 배지는 마지막 종가 말풍선과 반대쪽(위/아래)에
+    s += `<rect class="sqc-zone${revealed ? " is-open " + (c[q.tgt] > c[q.last] ? "is-up" : "is-dn") : ""}" x="${f1(xl)}" y="${T0 - 18}" width="${f1(zoneW)}" height="${f1(B0 - T0 + 30)}" rx="12"/>`;
+    if (!revealed) {
       const bc = yLast < T0 + 6 ? yLast + 40 : yLast - 40, top = T0 + (B0 - T0) * 0.2, bot = B0 - (B0 - T0) * 0.2, qy = Math.abs(bc - top) > Math.abs(bc - bot) ? top : bot, qr = zoneW > 64 ? 20 : 17;
       s += `<g class="sqc-q"><circle cx="${f1((xl + xr) / 2)}" cy="${f1(qy)}" r="${qr}"/><text x="${f1((xl + xr) / 2)}" y="${f1(qy + qr * 0.42)}" font-size="${qr + 4}">?</text></g>`;
     }
-    // 바닥선 + 채운 영역 + 먹선
     s += `<line class="sqc-base" x1="${L0}" y1="${B0 + 4}" x2="${f1(xl - 6)}" y2="${B0 + 4}"/>`;
-    s += `<path class="sqc-area" d="M${f1(X(0))},${B0 + 4}L${pts.join("L")}L${f1(xLast)},${B0 + 4}Z"/>`;
-    s += `<polyline class="sqc-line${n > 100 ? " is-long" : ""}" points="${pts.join(" ")}"/>`;
-    // 기준가: 굵은 점선 + 칩
-    if (q.thr != null) {
-      const y = Y(q.thr);
-      s += `<line class="sqc-thr" x1="${L0}" y1="${f1(y)}" x2="${R0}" y2="${f1(y)}"/>`;
-      s += chip(`기준 ${money(q.thr)}`, L0 + 50, y, "is-thr", W);
-    }
-    // 최고·최저 칩(보여 준 구간 안에서만, 마지막 점과 겹치면 생략)
-    let iMax = 0, iMin = 0; shown.forEach((v, i) => { if (v > shown[iMax]) iMax = i; if (v < shown[iMin]) iMin = i; });
-    if (n - 1 - iMax > n * 0.12) s += `<circle class="sqc-pt" cx="${f1(X(iMax))}" cy="${f1(Y(shown[iMax]))}" r="4"/>` + chip(`최고 ${money(shown[iMax])}`, X(iMax), Y(shown[iMax]) - 16, "", W, 11.5);
-    if (n - 1 - iMin > n * 0.12) s += `<circle class="sqc-pt" cx="${f1(X(iMin))}" cy="${f1(Y(shown[iMin]))}" r="4"/>` + chip(`최저 ${money(shown[iMin])}`, X(iMin), Y(shown[iMin]) + 17, "", W, 11.5);
-    // 공개 구간
+    if (q.thr != null) s += `<line class="sqc-thr" x1="${L0}" y1="${f1(Y(q.thr))}" x2="${R0}" y2="${f1(Y(q.thr))}"/>`;
+    // 보여 준 봉
+    s += `<g class="sqc-cdls${dense}">${sb.map((b, i) => candle(b, X(i), bw, Y, "")).join("")}</g>`;
+    if (q.thr != null) s += chip(`기준 ${money(q.thr)}`, L0 + 50, Y(q.thr), "is-thr", W);
+    // 최고(고가)·최저(저가) 칩
+    let iMax = 0, iMin = 0; sb.forEach((b, i) => { if (b.h > sb[iMax].h) iMax = i; if (b.l < sb[iMin].l) iMin = i; });
+    // 마지막 종가 말풍선(점 위쪽 약 120×60px)과 겹치는 칩은 생략
+    const nearBub = (x, y) => !revealed && Math.abs(x - xLast) < 125 && y > yLast - 75 && y < yLast + 12;
+    if (n - 1 - iMax > n * 0.12 && !nearBub(X(iMax), Y(sb[iMax].h) - 15)) s += chip(`최고 ${money(sb[iMax].h)}`, X(iMax), Y(sb[iMax].h) - 15, "", W, 11.5);
+    if (n - 1 - iMin > n * 0.12 && !nearBub(X(iMin), Y(sb[iMin].l) + 16)) s += chip(`최저 ${money(sb[iMin].l)}`, X(iMin), Y(sb[iMin].l) + 16, "", W, 11.5);
+    // 공개 구간: 봉으로 이어 그림(다음 거래일 = 봉 1개, 일주일 뒤 = 일봉 5개, 21거래일 뒤 = 주봉 약 4~5개)
     if (revealed) {
-      const upMove = c[q.tgt] > c[q.last], col = upMove ? "is-up" : "is-dn";
-      const fp = fut.map((v, j) => `${f1(XF(j))},${f1(Y(v))}`);
-      s += `<path class="sqc-farea ${col}" d="M${f1(xLast)},${f1(yLast)}L${f1(XF(0))},${f1(Y(fut[0]))}L${fp.join("L")}L${f1(XF(H))},${B0 + 4}L${f1(xLast)},${B0 + 4}Z"/>`;
-      s += `<polyline class="sqc-fut ${col}" pathLength="1" points="${f1(xLast)},${f1(yLast)} ${fp.join(" ")}"/>`;
-      const yt = Y(c[q.tgt]);
-      s += `<circle class="sqc-dot sqc-end ${col}" cx="${f1(XF(H))}" cy="${f1(yt)}" r="7"/>`;
-      s += `<g class="sqc-endbub">${bubble(money(c[q.tgt]), `${H > 1 ? "21거래일 뒤" : "다음 거래일"} ${pct(c[q.tgt] / c[q.last] - 1)}`, XF(H), yt, col, W, yt < T0 + 40)}</g>`;
+      const col = c[q.tgt] > c[q.last] ? "is-up" : "is-dn";
+      const fslot = (zoneW - 16) / Math.max(fb.length, H > 1 ? 5 : 2), fbw = Math.max(3, Math.min(fslot * 0.66, Math.max(bw, 10) * 1.4));
+      const XF = (j) => xl + 8 + fslot * (j + 0.5) + (H > 1 ? 0 : (zoneW - 16 - fslot) / 2);
+      s += `<g class="sqc-cdls sqc-fcdls">${fb.map((b, j) => candle(b, XF(j), fbw, Y, " sqc-fc", ` style="--i:${j}"`)).join("")}</g>`;
+      const xe = XF(fb.length - 1), yt = Y(c[q.tgt]);
+      s += `<circle class="sqc-dot sqc-end ${col}" cx="${f1(xe)}" cy="${f1(yt)}" r="5.5"/>`;
+      s += `<g class="sqc-endbub">${bubble(money(c[q.tgt]), `${MODES[set.mode].short} ${pct(c[q.tgt] / c[q.last] - 1)}`, xe, yt, col, W, yt < T0 + 40)}</g>`;
     }
-    // 마지막 종가 점 + 말풍선(공개 뒤에는 작은 점만)
-    s += `<circle class="sqc-dot" cx="${f1(xLast)}" cy="${f1(yLast)}" r="7"/>`;
+    s += `<circle class="sqc-dot" cx="${f1(xLast)}" cy="${f1(yLast)}" r="${slot < 6 ? 5 : 6}"/>`;
     if (!revealed) s += bubble(money(c[q.last]), "마지막 종가", xLast, yLast, "is-last", W, yLast < T0 + 6);
     svgBox.setAttribute("viewBox", `0 0 ${W} ${Ht}`);
     svgBox.setAttribute("width", W); svgBox.setAttribute("height", Ht);
     svgBox.classList.toggle("no-anim", !animate);
     svgBox.innerHTML = s;
-    svgBox.setAttribute("aria-label", `${q.t} 종가 차트 ${n}거래일, 최저 ${money(Math.min(...shown))} 최고 ${money(Math.max(...shown))}, 마지막 종가 ${money(c[q.last])}${q.thr != null ? `, 기준가 ${money(q.thr)}` : ""}${revealed ? `, 정답 시점 종가 ${money(c[q.tgt])}` : ""}`);
-    // 도장
+    // 봉 종류·RSI 칩 + RSI 패널
+    const rs = rsiFor(q, sb, weekly), rNow = rs[n - 1];
+    const tag = rNow == null ? "" : rNow >= 70 ? '<i class="sq-rsi-tag is-hot">과매수</i>' : rNow <= 30 ? '<i class="sq-rsi-tag is-cold">과매도</i>' : "";
+    chips.innerHTML = `<span class="sq-chip sq-chip-bar">${weekly ? "주봉" : "일봉"} <small>${n}개</small></span><span class="sq-chip sq-chip-rsi">RSI(14) <b>${rNow == null ? "–" : rNow.toFixed(1)}</b>${tag}</span>`;
+    const RH = 78, RT = 16, RB = RH - 8, RY = (v) => RB - ((RB - RT) * v) / 100;
+    let r = `<rect class="sqr-band" x="${L0}" y="${f1(RY(70))}" width="${f1(xl - 8 - L0)}" height="${f1(RY(30) - RY(70))}"/>`;
+    r += [70, 30].map((v) => `<line class="sqr-lv" x1="${L0}" y1="${f1(RY(v))}" x2="${f1(xl - 8)}" y2="${f1(RY(v))}"/><text class="sqr-lvt" x="${f1(xl)}" y="${f1(RY(v) + 4)}" font-size="11">${v}</text>`).join("");
+    const rp = rs.map((v, i) => (v == null ? null : `${f1(X(i))},${f1(RY(v))}`)).filter(Boolean);
+    if (rp.length > 1) r += `<polyline class="sqr-line" points="${rp.join(" ")}"/>`;
+    if (rNow != null) r += `<circle class="sqr-dot${rNow >= 70 ? " is-hot" : rNow <= 30 ? " is-cold" : ""}" cx="${f1(xLast)}" cy="${f1(RY(rNow))}" r="4.5"/>`;
+    r += `<text class="sqr-h" x="${L0 + 2}" y="12" font-size="11">RSI(14) · ${weekly ? "주봉" : "일봉"}</text>`;
+    rsiBox.setAttribute("viewBox", `0 0 ${W} ${RH}`); rsiBox.setAttribute("width", W); rsiBox.setAttribute("height", RH);
+    rsiBox.innerHTML = r;
+    rsiBox.setAttribute("aria-label", `RSI(14) ${weekly ? "주봉" : "일봉"} ${rNow == null ? "계산 불가" : rNow.toFixed(1)}`);
+    svgBox.setAttribute("aria-label", `${q.t} ${weekly ? "주봉" : "일봉"} 캔들 차트 ${n}개, 최저 ${money(sb[iMin].l)} 최고 ${money(sb[iMax].h)}, 마지막 종가 ${money(c[q.last])}${q.thr != null ? `, 기준가 ${money(q.thr)}` : ""}${revealed ? `, 정답 시점 종가 ${money(c[q.tgt])}` : ""}`);
     if (revealed && q.a != null) {
       stamp.textContent = q.ok ? "맞았어요" : "틀렸어요";
       stamp.className = `sq-stamp ${q.ok ? "is-ok" : "is-no"}${animate ? "" : " no-anim"}`;

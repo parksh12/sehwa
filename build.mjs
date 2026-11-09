@@ -175,7 +175,7 @@ const UTILS = [
   { id: "imgmerge", cat: "image", path: "/image/merge/", title: "사진 이어붙이기", seo: "사진 이어붙이기 — 사진 합치기·캡처 합치기·긴 캡처 만들기", h1: "사진 이어붙이기 — 여러 장을 세로·가로·격자로 한 장에", desc: "사진과 휴대폰 캡처 여러 장을 세로·가로·격자로 한 장에 이어 붙여요. 캡처의 상태바·주소창·하단 바를 자동으로 잘라 내고, 연속 캡처는 겹친 부분을 빼서 긴 캡처로 만들어요. 사진은 서버로 전송하지 않습니다.", hook: "캡처 여러 장을 한 장으로, 툴바는 자동으로 잘라요.", meta: "세로·가로·격자 · JPG·PNG", kw: "사진 합치기 사진 이어붙이기 사진 붙이기 이미지 합치기 이미지 붙이기 이미지 이어붙이기 캡처 합치기 캡처 이어붙이기 스크린샷 합치기 긴 캡처 스크롤 캡처 긴 스크린샷 사진 연결 콜라주 격자 사진 세로로 붙이기 가로로 붙이기" }, // P2-46
   { id: "heic", cat: "image", path: "/image/heic-to-jpg/", title: "HEIC JPG 변환", seo: "HEIC JPG 변환 — 아이폰 사진 JPG로, 여러 장 한꺼번에", h1: "HEIC JPG 변환 — 아이폰 사진을 여러 장 한꺼번에 JPG로", desc: "아이폰 HEIC·HEIF 사진을 여러 장 한꺼번에 JPG로 바꿔요. 화질과 크기를 고르고, 하나씩 또는 zip으로 받아요. 위치 정보(GPS)는 기본으로 지워요. 사진은 서버로 전송하지 않습니다.", hook: "아이폰 사진(HEIC)을 JPG로, 여러 장 한꺼번에.", meta: "HEIC·HEIF → JPG · zip", kw: "heic jpg 변환 heic jpg heic 변환 heic to jpg heic 파일 열기 heic 열기 heif 변환 heif jpg 아이폰 사진 jpg 아이폰 사진 변환 아이폰 사진 안 열림 아이폰 사진 윈도우 아이폰 사진 컴퓨터 heic 뷰어 사진 확장자 변환 jpg 변환 위치 정보 지우기 gps 삭제" }, // P2-47
   { id: "qr", cat: "image", path: "/image/qr-code/", title: "QR코드 생성기", seo: "QR코드 생성기 — 무료 QR코드 만들기, 와이파이·링크·명함 QR", h1: "QR코드 생성기 — 링크·와이파이·명함 QR코드 무료로 만들기", desc: "링크, 글, 와이파이, 연락처(명함), 문자를 QR코드로 만들어요. 색과 여백을 바꾸고 가운데에 로고를 넣고, PNG·SVG로 저장해요. 와이파이 안내 카드는 A6로 바로 인쇄해요. 입력한 내용은 서버로 보내지 않습니다.", hook: "링크·와이파이·명함을 QR코드로, 로고도 넣어요.", meta: "PNG·SVG · 와이파이 카드", kw: "qr코드 만들기 qr코드 생성기 qr 코드 만들기 qr 생성 qr 생성기 qr코드 생성 qr 만들기 큐알코드 만들기 큐알 코드 큐알 만들기 무료 qr 무료 qr코드 와이파이 qr 와이파이 qr코드 wifi qr 와이파이 비밀번호 qr 링크 qr url qr 주소 qr 명함 qr 연락처 qr vcard 문자 qr 로고 qr qr코드 로고 qr 색 qr svg qr png qr 인쇄 qr code generator" }, // P2-48
-  { id: "stockquiz", cat: "invest", path: "/invest/soxl-tqqq-koru/", title: "SOXL·TQQQ·KORU 주가 예측", seo: "SOXL·TQQQ·KORU 주가 예측 — 날짜 가린 실제 차트, 오를까 내릴까", h1: "SOXL·TQQQ·KORU 주가 예측 — 날짜를 가린 실제 차트로 오를까 내릴까", desc: "SOXL·TQQQ·KORU의 상장 이후 실제 일봉 종가에서 날짜를 가린 1개월·3개월·1년 차트를 보여 드려요. 다음 거래일이나 한 달 뒤 종가가 오를지, 기준가 이상일지 맞히면 실제 결과와 날짜를 공개하고, 10문제 뒤 백테스팅 요약을 보여 줘요. 교육·재미용이며 투자 권유가 아니에요.", hook: "날짜를 가린 실제 차트. 내일 종가는 오를까 내릴까?", meta: "10문제 · 3분", kw: "soxl tqqq koru 주가 예측 주식 차트 맞히기 레버리지 etf 3배 반도체 나스닥 한국 백테스팅 투자 연습 오를까 내릴까 미국 주식" }, // P2-50
+  { id: "stockquiz", cat: "invest", path: "/invest/soxl-tqqq-koru/", title: "SOXL·TQQQ·KORU 주가 예측", seo: "SOXL·TQQQ·KORU 주가 예측 — 날짜 가린 실제 차트, 오를까 내릴까", h1: "SOXL·TQQQ·KORU 주가 예측 — 날짜를 가린 실제 차트로 오를까 내릴까", desc: "SOXL·TQQQ·KORU의 상장 이후 실제 일봉 종가에서 날짜를 가린 1개월·3개월·1년 차트를 보여 드려요. 다음 거래일·일주일 뒤·한 달 뒤 종가가 오를지, 기준가 이상일지 맞히면 실제 결과와 날짜를 공개하고, 10문제 뒤 백테스팅 요약을 보여 줘요. 교육·재미용이며 투자 권유가 아니에요.", hook: "날짜를 가린 실제 차트. 내일 종가는 오를까 내릴까?", meta: "10문제 · 3분", kw: "soxl tqqq koru 주가 예측 주식 차트 맞히기 레버리지 etf 3배 반도체 나스닥 한국 백테스팅 투자 연습 오를까 내릴까 미국 주식" }, // P2-50
 ];
 const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "heic", "qr", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "word2pdf", "dday", "stockquiz"]; // P2-50 stockquiz(투자) // P2-45 돈 계산기 4종, P2-46 imgmerge, P2-47 heic, P2-48 qr
 const NEXT = {
@@ -1138,16 +1138,19 @@ const STOCK = ["SOXL", "TQQQ", "KORU"].map((t) => {
   const f = path.join(ROOT, "src", "assets", "data", `stock-${t.toLowerCase()}.json`);
   if (!fs.existsSync(f)) throw new Error(`P2-50 ${f} 없음 — node scripts/update-prices.mjs`);
   const j = JSON.parse(fs.readFileSync(f, "utf8"));
-  if (j.c.length !== j.g.length + 1 || j.c.some((x) => !(x > 0))) throw new Error(`P2-50 ${t} 데이터 형식 이상`);
+  // P2-50c 정수 열 형식(v2): 종가 차분·시가/고가/저가 오프셋을 풀어 모두 양수인지, 고가 ≥ 시가·종가 ≥ 저가인지 확인
+  if (j.v !== 2 || ["c", "o", "h", "l"].some((x) => j[x].length !== j.g.length + 1) || j.h.some((x) => x < 0) || j.l.some((x) => x < 0)) throw new Error(`P2-50 ${t} 데이터 형식 이상`);
+  { let ci = 0; for (let i = 0; i < j.c.length; i++) { ci += j.c[i]; if (!(ci > 0) || !(ci + j.o[i] > 0) || !(Math.min(ci, ci + j.o[i]) - j.l[i] > 0)) throw new Error(`P2-50 ${t} ${i}번째 가격 이상`); } }
   return { t, n: j.c.length, d0: j.d0, asOf: j.asOf, src: j.src, basis: j.basis };
 });
 const STOCK_NAME = { SOXL: "반도체 3배", TQQQ: "나스닥100 3배", KORU: "한국 3배" };
 // P2-50b 차트를 canvas → 사이트 스타일 SVG(.sq-svg)로 바꾸고, 결과 도장(.sq-stamp) 자리를 둠
+// P2-50c 봉 종류·RSI 칩(.sq-chips)과 RSI(14) 패널(.sq-rsi) 자리 추가, 모드 「3개월 → 일주일(5거래일) 뒤」(w1) 추가
 utilPage(utilById.stockquiz, `<div class="sq">
   <div class="sq-start">
     <p class="sq-warn" role="note">${esc(STOCK_WARN)}</p>
     <fieldset class="seg"><legend>종목</legend>${STOCK.map((x, i) => `<label><input type="radio" name="tk" value="${x.t}"${i ? "" : " checked"}><span>${x.t} <small>${STOCK_NAME[x.t]}</small></span></label>`).join("")}<label><input type="radio" name="tk" value="MIX"><span>섞어서</span></label></fieldset>
-    <fieldset class="seg"><legend>보여 줄 차트 → 맞힐 때</legend><label><input type="radio" name="mode" value="m1" checked><span>1개월 → 다음 거래일</span></label><label><input type="radio" name="mode" value="m3"><span>3개월 → 다음 거래일</span></label><label><input type="radio" name="mode" value="y1"><span>1년 → 한 달 뒤</span></label></fieldset>
+    <fieldset class="seg"><legend>보여 줄 차트 → 맞힐 때</legend><label><input type="radio" name="mode" value="m1" checked><span>1개월 → 다음 거래일</span></label><label><input type="radio" name="mode" value="m3"><span>3개월 → 다음 거래일</span></label><label><input type="radio" name="mode" value="w1"><span>3개월 → 일주일 뒤</span></label><label><input type="radio" name="mode" value="y1"><span>1년 → 한 달 뒤</span></label></fieldset>
     <fieldset class="seg"><legend>질문</legend><label><input type="radio" name="kind" value="ud" checked><span>오를까 내릴까</span></label><label><input type="radio" name="kind" value="th"><span>$○○ 이상일까</span></label></fieldset>
     <button class="btn big" type="button" data-start>10문제 시작</button>
     <p class="tk-msg sq-msg" role="alert" hidden></p>
@@ -1156,7 +1159,7 @@ utilPage(utilById.stockquiz, `<div class="sq">
   <div class="sq-play" hidden>
     <div class="sq-top"><span class="sq-no">1 / 10</span><b class="sq-tk">SOXL</b><span class="sq-score">맞힌 개수 0</span></div>
     <p class="sq-look hint"></p>
-    <div class="sq-chart"><svg class="sq-svg" role="img" aria-label="종가 차트" xmlns="http://www.w3.org/2000/svg"></svg><div class="sq-stamp" aria-hidden="true" hidden></div></div>
+    <div class="sq-chart"><div class="sq-chips"></div><svg class="sq-svg" role="img" aria-label="종가 차트" xmlns="http://www.w3.org/2000/svg"></svg><svg class="sq-rsi" role="img" aria-label="RSI(14)" xmlns="http://www.w3.org/2000/svg"></svg><div class="sq-stamp" aria-hidden="true" hidden></div></div>
     <p class="sq-q" aria-live="polite"></p>
     <div class="sq-ans"></div>
     <div class="sq-reveal" aria-live="polite" hidden></div>
