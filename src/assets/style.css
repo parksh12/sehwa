@@ -1615,3 +1615,26 @@ li.has-fav{position:relative}
 .dca-tag.is-cap rect{fill:var(--white);stroke:var(--ink-3)}.dca-tag.is-cap text{fill:var(--ink-2)}.dca-tag.is-cap .dca-lead{stroke:var(--ink-3)}
 .rsb-lg-cap{color:var(--ink-3)}.rsb-lg-cap i{border-top-style:dashed!important;border-top-width:3px!important}
 @media(max-width:480px){.rsb-ttable th,.rsb-ttable td{padding:4px 4px;font-size:12.5px}.rsb-ttable td small{font-size:11px}}
+
+/* ===================== P2-55 복리 계산기 · 배당 계산기: 탭 2개 + 원금 vs 자산 그래프(dca-* 차트 톤 재사용: 굵은 먹선·노랑 채움·칩) ===================== */
+.cmp{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+.cmp [hidden]{display:none!important}
+.cmp .up{color:var(--nok)}.cmp .dn{color:var(--jeok)}
+.cmp-tab{margin:0}
+.cmp-tab span{font-size:15.5px;font-weight:800}
+.cmp-form label,.div-form label{display:grid;gap:6px;font-weight:700}
+.cmp-form label.check,.div-form label.check{display:flex}
+.cmp-form label small.hint,.div-form label small.hint{font-weight:600}
+.cmp-kr{font-size:12.5px;font-weight:700;color:var(--cheong);min-height:1.1em;font-variant-numeric:tabular-nums}
+.cmp-segs{display:flex;flex-wrap:wrap;gap:10px 18px}
+.div-need{display:grid;gap:10px}
+.cmp-big span small{font-weight:700;color:var(--ink-3);font-size:.85em}
+.cmp-72{margin:4px 0 8px;padding:7px 11px;border:2px solid var(--ink);border-radius:10px;background:var(--hwang);font-weight:600}
+.cmp-72 b{font-weight:900}
+.cmp-ytable td b{font-weight:900}
+.div-table td{min-width:7.5em}
+.div-rtable td{text-align:right}
+.cmp-ex td,.cmp-ex th{word-break:keep-all;vertical-align:top;font-size:14px}
+.cmp-result .table-wrap,.div-result .table-wrap{overflow-x:auto}
+.div-result .rsb-vs{margin-top:4px}
+@media(max-width:480px){.cmp-ex th:nth-child(3),.cmp-ex td:nth-child(3){display:none}.cmp .seg span{padding:7px 10px;font-size:13.5px}.cmp-tab span{font-size:14.5px}.cmp-ytable th,.cmp-ytable td{padding:4px 5px;font-size:12.5px}.div-table td{min-width:0}}

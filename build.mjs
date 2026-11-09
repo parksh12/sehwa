@@ -102,6 +102,7 @@ const ART = {
   stockquiz: sv(`<rect x="10" y="14" width="100" height="92" rx="10" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M22 84 40 66l14 10 22-30 12 10" fill="none" stroke="${K}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="88" cy="56" r="7" fill="${YEL}" stroke="${K}" stroke-width="4"/><path d="M90 36c0-6 4-9 8-9s8 3 8 8c0 6-8 6-8 12" fill="none" stroke="${RED}" stroke-width="5" stroke-linecap="round"/>`), // P2-50
   dca: sv(`<path d="M10 104h100" stroke="${K}" stroke-width="4" stroke-linecap="round"/>${[[16, 1], [42, 2], [68, 3], [94, 4]].map(([x, h]) => Array.from({ length: h }, (_, k) => `<rect x="${x - 12}" y="${92 - k * 13}" width="24" height="11" rx="5" fill="${YEL}" stroke="${K}" stroke-width="3"/>`).join("")).join("")}<path d="M12 62 40 48l26 6 40-38" fill="none" stroke="#2346d8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M90 14h17v17" fill="none" stroke="#2346d8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>`), // P2-52 적립식 백테스트(매달 쌓이는 동전 + 자산 곡선)
   avgdown: sv(`<path d="M60 10C60 10 26 48 26 72a34 34 0 0 0 68 0C94 48 60 10 60 10z" fill="#2346d8" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M40 62h40" stroke="${W}" stroke-width="5" stroke-dasharray="7 5" stroke-linecap="round"/><path d="M40 88h40" stroke="${YEL}" stroke-width="6" stroke-linecap="round"/><path d="M60 66v14m-7-7 7 7 7-7" fill="none" stroke="${W}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`), // P2-51 물타기(물방울 + 평단 내려감)
+  compound: sv(`<path d="M12 104h96" stroke="${K}" stroke-width="4" stroke-linecap="round"/>${[[22, 14], [44, 24], [66, 40], [88, 64]].map(([x, h]) => `<rect x="${x - 9}" y="${100 - h}" width="18" height="${h}" rx="4" fill="${YEL}" stroke="${K}" stroke-width="3"/>`).join("")}<path d="M14 72C40 70 64 58 100 18" fill="none" stroke="#2346d8" stroke-width="6" stroke-linecap="round"/><path d="M84 16h17v17" fill="none" stroke="#2346d8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="30" cy="34" r="14" fill="${W}" stroke="${K}" stroke-width="4"/><text x="30" y="40" font-size="16" font-weight="900" text-anchor="middle" fill="${K}" font-family="sans-serif">%</text>`), // P2-55 복리·배당(점점 커지는 막대 + 위로 휘는 곡선 + %)
   rsibt: sv(`<rect x="8" y="10" width="104" height="100" rx="10" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M8 78h104" stroke="${K}" stroke-width="3"/><rect x="12" y="84" width="96" height="16" fill="${YEL}" opacity=".55"/><path d="M14 86h92M14 100h92" stroke="${K}" stroke-width="2" stroke-dasharray="4 4"/><path d="M16 46 32 58 46 36 62 60 78 30 94 44 104 26" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M62 64l-8 11h16z" fill="${GRN}" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M78 26l-8-11h16z" fill="${RED}" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M16 96 34 88 50 102 66 86 84 98 104 90" fill="none" stroke="${K}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`), // P2-54 RSI 매매 백테스트(가격선 + 매수▲·매도▼ + RSI 30·70 띠)
   ostax: sv(`<path d="M24 10h72v92l-12-8-12 8-12-8-12 8-12-8-12 8z" fill="${W}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><circle cx="60" cy="38" r="17" fill="${YEL}" stroke="${K}" stroke-width="4"/><text x="60" y="45.5" font-size="21" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">$</text><text x="60" y="80" font-size="21" font-weight="900" text-anchor="middle" fill="${RED}" font-family="sans-serif">22%</text>`), // P2-53 해외주식 양도세(영수증 + 달러 + 22%)
 };
@@ -155,7 +156,7 @@ const UCATS = {
   calc: { name: "생활 계산", desc: "D-day, 연봉 실수령액, 퇴직금처럼 생활에서 자주 찾는 계산을 바로 해 주는 툴이에요." }, // P2-45 desc
   time: { name: "시간", desc: "타이머와 스톱워치처럼 시간을 재고 알려 주는 툴이에요." },
   fun: { name: "운세·재미", seo: "운세·재미 — 무료 사주·띠별 운세·성격 테스트·사다리타기", desc: "오늘의 띠별 운세, 무료 사주팔자, 16유형 성격 테스트, 생일로 보는 나, 이름 궁합, 사다리타기·돌림판처럼 재미로 보고 가볍게 정하는 툴이에요." }, // P2-49 옛 오락실 운세·테스트·사다리
-  invest: { name: "투자", seo: "투자 툴 — RSI 백테스트, 해외주식 양도세 계산기, 적립식 백테스트, 물타기 계산기, SOXL·TQQQ·KORU 주가 예측", desc: "미국주식 양도소득세 계산, SOXL·TQQQ·KORU를 매달 샀다면 지금 얼마인지 보는 적립식 백테스트, RSI 30에 사고 70에 팔았다면 얼마인지 보는 RSI 매매 백테스트, 물타기 평단가 계산처럼 주식 투자에서 자주 하는 계산과, 레버리지 ETF의 실제 과거 차트로 오를까 내릴까를 맞혀 보는 투자 툴이에요. 투자 권유가 아니에요." }, // P2-50 새 툴 카테고리(앞으로 주식투자 툴을 여기에 모음) // P2-51 seo·desc에 물타기 계산기 // P2-52 적립식 백테스트 // P2-53 해외주식 양도세 // P2-54 RSI 백테스트
+  invest: { name: "투자", seo: "투자 툴 — 복리 계산기·배당 계산기, RSI 백테스트, 해외주식 양도세 계산기, 적립식 백테스트, 물타기 계산기, SOXL·TQQQ·KORU 주가 예측", desc: "적립식 복리로 몇 년 뒤 얼마가 되는지, 월 배당 100만 원을 받으려면 얼마가 필요한지 계산하는 복리·배당 계산기, 미국주식 양도소득세 계산, SOXL·TQQQ·KORU를 매달 샀다면 지금 얼마인지 보는 적립식 백테스트, RSI 30에 사고 70에 팔았다면 얼마인지 보는 RSI 매매 백테스트, 물타기 평단가 계산처럼 주식 투자에서 자주 하는 계산과, 레버리지 ETF의 실제 과거 차트로 오를까 내릴까를 맞혀 보는 투자 툴이에요. 투자 권유가 아니에요." }, // P2-50 새 툴 카테고리(앞으로 주식투자 툴을 여기에 모음) // P2-51 seo·desc에 물타기 계산기 // P2-52 적립식 백테스트 // P2-53 해외주식 양도세 // P2-54 RSI 백테스트 // P2-55 복리·배당 계산기
 };
 const NAV = [...Object.entries(UCATS).map(([k, c]) => [c.name, `/${k}/`]), [PLAY.name, PLAY.path]];
 // seo: <title> 앞부분(검색어 그대로) / also: 다른 카테고리 페이지에도 함께 노출 / beta: 베타 표시 / kw: 홈 검색용 동의어
@@ -184,9 +185,10 @@ const UTILS = [
   { id: "dca", cat: "invest", path: "/invest/dca-backtest/", title: "SOXL·TQQQ·KORU 적립식 백테스트", seo: "SOXL·TQQQ·KORU 적립식 백테스트 — 매달 사면 지금 얼마? 적립식 투자 계산", h1: "SOXL·TQQQ·KORU 적립식 백테스트 — 매달 샀다면 지금 얼마일까", desc: "SOXL·TQQQ·KORU를 시작 연월부터 매달 첫 거래일 종가에 같은 금액씩 샀다면 지금 평가액, 총 투자금, 수익률, 연환산 수익률, 최대 낙폭(MDD)이 얼마인지 실제 과거 가격으로 계산해요. 같은 돈을 처음에 한 번에 넣은 거치식과 비교하고 연도별 표와 자산 곡선을 보여 줘요. 원·달러, 3종목 비교. 투자 권유가 아니에요.", hook: "매달 30만 원씩 TQQQ를 샀다면 지금 얼마?", meta: "실제 가격 · 3종목 비교", kw: "적립식 백테스트 적립식 투자 계산 적립식 계산기 적립식 투자 수익률 tqqq 적립식 soxl 적립식 koru 적립식 레버리지 etf 적립 매달 사면 매달 투자 매월 적립 dca 정액 적립 분할 매수 백테스트 백테스팅 거치식 비교 mdd 최대 낙폭 연환산 수익률 미국 주식 3배 나스닥 반도체 한국" }, // P2-52
   { id: "avgdown", cat: "invest", path: "/invest/average-down/", title: "물타기 계산기", seo: "물타기 계산기 — 평단가 계산, 평균단가·추가매수 수량 역계산", h1: "물타기 계산기 — 주식 평단가 계산과 목표 평단 역계산", desc: "지금 평단과 보유 수량에 추가 매수 가격·수량을 여러 줄 넣으면 새 평단(평균단가), 총 수량, 총 투자금과 현재가 기준 수익률을 계산해요. 「평단을 얼마로 낮추려면 몇 주를 사야 하나」 역계산도 돼요. 원화·달러, 소수점 수량을 지원해요. 투자 권유가 아니에요.", hook: "추가 매수하면 평단이 얼마? 목표 평단까지 몇 주?", meta: "원화·달러 · 역계산", kw: "물타기 계산기 물타기 평단가 계산기 평단가 계산 평균단가 계산 평균 단가 평단 낮추기 평단 계산 추가매수 계산 추가 매수 주식 평단 주식 평균단가 불타기 분할매수 소수점 주식 미국 주식 국내 주식 목표 평단 역계산" }, // P2-51
   { id: "ostax", cat: "invest", path: "/invest/overseas-stock-tax/", title: "해외주식 양도소득세 계산기", seo: `해외주식 양도소득세 계산기 ${OST.defaultYear} — 미국주식 양도세, 250만원 공제·22% 계산`, h1: "해외주식 양도소득세 계산기 — 미국주식 양도세, 250만 원 공제 뒤 22%", desc: "해외주식을 판 종목별 매수·매도 금액(원, 또는 달러와 매수·매도 결제일 환율)을 넣으면 손익을 통산하고 기본공제 250만 원을 뺀 뒤 양도소득세 20%와 지방소득세 2%를 계산해요. 과세 연도별 신고·납부 기한(다음 해 5월)도 알려 줘요. 참고용 추정치이고 투자 권유가 아니에요.", hook: "미국주식 팔았는데 세금 얼마? 250만 원 공제 뒤 22%", meta: "손익 통산 · 환율 반영", kw: "해외주식 양도세 해외주식 양도소득세 미국주식 세금 미국주식 양도세 미국 주식 양도세 계산기 양도소득세 계산 양도세 계산기 250만원 공제 기본공제 해외주식 세금 신고 해외주식 세금 계산 해외 주식 세금 22% 손익통산 손익 통산 환차익 환율 결제일 기준환율 5월 신고 홈택스 양도세 신고 절세 서학개미 나스닥 미장 해외 etf 세금 soxl tqqq 세금" }, // P2-53
+  { id: "compound", cat: "invest", path: "/invest/compound-dividend/", title: "복리 계산기 · 배당 계산기", seo: "복리 계산기 · 배당 계산기 — 적립식 월복리·연복리, 월배당 100만원 필요 투자금, 배당세 15.4%", h1: "복리 계산기 · 배당 계산기 — 적립식 복리와 월 배당 역계산", desc: "초기 원금, 매달 적립금, 연 수익률, 기간을 넣으면 월복리·연복리로 몇 년 뒤 자산이 얼마인지, 넣은 돈과 수익, 연도별 표와 원금 대비 자산 그래프를 보여 줘요. 72의 법칙과 물가 반영 실질 가치도 계산해요. 배당 탭에서는 투자금과 배당률로 연·월 배당(세전·세후 15.4%)을, 「월 배당 100만 원 받으려면 얼마?」 필요 투자금을 역계산하고 배당 재투자 뒤 월 배당까지 계산해요. 투자 권유가 아니에요.", hook: "매달 50만 원씩 20년 모으면? 월 배당 100만 원엔 얼마?", meta: "월복리·연복리 · 배당세 15.4%", kw: "복리 계산기 복리계산기 적립식 복리 적립식 복리 계산기 월복리 연복리 월복리 계산기 연복리 계산 복리 이자 계산 복리 수익률 복리의 마법 72의 법칙 미래 가치 fv 엑셀 fv 함수 적금 복리 투자 복리 매달 적립 매월 적립 원금 수익 물가 상승률 실질 가치 배당 계산기 배당금 계산기 배당금 계산 월배당 계산 월배당 계산기 배당 수익률 배당률 시가배당률 배당으로 월 100만원 월 100만원 배당 배당 생활 배당 투자 필요 투자금 배당세 배당소득세 15.4% 배당 세금 세후 배당 미국 배당 15% 배당 재투자 고배당 etf schd 금융소득 종합과세 2천만원" }, // P2-55
   { id: "rsibt", cat: "invest", path: "/invest/rsi-backtest/", title: "RSI 매매 백테스트", seo: "RSI 매매 백테스트 — SOXL·TQQQ·KORU RSI 30 매수·70 매도 수익률", h1: "RSI 매매 백테스트 (SOXL·TQQQ·KORU) — RSI 30에 사고 70에 팔았다면", desc: "SOXL·TQQQ·KORU를 RSI가 30 이하일 때 사고 70 이상일 때 팔았다면 수익률이 얼마인지 실제 과거 가격으로 계산해요. 일봉·주봉, 기간, RSI 기간(기본 14), 매수·매도 기준, 손절 %, 수수료를 고르면 매매 횟수, 승률, 누적 수익률, 그냥 보유했을 때 수익률, 최대 낙폭(MDD), 평균 보유 기간과 자산 곡선, 매수·매도 표시 차트, 거래 목록을 보여 줘요. 투자 권유가 아니에요.", hook: "RSI 30에 사고 70에 팔았다면 TQQQ는?", meta: "실제 가격 · 일봉·주봉", kw: "rsi 백테스트 rsi 매매 rsi 30 매수 rsi 70 매도 rsi 전략 rsi 매매법 과매도 매수 과매수 매도 과매도 과매수 tqqq rsi soxl rsi koru rsi 보조지표 백테스트 기술적 지표 백테스팅 와일더 rsi 14 상대강도지수 손절 승률 mdd 최대 낙폭 레버리지 etf 미국 주식 3배 매매 전략 수익률" }, // P2-54
 ];
-const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "heic", "qr", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "word2pdf", "dday", "stockquiz", "avgdown", "dca", "ostax", "rsibt"]; // P2-50 stockquiz(투자) // P2-51 avgdown // P2-52 dca // P2-53 ostax // P2-54 rsibt // P2-45 돈 계산기 4종, P2-46 imgmerge, P2-47 heic, P2-48 qr
+const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "heic", "qr", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "word2pdf", "dday", "stockquiz", "avgdown", "dca", "ostax", "rsibt", "compound"]; // P2-55 compound // P2-50 stockquiz(투자) // P2-51 avgdown // P2-52 dca // P2-53 ostax // P2-54 rsibt // P2-45 돈 계산기 4종, P2-46 imgmerge, P2-47 heic, P2-48 qr
 const NEXT = {
   pdfmerge: ["pdfsplit", "img2pdf", "imgcompress"],
   pdfsplit: ["pdfmerge", "pdf2img", "img2pdf"],
@@ -213,6 +215,7 @@ const NEXT = {
   dca: ["stockquiz", "avgdown", "salary"], // P2-52
   ostax: ["avgdown", "dca", "salary"], // P2-53
   rsibt: ["dca", "stockquiz", "avgdown"], // P2-54 같은 데이터로 적립식·주가 예측
+  compound: ["dca", "ostax", "avgdown"], // P2-55 복리로 본 적립 → 실제 가격 적립식 백테스트 → 세금
 };
 const utilById = Object.fromEntries(UTILS.map((x) => [x.id, x]));
 const anyById = { ...toolById, ...utilById };
@@ -466,6 +469,7 @@ const cabCls = (i, n) => (n > 6 && i === n - 1 && (n - 3) % 3 === 1 ? "cab-full"
 // ★ 새 툴·게임을 만들면 여기에 { id, d: "출시일" }을 맨 위에 추가(대표님 지시: 새 콘텐츠는 메인에 잘 보이게).
 // 출시 30일 이내 항목 중 최신 4개가 홈 맨 위 「NEW」 띠에 나오고, 해당 행·타일에 NEW 표시가 붙음
 const NEW_ITEMS = [
+  { id: "compound", d: "2026-11-10" }, // P2-55
   { id: "rsibt", d: "2026-11-10" }, // P2-54
   { id: "ostax", d: "2026-11-10" }, // P2-53
   { id: "dca", d: "2026-11-10" }, // P2-52
@@ -1522,6 +1526,121 @@ utilPage(utilById.stockquiz, `<div class="sq">
 <ul>${OST.sources.map((x) => `<li><b>${esc(x.name)}</b> — <a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.by)}<span class="sr"> (새 창, 외부 사이트)</span></a> · ${esc(x.date)}${x.check === "2차" ? " · <small>법령 원문 대신 증권사·언론 안내로 확인</small>" : ""}</li>`).join("")}</ul>
 <p class="hint">이 계산기에 넣지 않은 것: ${OST.notIncluded.map((x) => esc(x)).join(" / ")}.</p>
 <p class="hint">세법은 해마다 바뀔 수 있어요. 이 계산기는 ${Object.keys(OST.years).join("·")}년 양도분 기준으로 계산하는 <b>참고용 추정치</b>이고, 실제 신고 금액은 국세청 홈택스(국번 없이 126)나 세무사에게 확인하세요.</p></section>`
+  });
+}
+
+// P2-55 복리 계산기 · 배당 계산기: 계산식·세율은 src/assets/compound-calc.js 한 벌(화면 t-cmp.js와 아래 대조가 같은 파일을 vm으로 씀)
+// 흐름: 탭(복리 | 배당) → 원금·적립금·수익률·기간·주기·적립 시점(·물가) → 최종 자산·납입·수익·72의 법칙 → 원금 vs 자산 그래프 → 연도별 표 → 한 줄 복사
+//       배당: 투자금 → 연·월 배당(세전·세후) / 목표 월 배당 → 필요 투자금, (선택) 배당 재투자 n년 뒤 월 배당
+// 빌드 때 ① 손계산 ② 엑셀 FV 공식(닫힌 식, 아래 fvX) ③ 파이썬 독립 계산(scripts/compound-verify.py, Decimal 40자리)과 대조하고, 다르면 빌드를 멈춤
+{
+  const ctx = {};
+  vm.createContext(ctx);
+  vm.runInContext(fs.readFileSync(path.join(ROOT, "src", "assets", "compound-calc.js"), "utf8"), ctx);
+  const CC = ctx.CMPCALC, RU = CC.RULES;
+  const near = (a, b, tol = 1e-9) => Math.abs(a - b) <= tol * Math.max(1, Math.abs(b));
+  const chk = (name, got, want) => { if (!(got === want || (typeof got === "number" && typeof want === "number" && near(got, want)))) throw new Error(`P2-55 「${name}」 계산 불일치: ${got} ≠ ${want}`); };
+  const cp = (o) => { const r = CC.compound(o); if (r.err) throw new Error(`P2-55 계산 실패 ${JSON.stringify(o)}`); return r; };
+  // 엑셀 =FV(i, n, −pmt, −pv, type) 닫힌 식. 계산기는 달마다 굴리는 방식이라 서로 다른 방법으로 같은 값이 나와야 함
+  const fvX = (i, n, pmt, pv, type = 0) => (i === 0 ? pv + pmt * n : pv * (1 + i) ** n + (pmt * ((1 + i) ** n - 1) / i) * (1 + i * type));
+  // 연복리(그해 적립금은 연말까지 단리) = 1년치 적립 효과 C = pmt × (12 + r × (월초 78 | 월말 66) ÷ 12)를 연 단위 FV에 넣은 것
+  const fvY = (p0, pmt, r, y, begin) => fvX(r, y, pmt * (12 + (r * (begin ? 78 : 66)) / 12), p0);
+  if (RU.kr !== 0.154 || RU.us !== 0.15 || RU.gross !== 20000000) throw new Error("P2-55 세율·기준 값이 출처 확인 값과 다름(RULES)");
+  // 손계산 1: 매달 10만 원, 연 12% 연복리, 1년. 월말 적립이면 적립금마다 이자 11·10·…·0개월 → 100,000 × 12% × 66 ÷ 12 = 66,000 → 1,266,000원. 월초면 12·…·1개월(78) → 1,278,000원
+  //          2년(월말): 1,266,000 × 1.12 + 1,266,000 = 2,683,920원
+  const h1e = cp({ pmt: 100000, rate: 0.12, years: 1, freq: "y" }), h1b = cp({ pmt: 100000, rate: 0.12, years: 1, freq: "y", timing: "begin" }), h1y = cp({ pmt: 100000, rate: 0.12, years: 2, freq: "y" });
+  chk("손계산1 월말", h1e.fv, 1266000); chk("손계산1 월초", h1b.fv, 1278000); chk("손계산1 2년", h1y.fv, 2683920); chk("손계산1 2년 납입", h1y.paid, 2400000); chk("손계산1 2년차 수익", h1y.rows[1].gain, 2683920 - 1266000 - 1200000);
+  // 손계산 2: 1,000만 원 연 7% 연복리 10년 거치 = 10,000,000 × 1.07¹⁰ = 19,671,513.57원. 72의 법칙 6% → 12년, 정확히 ln2 ÷ ln1.06 = 11.90년
+  const h2 = cp({ p0: 10000000, rate: 0.07, years: 10, freq: "y" }), h72 = cp({ p0: 1, rate: 0.06, years: 1, freq: "y" });
+  chk("손계산2 거치", h2.fv, 19671513.572895654); chk("손계산2 72의 법칙", h72.r72, 12); chk("손계산2 정확한 두 배", h72.dbl, 11.895661045941875);
+  // 손계산 3: 수익률 0% → 원금 + 적립금 × 개월 수, 이자 0
+  const h3 = cp({ p0: 1000000, pmt: 100000, rate: 0, years: 3 });
+  chk("손계산3 0%", h3.fv, 4600000); chk("손계산3 0% 이자", h3.interest, 0);
+  // 배당 손계산: 1억 × 5% = 연 500만(세전) − 15.4% 77만 = 423만(세후), 월 352,500원. 월 세후 100만 ÷ 0.846 × 12 ÷ 5% = 283,687,943원. 미국 15%: 1억 × 4% × 0.85 ÷ 12 = 283,333원
+  const d1 = CC.dividend({ amt: 100000000, yld: 0.05, tax: RU.kr }), d2 = CC.need({ target: 1000000, basis: "post", yld: 0.05, tax: RU.kr }), d3 = CC.need({ target: 1000000, basis: "pre", yld: 0.04, tax: RU.kr }), d4 = CC.dividend({ amt: 100000000, yld: 0.04, tax: RU.us });
+  chk("배당 세전 연", d1.yPre, 5000000); chk("배당 세금 연", d1.yTax, 770000); chk("배당 세후 연", d1.yPost, 4230000); chk("배당 세후 월", d1.mPost, 352500);
+  chk("역계산 세후 100만", d2.amt, 283687943.26241136); chk("역계산 세후 확인", d2.mPost, 1000000); chk("역계산 세전 100만 4%", d3.amt, 300000000); chk("미국 15% 월", d4.mPost, 283333.3333333333);
+  if (d1.gross || !CC.dividend({ amt: 400000001, yld: 0.05, tax: RU.kr }).gross) throw new Error("P2-55 금융소득 2천만 원 초과 판정 불일치");
+  // 파이썬 독립 계산(scripts/compound-verify.py 출력, 2026-11-10) — 엑셀 FV와 같은 닫힌 식을 Decimal로
+  const PY = [
+    ["월복리 월말", { p0: 10000000, pmt: 500000, rate: 0.06, years: 10 }, 100133640.74355446, () => fvX(0.005, 120, 500000, 10000000)],
+    ["월복리 월초", { p0: 10000000, pmt: 500000, rate: 0.06, years: 10, timing: "begin" }, 100543339.11057061, () => fvX(0.005, 120, 500000, 10000000, 1)],
+    ["연복리 월초 30년", { p0: 5000000, pmt: 300000, rate: 0.08, years: 30, freq: "y", timing: "begin" }, 475805025.3873647, () => fvY(5000000, 300000, 0.08, 30, true)],
+    ["처음 값(7% 20년)", { p0: 10000000, pmt: 500000, rate: 0.07, years: 20 }, 300850718.40257853, () => fvX(0.07 / 12, 240, 500000, 10000000)],
+  ];
+  const PYR = PY.map(([k, o, py, xl]) => { const r = cp(o); chk(`${k} 파이썬`, r.fv, py); chk(`${k} 엑셀 FV`, r.fv, xl()); return { k, o, r }; });
+  const re1 = CC.reinvest({ amt: 100000000, yld: 0.04, tax: RU.kr, years: 10 }), re2 = CC.reinvest({ amt: 50000000, yld: 0.05, tax: RU.kr, years: 15, pmt: 1000000 });
+  chk("재투자1 파이썬", re1.fv, 140203359.58630905); chk("재투자1 월 배당", re1.after.mPost, (140203359.58630905 * 0.04 * 0.846) / 12); chk("재투자2 파이썬", re2.fv, 344972056.399092);
+  const ex = cp({ p0: 10000000, pmt: 500000, rate: 0.06, years: 10, infl: 0.025 }), dflt = PYR[3].r, rl = cp({ p0: 10000000, pmt: 500000, rate: 0.07, years: 20, infl: 0.025 });
+  chk("실질 가치(파이썬)", rl.real, 183600451.5792979); chk("실효 연 수익률 7% 월복리", rl.eff, 0.0722900808562359);
+  // 엑셀 FV와 격자 대조: 원금 3 × 적립 3 × 수익률 5 × 기간 4 × 주기 2 × 시점 2(원금·적립 모두 0인 경우 제외), 연도별 표 마지막 줄·그래프 끝값도 같은지
+  let grid = 0;
+  for (const p0 of [0, 1000000, 37000000]) for (const pmt of [0, 250000, 1234567]) for (const rate of [0, 0.01, 0.055, 0.12, 0.3]) for (const years of [1, 7, 25, 60]) for (const freq of ["m", "y"]) for (const timing of ["end", "begin"]) {
+    if (!(p0 + pmt > 0)) continue;
+    const r = cp({ p0, pmt, rate, years, freq, timing }), b = timing === "begin";
+    const want = freq === "m" ? fvX(rate / 12, years * 12, pmt, p0, b ? 1 : 0) : fvY(p0, pmt, rate, years, b);
+    chk(`격자 ${p0}/${pmt}/${rate}/${years}/${freq}/${timing}`, r.fv, want); chk("격자 표", r.rows[years - 1].value, r.fv); chk("격자 그래프", r.series.bal[years * 12], r.fv); chk("격자 납입", r.paid, p0 + pmt * years * 12);
+    grid++;
+  }
+  const wn = (n) => `${Math.round(n).toLocaleString("ko-KR")}원`;
+  const EXR = [
+    ["손계산 · 연복리 적립", "매달 100,000원, 연 12% 연복리, 1년 (월말 / 월초), 2년", "100,000 × 12 + 100,000 × 12% × 66 ÷ 12", `월말 <b>${wn(h1e.fv)}</b> · 월초 ${wn(h1b.fv)} · 2년 ${wn(h1y.fv)}`],
+    ["손계산 · 연복리 거치", "10,000,000원, 연 7%, 10년", "10,000,000 × 1.07¹⁰", `<b>${wn(h2.fv)}</b> · 72의 법칙 6% → ${h72.r72}년 (정확히 ${h72.dbl.toFixed(2)}년)`],
+    ["엑셀 FV · 월복리 월말", "처음 10,000,000원 + 매달 500,000원, 연 6%, 10년", "=FV(6%/12, 120, −500000, −10000000, 0)", `<b>${wn(PYR[0].r.fv)}</b> · 넣은 돈 ${wn(PYR[0].r.paid)}`],
+    ["엑셀 FV · 월복리 월초", "같은 조건, 월초 적립", "=FV(6%/12, 120, −500000, −10000000, 1)", `<b>${wn(PYR[1].r.fv)}</b> · 월말 적립에 물가 2.5%면 실질 ${wn(ex.real)}`],
+    ["처음 값", "처음 10,000,000원 + 매달 500,000원, 연 7% 월복리, 20년", "=FV(7%/12, 240, −500000, −10000000, 0)", `<b>${wn(dflt.fv)}</b> · 수익 ${wn(dflt.interest)}`],
+    ["배당 · 투자금 → 월 배당", "100,000,000원, 배당률 5%, 배당세 15.4%", "5,000,000 × (1 − 0.154) ÷ 12", `연 세후 ${wn(d1.yPost)} · 월 세후 <b>${wn(d1.mPost)}</b>`],
+    ["배당 · 월 100만 원 역계산", "월 세후 1,000,000원, 배당률 5%, 15.4%", "1,000,000 ÷ 0.846 × 12 ÷ 5%", `필요 투자금 <b>${wn(d2.amt)}</b>`],
+    ["배당 재투자", "100,000,000원, 배당률 4%, 15.4%, 10년 월복리 재투자", "=FV(4% × 0.846 / 12, 120, 0, −100000000)", `자산 <b>${wn(re1.fv)}</b> · 월 배당(세후) ${wn(re1.after.mPost)}`],
+  ];
+  const CMP_WARN = "계산 결과는 참고용이에요. 투자 권유가 아니에요. 실제 수익률은 해마다 오르내리고 원금 손실이 날 수 있어요. 배당은 회사·ETF 사정에 따라 줄거나 끊길 수 있어요.";
+  const pane = (v) => `data-pane="${v}"`;
+  utilPage(utilById.compound, `<div class="cmp">
+<fieldset class="seg cmp-tab"><legend>무엇을 계산할까요?</legend><label><input type="radio" name="tab" value="cmp" checked><span>복리 계산기</span></label><label><input type="radio" name="tab" value="div"><span>배당 계산기</span></label></fieldset>
+<form class="dd-form pay-form avg-form cmp-form" ${pane("cmp")} autocomplete="off" novalidate>
+  <div class="row2">
+    <label><span>초기 원금 (원)</span><input name="p0" type="text" inputmode="numeric" autocomplete="off" placeholder="예: 10,000,000"><small class="cmp-kr" data-kr="p0"></small></label>
+    <label><span>매달 적립금 (원)</span><input name="pmt" type="text" inputmode="numeric" autocomplete="off" placeholder="예: 500,000"><small class="cmp-kr" data-kr="pmt"></small></label>
+  </div>
+  <div class="row2">
+    <label><span>연 수익률 (%)</span><input name="rate" type="text" inputmode="decimal" autocomplete="off" placeholder="예: 7"></label>
+    <label><span>기간 (년)</span><input name="years" type="text" inputmode="numeric" autocomplete="off" placeholder="예: 20"></label>
+  </div>
+  <div class="dca-quick" role="group" aria-label="기간 빠르게 고르기">${[5, 10, 20, 30].map((y) => `<button type="button" class="chip" data-years="${y}">${y}년</button>`).join("")}</div>
+  <div class="cmp-segs"><fieldset class="seg"><legend>복리 주기</legend><label><input type="radio" name="freq" value="m" checked><span>월복리</span></label><label><input type="radio" name="freq" value="y"><span>연복리</span></label></fieldset>
+  <fieldset class="seg"><legend>적립 시점</legend><label><input type="radio" name="timing" value="end" checked><span>월말</span></label><label><input type="radio" name="timing" value="begin"><span>월초</span></label></fieldset></div>
+  <label><span>물가상승률 (%) <small class="hint">(선택) 넣으면 지금 돈 가치로 바꾼 실질 가치까지</small></span><input name="infl" type="text" inputmode="decimal" autocomplete="off" placeholder="예: 2.5"></label>
+  <div class="dd-opts pay-acts"><button type="submit" class="btn">계산하기</button><button type="button" class="btn ghost" data-copy>결과 한 줄 복사</button><button type="button" class="chip" data-example>예시 넣기</button><button type="button" class="chip" data-reset>처음 값으로</button></div>
+</form>
+<div class="dd-result pay-result cmp-result" ${pane("cmp")} aria-live="polite"></div>
+<form class="dd-form pay-form avg-form div-form" ${pane("div")} hidden autocomplete="off" novalidate>
+  <fieldset class="seg"><legend>무엇을 알고 싶나요?</legend><label><input type="radio" name="dmode" value="fwd" checked><span>투자금 → 월 배당</span></label><label><input type="radio" name="dmode" value="need"><span>월 배당 목표 → 필요 투자금</span></label></fieldset>
+  <label data-dm="fwd"><span>투자금 (원)</span><input name="amt" type="text" inputmode="numeric" autocomplete="off" placeholder="예: 100,000,000"><small class="cmp-kr" data-kr="amt"></small></label>
+  <div class="div-need" data-dm="need" hidden>
+    <label><span>받고 싶은 월 배당 (원)</span><input name="target" type="text" inputmode="numeric" autocomplete="off" placeholder="예: 1,000,000"><small class="cmp-kr" data-kr="target"></small></label>
+    <fieldset class="seg"><legend>이 금액은</legend><label><input type="radio" name="basis" value="post" checked><span>세후 (통장에 들어오는 돈)</span></label><label><input type="radio" name="basis" value="pre"><span>세전</span></label></fieldset>
+  </div>
+  <label><span>배당률 (연 %) <small class="hint">1년 배당금 ÷ 주가</small></span><input name="yld" type="text" inputmode="decimal" autocomplete="off" placeholder="예: 5"></label>
+  <div class="dca-quick" role="group" aria-label="배당률 빠르게 고르기">${[3, 4, 5, 6, 8, 10].map((y) => `<button type="button" class="chip" data-yld="${y}">${y}%</button>`).join("")}</div>
+  <fieldset class="seg"><legend>배당 세금</legend><label><input type="radio" name="tax" value="kr" checked><span>15.4% (국내 주식·ETF)</span></label><label><input type="radio" name="tax" value="us"><span>15% (미국 주식)</span></label><label><input type="radio" name="tax" value="none"><span>세전으로 보기</span></label></fieldset>
+  <label class="check"><input type="checkbox" name="reinv"> 받은 배당을 다시 투자(재투자)하면 몇 년 뒤 월 배당은?</label>
+  <div class="row2" data-reinv hidden>
+    <label><span>재투자 기간 (년)</span><input name="ryears" type="text" inputmode="numeric" autocomplete="off" placeholder="예: 10"></label>
+    <label><span>매달 추가 투자 (원, 선택)</span><input name="radd" type="text" inputmode="numeric" autocomplete="off" placeholder="예: 500,000"><small class="cmp-kr" data-kr="radd"></small></label>
+  </div>
+  <div class="dd-opts pay-acts"><button type="submit" class="btn">계산하기</button><button type="button" class="btn ghost" data-copy>결과 한 줄 복사</button><button type="button" class="chip" data-example>예시 넣기</button><button type="button" class="chip" data-reset>처음 값으로</button></div>
+</form>
+<div class="dd-result pay-result div-result" ${pane("div")} hidden aria-live="polite"></div>
+<div class="dca-chart cmp-chart" hidden><div class="sq-chips dca-chips cmp-chips"></div><svg class="dca-svg cmp-svg" role="img" aria-label="원금 대비 자산 그래프" xmlns="http://www.w3.org/2000/svg"></svg><div class="sq-legend dca-legend cmp-legend" aria-hidden="true"></div></div>
+<p class="sq-warn" role="note">${esc(CMP_WARN)}</p>
+</div>`, {
+    scripts: ["compound-calc.js", "t-cmp.js"], fileTool: false,
+    after: `<h2 class="dd-h">계산 검증 (손계산·엑셀 FV와 대조)</h2>
+<div class="table-wrap"><table class="dd-table avg-ex cmp-ex"><thead><tr><th scope="col">경우</th><th scope="col">입력</th><th scope="col">계산</th><th scope="col">결과</th></tr></thead><tbody>${EXR.map((r) => `<tr><th scope="row">${esc(r[0])}</th><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${r[3]}</td></tr>`).join("")}</tbody></table></div>
+<p class="hint">이 계산기는 달마다 이자를 붙여 가며 굴리는 방식으로 계산해요. 사이트를 만들 때마다 위 손계산·엑셀 FV 공식·따로 만든 계산(파이썬)과 같은지, 원금·적립금·수익률·기간·복리 주기·적립 시점을 바꾼 ${grid}가지 조합이 엑셀 FV 공식과 같은지 자동으로 확인해요.</p>
+<section class="prose pay-src" aria-labelledby="cmp-src-h"><h2 id="cmp-src-h">배당 세금 기준·출처 (확인일 ${esc(RU.checked)})</h2>
+<ul>${RU.sources.map((x) => `<li><b>${esc(x.name)}</b> — <a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.by)}<span class="sr"> (새 창, 외부 사이트)</span></a> · ${esc(x.date)}${x.check === "2차" ? " · <small>공식 원문 대신 언론 안내로 확인</small>" : ""}</li>`).join("")}</ul>
+<p class="hint">이 계산기에 넣지 않은 것: 금융소득 종합과세(연 2천만 원 초과분), 2026년부터 생긴 고배당기업 배당소득 분리과세 특례, ISA·연금계좌 비과세·과세이연, 건강보험료, 배당 성장과 주가 변동. 실제 세금은 증권사 배당 명세서나 국세청 홈택스(국번 없이 126)에서 확인하세요.</p></section>`
   });
 }
 
