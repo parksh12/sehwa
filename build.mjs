@@ -102,6 +102,7 @@ const ART = {
   stockquiz: sv(`<rect x="10" y="14" width="100" height="92" rx="10" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M22 84 40 66l14 10 22-30 12 10" fill="none" stroke="${K}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="88" cy="56" r="7" fill="${YEL}" stroke="${K}" stroke-width="4"/><path d="M90 36c0-6 4-9 8-9s8 3 8 8c0 6-8 6-8 12" fill="none" stroke="${RED}" stroke-width="5" stroke-linecap="round"/>`), // P2-50
   dca: sv(`<path d="M10 104h100" stroke="${K}" stroke-width="4" stroke-linecap="round"/>${[[16, 1], [42, 2], [68, 3], [94, 4]].map(([x, h]) => Array.from({ length: h }, (_, k) => `<rect x="${x - 12}" y="${92 - k * 13}" width="24" height="11" rx="5" fill="${YEL}" stroke="${K}" stroke-width="3"/>`).join("")).join("")}<path d="M12 62 40 48l26 6 40-38" fill="none" stroke="#2346d8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M90 14h17v17" fill="none" stroke="#2346d8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>`), // P2-52 적립식 백테스트(매달 쌓이는 동전 + 자산 곡선)
   avgdown: sv(`<path d="M60 10C60 10 26 48 26 72a34 34 0 0 0 68 0C94 48 60 10 60 10z" fill="#2346d8" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M40 62h40" stroke="${W}" stroke-width="5" stroke-dasharray="7 5" stroke-linecap="round"/><path d="M40 88h40" stroke="${YEL}" stroke-width="6" stroke-linecap="round"/><path d="M60 66v14m-7-7 7 7 7-7" fill="none" stroke="${W}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`), // P2-51 물타기(물방울 + 평단 내려감)
+  rsibt: sv(`<rect x="8" y="10" width="104" height="100" rx="10" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M8 78h104" stroke="${K}" stroke-width="3"/><rect x="12" y="84" width="96" height="16" fill="${YEL}" opacity=".55"/><path d="M14 86h92M14 100h92" stroke="${K}" stroke-width="2" stroke-dasharray="4 4"/><path d="M16 46 32 58 46 36 62 60 78 30 94 44 104 26" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M62 64l-8 11h16z" fill="${GRN}" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M78 26l-8-11h16z" fill="${RED}" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M16 96 34 88 50 102 66 86 84 98 104 90" fill="none" stroke="${K}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`), // P2-54 RSI 매매 백테스트(가격선 + 매수▲·매도▼ + RSI 30·70 띠)
   ostax: sv(`<path d="M24 10h72v92l-12-8-12 8-12-8-12 8-12-8-12 8z" fill="${W}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><circle cx="60" cy="38" r="17" fill="${YEL}" stroke="${K}" stroke-width="4"/><text x="60" y="45.5" font-size="21" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">$</text><text x="60" y="80" font-size="21" font-weight="900" text-anchor="middle" fill="${RED}" font-family="sans-serif">22%</text>`), // P2-53 해외주식 양도세(영수증 + 달러 + 22%)
 };
 function doc(x, y, w, h, fill) {
@@ -154,7 +155,7 @@ const UCATS = {
   calc: { name: "생활 계산", desc: "D-day, 연봉 실수령액, 퇴직금처럼 생활에서 자주 찾는 계산을 바로 해 주는 툴이에요." }, // P2-45 desc
   time: { name: "시간", desc: "타이머와 스톱워치처럼 시간을 재고 알려 주는 툴이에요." },
   fun: { name: "운세·재미", seo: "운세·재미 — 무료 사주·띠별 운세·성격 테스트·사다리타기", desc: "오늘의 띠별 운세, 무료 사주팔자, 16유형 성격 테스트, 생일로 보는 나, 이름 궁합, 사다리타기·돌림판처럼 재미로 보고 가볍게 정하는 툴이에요." }, // P2-49 옛 오락실 운세·테스트·사다리
-  invest: { name: "투자", seo: "투자 툴 — 해외주식 양도세 계산기, 적립식 백테스트, 물타기 계산기, SOXL·TQQQ·KORU 주가 예측", desc: "미국주식 양도소득세 계산, SOXL·TQQQ·KORU를 매달 샀다면 지금 얼마인지 보는 적립식 백테스트, 물타기 평단가 계산처럼 주식 투자에서 자주 하는 계산과, 레버리지 ETF의 실제 과거 차트로 오를까 내릴까를 맞혀 보는 투자 툴이에요. 투자 권유가 아니에요." }, // P2-50 새 툴 카테고리(앞으로 주식투자 툴을 여기에 모음) // P2-51 seo·desc에 물타기 계산기 // P2-52 적립식 백테스트 // P2-53 해외주식 양도세
+  invest: { name: "투자", seo: "투자 툴 — RSI 백테스트, 해외주식 양도세 계산기, 적립식 백테스트, 물타기 계산기, SOXL·TQQQ·KORU 주가 예측", desc: "미국주식 양도소득세 계산, SOXL·TQQQ·KORU를 매달 샀다면 지금 얼마인지 보는 적립식 백테스트, RSI 30에 사고 70에 팔았다면 얼마인지 보는 RSI 매매 백테스트, 물타기 평단가 계산처럼 주식 투자에서 자주 하는 계산과, 레버리지 ETF의 실제 과거 차트로 오를까 내릴까를 맞혀 보는 투자 툴이에요. 투자 권유가 아니에요." }, // P2-50 새 툴 카테고리(앞으로 주식투자 툴을 여기에 모음) // P2-51 seo·desc에 물타기 계산기 // P2-52 적립식 백테스트 // P2-53 해외주식 양도세 // P2-54 RSI 백테스트
 };
 const NAV = [...Object.entries(UCATS).map(([k, c]) => [c.name, `/${k}/`]), [PLAY.name, PLAY.path]];
 // seo: <title> 앞부분(검색어 그대로) / also: 다른 카테고리 페이지에도 함께 노출 / beta: 베타 표시 / kw: 홈 검색용 동의어
@@ -183,8 +184,9 @@ const UTILS = [
   { id: "dca", cat: "invest", path: "/invest/dca-backtest/", title: "SOXL·TQQQ·KORU 적립식 백테스트", seo: "SOXL·TQQQ·KORU 적립식 백테스트 — 매달 사면 지금 얼마? 적립식 투자 계산", h1: "SOXL·TQQQ·KORU 적립식 백테스트 — 매달 샀다면 지금 얼마일까", desc: "SOXL·TQQQ·KORU를 시작 연월부터 매달 첫 거래일 종가에 같은 금액씩 샀다면 지금 평가액, 총 투자금, 수익률, 연환산 수익률, 최대 낙폭(MDD)이 얼마인지 실제 과거 가격으로 계산해요. 같은 돈을 처음에 한 번에 넣은 거치식과 비교하고 연도별 표와 자산 곡선을 보여 줘요. 원·달러, 3종목 비교. 투자 권유가 아니에요.", hook: "매달 30만 원씩 TQQQ를 샀다면 지금 얼마?", meta: "실제 가격 · 3종목 비교", kw: "적립식 백테스트 적립식 투자 계산 적립식 계산기 적립식 투자 수익률 tqqq 적립식 soxl 적립식 koru 적립식 레버리지 etf 적립 매달 사면 매달 투자 매월 적립 dca 정액 적립 분할 매수 백테스트 백테스팅 거치식 비교 mdd 최대 낙폭 연환산 수익률 미국 주식 3배 나스닥 반도체 한국" }, // P2-52
   { id: "avgdown", cat: "invest", path: "/invest/average-down/", title: "물타기 계산기", seo: "물타기 계산기 — 평단가 계산, 평균단가·추가매수 수량 역계산", h1: "물타기 계산기 — 주식 평단가 계산과 목표 평단 역계산", desc: "지금 평단과 보유 수량에 추가 매수 가격·수량을 여러 줄 넣으면 새 평단(평균단가), 총 수량, 총 투자금과 현재가 기준 수익률을 계산해요. 「평단을 얼마로 낮추려면 몇 주를 사야 하나」 역계산도 돼요. 원화·달러, 소수점 수량을 지원해요. 투자 권유가 아니에요.", hook: "추가 매수하면 평단이 얼마? 목표 평단까지 몇 주?", meta: "원화·달러 · 역계산", kw: "물타기 계산기 물타기 평단가 계산기 평단가 계산 평균단가 계산 평균 단가 평단 낮추기 평단 계산 추가매수 계산 추가 매수 주식 평단 주식 평균단가 불타기 분할매수 소수점 주식 미국 주식 국내 주식 목표 평단 역계산" }, // P2-51
   { id: "ostax", cat: "invest", path: "/invest/overseas-stock-tax/", title: "해외주식 양도소득세 계산기", seo: `해외주식 양도소득세 계산기 ${OST.defaultYear} — 미국주식 양도세, 250만원 공제·22% 계산`, h1: "해외주식 양도소득세 계산기 — 미국주식 양도세, 250만 원 공제 뒤 22%", desc: "해외주식을 판 종목별 매수·매도 금액(원, 또는 달러와 매수·매도 결제일 환율)을 넣으면 손익을 통산하고 기본공제 250만 원을 뺀 뒤 양도소득세 20%와 지방소득세 2%를 계산해요. 과세 연도별 신고·납부 기한(다음 해 5월)도 알려 줘요. 참고용 추정치이고 투자 권유가 아니에요.", hook: "미국주식 팔았는데 세금 얼마? 250만 원 공제 뒤 22%", meta: "손익 통산 · 환율 반영", kw: "해외주식 양도세 해외주식 양도소득세 미국주식 세금 미국주식 양도세 미국 주식 양도세 계산기 양도소득세 계산 양도세 계산기 250만원 공제 기본공제 해외주식 세금 신고 해외주식 세금 계산 해외 주식 세금 22% 손익통산 손익 통산 환차익 환율 결제일 기준환율 5월 신고 홈택스 양도세 신고 절세 서학개미 나스닥 미장 해외 etf 세금 soxl tqqq 세금" }, // P2-53
+  { id: "rsibt", cat: "invest", path: "/invest/rsi-backtest/", title: "RSI 매매 백테스트", seo: "RSI 매매 백테스트 — SOXL·TQQQ·KORU RSI 30 매수·70 매도 수익률", h1: "RSI 매매 백테스트 (SOXL·TQQQ·KORU) — RSI 30에 사고 70에 팔았다면", desc: "SOXL·TQQQ·KORU를 RSI가 30 이하일 때 사고 70 이상일 때 팔았다면 수익률이 얼마인지 실제 과거 가격으로 계산해요. 일봉·주봉, 기간, RSI 기간(기본 14), 매수·매도 기준, 손절 %, 수수료를 고르면 매매 횟수, 승률, 누적 수익률, 그냥 보유했을 때 수익률, 최대 낙폭(MDD), 평균 보유 기간과 자산 곡선, 매수·매도 표시 차트, 거래 목록을 보여 줘요. 투자 권유가 아니에요.", hook: "RSI 30에 사고 70에 팔았다면 TQQQ는?", meta: "실제 가격 · 일봉·주봉", kw: "rsi 백테스트 rsi 매매 rsi 30 매수 rsi 70 매도 rsi 전략 rsi 매매법 과매도 매수 과매수 매도 과매도 과매수 tqqq rsi soxl rsi koru rsi 보조지표 백테스트 기술적 지표 백테스팅 와일더 rsi 14 상대강도지수 손절 승률 mdd 최대 낙폭 레버리지 etf 미국 주식 3배 매매 전략 수익률" }, // P2-54
 ];
-const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "heic", "qr", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "word2pdf", "dday", "stockquiz", "avgdown", "dca", "ostax"]; // P2-50 stockquiz(투자) // P2-51 avgdown // P2-52 dca // P2-53 ostax // P2-45 돈 계산기 4종, P2-46 imgmerge, P2-47 heic, P2-48 qr
+const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "heic", "qr", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "word2pdf", "dday", "stockquiz", "avgdown", "dca", "ostax", "rsibt"]; // P2-50 stockquiz(투자) // P2-51 avgdown // P2-52 dca // P2-53 ostax // P2-54 rsibt // P2-45 돈 계산기 4종, P2-46 imgmerge, P2-47 heic, P2-48 qr
 const NEXT = {
   pdfmerge: ["pdfsplit", "img2pdf", "imgcompress"],
   pdfsplit: ["pdfmerge", "pdf2img", "img2pdf"],
@@ -210,6 +212,7 @@ const NEXT = {
   avgdown: ["stockquiz", "dca", "salary"], // P2-51 // P2-52 둘째 칸 적립식 백테스트
   dca: ["stockquiz", "avgdown", "salary"], // P2-52
   ostax: ["avgdown", "dca", "salary"], // P2-53
+  rsibt: ["dca", "stockquiz", "avgdown"], // P2-54 같은 데이터로 적립식·주가 예측
 };
 const utilById = Object.fromEntries(UTILS.map((x) => [x.id, x]));
 const anyById = { ...toolById, ...utilById };
@@ -463,6 +466,7 @@ const cabCls = (i, n) => (n > 6 && i === n - 1 && (n - 3) % 3 === 1 ? "cab-full"
 // ★ 새 툴·게임을 만들면 여기에 { id, d: "출시일" }을 맨 위에 추가(대표님 지시: 새 콘텐츠는 메인에 잘 보이게).
 // 출시 30일 이내 항목 중 최신 4개가 홈 맨 위 「NEW」 띠에 나오고, 해당 행·타일에 NEW 표시가 붙음
 const NEW_ITEMS = [
+  { id: "rsibt", d: "2026-11-10" }, // P2-54
   { id: "ostax", d: "2026-11-10" }, // P2-53
   { id: "dca", d: "2026-11-10" }, // P2-52
   { id: "avgdown", d: "2026-11-10" }, // P2-51
@@ -1336,6 +1340,110 @@ utilPage(utilById.stockquiz, `<div class="sq">
     after: `<h2 class="dd-h">계산 검증 (손계산·독립 계산과 대조)</h2>
 <div class="table-wrap"><table class="dd-table avg-ex dca-ex"><thead><tr><th scope="col">경우</th><th scope="col">입력</th><th scope="col">계산</th><th scope="col">결과</th></tr></thead><tbody>${EXR.map((r) => `<tr><th scope="row">${r[0]}</th><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${r[3]}</td></tr>`).join("")}</tbody></table></div>
 <p class="hint">손계산 2건과, 실제 가격 구간 5건을 이 계산기와 따로 만든 계산(파이썬)으로 다시 계산한 값이 같은지 사이트를 만들 때마다 자동으로 확인해요(표에는 3건). 실제 가격 구간 표는 달러 기준이에요.</p>`
+  });
+}
+
+// P2-54 RSI 매매 백테스트(SOXL·TQQQ·KORU): 계산식은 src/assets/rsi-bt-calc.js 한 벌(화면 t-rsibt.js와 아래 대조가 같은 파일을 vm으로 씀). 가격은 P2-50 데이터(STOCK)
+// 흐름: 종목·일봉/주봉·기간·RSI 기간·매수/매도 기준·손절·수수료·초기 자금 → 매매 횟수·승률·누적 수익률·그냥 보유·MDD·평균 보유 → 가격 차트(매수▲·매도▼) + RSI 패널 → 자산 곡선(전략 vs 보유) → 거래 목록 → 한 줄 복사
+// 빌드 때 ① 손계산 2건 ② 실제 데이터 6건을 파이썬 독립 계산(scripts/rsi-bt-verify.py) 값과 대조 ③ 미래 정보 미사용(뒤 가격을 잘라 내도 앞 결과가 같은지) 확인, 다르면 빌드를 멈춤
+// 실제 데이터 구간은 모두 기준일보다 앞이라 데이터를 갱신해도 값이 그대로
+{
+  const ctx = {};
+  vm.createContext(ctx);
+  vm.runInContext(fs.readFileSync(path.join(ROOT, "src", "assets", "rsi-bt-calc.js"), "utf8"), ctx);
+  const RB = ctx.RSIBT;
+  const near = (a, b, tol = 1e-9) => Math.abs(a - b) <= tol * Math.max(1, Math.abs(b));
+  const chk = (name, got, want) => { if (!(got === want || (typeof got === "number" && typeof want === "number" && near(got, want)))) throw new Error(`P2-54 「${name}」 계산 불일치: ${got} ≠ ${want}`); };
+  const mk = (cs) => ({ d: cs.map((_, i) => `2020-01-${String(i + 1).padStart(2, "0")}`), dn: cs.map((_, i) => 18262 + i), c: cs, o: cs, h: cs, l: cs });
+  // 손계산 1: RSI(2), 종가 10·9·8·10·12·8·6·7(1월 1~8일), 매수 ≤ 30·매도 ≥ 70, $10,000
+  // 3일: 변화 −1·−1 → 평균 상승 0·하락 1 → RSI 0 → $8 매수(1,250주). 4일: +2 → 상승 (0+2)/2 = 1, 하락 (1+0)/2 = 0.5 → RSI 66.67(보유)
+  // 5일: +2 → 1.5·0.25 → RS 6 → RSI 85.71 → $12 매도 = $15,000(+50%, 2일). 6일: −4 → 0.75·2.125 → RSI 26.09 → $8 매수(1,875주)
+  // 7일 $6(RSI 15.38), 8일 $7(RSI 40) → 미청산, 1,875 × $7 = $13,125(+31.25%). 최고 $15,000 → 7일 $11,250 → MDD −25%. 그냥 보유 1,000주 × $7 = $7,000(−30%), $12 → $6 MDD −50%
+  const h1 = RB.run(mk([10, 9, 8, 10, 12, 8, 6, 7]), { start: "2020-01", end: "2020-01", n: 2 });
+  chk("손계산1 거래 수", h1.trades.length, 2); chk("손계산1 첫 매수일", h1.trades[0].ed, "2020-01-03"); chk("손계산1 첫 매도일", h1.trades[0].xd, "2020-01-05"); chk("손계산1 첫 거래 수익률", h1.trades[0].ret, 0.5);
+  chk("손계산1 미청산", h1.trades[1].why, "open"); chk("손계산1 둘째 매수 RSI", h1.trades[1].rin, 100 - 100 / (1 + 0.75 / 2.125));
+  chk("손계산1 최종 자산", h1.value, 13125); chk("손계산1 누적 수익률", h1.rate, 0.3125); chk("손계산1 보유", h1.hvalue, 7000); chk("손계산1 MDD", h1.mdd, -0.25); chk("손계산1 보유 MDD", h1.hmdd, -0.5);
+  chk("손계산1 승률", h1.winRate, 1); chk("손계산1 평균 보유", h1.avgDays, 2);
+  // 손계산 2: 같은 가격에 손절 20% → 7일 $6 ≤ $8 × 0.8 = $6.4 → 손절 매도 $15,000 × 0.75 = $11,250(−25%). 8일 RSI 40이라 다시 안 삼 → +12.5%, 승률 1/2
+  const h2 = RB.run(mk([10, 9, 8, 10, 12, 8, 6, 7]), { start: "2020-01", end: "2020-01", n: 2, stop: 0.2 });
+  chk("손계산2 손절", h2.trades[1].why, "stop"); chk("손계산2 손절일", h2.trades[1].xd, "2020-01-07"); chk("손계산2 최종 자산", h2.value, 11250); chk("손계산2 수익률", h2.rate, 0.125); chk("손계산2 승률", h2.winRate, 0.5);
+  // 실제 데이터: 파이썬 독립 계산 값(scripts/rsi-bt-verify.py 출력, 2026-11-10). 기본: 일봉, RSI(14), 30/70, 손절 없음, 수수료 0, $10,000
+  const PY = [
+    ["TQQQ", "2015-01", "2024-12", {}, { first: "2015-01-02", last: "2024-12-31", bars: 2516, trades: 11, closed: 11, wins: 10, stops: 0, value: 75879.36439401661, rate: 6.587936439401661, hvalue: 196498.6342190216, hrate: 18.64986342190216, mdd: -0.7494573643410853, hmdd: -0.8175454442813594, avgDays: 115.72727272727273, firstBuy: "2015-08-21", lastRet: 0.7398358821335322 }],
+    ["SOXL", "2012-01", "2025-12", { weekly: true }, { first: "2012-01-06", last: "2025-12-31", bars: 731, trades: 3, closed: 3, wins: 3, stops: 0, value: 643884.4619405764, rate: 63.38844619405765, hvalue: 891032.4358702565, hrate: 88.10324358702564, mdd: -0.4608156638953117, hmdd: -0.8989943156974202, avgDays: 263.6666666666667, firstBuy: "2015-08-21", lastRet: 3.3791523482245127 }],
+    ["KORU", "2016-01", "2025-06", { stop: 0.15, fee: 0.001 }, { first: "2016-01-04", last: "2025-06-30", bars: 2386, trades: 25, closed: 25, wins: 8, stops: 17, value: 15226.024229712444, rate: 0.5226024229712445, hvalue: 3894.847637415622, hrate: -0.6105152362584378, mdd: -0.7564991399723906, hmdd: -0.9614413177762525, avgDays: 59.6, firstBuy: "2016-01-15", lastRet: 0.6899017887368755 }],
+    ["SOXL", "2018-01", "2025-12", { buy: 25, sell: 75, n: 10 }, { first: "2018-01-02", last: "2025-12-31", bars: 2011, trades: 6, closed: 6, wins: 6, stops: 0, value: 124838.11533202055, rate: 11.483811533202054, hvalue: 42235.687799583975, hrate: 3.2235687799583976, mdd: -0.6096811639740602, hmdd: -0.905055487053021, avgDays: 104.83333333333333, firstBuy: "2018-06-27", lastRet: 0.6301489921121826 }],
+    ["TQQQ", "2011-01", "2025-12", { weekly: true, buy: 35, sell: 65, stop: 0.2 }, { first: "2011-01-07", last: "2025-12-31", bars: 783, trades: 7, closed: 7, wins: 4, stops: 3, value: 128771.83203319788, rate: 11.877183203319788, hvalue: 1271587.0718765075, hrate: 126.15870718765075, mdd: -0.6189169925479618, hmdd: -0.8046742689398216, avgDays: 131, firstBuy: "2011-08-19", lastRet: 1.50620588951083 }],
+    ["SOXL", "2021-06", "2022-12", {}, { first: "2021-06-01", last: "2022-12-30", bars: 401, trades: 1, closed: 0, wins: 0, stops: 0, value: 2659.515951595159, rate: -0.7340484048404841, hvalue: 2522.170057381325, hrate: -0.7477829942618675, mdd: -0.864170913367307, hmdd: -0.905055487053021, avgDays: null, firstBuy: "2022-01-27", lastRet: -0.7340484048404841 }],
+  ];
+  const DD = {};
+  const dec = (t) => (DD[t] = DD[t] || RB.decode(JSON.parse(fs.readFileSync(path.join(ROOT, "src", "assets", "data", `stock-${t.toLowerCase()}.json`), "utf8"))));
+  const REAL = PY.map(([t, s, e, o, w]) => {
+    const r = RB.run(dec(t), { start: s, end: e, ...o }), k = `${t} ${s}~${e}${o.weekly ? " 주봉" : ""}`;
+    if (r.err) throw new Error(`P2-54 ${k} 계산 실패`);
+    chk(`${k} 첫 봉`, r.first, w.first); chk(`${k} 마지막 봉`, r.last, w.last); chk(`${k} 봉 수`, r.bars, w.bars); chk(`${k} 거래 수`, r.trades.length, w.trades); chk(`${k} 청산`, r.closed, w.closed);
+    chk(`${k} 수익 거래`, r.wins, w.wins); chk(`${k} 손절`, r.trades.filter((x) => x.why === "stop").length, w.stops); chk(`${k} 최종 자산`, r.value, w.value); chk(`${k} 누적 수익률`, r.rate, w.rate);
+    chk(`${k} 보유 자산`, r.hvalue, w.hvalue); chk(`${k} 보유 수익률`, r.hrate, w.hrate); chk(`${k} MDD`, r.mdd, w.mdd); chk(`${k} 보유 MDD`, r.hmdd, w.hmdd); chk(`${k} 평균 보유`, r.avgDays, w.avgDays);
+    chk(`${k} 첫 매수일`, r.trades.length ? r.trades[0].ed : null, w.firstBuy); chk(`${k} 마지막 거래 수익률`, r.trades.length ? r.trades[r.trades.length - 1].ret : null, w.lastRet);
+    return { t, s, e, o, r };
+  });
+  // 미래 정보 미사용: 가격 데이터를 중간 날짜에서 잘라 낸 뒤 같은 설정으로 다시 계산 → 자른 날 앞의 RSI·자산·보유 여부·매매가 모두 같아야 함(자른 주의 주봉은 덜 찬 주라 제외)
+  const cut = (D, i) => Object.fromEntries(Object.entries(D).map(([k, v]) => [k, v.slice(0, i)]));
+  for (const [t, s, e, o, at] of [["TQQQ", "2015-01", "2024-12", {}, "2020-03-16"], ["SOXL", "2012-01", "2025-12", { weekly: true }, "2022-10-12"], ["KORU", "2016-01", "2025-06", { stop: 0.15, fee: 0.001 }, "2020-03-19"]]) {
+    const D = dec(t), ci = D.d.findIndex((d) => d >= at), full = RB.run(D, { start: s, end: e, ...o }), part = RB.run(cut(D, ci + 1), { start: s, end: e, ...o });
+    const m = part.series.B.length - (o.weekly ? 1 : 0), k = `${t} ${at}에서 자름`;
+    if (!(m > 100)) throw new Error(`P2-54 ${k}: 비교할 봉이 적음`);
+    for (let j = 0; j < m; j++) {
+      if (full.series.B[j].e !== part.series.B[j].e || full.series.rsi[j] !== part.series.rsi[j] || full.series.eq[j] !== part.series.eq[j] || full.series.pos[j] !== part.series.pos[j]) throw new Error(`P2-54 미래 정보 사용 의심: ${k}, ${j}번째 봉(${D.d[part.series.B[j].e]})이 뒤 가격에 따라 달라짐`);
+    }
+    const ft = full.trades.filter((x) => x.ek < m), pt = part.trades.filter((x) => x.ek < m);
+    if (ft.length !== pt.length || ft.some((x, j) => x.ed !== pt[j].ed || x.pin !== pt[j].pin || (x.xk != null && x.xk < m && x.xd !== pt[j].xd))) throw new Error(`P2-54 미래 정보 사용 의심: ${k}, 거래 목록이 다름`);
+  }
+  const nf = (n, a, b) => Math.abs(n).toLocaleString("ko-KR", { minimumFractionDigits: a, maximumFractionDigits: b });
+  const sg = (n) => (n < 0 ? "−" : n > 0 ? "+" : "");
+  const usdM = (n) => `$${nf(n, 0, 0)}`, pc = (r) => `${sg(r)}${nf(r * 100, 1, 1)}%`;
+  const ymK = (m) => `${m.slice(0, 4)}.${m.slice(5)}`;
+  const optK = (o) => [o.weekly ? "주봉" : "일봉", `RSI(${o.n || 14}) ≤ ${o.buy ?? 30} 매수 · ≥ ${o.sell ?? 70} 매도`, o.stop ? `손절 ${o.stop * 100}%` : "", o.fee ? `수수료 ${o.fee * 100}%` : ""].filter(Boolean).join(" · ");
+  const EXR = [
+    ["손계산 1", "RSI(2), 종가 $10·9·8·10·12·8·6·7, 30/70, $10,000", "RSI 0에 $8 매수 → RSI 85.7에 $12 매도(+50%) → RSI 26.1에 $8 매수 → 미청산 $7", `<b>${usdM(h1.value)}</b> (${pc(h1.rate)}) · MDD ${pc(h1.mdd)} · 보유 ${usdM(h1.hvalue)} (${pc(h1.hrate)})`],
+    ["손계산 2", "손계산 1 + 손절 20%", "$6 ≤ $8 × 0.8 → 손절(−25%)", `<b>${usdM(h2.value)}</b> (${pc(h2.rate)}) · 승률 ${nf(h2.winRate * 100, 0, 0)}%`],
+    ...REAL.filter((x, i) => [0, 1, 2, 5].includes(i)).map(({ t, s, e, o, r }) => [`${t} 실제 가격`, `${ymK(s)} ~ ${ymK(e)} · ${optK(o)}`, `매매 ${r.trades.length}번${r.open ? "(미청산 1)" : ""} · 승률 ${r.winRate == null ? "–" : nf(r.winRate * 100, 0, 0) + "%"}`, `<b>${pc(r.rate)}</b> · MDD ${pc(r.mdd)} · 그냥 보유 ${pc(r.hrate)} (MDD ${pc(r.hmdd)})`]),
+  ];
+  const RSB_WARN = "과거 가격으로 계산한 참고용이에요. 투자 권유가 아니에요. 과거에 잘 맞은 RSI 기준이 앞으로도 맞는다는 보장은 없어요. SOXL·TQQQ·KORU는 하루 수익률의 3배를 따라가는 레버리지 ETF라 위험이 매우 크고, 과매도(RSI 30 이하)에서 사도 더 떨어져 70~90% 넘게 잃은 때가 있어요.";
+  const META = { asOf: STOCK.map((x) => x.asOf).sort()[0], list: Object.fromEntries(STOCK.map((x) => [x.t, x.d0.slice(0, 7)])) };
+  utilPage(utilById.rsibt, `<div class="rsb dca" data-meta="${esc(JSON.stringify(META))}">
+<form class="dd-form pay-form dca-form rsb-form" autocomplete="off" novalidate>
+  <fieldset class="seg dca-tk"><legend>종목</legend>${STOCK.map((x) => `<label><input type="radio" name="tk" value="${x.t}"><span>${x.t} <small>${STOCK_NAME[x.t]}</small></span></label>`).join("")}</fieldset>
+  <fieldset class="seg rsb-tf"><legend>봉</legend><label><input type="radio" name="tf" value="d" checked><span>일봉 <small>하루 1개</small></span></label><label><input type="radio" name="tf" value="w"><span>주봉 <small>한 주 1개</small></span></label></fieldset>
+  <div class="dca-period">
+    <div class="dca-ym"><span class="dca-lab">시작</span><select name="sy" aria-label="시작 연도"></select><select name="sm" aria-label="시작 월"></select></div>
+    <div class="dca-ym"><span class="dca-lab">끝</span><select name="ey" aria-label="끝 연도"></select><select name="em" aria-label="끝 월"></select></div>
+  </div>
+  <div class="dca-quick" role="group" aria-label="기간 빠르게 고르기"><button type="button" class="chip" data-range="1">최근 1년</button><button type="button" class="chip" data-range="3">3년</button><button type="button" class="chip" data-range="5">5년</button><button type="button" class="chip" data-range="10">10년</button><button type="button" class="chip" data-range="list">상장 이후</button></div>
+  <div class="rsb-rule">
+    <label><span>RSI 기간</span><input name="n" type="text" inputmode="numeric" autocomplete="off"></label>
+    <label><span>매수 RSI ≤</span><input name="buy" type="text" inputmode="decimal" autocomplete="off"></label>
+    <label><span>매도 RSI ≥</span><input name="sell" type="text" inputmode="decimal" autocomplete="off"></label>
+  </div>
+  <div class="dca-quick rsb-preset" role="group" aria-label="매수·매도 기준 빠르게 고르기"><button type="button" class="chip" data-rule="30,70">30 / 70 (기본)</button><button type="button" class="chip" data-rule="25,75">25 / 75</button><button type="button" class="chip" data-rule="20,80">20 / 80</button><button type="button" class="chip" data-rule="40,60">40 / 60</button></div>
+  <div class="rsb-rule rsb-opt">
+    <label><span>손절 % <small class="hint">비우면 끔</small></span><input name="stop" type="text" inputmode="decimal" autocomplete="off" placeholder="예: 15"></label>
+    <label><span>수수료 % <small class="hint">거래마다</small></span><input name="fee" type="text" inputmode="decimal" autocomplete="off"></label>
+    <label><span>초기 자금 ($)</span><input name="cap" type="text" inputmode="decimal" autocomplete="off"></label>
+  </div>
+  <p class="hint rsb-assume">가정: 신호는 그 봉 <b>종가로 계산한 RSI</b>, 체결도 <b>그 봉 종가</b>예요. 전액 매수·전량 매도, 보유 중 매수 신호는 무시해요. 손절은 종가가 매수가보다 그 % 이상 떨어진 봉의 종가에 팔아요.</p>
+  <div class="dd-opts pay-acts"><button type="submit" class="btn">계산하기</button><button type="button" class="btn ghost" data-copy>결과 한 줄 복사</button><button type="button" class="chip" data-reset>처음 값으로</button></div>
+</form>
+<div class="dd-result pay-result dca-result rsb-result" aria-live="polite"></div>
+<div class="dca-chart rsb-pchart" hidden><div class="sq-chips rsb-pchips"></div><svg class="rsb-psvg" role="img" aria-label="가격 차트와 매수·매도 표시" xmlns="http://www.w3.org/2000/svg"></svg><svg class="sq-rsi rsb-rsvg" role="img" aria-label="RSI" xmlns="http://www.w3.org/2000/svg"></svg><div class="sq-legend rsb-plegend" aria-hidden="true"></div></div>
+<div class="dca-chart rsb-echart" hidden><div class="sq-chips dca-chips rsb-echips"></div><svg class="dca-svg rsb-esvg" role="img" aria-label="자산 곡선" xmlns="http://www.w3.org/2000/svg"></svg><div class="sq-legend dca-legend rsb-elegend" aria-hidden="true"></div></div>
+<p class="hint sq-src">가격: ${esc(STOCK[0].src)} 일봉(${esc(STOCK[0].basis)}) · 기준일 ${esc(META.asOf)} · 주봉 = 월~금 한 주를 묶은 봉(종가 = 그 주 마지막 거래일 종가) · ${STOCK.map((x) => `${x.t} ${x.d0.slice(0, 4)}년 ${+x.d0.slice(5, 7)}월 상장`).join(", ")}. RSI는 상장일부터의 가격으로 계산해요. 세금·배당·환율은 반영하지 않았어요.</p>
+<p class="sq-warn" role="note">${esc(RSB_WARN)}</p>
+</div>`, {
+    scripts: ["rsi-bt-calc.js", "t-rsibt.js"], fileTool: false,
+    after: `<h2 class="dd-h">계산 검증 (손계산·독립 계산과 대조)</h2>
+<div class="table-wrap"><table class="dd-table avg-ex dca-ex rsb-ex"><thead><tr><th scope="col">경우</th><th scope="col">설정</th><th scope="col">매매</th><th scope="col">누적 수익률</th></tr></thead><tbody>${EXR.map((r) => `<tr><th scope="row">${r[0]}</th><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${r[3]}</td></tr>`).join("")}</tbody></table></div>
+<p class="hint">손계산 2건과, 실제 가격 구간 6건을 이 계산기와 따로 만든 계산(파이썬)으로 다시 계산한 값이 같은지, 그리고 뒤 가격을 잘라 내도 앞 결과가 똑같은지(미래 가격을 쓰지 않는지) 사이트를 만들 때마다 자동으로 확인해요(표에는 실제 구간 4건). 초기 자금 $10,000 기준이에요.</p>`
   });
 }
 

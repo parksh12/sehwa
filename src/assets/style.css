@@ -1571,3 +1571,47 @@ li.has-fav{position:relative}
 .ost-tips li{margin:.3em 0}
 .ost-ex td,.ost-ex th{word-break:keep-all}
 @media(max-width:480px){.ost-ex th:nth-child(3),.ost-ex td:nth-child(3){display:none}.ost .seg span{padding:7px 10px;font-size:13.5px}.ost-row{gap:5px 6px;padding:7px 6px 6px}.ost-ptable th,.ost-ptable td{font-size:12.5px;padding:5px 4px}.ost-ex td,.ost-ex th{font-size:13px;padding:5px}.ost-legend{font-size:12px}}
+
+/* ===================== P2-54 RSI 매매 백테스트 (dca·sq 차트 톤 재사용) ===================== */
+.rsb-rule{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.rsb-rule label{display:grid;gap:6px;font-weight:700;align-content:end}
+.rsb-rule label small{font-weight:600}
+.rsb-rule input{min-width:0;width:100%}
+.rsb-assume{margin:-2px 0 0;padding:6px 10px;border:2px dashed var(--ink);border-radius:10px;background:#fffdf5}
+.rsb-vs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:2px 0 6px}
+.rsb-vs>div{border:var(--bd);border-radius:var(--radius);box-shadow:var(--drop);padding:8px 12px;display:grid;gap:2px;background:var(--white);min-width:0}
+.rsb-vs-a{background:var(--hwang)!important}
+.rsb-vs span{font-weight:800;font-size:14px}
+.rsb-vs b{font-family:var(--display);font-weight:400;font-size:clamp(28px,7.6vw,44px);line-height:1.1;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.rsb-vs .up b{color:var(--nok)}.rsb-vs .dn b{color:var(--jeok)}
+.rsb-vs-a.up b{color:#0f6b3b}
+.rsb-vs small{font-size:12.5px;font-weight:700;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.rsb-psvg{display:block;width:100%;height:auto;font-family:"Pretendard Variable",Pretendard,system-ui,sans-serif;font-weight:800;font-variant-numeric:tabular-nums;touch-action:pan-y;cursor:crosshair}
+.rsb-rsvg{touch-action:pan-y;cursor:crosshair}
+.rsb-hold{fill:var(--hwang);opacity:.28}
+.rsb-close{fill:none;stroke:var(--ink);stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round}
+.rsb-mk{stroke:var(--ink);stroke-width:1.6;stroke-linejoin:round}
+.rsb-mk.is-buy{fill:var(--nok)}.rsb-mk.is-sell{fill:var(--jeok)}.rsb-mk.is-stop{fill:var(--white);stroke:var(--jeok);stroke-width:2.2}
+.rsb-lv.is-buy{stroke:var(--nok);opacity:1}.rsb-lv.is-sell{stroke:var(--jeok);opacity:1}
+.rsb-rline{stroke-width:2}
+.rsb-ico{display:inline-block;vertical-align:-1px;stroke:var(--ink);stroke-width:1.4;stroke-linejoin:round}.rsb-ico.is-buy{fill:var(--nok)}.rsb-ico.is-sell{fill:var(--jeok)}.rsb-ico.is-stop{fill:var(--white);stroke:var(--jeok);stroke-width:1.8}
+.rsb-lg.is-buy{color:var(--nok)}.rsb-lg.is-sell,.rsb-lg.is-stop{color:var(--jeok)}
+.rsb .dca-gl{paint-order:stroke;stroke:var(--white);stroke-width:3.5px;stroke-linejoin:round}
+.rsb-ttable thead th small{display:block;font-weight:600;font-size:11.5px;color:var(--ink-3)}
+.rsb-lg.is-hold{color:var(--ink-2)}.rsb-lg.is-hold i{width:14px;height:10px;border:0;background:var(--hwang);opacity:.7;border-radius:2px}
+.rsb-hline{stroke:var(--cheong);stroke-width:2.4}
+.rsb-hd-hold{stroke:var(--cheong)}
+.rsb-cap{stroke:var(--ink-3);stroke-dasharray:4 5;stroke-width:1.8}
+.dca-tag.is-hold rect{fill:var(--cheong)}.dca-tag.is-hold text{fill:var(--white)}.dca-tag.is-hold .dca-lead{stroke:var(--cheong)}
+.rsb-lg-hold{color:var(--cheong)}.rsb-lg-hold i{border-top:3px solid var(--cheong)}
+.rsb-chip-act{color:var(--white)}.rsb-chip-act.is-buy{background:var(--nok)}.rsb-chip-act.is-sell{background:var(--jeok)}
+.rsb-ttable td{text-align:left}
+.rsb-ttable td:last-child{text-align:right}
+.rsb-ttable td small{color:var(--ink-3);font-weight:600}
+.rsb-ttable td i{font-style:normal;color:var(--ink-3)}
+.rsb-ttable tr.rsb-open td,.rsb-ttable tr.rsb-open th{background:#fffdf5}
+.rsb-ex td,.rsb-ex th{word-break:keep-all}
+@media(max-width:480px){.rsb-rule{gap:6px}.rsb-rule label{font-size:13.5px}.rsb-vs{gap:8px}.rsb-vs>div{padding:7px 9px}.rsb-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.rsb-ex th:nth-child(3),.rsb-ex td:nth-child(3){display:none}}
+.dca-tag.is-cap rect{fill:var(--white);stroke:var(--ink-3)}.dca-tag.is-cap text{fill:var(--ink-2)}.dca-tag.is-cap .dca-lead{stroke:var(--ink-3)}
+.rsb-lg-cap{color:var(--ink-3)}.rsb-lg-cap i{border-top-style:dashed!important;border-top-width:3px!important}
+@media(max-width:480px){.rsb-ttable th,.rsb-ttable td{padding:4px 4px;font-size:12.5px}.rsb-ttable td small{font-size:11px}}
