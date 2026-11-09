@@ -1337,3 +1337,30 @@ li.has-fav{position:relative}
 .sqr-line{fill:none;stroke:var(--ink);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
 .sqr-dot{fill:var(--white);stroke:var(--ink);stroke-width:3}.sqr-dot.is-hot{fill:var(--jeok)}.sqr-dot.is-cold{fill:var(--nok)}
 .sqr-h{fill:var(--ink);font-weight:800}
+
+/* ===================== P2-50d 마지막 날 종가 점선·오른쪽 칩, 결과 칩을 차트 밖으로, RSI 패널 1.5배 ===================== */
+.sq-chips{position:static;padding:4px 4px 8px}
+.sq-stamp{top:58px}
+.sqc-lastline{stroke:var(--cheong);stroke-width:2.6;stroke-dasharray:1.5 6;stroke-linecap:round}
+.sqc-thr{stroke:var(--ink);stroke-width:3;stroke-dasharray:10 6}
+.sqc-rtag rect{stroke:var(--ink);stroke-width:2}
+.sqc-rtag text{font-weight:900;text-anchor:middle}
+.sqc-rtag .sqc-rtag-lab{text-anchor:end;font-weight:800;paint-order:stroke;stroke:#fffdf5;stroke-width:4px;stroke-linejoin:round}
+.sqc-rtag.is-last rect{fill:var(--cheong)}.sqc-rtag.is-last text{fill:var(--white)}.sqc-rtag.is-last .sqc-rtag-lab{fill:var(--cheong)}
+.sqc-rtag.is-thr rect{fill:var(--hwang)}.sqc-rtag.is-thr text{fill:var(--ink)}.sqc-rtag.is-thr .sqc-rtag-lab{fill:var(--ink)}
+.sq-chip-res{color:var(--white);border-color:var(--ink)}.sq-chip-res.is-up{background:var(--nok)}.sq-chip-res.is-dn{background:var(--jeok)}
+.sq-chip-res b{font-weight:900}
+.sq-chip-leg{font-weight:700;font-size:12px}
+.sq-sw{display:inline-block;width:18px;height:0;border-top:3px dotted var(--cheong);margin-right:2px}
+.sq-sw.is-thr{border-top:3px dashed var(--ink)}
+.sq-svg:not(.no-anim) .sq-chip-res{animation:none}
+.sq-chips .sq-chip-res,.sq-chips .sq-chip-leg{animation:sq-chipin .3s .8s both}
+@keyframes sq-chipin{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.sq-chips .sq-chip-res,.sq-chips .sq-chip-leg{animation:none}}
+.sqr-lv{stroke-width:2}
+.sqr-line{stroke-width:3.4}
+.sqr-dot{stroke-width:3.5}
+.sq-stamp.sq-stamp-chip{position:static;display:inline-block;font-size:19px;padding:4px 10px 3px;border-width:3px;border-radius:8px;transform:rotate(-5deg);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.9),inset 0 0 0 3px currentColor;margin:0 4px 0 2px}
+.sq-stamp.sq-stamp-chip:not(.no-anim){opacity:0;animation:sq-stamp2 .35s .9s cubic-bezier(.2,1.6,.4,1) forwards}
+@keyframes sq-stamp2{from{opacity:0;transform:rotate(-5deg) scale(1.8)}to{opacity:1;transform:rotate(-5deg) scale(1)}}
+@media(prefers-reduced-motion:reduce){.sq-stamp.sq-stamp-chip{animation:none!important;opacity:1!important}}

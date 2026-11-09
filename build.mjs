@@ -1145,6 +1145,7 @@ const STOCK = ["SOXL", "TQQQ", "KORU"].map((t) => {
 });
 const STOCK_NAME = { SOXL: "반도체 3배", TQQQ: "나스닥100 3배", KORU: "한국 3배" };
 // P2-50b 차트를 canvas → 사이트 스타일 SVG(.sq-svg)로 바꾸고, 결과 도장(.sq-stamp) 자리를 둠
+// P2-50d .sq-chips는 차트 위 일반 줄(겹침 없음), 공개 결과 칩도 여기에
 // P2-50c 봉 종류·RSI 칩(.sq-chips)과 RSI(14) 패널(.sq-rsi) 자리 추가, 모드 「3개월 → 일주일(5거래일) 뒤」(w1) 추가
 utilPage(utilById.stockquiz, `<div class="sq">
   <div class="sq-start">
