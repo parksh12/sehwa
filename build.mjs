@@ -53,6 +53,7 @@ const TOOLS = [
   { id: "namematch", cat: "fun", path: "/fun/name-match/", icon: "💌", title: "이름 궁합 테스트", h1: "이름 궁합 테스트 — 획수로 보는 두 사람의 케미", desc: "두 사람의 이름 획수를 더해 가며 궁합 점수를 계산하는 추억의 이름 궁합 놀이예요.", hook: "공책 귀퉁이에 획수 적어 가며 하던 그 궁합, 기억나요?", meta: "이름 두 개" },
   { id: "today", cat: "fun", path: "/fun/today/", icon: "", title: "오늘의 띠별 운세", h1: "오늘의 띠별 운세 — 매일 자정에 바뀌는 12띠 하루 운세", desc: "열두 띠의 오늘 하루 흐름과 일·관계 팁, 행운의 색·숫자를 매일 새로 정리해요.", hook: "매일 자정에 바뀌어요. 내 띠의 오늘 하루는?", meta: "매일 업데이트" },
   { id: "saju", cat: "fun", path: "/fun/saju/", icon: "", title: "무료 사주팔자", h1: "무료 사주팔자 — 만세력부터 올해 운세까지", desc: "생년월일시로 사주 여덟 글자를 계산하고 오행·십신·대운과 연애운·재물운·직업운 등 6가지 운, 올해 운세를 풀어 드려요.", hook: "절기·출생지 경도까지 반영한 만세력. 연애운·재물운·취업운까지.", meta: "생년월일시 · 1분" }, // P2-22
+  { id: "tarot", cat: "fun", path: "/fun/tarot/", icon: "", title: "무료 타로", seo: "무료 타로 — 오늘의 타로, 연애 타로, 3장 타로 카드 점", h1: "무료 타로 — 오늘의 카드부터 과거·현재·미래 3장까지", desc: "질문을 고르고 카드를 섞은 뒤, 엎어 둔 메이저 아르카나 22장 중에서 직접 골라 뒤집어요. 정방향·역방향 해석과 연애·재물·일·학업·오늘 하루 질문별 풀이를 바로 보고, 결과를 이미지와 링크로 나눌 수 있어요.", hook: "질문 고르고, 섞고, 직접 골라 뒤집는 22장 타로.", meta: "1장 · 3장", kw: "타로 타로 카드 타로카드 무료 타로 무료 타로점 타로점 타로 점 오늘의 타로 오늘의 타로 카드 오늘의 카드 연애 타로 연애운 타로 재물 타로 금전운 직장 타로 학업 타로 타로 운세 3장 타로 쓰리카드 과거 현재 미래 메이저 아르카나 정방향 역방향 타로 카드 의미 타로 해석 카드 점 tarot" }, // P2-58
   { id: "reaction", cat: "arcade", path: "/arcade/reaction/", icon: "⚡", title: "반응속도 게임", h1: "반응속도 게임 — 초록색이 되는 순간 터치!", desc: "빨간 화면이 초록색으로 바뀌는 순간을 다섯 번 잡아 보세요. 평균 기록과 등급, 내 최고 기록을 알려 드려요.", hook: "초록색 되는 순간 누르기. 다섯 번 평균으로 등급이 매겨져요.", meta: "터치 5번" },
   { id: "rpg", cat: "story", path: "/story/penguin-rpg/", icon: "", title: "펭귄 RPG 뽀득이와 오색 연", h1: "펭귄 RPG — 뽀득이와 오색 연", desc: "색을 잃은 얼음 군도에서 펭귄 뽀득이가 오색 실 네 가닥을 찾아 떠나는 약 1시간짜리 턴제 RPG. 지역 4곳과 보스 5마리, 동료 2명, 자동 저장.", hook: "색을 잃은 얼음 군도, 오색 실을 찾아 떠나는 1시간 모험.", meta: "턴제 RPG · 약 1시간 · 자동 저장" },
   { id: "stack", cat: "arcade", path: "/arcade/stack/", icon: "", title: "블록 쌓기 게임", h1: "블록 쌓기 게임 — 탭 한 번으로 높이 쌓기", desc: "좌우로 움직이는 블록을 탭해서 멈추고, 아래 블록과 겹친 만큼만 남겨 높이 쌓는 게임이에요. 딱 맞추면 PERFECT, 이 기기의 최고 기록을 남겨 다시 도전할 수 있어요.", hook: "탭 한 번에 한 층. 딱 맞추면 PERFECT.", meta: "탭 · Space" },
@@ -91,6 +92,7 @@ const ART = {
   family: sv(`<path d="M14 24h56a8 8 0 0 1 8 8v26a8 8 0 0 1-8 8H38l-14 12V66h-10a8 8 0 0 1-8-8V32a8 8 0 0 1 8-8z" fill="${YEL}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M50 52h56a8 8 0 0 1 8 8v26a8 8 0 0 1-8 8h-10v12L82 94H50a8 8 0 0 1-8-8V60a8 8 0 0 1 8-8z" fill="${W}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><text x="78" y="80" font-size="15" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">7942</text><path d="M22 40h40M22 50h26" stroke="${K}" stroke-width="4" stroke-linecap="round"/>`),
   pdf2img: sv(`${doc(10, 14, 48, 64, RED)}<text x="34" y="54" font-size="15" font-weight="800" text-anchor="middle" fill="${W}" font-family="sans-serif">PDF</text><path d="M52 90h12" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M60 82l9 8-9 8" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><rect x="66" y="50" width="44" height="56" rx="6" fill="${W}" stroke="${K}" stroke-width="4"/><circle cx="80" cy="66" r="6" fill="${YEL}" stroke="${K}" stroke-width="3"/><path d="M70 100l12-14 8 6 8-10 8 18z" fill="${GRN}" stroke="${K}" stroke-width="3" stroke-linejoin="round"/>`),
   removebg: sv(`<rect x="14" y="14" width="92" height="92" rx="8" fill="${W}"/><g fill="#d6d6d6">${[0, 1, 2, 3].flatMap((r) => [0, 1, 2, 3].filter((c) => (r + c) % 2).map((c) => `<rect x="${14 + c * 23}" y="${14 + r * 23}" width="23" height="23"/>`)).join("")}</g><rect x="14" y="14" width="92" height="92" rx="8" fill="none" stroke="${K}" stroke-width="4"/><path d="M60 30c-13 0-22 10-22 24 0 9 4 15 9 19l-5 21h36l-5-21c5-4 9-10 9-19 0-14-9-24-22-24z" fill="${YEL}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M60 22c-19 0-30 14-30 32 0 10 4 17 9 22l-6 24h54l-6-24c5-5 9-12 9-22 0-18-11-32-30-32z" fill="none" stroke="${RED}" stroke-width="4" stroke-dasharray="7 6" stroke-linejoin="round"/>`), // P2-26
+  tarot: sv(`<rect x="16" y="22" width="52" height="80" rx="7" fill="${K}" stroke="${K}" stroke-width="4" transform="rotate(-12 42 62)"/><path d="M42 44l12 18-12 18-12-18z" fill="${RED}" stroke="${YEL}" stroke-width="3" stroke-linejoin="round" transform="rotate(-12 42 62)"/><rect x="50" y="16" width="54" height="88" rx="7" fill="${W}" stroke="${K}" stroke-width="4" transform="rotate(8 77 60)"/><g transform="rotate(8 77 60)"><rect x="57" y="26" width="40" height="56" rx="4" fill="#2346d8" stroke="${K}" stroke-width="3"/><path d="M77 38l4 11 11 4-11 4-4 11-4-11-11-4 11-4z" fill="${YEL}" stroke="${K}" stroke-width="2.5" stroke-linejoin="round"/><path d="M64 93h26" stroke="${K}" stroke-width="4" stroke-linecap="round"/></g>`), // P2-58 엎은 카드(뒷면) + 별 카드(앞면)
   draw: sv(`<path d="M18 14v92M48 14v92" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M18 34h30M18 60h30M18 86h30" stroke="${RED}" stroke-width="5" stroke-linecap="round"/><circle cx="84" cy="72" r="28" fill="${W}"/><path d="M84 72V44a28 28 0 0 1 24.2 14z" fill="${YEL}"/><path d="M84 72l24.2 14A28 28 0 0 1 84 100z" fill="${GRN}"/><path d="M84 72 59.8 86A28 28 0 0 1 59.8 58z" fill="${RED}"/><circle cx="84" cy="72" r="28" fill="none" stroke="${K}" stroke-width="4"/><circle cx="84" cy="72" r="4" fill="${K}"/><path d="M78 32h12l-6 11z" fill="${K}"/>`), // P2-44
   imgmerge: sv(`<rect x="30" y="10" width="60" height="32" rx="5" fill="${YEL}" stroke="${K}" stroke-width="4"/><rect x="30" y="44" width="60" height="32" rx="5" fill="${GRN}" stroke="${K}" stroke-width="4"/><rect x="30" y="78" width="60" height="32" rx="5" fill="${W}" stroke="${K}" stroke-width="4"/><circle cx="46" cy="94" r="6" fill="${RED}"/><path d="M8 26v68M2 34l6-8 6 8M2 86l6 8 6-8" fill="none" stroke="${RED}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M98 60h18" stroke="${K}" stroke-width="4" stroke-linecap="round" stroke-dasharray="4 5"/>`), // P2-46
   heic: sv(`<rect x="10" y="12" width="56" height="74" rx="10" fill="${W}" stroke="${K}" stroke-width="4"/><circle cx="28" cy="34" r="6" fill="${YEL}" stroke="${K}" stroke-width="3"/><path d="M16 66l14-14 10 8 10-10 12 16z" fill="${GRN}" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><text x="38" y="80" font-size="12" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">HEIC</text><path d="M62 96h14" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M72 88l9 8-9 8" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><rect x="74" y="44" width="38" height="44" rx="6" fill="${RED}" stroke="${K}" stroke-width="4"/><text x="93" y="71" font-size="13" font-weight="800" text-anchor="middle" fill="${W}" font-family="sans-serif">JPG</text>`), // P2-47
@@ -119,7 +121,7 @@ const LOGO = (size = 34) => `<svg class="logo-mark" width="${size}" height="${si
 const toolById = Object.fromEntries(TOOLS.map((x) => [x.id, x]));
 // P2-49 TOOLS는 toolPage(해설 원고 guides) 틀을 쓰는 항목 묶음. cat이 CATS(story·arcade)면 오락실 게임, "fun"이면 「운세·재미」 툴. id는 그대로(즐겨찾기·랭킹·GA)
 const GAMES = TOOLS.filter((x) => CATS[x.cat]);
-const FUN_RANK = ["today", "saju", "personality", "birthday", "namematch", "draw"]; // P2-49 「운세·재미」 서랍 순서
+const FUN_RANK = ["today", "tarot", "saju", "personality", "birthday", "namematch", "draw"]; // P2-49 「운세·재미」 서랍 순서 // P2-58 tarot
 const FUN_PATH = { today: "/fun/today/", tti: (k) => `/fun/tti/${k}/`, zodiac: (k) => `/fun/zodiac/${k}/`, type: (k) => `/fun/personality/${k.toLowerCase()}/` }; // P2-49 하위 페이지 주소 한 곳
 // P2-49 옛 주소 → 새 주소(리디렉트 도우미가 사용). 옛 오락실 카테고리 3곳 + 툴 6개 + 하위 해설(띠 12·별자리 12·16유형 16)
 const FUN_MOVED = [
@@ -134,12 +136,13 @@ const RECO = {
   birthday: ["today", "personality", "reaction"],
   personality: ["birthday", "namematch", "reaction"],
   namematch: ["birthday", "personality", "today"],
-  today: ["life", "birthday", "personality"],
+  today: ["tarot", "life", "birthday"], // P2-58 띠별 운세 → 타로
   reaction: ["stack", "life", "personality"],
   stack: ["reaction", "life", "today"],
   rpg: ["life", "stack", "reaction"],
   life: ["today", "reaction", "personality"],
   draw: ["reaction", "stack", "today"], // P2-44
+  tarot: ["today", "saju", "personality"], // P2-58 타로 → 띠별 운세·사주
 };
 const TTI_KEYS = ["rat", "ox", "tiger", "rabbit", "dragon", "snake", "horse", "goat", "monkey", "rooster", "dog", "pig"];
 const TTI_EMOJI = Object.fromEntries(TTI_KEYS.map((k) => [k, tti[k].hanja])); // 이모지 대신 지지 한자
@@ -159,7 +162,7 @@ const UCATS = {
   text: { name: "글쓰기", desc: "자기소개서, 리포트, 블로그 글을 쓸 때 필요한 글쓰기 툴이에요. 글자수 세기, PDF에서 복사한 글의 줄바꿈·공백 정리, 읽기·발표 시간과 원고지 매수 계산, 이모지·특수문자 복사를 브라우저 안에서 바로 해요." }, // P2-57 desc
   calc: { name: "생활 계산", desc: "D-day, 연봉 실수령액, 퇴직금처럼 생활에서 자주 찾는 계산을 바로 해 주는 툴이에요." }, // P2-45 desc
   time: { name: "시간", desc: "타이머와 스톱워치처럼 시간을 재고 알려 주는 툴이에요." },
-  fun: { name: "운세·재미", seo: "운세·재미 — 무료 사주·띠별 운세·성격 테스트·사다리타기", desc: "오늘의 띠별 운세, 무료 사주팔자, 16유형 성격 테스트, 생일로 보는 나, 이름 궁합, 사다리타기·돌림판처럼 재미로 보고 가볍게 정하는 툴이에요." }, // P2-49 옛 오락실 운세·테스트·사다리
+  fun: { name: "운세·재미", seo: "운세·재미 — 무료 타로·무료 사주·띠별 운세·성격 테스트·사다리타기", desc: "오늘의 띠별 운세, 무료 타로, 무료 사주팔자, 16유형 성격 테스트, 생일로 보는 나, 이름 궁합, 사다리타기·돌림판처럼 재미로 보고 가볍게 정하는 툴이에요." }, // P2-49 옛 오락실 운세·테스트·사다리 // P2-58 타로
   invest: { name: "투자", seo: "투자 툴 — 손절·익절·포지션 계산기, 복리 계산기·배당 계산기, RSI 백테스트, 해외주식 양도세 계산기, 적립식 백테스트, 물타기 계산기, SOXL·TQQQ·KORU 주가 예측", desc: "손절가·익절가와 감당할 손실로 몇 주를 사야 하는지와 손익비를 계산하는 손절·익절·포지션 계산기, 적립식 복리로 몇 년 뒤 얼마가 되는지, 월 배당 100만 원을 받으려면 얼마가 필요한지 계산하는 복리·배당 계산기, 미국주식 양도소득세 계산, SOXL·TQQQ·KORU를 매달 샀다면 지금 얼마인지 보는 적립식 백테스트, RSI 30에 사고 70에 팔았다면 얼마인지 보는 RSI 매매 백테스트, 물타기 평단가 계산처럼 주식 투자에서 자주 하는 계산과, 레버리지 ETF의 실제 과거 차트로 오를까 내릴까를 맞혀 보는 투자 툴이에요. 투자 권유가 아니에요." }, // P2-50 새 툴 카테고리(앞으로 주식투자 툴을 여기에 모음) // P2-51 seo·desc에 물타기 계산기 // P2-52 적립식 백테스트 // P2-53 해외주식 양도세 // P2-54 RSI 백테스트 // P2-55 복리·배당 계산기 // P2-56 손절·익절·포지션 계산기
 };
 const NAV = [...Object.entries(UCATS).map(([k, c]) => [c.name, `/${k}/`]), [PLAY.name, PLAY.path]];
@@ -481,6 +484,7 @@ const cabCls = (i, n) => (n > 6 && i === n - 1 && (n - 3) % 3 === 1 ? "cab-full"
 // ★ 새 툴·게임을 만들면 여기에 { id, d: "출시일" }을 맨 위에 추가(대표님 지시: 새 콘텐츠는 메인에 잘 보이게).
 // 출시 30일 이내 항목 중 최신 4개가 홈 맨 위 「NEW」 띠에 나오고, 해당 행·타일에 NEW 표시가 붙음
 const NEW_ITEMS = [
+  { id: "tarot", d: "2026-11-10" }, // P2-58
   { id: "emoji", d: "2026-11-10" }, // P2-57
   { id: "readtime", d: "2026-11-10" }, // P2-57
   { id: "linebreak", d: "2026-11-10" }, // P2-57
@@ -521,7 +525,7 @@ const newList = (() => {
 const isNew = (id) => newList.some((x) => x.id === id);
 const newCard = (id) => {
   const x = anyById[id], util = !!utilById[id];
-  return `<li class="has-fav">${favBtn(x, "fav-tile")}<a class="new-card" href="${u(x.path)}"><span class="new-tag">NEW</span><span class="fun-art">${ART[x.id]}</span><b>${esc(x.title)}</b><span>${esc(x.hook)}</span><small>${util ? esc(catName(x.cat)) : esc(PLAY.name)}</small></a></li>`;
+  return `<li class="has-fav">${favBtn(x, "fav-tile")}<a class="new-card" href="${u(x.path)}"><span class="new-tag">NEW</span><span class="fun-art">${ART[x.id]}</span><b>${esc(x.title)}</b><span>${esc(x.hook)}</span><small>${util || !CATS[x.cat] ? esc(catName(x.cat)) : esc(PLAY.name)}</small></a></li>`; // P2-58 운세·재미(TOOLS cat fun)는 「펭귄 오락실」 대신 분류 이름
 };
 const FUN_TILES = ["hell", "stack", "reaction", "family"]; // P2-49 게임만(rpg·hellchosun·life는 바로 위 「오래 즐기는 게임」에 있음)
 const funTile = (id) => {
@@ -861,6 +865,79 @@ ZODIAC_KEYS.forEach((k, i) => {
   <p class="safe">입력한 이름과 항목은 저장하거나 서버로 보내지 않아요. 공정성 링크에는 이름과 항목이 들어가니, 실명 대신 별명을 써도 돼요.</p>
 </div>`;
   toolPage(toolById.draw, html, { scripts: ["draw.js"] });
+}
+
+// P2-58 무료 타로 (/fun/tarot/). 카드 데이터·해석은 src/assets/tarot-data.js, 카드 그림(SVG 22장 + 뒷면)은 src/assets/tarot-art.js 한 벌
+// (화면 tarot.js와 아래 검사가 같은 파일을 vm으로 씀). 결과 링크 # 뒤에는 질문 종류(q)와 카드 번호·방향(c)만 담음
+// 빌드 때 22장 × 정·역 × (키워드 3 + 기본 해석 + 질문 4종: 오늘 하루·연애·재물·일·학업) 누락·중복, 그림 22장·뒷면을 검사하고 어긋나면 빌드를 멈춤
+{
+  const ctx = {};
+  vm.createContext(ctx);
+  for (const f of ["tarot-data.js", "tarot-art.js"]) vm.runInContext(fs.readFileSync(path.join(ROOT, "src", "assets", f), "utf8"), ctx);
+  const TD = ctx.TAROTDATA, TA = ctx.TAROTART;
+  const errs = [], seen = new Map();
+  const QKEYS = TD.QUESTIONS.map((q) => q.key).filter(Boolean);
+  const sentences = (s) => (String(s).match(/[.?!](?=\s|$)/g) || []).length;
+  if (TD.CARDS.length !== 22) errs.push(`카드 ${TD.CARDS.length}장(22장이어야 함)`);
+  if (JSON.stringify(QKEYS) !== JSON.stringify(["day", "love", "money", "work"])) errs.push(`질문 종류 ${QKEYS.join(",")}`);
+  if (TA.count !== 22) errs.push(`그림 ${TA.count}장(22장이어야 함)`);
+  if (!/^<svg[^>]*>.*<\/svg>$/s.test(TA.back())) errs.push("뒷면 그림 없음");
+  if (TD.TONE3.length !== 4 || !TD.SPREADS[1] || TD.SPREADS[3]?.pos.length !== 3) errs.push("스프레드·3장 분위기 문장 누락");
+  let pieces = 0, chars = 0;
+  TD.CARDS.forEach((c, i) => {
+    const tag = `${i}번 ${c.name || "?"}`;
+    if (c.n !== i || !c.name || !c.en) errs.push(`${tag}: 번호·이름 누락`);
+    const svg = TA.card(i);
+    if (!svg.startsWith("<svg") || !svg.includes(`>${c.name}</text>`) || !svg.includes(`>${TD.ROMAN[i]}</text>`)) errs.push(`${tag}: 그림 누락`);
+    for (const dir of ["up", "rev"]) {
+      const R = c[dir], dn = dir === "up" ? "정방향" : "역방향";
+      if (!R) { errs.push(`${tag} ${dn}: 없음`); continue; }
+      if (!Array.isArray(R.k) || R.k.length !== 3 || R.k.some((x) => !x || !String(x).trim()) || new Set(R.k).size !== 3) errs.push(`${tag} ${dn}: 키워드 3개가 아님`);
+      if (!R.t || R.t.length < 40 || sentences(R.t) < 2) errs.push(`${tag} ${dn}: 기본 해석이 비었거나 짧음`);
+      for (const [key, txt] of [["t", R.t], ...QKEYS.map((qk) => [qk, R[qk]])]) {
+        if (key !== "t") { const n = sentences(txt); if (!txt || txt.trim().length < 12 || n < 1 || n > 2) errs.push(`${tag} ${dn} ${key}: 질문별 해석 누락 또는 1~2문장 아님`); }
+        if (txt) {
+          if (seen.has(txt)) errs.push(`${tag} ${dn} ${key}: ${seen.get(txt)}와 같은 문장`); else seen.set(txt, `${tag} ${dn} ${key}`);
+          pieces++; chars += txt.length;
+        }
+      }
+    }
+  });
+  if (errs.length) throw new Error("P2-58 타로 데이터 검사 실패 (src/assets/tarot-data.js · tarot-art.js):\n  " + errs.join("\n  "));
+  const want = 22 * 2 * (1 + QKEYS.length);
+  if (pieces !== want) throw new Error(`P2-58 타로 해석 ${pieces}개(${want}개여야 함)`);
+  const Q = TD.QUESTIONS, radio = (name, v, label, on) => `<label><input type="radio" name="${name}" value="${v}"${on ? " checked" : ""}><span>${esc(label)}</span></label>`;
+  const html = `
+<div class="tr" id="tr">
+  <p class="tr-from" id="tr-from" hidden>공유받은 타로 결과예요. 링크에 담긴 카드 그대로 해석을 보여 드려요. <button type="button" class="btn ghost" data-tr="restart">나도 뽑아 보기</button></p>
+  <div class="tr-setup" id="tr-setup">
+    <fieldset class="seg tr-q"><legend>1. 무엇이 궁금한가요?</legend>${Q.map((q, i) => radio("tr-q", q.id, q.name, i === 0)).join("")}</fieldset>
+    <label class="tr-free" id="tr-free" hidden>내 질문 <small>(선택 · 40자까지 · 결과 링크에는 들어가지 않아요)</small><input id="tr-free-in" type="text" maxlength="40" placeholder="예: 이번 달에 이사해도 괜찮을까?" autocomplete="off"></label>
+    <fieldset class="seg tr-s"><legend>2. 몇 장 뽑을까요?</legend>${radio("tr-s", "1", "1장 · 오늘의 카드", true)}${radio("tr-s", "3", "3장 · 과거·현재·미래", false)}</fieldset>
+    <button type="button" class="btn big" id="tr-shuffle">카드 섞기</button>
+    <p class="hint">카드는 누를 때마다 새로 섞어요. 같은 날 다시 뽑으면 다른 카드가 나올 수 있어요.</p>
+  </div>
+  <div class="tr-table" id="tr-table" hidden>
+    <p class="tr-sum"><span id="tr-sum"></span> <button type="button" class="chip" data-tr="restart">질문 바꾸기</button></p>
+    <p class="tr-guide" id="tr-guide" aria-live="polite"></p>
+    <div class="tr-slots" id="tr-slots"></div>
+    <div class="tr-btns"><button type="button" class="btn ghost" id="tr-flipall" hidden>모두 뒤집기</button></div>
+    <div class="tr-pile" id="tr-pile" hidden aria-hidden="true"></div>
+    <div class="tr-deck" id="tr-deck" hidden></div>
+  </div>
+  <div class="tr-result" id="tr-result" hidden aria-live="polite"></div>
+  <div class="tr-btns tr-share" id="tr-share" hidden><button type="button" class="btn" data-tr="link">결과 링크 복사</button><button type="button" class="btn ghost" data-tr="image">결과 이미지 저장</button><button type="button" class="btn ghost" data-tr="again">같은 질문으로 다시 뽑기</button><button type="button" class="chip" data-tr="restart">처음부터</button></div>
+  <p class="hint" id="tr-note" aria-live="polite"></p>
+  <p class="safe">질문과 뽑은 카드는 저장하거나 서버로 보내지 않아요. 결과 링크에는 카드 번호·방향과 질문 종류만 담겨요.</p>
+</div>`;
+  const ROMAN = TD.ROMAN;
+  const gallery = `<section class="prose tr-all" id="cards">
+  <h2>타로 카드 22장 의미 한눈에</h2>
+  <p>이 사이트의 타로는 메이저 아르카나 22장을 써요. 카드 그림은 ${esc(cfg.siteName)}가 이름의 뜻을 단순한 도형으로 나타내 직접 그렸고, 해석도 직접 썼어요. 카드마다 정방향과 역방향의 키워드 세 개를 모았어요.</p>
+  <ul class="tr-grid">${TD.CARDS.map((c) => `<li><span class="tr-thumb" data-tarot-art="${c.n}"></span><div><b>${ROMAN[c.n]}. ${esc(c.name)}</b> <small>${esc(c.en)}</small><p><em class="up">정</em>${c.up.k.map(esc).join(" · ")}</p><p><em class="rv">역</em>${c.rev.k.map(esc).join(" · ")}</p><details><summary>해석 보기</summary><p><b>정방향</b> ${esc(c.up.t)}</p><p><b>역방향</b> ${esc(c.rev.t)}</p></details></div></li>`).join("")}<li class="tr-backli"><span class="tr-thumb" data-tarot-art="back"></span><div><b>카드 뒷면</b><p>위아래를 뒤집어도 같은 모양이라, 엎어 둔 상태에서는 정방향인지 역방향인지 알 수 없어요.</p></div></li></ul>
+</section>`;
+  toolPage(toolById.tarot, html, { scripts: ["tarot-data.js", "tarot-art.js", "tarot.js"], extraBelow: gallery });
+  console.log(`✔ P2-58 타로: 카드 22장 + 뒷면, 해석 ${pieces}개(22장 × 정·역 × 기본+질문 ${QKEYS.length}종) 누락·중복 0, ${chars.toLocaleString("en-US")}자`);
 }
 
 // 인생 게임 장면·선택 검사 (어기면 빌드 실패) — P2-21 터닝포인트 구조
@@ -2337,7 +2414,7 @@ for (const k of INFO) {
 // P2-15 펭귄 RPG (본문은 content/rpg.mjs, 게임은 src/assets/rpg-*.js)
 (await import("./content/rpg.mjs")).default({ cfg, write, layout, crumbHtml, crumbs, faqHtml, faqLd, adSlot, esc, t, u, abs, textLen, warnings });
 // P2-22 사주팔자 (본문·검증은 content/saju.mjs, 계산은 src/assets/saju-*.js). 검증표가 하나라도 어긋나면 빌드 실패
-(await import("./content/saju.mjs")).default({ cfg, write, layout, crumbHtml, crumbs, faqHtml, faqLd, adSlot, esc, t, u, abs, textLen, warnings, root: ROOT });
+(await import("./content/saju.mjs")).default({ cfg, write, layout, crumbHtml, crumbs, faqHtml, faqLd, adSlot, esc, t, u, abs, textLen, warnings, root: ROOT, reco: recoHtml(["tarot", "today", "personality"]) }); // P2-58 사주 → 타로·띠별 운세 NEXT
 // P2-27 지옥에서 살아남기 (본문·데이터 검사는 content/hell.mjs, 게임은 src/assets/hell-*.js)
 (await import("./content/hell.mjs")).default({ cfg, write, layout, crumbHtml, crumbs, faqHtml, faqLd, adSlot, esc, t, u, abs, textLen, warnings, root: ROOT });
 // P2-28 헬조선에서 살아남기 (본문·데이터 검사는 content/hell-chosun.mjs, 게임은 src/assets/hell-chosun-*.js + P2-27 엔진)

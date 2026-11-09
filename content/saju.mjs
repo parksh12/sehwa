@@ -230,6 +230,7 @@ ${crumbHtml(items)}
   </section>
   ${faqHtml(FAQ)}
   ${adSlot("saju-faq")}
+  ${h.reco || ""}
   <p class="legal">이 결과는 전통 명리학의 계산 규칙에 따라 자동으로 만든 재미·참고용 콘텐츠입니다. 건강·법률·재정·진로처럼 중요한 결정은 해당 분야 전문가와 상의하세요. 입력한 정보는 이 브라우저 안에서만 계산되며 저장하거나 전송하지 않습니다. 운세 문장은 ${esc(cfg.siteName)}가 직접 작성했습니다.</p>
 </article>
 <script type="application/json" id="page-data">${JSON.stringify({ cities: CITIES }).replace(/</g, "\\u003c")}</script>`;
