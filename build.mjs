@@ -99,6 +99,7 @@ const ART = {
   unemp: sv(`<path d="M60 16a36 36 0 0 1 36 36H24a36 36 0 0 1 36-36z" fill="${RED}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M60 52v40a8 8 0 0 1-16 0" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round"/><circle cx="88" cy="88" r="14" fill="${YEL}" stroke="${K}" stroke-width="4"/><text x="88" y="94" font-size="15" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">₩</text>`), // P2-45
   juhyu: sv(`<rect x="14" y="22" width="92" height="76" rx="8" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M14 40h92" stroke="${K}" stroke-width="4"/>${[0, 1, 2, 3, 4, 5, 6].map((i) => `<rect x="${20 + i * 12}" y="50" width="9" height="9" rx="2" fill="${i === 6 ? RED : i < 5 ? GRN : "#d6d6d6"}"/>`).join("")}<text x="60" y="88" font-size="18" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">+주휴</text>`), // P2-45
   stockquiz: sv(`<rect x="10" y="14" width="100" height="92" rx="10" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M22 84 40 66l14 10 22-30 12 10" fill="none" stroke="${K}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="88" cy="56" r="7" fill="${YEL}" stroke="${K}" stroke-width="4"/><path d="M90 36c0-6 4-9 8-9s8 3 8 8c0 6-8 6-8 12" fill="none" stroke="${RED}" stroke-width="5" stroke-linecap="round"/>`), // P2-50
+  dca: sv(`<path d="M10 104h100" stroke="${K}" stroke-width="4" stroke-linecap="round"/>${[[16, 1], [42, 2], [68, 3], [94, 4]].map(([x, h]) => Array.from({ length: h }, (_, k) => `<rect x="${x - 12}" y="${92 - k * 13}" width="24" height="11" rx="5" fill="${YEL}" stroke="${K}" stroke-width="3"/>`).join("")).join("")}<path d="M12 62 40 48l26 6 40-38" fill="none" stroke="#2346d8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M90 14h17v17" fill="none" stroke="#2346d8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>`), // P2-52 적립식 백테스트(매달 쌓이는 동전 + 자산 곡선)
   avgdown: sv(`<path d="M60 10C60 10 26 48 26 72a34 34 0 0 0 68 0C94 48 60 10 60 10z" fill="#2346d8" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M40 62h40" stroke="${W}" stroke-width="5" stroke-dasharray="7 5" stroke-linecap="round"/><path d="M40 88h40" stroke="${YEL}" stroke-width="6" stroke-linecap="round"/><path d="M60 66v14m-7-7 7 7 7-7" fill="none" stroke="${W}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`), // P2-51 물타기(물방울 + 평단 내려감)
 };
 function doc(x, y, w, h, fill) {
@@ -151,7 +152,7 @@ const UCATS = {
   calc: { name: "생활 계산", desc: "D-day, 연봉 실수령액, 퇴직금처럼 생활에서 자주 찾는 계산을 바로 해 주는 툴이에요." }, // P2-45 desc
   time: { name: "시간", desc: "타이머와 스톱워치처럼 시간을 재고 알려 주는 툴이에요." },
   fun: { name: "운세·재미", seo: "운세·재미 — 무료 사주·띠별 운세·성격 테스트·사다리타기", desc: "오늘의 띠별 운세, 무료 사주팔자, 16유형 성격 테스트, 생일로 보는 나, 이름 궁합, 사다리타기·돌림판처럼 재미로 보고 가볍게 정하는 툴이에요." }, // P2-49 옛 오락실 운세·테스트·사다리
-  invest: { name: "투자", seo: "투자 툴 — 물타기 계산기, SOXL·TQQQ·KORU 주가 예측", desc: "물타기 평단가 계산처럼 주식 투자에서 자주 하는 계산과, SOXL·TQQQ·KORU 같은 레버리지 ETF의 실제 과거 차트로 오를까 내릴까를 맞혀 보는 투자 툴이에요. 투자 권유가 아니에요." }, // P2-50 새 툴 카테고리(앞으로 주식투자 툴을 여기에 모음) // P2-51 seo·desc에 물타기 계산기
+  invest: { name: "투자", seo: "투자 툴 — 적립식 백테스트, 물타기 계산기, SOXL·TQQQ·KORU 주가 예측", desc: "SOXL·TQQQ·KORU를 매달 샀다면 지금 얼마인지 보는 적립식 백테스트, 물타기 평단가 계산처럼 주식 투자에서 자주 하는 계산과, 레버리지 ETF의 실제 과거 차트로 오를까 내릴까를 맞혀 보는 투자 툴이에요. 투자 권유가 아니에요." }, // P2-50 새 툴 카테고리(앞으로 주식투자 툴을 여기에 모음) // P2-51 seo·desc에 물타기 계산기 // P2-52 적립식 백테스트
 };
 const NAV = [...Object.entries(UCATS).map(([k, c]) => [c.name, `/${k}/`]), [PLAY.name, PLAY.path]];
 // seo: <title> 앞부분(검색어 그대로) / also: 다른 카테고리 페이지에도 함께 노출 / beta: 베타 표시 / kw: 홈 검색용 동의어
@@ -177,9 +178,10 @@ const UTILS = [
   { id: "heic", cat: "image", path: "/image/heic-to-jpg/", title: "HEIC JPG 변환", seo: "HEIC JPG 변환 — 아이폰 사진 JPG로, 여러 장 한꺼번에", h1: "HEIC JPG 변환 — 아이폰 사진을 여러 장 한꺼번에 JPG로", desc: "아이폰 HEIC·HEIF 사진을 여러 장 한꺼번에 JPG로 바꿔요. 화질과 크기를 고르고, 하나씩 또는 zip으로 받아요. 위치 정보(GPS)는 기본으로 지워요. 사진은 서버로 전송하지 않습니다.", hook: "아이폰 사진(HEIC)을 JPG로, 여러 장 한꺼번에.", meta: "HEIC·HEIF → JPG · zip", kw: "heic jpg 변환 heic jpg heic 변환 heic to jpg heic 파일 열기 heic 열기 heif 변환 heif jpg 아이폰 사진 jpg 아이폰 사진 변환 아이폰 사진 안 열림 아이폰 사진 윈도우 아이폰 사진 컴퓨터 heic 뷰어 사진 확장자 변환 jpg 변환 위치 정보 지우기 gps 삭제" }, // P2-47
   { id: "qr", cat: "image", path: "/image/qr-code/", title: "QR코드 생성기", seo: "QR코드 생성기 — 무료 QR코드 만들기, 와이파이·링크·명함 QR", h1: "QR코드 생성기 — 링크·와이파이·명함 QR코드 무료로 만들기", desc: "링크, 글, 와이파이, 연락처(명함), 문자를 QR코드로 만들어요. 색과 여백을 바꾸고 가운데에 로고를 넣고, PNG·SVG로 저장해요. 와이파이 안내 카드는 A6로 바로 인쇄해요. 입력한 내용은 서버로 보내지 않습니다.", hook: "링크·와이파이·명함을 QR코드로, 로고도 넣어요.", meta: "PNG·SVG · 와이파이 카드", kw: "qr코드 만들기 qr코드 생성기 qr 코드 만들기 qr 생성 qr 생성기 qr코드 생성 qr 만들기 큐알코드 만들기 큐알 코드 큐알 만들기 무료 qr 무료 qr코드 와이파이 qr 와이파이 qr코드 wifi qr 와이파이 비밀번호 qr 링크 qr url qr 주소 qr 명함 qr 연락처 qr vcard 문자 qr 로고 qr qr코드 로고 qr 색 qr svg qr png qr 인쇄 qr code generator" }, // P2-48
   { id: "stockquiz", cat: "invest", path: "/invest/soxl-tqqq-koru/", title: "SOXL·TQQQ·KORU 주가 예측", seo: "SOXL·TQQQ·KORU 주가 예측 — 날짜 가린 실제 차트, 오를까 내릴까", h1: "SOXL·TQQQ·KORU 주가 예측 — 날짜를 가린 실제 차트로 오를까 내릴까", desc: "SOXL·TQQQ·KORU의 상장 이후 실제 일봉 종가에서 날짜를 가린 1개월·3개월·1년 차트를 보여 드려요. 다음 거래일·일주일 뒤·한 달 뒤 종가가 오를지, 기준가 이상일지 맞히면 실제 결과와 날짜를 공개하고, 10문제 뒤 백테스팅 요약을 보여 줘요. 교육·재미용이며 투자 권유가 아니에요.", hook: "날짜를 가린 실제 차트. 내일 종가는 오를까 내릴까?", meta: "10문제 · 3분", kw: "soxl tqqq koru 주가 예측 주식 차트 맞히기 레버리지 etf 3배 반도체 나스닥 한국 백테스팅 투자 연습 오를까 내릴까 미국 주식" }, // P2-50
+  { id: "dca", cat: "invest", path: "/invest/dca-backtest/", title: "SOXL·TQQQ·KORU 적립식 백테스트", seo: "SOXL·TQQQ·KORU 적립식 백테스트 — 매달 사면 지금 얼마? 적립식 투자 계산", h1: "SOXL·TQQQ·KORU 적립식 백테스트 — 매달 샀다면 지금 얼마일까", desc: "SOXL·TQQQ·KORU를 시작 연월부터 매달 첫 거래일 종가에 같은 금액씩 샀다면 지금 평가액, 총 투자금, 수익률, 연환산 수익률, 최대 낙폭(MDD)이 얼마인지 실제 과거 가격으로 계산해요. 같은 돈을 처음에 한 번에 넣은 거치식과 비교하고 연도별 표와 자산 곡선을 보여 줘요. 원·달러, 3종목 비교. 투자 권유가 아니에요.", hook: "매달 30만 원씩 TQQQ를 샀다면 지금 얼마?", meta: "실제 가격 · 3종목 비교", kw: "적립식 백테스트 적립식 투자 계산 적립식 계산기 적립식 투자 수익률 tqqq 적립식 soxl 적립식 koru 적립식 레버리지 etf 적립 매달 사면 매달 투자 매월 적립 dca 정액 적립 분할 매수 백테스트 백테스팅 거치식 비교 mdd 최대 낙폭 연환산 수익률 미국 주식 3배 나스닥 반도체 한국" }, // P2-52
   { id: "avgdown", cat: "invest", path: "/invest/average-down/", title: "물타기 계산기", seo: "물타기 계산기 — 평단가 계산, 평균단가·추가매수 수량 역계산", h1: "물타기 계산기 — 주식 평단가 계산과 목표 평단 역계산", desc: "지금 평단과 보유 수량에 추가 매수 가격·수량을 여러 줄 넣으면 새 평단(평균단가), 총 수량, 총 투자금과 현재가 기준 수익률을 계산해요. 「평단을 얼마로 낮추려면 몇 주를 사야 하나」 역계산도 돼요. 원화·달러, 소수점 수량을 지원해요. 투자 권유가 아니에요.", hook: "추가 매수하면 평단이 얼마? 목표 평단까지 몇 주?", meta: "원화·달러 · 역계산", kw: "물타기 계산기 물타기 평단가 계산기 평단가 계산 평균단가 계산 평균 단가 평단 낮추기 평단 계산 추가매수 계산 추가 매수 주식 평단 주식 평균단가 불타기 분할매수 소수점 주식 미국 주식 국내 주식 목표 평단 역계산" }, // P2-51
 ];
-const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "heic", "qr", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "word2pdf", "dday", "stockquiz", "avgdown"]; // P2-50 stockquiz(투자) // P2-51 avgdown // P2-45 돈 계산기 4종, P2-46 imgmerge, P2-47 heic, P2-48 qr
+const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "heic", "qr", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "word2pdf", "dday", "stockquiz", "avgdown", "dca"]; // P2-50 stockquiz(투자) // P2-51 avgdown // P2-52 dca // P2-45 돈 계산기 4종, P2-46 imgmerge, P2-47 heic, P2-48 qr
 const NEXT = {
   pdfmerge: ["pdfsplit", "img2pdf", "imgcompress"],
   pdfsplit: ["pdfmerge", "pdf2img", "img2pdf"],
@@ -201,8 +203,9 @@ const NEXT = {
   juhyu: ["salary", "unemp", "severance"], // P2-45
   severance: ["unemp", "salary", "juhyu"], // P2-45
   unemp: ["severance", "salary", "juhyu"], // P2-45
-  stockquiz: ["avgdown", "salary", "dday"], // P2-50 // P2-51 물타기 계산기로 이어지게
-  avgdown: ["stockquiz", "salary", "dday"], // P2-51
+  stockquiz: ["avgdown", "dca", "salary"], // P2-50 // P2-51 물타기 계산기로 이어지게 // P2-52 둘째 칸 적립식 백테스트
+  avgdown: ["stockquiz", "dca", "salary"], // P2-51 // P2-52 둘째 칸 적립식 백테스트
+  dca: ["stockquiz", "avgdown", "salary"], // P2-52
 };
 const utilById = Object.fromEntries(UTILS.map((x) => [x.id, x]));
 const anyById = { ...toolById, ...utilById };
@@ -456,6 +459,7 @@ const cabCls = (i, n) => (n > 6 && i === n - 1 && (n - 3) % 3 === 1 ? "cab-full"
 // ★ 새 툴·게임을 만들면 여기에 { id, d: "출시일" }을 맨 위에 추가(대표님 지시: 새 콘텐츠는 메인에 잘 보이게).
 // 출시 30일 이내 항목 중 최신 4개가 홈 맨 위 「NEW」 띠에 나오고, 해당 행·타일에 NEW 표시가 붙음
 const NEW_ITEMS = [
+  { id: "dca", d: "2026-11-10" }, // P2-52
   { id: "avgdown", d: "2026-11-10" }, // P2-51
   { id: "stockquiz", d: "2026-11-10" }, // P2-50
   { id: "qr", d: "2026-11-09" }, // P2-48
@@ -1250,6 +1254,83 @@ utilPage(utilById.stockquiz, `<div class="sq">
     after: `<h2 class="dd-h">평단가 계산 예시 (손계산과 대조)</h2>
 <div class="table-wrap"><table class="dd-table avg-ex"><thead><tr><th scope="col">경우</th><th scope="col">입력</th><th scope="col">계산</th><th scope="col">결과</th></tr></thead><tbody>${EXR.map((r) => `<tr><th scope="row">${r[0]}</th><td>${esc(r[1])}</td><td>${r[2]}</td><td>${esc(r[3])}</td></tr>`).join("")}</tbody></table></div>
 <p class="hint">새 평단 = (지금 평단 × 보유 수량 + Σ 추가 매수 가격 × 수량) ÷ 총 수량. 필요 수량 = 보유 수량 × (지금 평단 − 목표 평단) ÷ (목표 평단 − 현재가). 수수료·세금·환율은 넣지 않았어요.</p>`
+  });
+}
+
+// P2-52 SOXL·TQQQ·KORU 적립식 백테스트: 계산식은 src/assets/dca-calc.js 한 벌(화면 t-dca.js와 아래 대조가 같은 파일을 vm으로 씀). 가격은 P2-50 데이터(STOCK)
+// 흐름: 종목(하나·3개 비교)·시작/끝 연월·매달 투자금(원은 고정 환율 1개) → 평가액·투자금·수익률·연환산(XIRR)·MDD → 자산 곡선 vs 누적 투자금 → 거치식 비교 → 연도별 표 → 한 줄 복사
+// 빌드 때 ① 손계산 2건 ② 실제 데이터 5건을 파이썬 독립 계산(scripts/dca-verify.py) 값과 대조하고, 다르면 빌드를 멈춤.
+// 실제 데이터 구간은 모두 기준일보다 앞이라 데이터를 갱신해도 값이 그대로(분할이 새로 생겨도 비율·금액은 그대로)
+{
+  const ctx = {};
+  vm.createContext(ctx);
+  vm.runInContext(fs.readFileSync(path.join(ROOT, "src", "assets", "dca-calc.js"), "utf8"), ctx);
+  const DC = ctx.DCACALC;
+  const near = (a, b, tol = 1e-9) => Math.abs(a - b) <= tol * Math.max(1, Math.abs(b));
+  const chk = (name, got, want) => { if (!(got === want || near(got, want))) throw new Error(`P2-52 「${name}」 계산 불일치: ${got} ≠ ${want}`); };
+  const mk = (rows) => ({ d: rows.map((r) => r[0]), c: rows.map((r) => r[1]), dn: rows.map((r) => Date.parse(r[0] + "T00:00:00Z") / 864e5) });
+  // 손계산 1: 1~3월 매달 $100, 첫 거래일 종가 $10·$5·$10 → 10 + 20 + 10 = 40주, 마지막 날 $12 → $480(+60%). 평가액 100→80(−20%), 150→120(−20%) → MDD −20%, 가장 나빴을 때 120÷200 = −40%. 거치식 $300÷$10 = 30주 → $360(+20%), 바닥 $120 → MDD −60%
+  const h1 = DC.run(mk([["2020-01-02", 10], ["2020-01-15", 8], ["2020-02-03", 5], ["2020-02-20", 4], ["2020-03-02", 10], ["2020-03-31", 12]]), { start: "2020-01", end: "2020-03", amt: 100 });
+  chk("손계산1 매수 횟수", h1.n, 3); chk("손계산1 주식 수", h1.shares, 40); chk("손계산1 평가액", h1.value, 480); chk("손계산1 수익률", h1.rate, 0.6); chk("손계산1 MDD", h1.mdd, -0.2); chk("손계산1 최저", h1.low, -0.4);
+  chk("손계산1 거치식 평가액", h1.lump.value, 360); chk("손계산1 거치식 MDD", h1.lump.mdd, -0.6);
+  if (h1.irr !== null) throw new Error("P2-52 손계산1: 1년 미만인데 연환산 값이 나옴");
+  // 손계산 2: 2021-01-04 $10, 2023-01-04 $14.4(730일)에 $100씩 → (10 + 6.9444주) × 14.4 = $244(+22%). 현금흐름 −100(0일), −100(730일), +244(730일) → (1+r)² = 1.44 → 연환산 20%. 거치식 $200 → $288, CAGR 1.44^(1/2) − 1 = 20%
+  const h2 = DC.run(mk([["2021-01-04", 10], ["2023-01-04", 14.4]]), { start: "2021-01", end: "2023-01", amt: 100 });
+  chk("손계산2 평가액", h2.value, 244); chk("손계산2 수익률", h2.rate, 0.22); chk("손계산2 연환산", h2.irr, 0.2); chk("손계산2 거치식", h2.lump.value, 288); chk("손계산2 CAGR", h2.lump.cagr, 0.2);
+  // 실제 데이터: 파이썬 독립 계산 값(scripts/dca-verify.py 출력, 2026-11-10)
+  const PY = [
+    ["TQQQ", "2016-01", "2020-12", 100, { first: "2016-01-04", last: "2020-12-31", n: 60, inv: 6000, value: 29101.445504751246, rate: 3.8502409174585406, irr: 0.6771386748772813, mdd: -0.6969203542179192, low: -0.28062244186625507, lval: 61023.093447905485, lrate: 9.170515574650913, cagr: 0.5910712326945822, lmdd: -0.6992241233271218 }],
+    ["SOXL", "2020-01", "2024-12", 500, { first: "2020-01-02", last: "2024-12-31", n: 60, inv: 30000, value: 39885.80387646176, rate: 0.3295267958820587, irr: 0.11330404706105085, mdd: -0.8675807313949816, low: -0.7480896810035591, lval: 42093.094944512944, lrate: 0.4031031648170982, cagr: 0.0700841240607275, lmdd: -0.905055487053021 }],
+    ["KORU", "2013-04", "2025-12", 100, { first: "2013-04-10", last: "2025-12-31", n: 153, inv: 15300, value: 18223.323126480198, rate: 0.19106687101177755, irr: 0.026853021580189006, mdd: -0.9009503138975044, low: -0.8547706735315592, lval: 6516.493902439025, lrate: -0.5740853658536584, cagr: -0.06482843274210237, lmdd: -0.9614413177762525 }],
+    ["SOXL", "2015-01", "2025-12", 100, { first: "2015-01-02", last: "2025-12-31", n: 132, inv: 13200, value: 84437.08083416882, rate: 5.396748548043092, irr: 0.31241374485396883, mdd: -0.9024623688810212, low: -0.48501727655615834, lval: 246883.23246707013, lrate: 17.70327518689925, cagr: 0.3049686739761972, lmdd: -0.905055487053021 }],
+    ["KORU", "2015-01", "2025-12", 100, { first: "2015-01-02", last: "2025-12-31", n: 132, inv: 13200, value: 17376.139981472883, rate: 0.3163742410206729, irr: 0.04868144620328642, mdd: -0.8873722471166522, low: -0.8405697874023583, lval: 7433.339534883721, lrate: -0.4368682170542636, cagr: -0.05085223204063816, lmdd: -0.9614413177762525 }],
+  ];
+  const DD = {};
+  const dec = (t) => (DD[t] = DD[t] || DC.decode(JSON.parse(fs.readFileSync(path.join(ROOT, "src", "assets", "data", `stock-${t.toLowerCase()}.json`), "utf8"))));
+  const REAL = PY.map(([t, s, e, amt, w]) => {
+    const r = DC.run(dec(t), { start: s, end: e, amt }), k = `${t} ${s}~${e}`;
+    chk(`${k} 첫 매수일`, r.first, w.first); chk(`${k} 마지막 날`, r.last, w.last); chk(`${k} 매수 횟수`, r.n, w.n); chk(`${k} 투자금`, r.inv, w.inv);
+    chk(`${k} 평가액`, r.value, w.value); chk(`${k} 수익률`, r.rate, w.rate); chk(`${k} 연환산`, r.irr, w.irr); chk(`${k} MDD`, r.mdd, w.mdd); chk(`${k} 최저`, r.low, w.low);
+    chk(`${k} 거치식 평가액`, r.lump.value, w.lval); chk(`${k} 거치식 수익률`, r.lump.rate, w.lrate); chk(`${k} 거치식 CAGR`, r.lump.cagr, w.cagr); chk(`${k} 거치식 MDD`, r.lump.mdd, w.lmdd);
+    return { t, s, e, amt, r };
+  });
+  const nf = (n, a, b) => Math.abs(n).toLocaleString("ko-KR", { minimumFractionDigits: a, maximumFractionDigits: b });
+  const sg = (n) => (n < 0 ? "−" : n > 0 ? "+" : "");
+  const usdM = (n) => `$${nf(n, 2, 2)}`, pc = (r) => `${sg(r)}${nf(r * 100, 2, 2)}%`;
+  const ymK = (m) => `${m.slice(0, 4)}.${m.slice(5)}`;
+  const EXR = [
+    ["손계산 1", "1~3월 매달 $100, 첫 거래일 종가 $10 · $5 · $10, 마지막 날 $12", "10 + 20 + 10 = 40주 × $12", `<b>${usdM(h1.value)}</b> (${pc(h1.rate)}) · MDD ${pc(h1.mdd)} · 거치식 ${usdM(h1.lump.value)} (${pc(h1.lump.rate)})`],
+    ["손계산 2", "2021.01.04 $10, 730일 뒤 $14.4에 $100씩", "(10 + 6.9444주) × $14.4, (1 + r)² = 1.44", `<b>${usdM(h2.value)}</b> (${pc(h2.rate)}) · 연환산 ${pc(h2.irr)} · 거치식 CAGR ${pc(h2.lump.cagr)}`],
+    ...REAL.filter((x, i) => i < 3).map(({ t, s, e, amt, r }) => [`${t} 실제 가격`, `${ymK(s)} ~ ${ymK(e)} 매달 $${amt}`, `${r.n}번 · 투자금 ${usdM(r.inv)}`, `<b>${usdM(r.value)}</b> (${pc(r.rate)}) · 연환산 ${pc(r.irr)} · MDD ${pc(r.mdd)} · 거치식 ${usdM(r.lump.value)} (${pc(r.lump.rate)})`]),
+  ];
+  const DCA_WARN = "과거 가격으로 계산한 참고용이에요. 투자 권유가 아니에요. SOXL·TQQQ·KORU는 하루 수익률의 3배를 따라가는 레버리지 ETF라 위험이 매우 크고, 평가액이 고점에서 80~90% 넘게 줄었던 때도 있어요. 과거에 올랐다고 앞으로도 오른다는 뜻이 아니에요.";
+  const META = { asOf: STOCK.map((x) => x.asOf).sort()[0], list: Object.fromEntries(STOCK.map((x) => [x.t, x.d0.slice(0, 7)])) };
+  utilPage(utilById.dca, `<div class="dca" data-meta="${esc(JSON.stringify(META))}">
+<form class="dd-form pay-form dca-form" autocomplete="off" novalidate>
+  <fieldset class="seg dca-tk"><legend>종목</legend>${STOCK.map((x) => `<label><input type="radio" name="tk" value="${x.t}"><span>${x.t} <small>${STOCK_NAME[x.t]}</small></span></label>`).join("")}<label><input type="radio" name="tk" value="ALL"><span>3개 비교</span></label></fieldset>
+  <div class="dca-period">
+    <div class="dca-ym"><span class="dca-lab">시작</span><select name="sy" aria-label="시작 연도"></select><select name="sm" aria-label="시작 월"></select></div>
+    <div class="dca-ym"><span class="dca-lab">끝</span><select name="ey" aria-label="끝 연도"></select><select name="em" aria-label="끝 월"></select></div>
+  </div>
+  <div class="dca-quick" role="group" aria-label="기간 빠르게 고르기"><button type="button" class="chip" data-range="1">최근 1년</button><button type="button" class="chip" data-range="3">3년</button><button type="button" class="chip" data-range="5">5년</button><button type="button" class="chip" data-range="10">10년</button><button type="button" class="chip" data-range="list">상장 이후</button></div>
+  <fieldset class="seg dca-unit"><legend>매달 투자금 단위</legend><label><input type="radio" name="unit" value="krw" checked><span>원 (₩)</span></label><label><input type="radio" name="unit" value="usd"><span>달러 ($)</span></label></fieldset>
+  <div class="row2 dca-money">
+    <label><span>매달 투자금 <i data-u></i></span><input name="amt" type="text" inputmode="decimal" autocomplete="off"></label>
+    <label data-krw><span>환율 <small class="hint">1달러 = 원, 고정</small></span><input name="fx" type="text" inputmode="decimal" autocomplete="off"></label>
+  </div>
+  <p class="hint dca-fxnote" data-krw>원으로 넣으면 이 환율 하나로 달러로 바꿔 사고, 결과도 같은 환율로 원으로 보여 줘요(환율 변동 미반영). 기본값 1,400원은 예시예요.</p>
+  <label class="check"><input type="checkbox" name="lumpline"> 차트에 거치식(처음에 한 번에)도 그리기</label>
+  <div class="dd-opts pay-acts"><button type="submit" class="btn">계산하기</button><button type="button" class="btn ghost" data-copy>결과 한 줄 복사</button><button type="button" class="chip" data-reset>처음 값으로</button></div>
+</form>
+<div class="dd-result pay-result dca-result" aria-live="polite"></div>
+<div class="dca-chart" hidden><div class="sq-chips dca-chips"></div><svg class="dca-svg" role="img" aria-label="적립식 자산 곡선" xmlns="http://www.w3.org/2000/svg"></svg><div class="sq-legend dca-legend" aria-hidden="true"></div></div>
+<p class="hint sq-src">가격: ${esc(STOCK[0].src)} 일봉 종가(${esc(STOCK[0].basis)}) · 기준일 ${esc(META.asOf)} · 매수일 = 매달 첫 거래일 종가 · ${STOCK.map((x) => `${x.t} ${x.d0.slice(0, 4)}년 ${+x.d0.slice(5, 7)}월 상장`).join(", ")}. 수수료·세금·배당·환율 변동은 반영하지 않았어요.</p>
+<p class="sq-warn" role="note">${esc(DCA_WARN)}</p>
+</div>`, {
+    scripts: ["dca-calc.js", "t-dca.js"], fileTool: false,
+    after: `<h2 class="dd-h">계산 검증 (손계산·독립 계산과 대조)</h2>
+<div class="table-wrap"><table class="dd-table avg-ex dca-ex"><thead><tr><th scope="col">경우</th><th scope="col">입력</th><th scope="col">계산</th><th scope="col">결과</th></tr></thead><tbody>${EXR.map((r) => `<tr><th scope="row">${r[0]}</th><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${r[3]}</td></tr>`).join("")}</tbody></table></div>
+<p class="hint">손계산 2건과, 실제 가격 구간 5건을 이 계산기와 따로 만든 계산(파이썬)으로 다시 계산한 값이 같은지 사이트를 만들 때마다 자동으로 확인해요(표에는 3건). 실제 가격 구간 표는 달러 기준이에요.</p>`
   });
 }
 

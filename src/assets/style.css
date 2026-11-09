@@ -1451,3 +1451,87 @@ li.has-fav{position:relative}
 /* 정답 공개 봉도 같은 방식(아래에서 솟고 살짝 튐) */
 .sq-svg:not(.no-anim) .sqc-fc{animation:sqc-rise .34s calc(.12s + var(--i) * .14s) cubic-bezier(.3,1.4,.5,1) both}
 @media(prefers-reduced-motion:reduce){.sq-svg.is-intro *,.sq-rsi.is-intro *{animation:none!important;opacity:1!important}.sq-rsi .sqr-line{stroke-dashoffset:0!important}}
+
+/* ===================== P2-52 적립식 백테스트: 입력(연월 선택·기간 칩) + 자산 곡선 vs 누적 투자금(P2-50 톤: 굵은 먹선·노랑 채움·칩, 차트 안에는 데이터만) ===================== */
+.dca{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+.dca [hidden]{display:none!important}
+.dca-form{grid-template-columns:minmax(0,1fr)}
+.dca .up{color:var(--nok)}.dca .dn{color:var(--jeok)}
+.dca .seg span small{font-weight:600;color:var(--ink-3);font-size:12.5px}
+.dca .seg input:checked+span small{color:inherit;opacity:.85}
+.dca-period{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dca-ym{display:grid;grid-template-columns:auto minmax(0,1.2fr) minmax(0,1fr);align-items:center;gap:6px}
+.dca-lab{font-weight:800;width:2.2em}
+.dca-ym select{min-width:0;width:100%}
+.dca-quick{display:flex;flex-wrap:wrap;gap:6px}
+.dca-quick .chip{cursor:pointer;font:inherit;font-size:13.5px;font-weight:700;padding:4px 10px}
+.dca-money label{display:grid;gap:6px;font-weight:700}
+.dca-money i[data-u]{font-style:normal;color:var(--ink-3)}
+.dca-money small{font-weight:600}
+.dca-fxnote{margin:-4px 0 0}
+.dca-big b{font-size:clamp(34px,8.6vw,54px)!important;font-variant-numeric:tabular-nums}
+.dca-note{margin:4px 0 0;padding:6px 10px;border:2px dashed var(--ink);border-radius:10px;background:#fffdf5}
+.dca-result .table-wrap{overflow-x:auto}
+.dca-stats{list-style:none;margin:10px 0 6px;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.dca-stats li{border:2px solid var(--ink);border-radius:12px;background:var(--white);padding:7px 10px;display:grid;gap:1px;min-width:0}
+.dca-stats span{font-size:13px;font-weight:700;color:var(--ink-2)}
+.dca-stats b{font-family:var(--display);font-weight:400;font-size:24px;line-height:1.15;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.dca-stats small{font-size:12px;color:var(--ink-3);font-weight:600;font-variant-numeric:tabular-nums}
+.dca-stats li.up b{color:var(--nok)}.dca-stats li.dn b{color:var(--jeok)}
+.dca-def{margin:4px 0 10px}
+.dca-h3{margin:14px 0 6px;font-size:17px}
+.dca-cmp th,.dca-cmp td{font-variant-numeric:tabular-nums;white-space:nowrap}
+.dca-cmp td{text-align:right}
+.dca-cmp thead th{white-space:normal;vertical-align:bottom}
+.dca-cmp thead th small{display:block;font-weight:600;font-size:12px;color:var(--ink-3)}
+.dca-cmp td.on{background:var(--hwang);font-weight:800}
+.dca-cmp td small{display:block;font-size:11.5px;color:var(--ink-3)}
+.dca-cmp3 tr.dca-sep th,.dca-cmp3 tr.dca-sep td{border-top-width:4px}
+.dca-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;border:2px solid var(--ink);vertical-align:-1px}
+.dca-dot.is-soxl{background:var(--cheong)}.dca-dot.is-tqqq{background:var(--jeok)}.dca-dot.is-koru{background:var(--nok)}
+.dca-years{margin-top:10px}
+.dca-years summary{cursor:pointer;font-weight:800;font-size:14.5px;margin-bottom:6px}
+.dca-ytable th,.dca-ytable td{white-space:nowrap;font-variant-numeric:tabular-nums;font-size:13.5px;padding:5px 7px}
+.dca-ytable td{text-align:right}
+.dca-ytable small{display:block;font-size:11.5px}
+.dca-ytable th small{color:var(--ink-3);font-weight:600}
+.dca-ex td,.dca-ex th{vertical-align:top;font-size:14px}
+/* 차트 */
+.dca-chart{margin:10px 0;border:var(--bd);border-radius:var(--radius);background:#fffdf5;box-shadow:var(--drop);padding:6px}
+.dca-chips{min-height:32px}
+.dca-svg{display:block;width:100%;height:auto;font-family:"Pretendard Variable",Pretendard,system-ui,sans-serif;font-weight:800;font-variant-numeric:tabular-nums;touch-action:pan-y;cursor:crosshair}
+.dca-plot{fill:var(--white);stroke:var(--soft);stroke-width:2}
+.dca-grid{stroke:var(--soft);stroke-width:1.5}
+.dca-vgrid{stroke:var(--soft);stroke-width:1.5;stroke-dasharray:3 4}
+.dca-gl{font-size:11px;fill:var(--ink-3);font-weight:700}
+.dca-xl{font-size:11.5px;fill:var(--ink-2);text-anchor:middle;font-weight:700}
+.dca-base{stroke:var(--ink);stroke-width:2.5;stroke-linecap:round}
+.dca-mdd{fill:var(--jeok);opacity:.1}
+.dca-area{fill:var(--hwang);opacity:.55}
+.dca-line{fill:none;stroke-width:3.2;stroke-linejoin:round;stroke-linecap:round}
+.dca-line.is-main{stroke:var(--ink)}
+.dca-line.is-lump{stroke:var(--ink-3);stroke-width:2}
+.dca-line.is-soxl{stroke:var(--cheong)}.dca-line.is-tqqq{stroke:var(--jeok)}.dca-line.is-koru{stroke:var(--nok)}
+.dca-inv{fill:none;stroke:var(--cheong);stroke-width:2.6;stroke-dasharray:6 5;stroke-linejoin:round}
+.dca-tag rect{stroke:var(--ink);stroke-width:2}
+.dca-tag text{font-weight:900;text-anchor:middle}
+.dca-lead{fill:none;stroke-width:2;stroke-linecap:round;stroke:var(--ink)}
+.dca-tag.is-main rect{fill:var(--ink)}.dca-tag.is-main text{fill:var(--hwang)}
+.dca-tag.is-lump rect{fill:var(--white)}.dca-tag.is-lump text{fill:var(--ink-2)}
+.dca-tag.is-inv rect{fill:var(--white);stroke:var(--cheong)}.dca-tag.is-inv text{fill:var(--cheong)}.dca-tag.is-inv .dca-lead{stroke:var(--cheong)}
+.dca-tag.is-soxl rect{fill:var(--cheong)}.dca-tag.is-tqqq rect{fill:var(--jeok)}.dca-tag.is-koru rect{fill:var(--nok)}
+.dca-tag.is-soxl text,.dca-tag.is-tqqq text,.dca-tag.is-koru text{fill:var(--white)}
+.dca-hl{stroke:var(--ink);stroke-width:1.5;stroke-dasharray:3 3}
+.dca-hd{fill:var(--white);stroke:var(--ink);stroke-width:3}
+.dca-hd.is-inv{stroke:var(--cheong)}.dca-hd.is-soxl{stroke:var(--cheong)}.dca-hd.is-tqqq{stroke:var(--jeok)}.dca-hd.is-koru{stroke:var(--nok)}.dca-hd.is-main{fill:var(--hwang)}
+.dca-chip b{font-weight:900}
+.dca-chip small .up,.dca-chip small.up{color:var(--nok)}.dca-chip small.dn{color:var(--jeok)}
+.dca-chip.is-soxl{border-color:var(--cheong)}.dca-chip.is-tqqq{border-color:var(--jeok)}.dca-chip.is-koru{border-color:var(--nok)}.dca-chip.is-inv{border-color:var(--cheong);border-style:dashed}
+.dca-chip-res{color:var(--white)!important}.dca-chip-res.up{background:var(--nok)}.dca-chip-res.dn{background:var(--jeok)}
+.dca-legend{flex-wrap:wrap}
+.dca-lg i{border-top-style:solid!important;border-top-width:4px!important}
+.dca-lg.is-main{color:var(--ink)}.dca-lg.is-lump{color:var(--ink-3)}.dca-lg.is-soxl{color:var(--cheong)}.dca-lg.is-tqqq{color:var(--jeok)}.dca-lg.is-koru{color:var(--nok)}
+.dca-lg.is-inv{color:var(--cheong)}.dca-lg.is-inv i{border-top-style:dashed!important;border-top-width:3px!important}
+.dca-lg.is-mdd{color:var(--jeok)}.dca-lg.is-mdd i{height:10px;border:0!important;background:var(--jeok);opacity:.25}
+@media(max-width:620px){.dca-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.dca-stats b{font-size:21px}.dca-chart{padding:4px;box-shadow:4px 4px 0 var(--ink)}}
+@media(max-width:480px){.dca-cmp3 th,.dca-cmp3 td{font-size:11.5px;padding:5px 3px}.dca-cmp3 tbody th{white-space:normal;word-break:keep-all;min-width:3.6em}.dca-cmp3 td{white-space:normal;word-break:keep-all;overflow-wrap:normal}.dca-cmp th,.dca-cmp td{padding:5px 5px}.dca-stats b{font-size:18px;overflow-wrap:normal}.dca-stats li{padding:7px 8px}.dca .seg span{padding:7px 11px;font-size:14px}.dca-period{grid-template-columns:1fr}.dca-money{grid-template-columns:1fr 1fr}.dca-ex td,.dca-ex th{font-size:13px;padding:5px}.dca-ytable th,.dca-ytable td{font-size:12.5px;padding:4px 5px}}
