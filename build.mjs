@@ -103,6 +103,7 @@ const ART = {
   dca: sv(`<path d="M10 104h100" stroke="${K}" stroke-width="4" stroke-linecap="round"/>${[[16, 1], [42, 2], [68, 3], [94, 4]].map(([x, h]) => Array.from({ length: h }, (_, k) => `<rect x="${x - 12}" y="${92 - k * 13}" width="24" height="11" rx="5" fill="${YEL}" stroke="${K}" stroke-width="3"/>`).join("")).join("")}<path d="M12 62 40 48l26 6 40-38" fill="none" stroke="#2346d8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M90 14h17v17" fill="none" stroke="#2346d8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>`), // P2-52 적립식 백테스트(매달 쌓이는 동전 + 자산 곡선)
   avgdown: sv(`<path d="M60 10C60 10 26 48 26 72a34 34 0 0 0 68 0C94 48 60 10 60 10z" fill="#2346d8" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M40 62h40" stroke="${W}" stroke-width="5" stroke-dasharray="7 5" stroke-linecap="round"/><path d="M40 88h40" stroke="${YEL}" stroke-width="6" stroke-linecap="round"/><path d="M60 66v14m-7-7 7 7 7-7" fill="none" stroke="${W}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`), // P2-51 물타기(물방울 + 평단 내려감)
   compound: sv(`<path d="M12 104h96" stroke="${K}" stroke-width="4" stroke-linecap="round"/>${[[22, 14], [44, 24], [66, 40], [88, 64]].map(([x, h]) => `<rect x="${x - 9}" y="${100 - h}" width="18" height="${h}" rx="4" fill="${YEL}" stroke="${K}" stroke-width="3"/>`).join("")}<path d="M14 72C40 70 64 58 100 18" fill="none" stroke="#2346d8" stroke-width="6" stroke-linecap="round"/><path d="M84 16h17v17" fill="none" stroke="#2346d8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="30" cy="34" r="14" fill="${W}" stroke="${K}" stroke-width="4"/><text x="30" y="40" font-size="16" font-weight="900" text-anchor="middle" fill="${K}" font-family="sans-serif">%</text>`), // P2-55 복리·배당(점점 커지는 막대 + 위로 휘는 곡선 + %)
+  possize: sv(`<rect x="10" y="10" width="100" height="100" rx="10" fill="${W}" stroke="${K}" stroke-width="4"/><rect x="22" y="22" width="62" height="34" fill="${GRN}" stroke="${K}" stroke-width="3"/><rect x="22" y="56" width="62" height="24" fill="${RED}" stroke="${K}" stroke-width="3"/><path d="M16 22h72M16 80h72" stroke="${K}" stroke-width="3" stroke-dasharray="6 5"/><path d="M14 56h80" stroke="${K}" stroke-width="6" stroke-linecap="round"/><circle cx="96" cy="56" r="8" fill="${YEL}" stroke="${K}" stroke-width="3"/><text x="53" y="99" font-size="15" font-weight="900" text-anchor="middle" fill="${K}" font-family="sans-serif">1:3</text>`), // P2-56 손절·익절(진입선 + 위 이익 구간·아래 손실 구간 + 손익비)
   rsibt: sv(`<rect x="8" y="10" width="104" height="100" rx="10" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M8 78h104" stroke="${K}" stroke-width="3"/><rect x="12" y="84" width="96" height="16" fill="${YEL}" opacity=".55"/><path d="M14 86h92M14 100h92" stroke="${K}" stroke-width="2" stroke-dasharray="4 4"/><path d="M16 46 32 58 46 36 62 60 78 30 94 44 104 26" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M62 64l-8 11h16z" fill="${GRN}" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M78 26l-8-11h16z" fill="${RED}" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M16 96 34 88 50 102 66 86 84 98 104 90" fill="none" stroke="${K}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`), // P2-54 RSI 매매 백테스트(가격선 + 매수▲·매도▼ + RSI 30·70 띠)
   ostax: sv(`<path d="M24 10h72v92l-12-8-12 8-12-8-12 8-12-8-12 8z" fill="${W}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><circle cx="60" cy="38" r="17" fill="${YEL}" stroke="${K}" stroke-width="4"/><text x="60" y="45.5" font-size="21" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">$</text><text x="60" y="80" font-size="21" font-weight="900" text-anchor="middle" fill="${RED}" font-family="sans-serif">22%</text>`), // P2-53 해외주식 양도세(영수증 + 달러 + 22%)
 };
@@ -156,7 +157,7 @@ const UCATS = {
   calc: { name: "생활 계산", desc: "D-day, 연봉 실수령액, 퇴직금처럼 생활에서 자주 찾는 계산을 바로 해 주는 툴이에요." }, // P2-45 desc
   time: { name: "시간", desc: "타이머와 스톱워치처럼 시간을 재고 알려 주는 툴이에요." },
   fun: { name: "운세·재미", seo: "운세·재미 — 무료 사주·띠별 운세·성격 테스트·사다리타기", desc: "오늘의 띠별 운세, 무료 사주팔자, 16유형 성격 테스트, 생일로 보는 나, 이름 궁합, 사다리타기·돌림판처럼 재미로 보고 가볍게 정하는 툴이에요." }, // P2-49 옛 오락실 운세·테스트·사다리
-  invest: { name: "투자", seo: "투자 툴 — 복리 계산기·배당 계산기, RSI 백테스트, 해외주식 양도세 계산기, 적립식 백테스트, 물타기 계산기, SOXL·TQQQ·KORU 주가 예측", desc: "적립식 복리로 몇 년 뒤 얼마가 되는지, 월 배당 100만 원을 받으려면 얼마가 필요한지 계산하는 복리·배당 계산기, 미국주식 양도소득세 계산, SOXL·TQQQ·KORU를 매달 샀다면 지금 얼마인지 보는 적립식 백테스트, RSI 30에 사고 70에 팔았다면 얼마인지 보는 RSI 매매 백테스트, 물타기 평단가 계산처럼 주식 투자에서 자주 하는 계산과, 레버리지 ETF의 실제 과거 차트로 오를까 내릴까를 맞혀 보는 투자 툴이에요. 투자 권유가 아니에요." }, // P2-50 새 툴 카테고리(앞으로 주식투자 툴을 여기에 모음) // P2-51 seo·desc에 물타기 계산기 // P2-52 적립식 백테스트 // P2-53 해외주식 양도세 // P2-54 RSI 백테스트 // P2-55 복리·배당 계산기
+  invest: { name: "투자", seo: "투자 툴 — 손절·익절·포지션 계산기, 복리 계산기·배당 계산기, RSI 백테스트, 해외주식 양도세 계산기, 적립식 백테스트, 물타기 계산기, SOXL·TQQQ·KORU 주가 예측", desc: "손절가·익절가와 감당할 손실로 몇 주를 사야 하는지와 손익비를 계산하는 손절·익절·포지션 계산기, 적립식 복리로 몇 년 뒤 얼마가 되는지, 월 배당 100만 원을 받으려면 얼마가 필요한지 계산하는 복리·배당 계산기, 미국주식 양도소득세 계산, SOXL·TQQQ·KORU를 매달 샀다면 지금 얼마인지 보는 적립식 백테스트, RSI 30에 사고 70에 팔았다면 얼마인지 보는 RSI 매매 백테스트, 물타기 평단가 계산처럼 주식 투자에서 자주 하는 계산과, 레버리지 ETF의 실제 과거 차트로 오를까 내릴까를 맞혀 보는 투자 툴이에요. 투자 권유가 아니에요." }, // P2-50 새 툴 카테고리(앞으로 주식투자 툴을 여기에 모음) // P2-51 seo·desc에 물타기 계산기 // P2-52 적립식 백테스트 // P2-53 해외주식 양도세 // P2-54 RSI 백테스트 // P2-55 복리·배당 계산기 // P2-56 손절·익절·포지션 계산기
 };
 const NAV = [...Object.entries(UCATS).map(([k, c]) => [c.name, `/${k}/`]), [PLAY.name, PLAY.path]];
 // seo: <title> 앞부분(검색어 그대로) / also: 다른 카테고리 페이지에도 함께 노출 / beta: 베타 표시 / kw: 홈 검색용 동의어
@@ -187,8 +188,9 @@ const UTILS = [
   { id: "ostax", cat: "invest", path: "/invest/overseas-stock-tax/", title: "해외주식 양도소득세 계산기", seo: `해외주식 양도소득세 계산기 ${OST.defaultYear} — 미국주식 양도세, 250만원 공제·22% 계산`, h1: "해외주식 양도소득세 계산기 — 미국주식 양도세, 250만 원 공제 뒤 22%", desc: "해외주식을 판 종목별 매수·매도 금액(원, 또는 달러와 매수·매도 결제일 환율)을 넣으면 손익을 통산하고 기본공제 250만 원을 뺀 뒤 양도소득세 20%와 지방소득세 2%를 계산해요. 과세 연도별 신고·납부 기한(다음 해 5월)도 알려 줘요. 참고용 추정치이고 투자 권유가 아니에요.", hook: "미국주식 팔았는데 세금 얼마? 250만 원 공제 뒤 22%", meta: "손익 통산 · 환율 반영", kw: "해외주식 양도세 해외주식 양도소득세 미국주식 세금 미국주식 양도세 미국 주식 양도세 계산기 양도소득세 계산 양도세 계산기 250만원 공제 기본공제 해외주식 세금 신고 해외주식 세금 계산 해외 주식 세금 22% 손익통산 손익 통산 환차익 환율 결제일 기준환율 5월 신고 홈택스 양도세 신고 절세 서학개미 나스닥 미장 해외 etf 세금 soxl tqqq 세금" }, // P2-53
   { id: "compound", cat: "invest", path: "/invest/compound-dividend/", title: "복리 계산기 · 배당 계산기", seo: "복리 계산기 · 배당 계산기 — 적립식 월복리·연복리, 월배당 100만원 필요 투자금, 배당세 15.4%", h1: "복리 계산기 · 배당 계산기 — 적립식 복리와 월 배당 역계산", desc: "초기 원금, 매달 적립금, 연 수익률, 기간을 넣으면 월복리·연복리로 몇 년 뒤 자산이 얼마인지, 넣은 돈과 수익, 연도별 표와 원금 대비 자산 그래프를 보여 줘요. 72의 법칙과 물가 반영 실질 가치도 계산해요. 배당 탭에서는 투자금과 배당률로 연·월 배당(세전·세후 15.4%)을, 「월 배당 100만 원 받으려면 얼마?」 필요 투자금을 역계산하고 배당 재투자 뒤 월 배당까지 계산해요. 투자 권유가 아니에요.", hook: "매달 50만 원씩 20년 모으면? 월 배당 100만 원엔 얼마?", meta: "월복리·연복리 · 배당세 15.4%", kw: "복리 계산기 복리계산기 적립식 복리 적립식 복리 계산기 월복리 연복리 월복리 계산기 연복리 계산 복리 이자 계산 복리 수익률 복리의 마법 72의 법칙 미래 가치 fv 엑셀 fv 함수 적금 복리 투자 복리 매달 적립 매월 적립 원금 수익 물가 상승률 실질 가치 배당 계산기 배당금 계산기 배당금 계산 월배당 계산 월배당 계산기 배당 수익률 배당률 시가배당률 배당으로 월 100만원 월 100만원 배당 배당 생활 배당 투자 필요 투자금 배당세 배당소득세 15.4% 배당 세금 세후 배당 미국 배당 15% 배당 재투자 고배당 etf schd 금융소득 종합과세 2천만원" }, // P2-55
   { id: "rsibt", cat: "invest", path: "/invest/rsi-backtest/", title: "RSI 매매 백테스트", seo: "RSI 매매 백테스트 — SOXL·TQQQ·KORU RSI 30 매수·70 매도 수익률", h1: "RSI 매매 백테스트 (SOXL·TQQQ·KORU) — RSI 30에 사고 70에 팔았다면", desc: "SOXL·TQQQ·KORU를 RSI가 30 이하일 때 사고 70 이상일 때 팔았다면 수익률이 얼마인지 실제 과거 가격으로 계산해요. 일봉·주봉, 기간, RSI 기간(기본 14), 매수·매도 기준, 손절 %, 수수료를 고르면 매매 횟수, 승률, 누적 수익률, 그냥 보유했을 때 수익률, 최대 낙폭(MDD), 평균 보유 기간과 자산 곡선, 매수·매도 표시 차트, 거래 목록을 보여 줘요. 투자 권유가 아니에요.", hook: "RSI 30에 사고 70에 팔았다면 TQQQ는?", meta: "실제 가격 · 일봉·주봉", kw: "rsi 백테스트 rsi 매매 rsi 30 매수 rsi 70 매도 rsi 전략 rsi 매매법 과매도 매수 과매수 매도 과매도 과매수 tqqq rsi soxl rsi koru rsi 보조지표 백테스트 기술적 지표 백테스팅 와일더 rsi 14 상대강도지수 손절 승률 mdd 최대 낙폭 레버리지 etf 미국 주식 3배 매매 전략 수익률" }, // P2-54
+  { id: "possize", cat: "invest", path: "/invest/stop-loss-position-size/", title: "손절·익절·포지션 계산기", seo: "손절·익절·포지션 계산기 — 손절가 계산, 몇 주 사야 하나, 손익비(R:R)·포지션 사이즈", h1: "손절·익절·포지션 계산기 — 손절가와 감당할 손실로 몇 주 살지, 손익비까지", desc: "진입가, 손절가(또는 손절 %), 익절가(또는 목표 %·R 배수), 계좌 금액과 감당할 손실(계좌의 % 또는 금액)을 넣으면 몇 주를 사야 하는지(포지션 사이즈), 포지션 금액과 계좌 대비 비중, 손절 시 손실, 익절 시 이익, 손익비(R:R), 본전 승률을 계산하고 가격 사다리 그림으로 보여 줘요. 롱·숏, 원·달러(환율), 소수 주식, 수수료를 지원해요. 투자 권유가 아니에요.", hook: "계좌 1%만 잃으려면 몇 주? 손익비는?", meta: "롱·숏 · R:R · 본전 승률", kw: "손절 계산기 손절가 계산기 손절가 계산 손절 몇 퍼센트 손절 기준 손절 라인 익절 계산 익절 계산기 익절가 목표가 계산 포지션 사이즈 계산기 포지션 사이즈 포지션 계산기 포지션 크기 몇 주 사야 몇 주 살까 매수 수량 계산 리스크 관리 위험 관리 자금 관리 1% 규칙 2% 규칙 손익비 손익비 계산 손익비 계산기 r:r rr 리스크 리워드 risk reward 본전 승률 손익분기 승률 기대값 롱 숏 공매도 레버리지 마진 소수 주식 미국 주식 수수료 트레이딩 단타 스윙" }, // P2-56
 ];
-const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "heic", "qr", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "word2pdf", "dday", "stockquiz", "avgdown", "dca", "ostax", "rsibt", "compound"]; // P2-55 compound // P2-50 stockquiz(투자) // P2-51 avgdown // P2-52 dca // P2-53 ostax // P2-54 rsibt // P2-45 돈 계산기 4종, P2-46 imgmerge, P2-47 heic, P2-48 qr
+const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "heic", "qr", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "word2pdf", "dday", "stockquiz", "avgdown", "dca", "ostax", "rsibt", "compound", "possize"]; // P2-56 possize // P2-55 compound // P2-50 stockquiz(투자) // P2-51 avgdown // P2-52 dca // P2-53 ostax // P2-54 rsibt // P2-45 돈 계산기 4종, P2-46 imgmerge, P2-47 heic, P2-48 qr
 const NEXT = {
   pdfmerge: ["pdfsplit", "img2pdf", "imgcompress"],
   pdfsplit: ["pdfmerge", "pdf2img", "img2pdf"],
@@ -210,12 +212,13 @@ const NEXT = {
   juhyu: ["salary", "unemp", "severance"], // P2-45
   severance: ["unemp", "salary", "juhyu"], // P2-45
   unemp: ["severance", "salary", "juhyu"], // P2-45
-  stockquiz: ["avgdown", "dca", "salary"], // P2-50 // P2-51 물타기 계산기로 이어지게 // P2-52 둘째 칸 적립식 백테스트
-  avgdown: ["stockquiz", "dca", "salary"], // P2-51 // P2-52 둘째 칸 적립식 백테스트
-  dca: ["stockquiz", "avgdown", "salary"], // P2-52
-  ostax: ["avgdown", "dca", "salary"], // P2-53
-  rsibt: ["dca", "stockquiz", "avgdown"], // P2-54 같은 데이터로 적립식·주가 예측
+  stockquiz: ["rsibt", "dca", "possize"], // P2-50 // P2-56 투자 툴끼리 잇기: 같은 데이터 RSI 백테스트·적립식 → 매매 수량
+  avgdown: ["possize", "dca", "ostax"], // P2-51 // P2-56 물타기 대신 손절 기준 → 분할 매수(적립식) → 팔 때 세금
+  dca: ["compound", "rsibt", "avgdown"], // P2-52 // P2-56 가정 수익률 복리와 비교 → 같은 데이터 RSI 전략 → 평단
+  ostax: ["avgdown", "compound", "possize"], // P2-53 // P2-56 평단(취득가) → 배당세 → 익절 이익
+  rsibt: ["possize", "stockquiz", "dca"], // P2-54 // P2-56 RSI 손절 → 수량 계산, 같은 데이터 주가 예측·적립식
   compound: ["dca", "ostax", "avgdown"], // P2-55 복리로 본 적립 → 실제 가격 적립식 백테스트 → 세금
+  possize: ["avgdown", "rsibt", "stockquiz"], // P2-56 손절 대신 물타기? 평단 비교 → 손절 넣은 RSI 백테스트 → 차트 연습
 };
 const utilById = Object.fromEntries(UTILS.map((x) => [x.id, x]));
 const anyById = { ...toolById, ...utilById };
@@ -469,6 +472,7 @@ const cabCls = (i, n) => (n > 6 && i === n - 1 && (n - 3) % 3 === 1 ? "cab-full"
 // ★ 새 툴·게임을 만들면 여기에 { id, d: "출시일" }을 맨 위에 추가(대표님 지시: 새 콘텐츠는 메인에 잘 보이게).
 // 출시 30일 이내 항목 중 최신 4개가 홈 맨 위 「NEW」 띠에 나오고, 해당 행·타일에 NEW 표시가 붙음
 const NEW_ITEMS = [
+  { id: "possize", d: "2026-11-10" }, // P2-56
   { id: "compound", d: "2026-11-10" }, // P2-55
   { id: "rsibt", d: "2026-11-10" }, // P2-54
   { id: "ostax", d: "2026-11-10" }, // P2-53
@@ -1641,6 +1645,113 @@ utilPage(utilById.stockquiz, `<div class="sq">
 <section class="prose pay-src" aria-labelledby="cmp-src-h"><h2 id="cmp-src-h">배당 세금 기준·출처 (확인일 ${esc(RU.checked)})</h2>
 <ul>${RU.sources.map((x) => `<li><b>${esc(x.name)}</b> — <a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.by)}<span class="sr"> (새 창, 외부 사이트)</span></a> · ${esc(x.date)}${x.check === "2차" ? " · <small>공식 원문 대신 언론 안내로 확인</small>" : ""}</li>`).join("")}</ul>
 <p class="hint">이 계산기에 넣지 않은 것: 금융소득 종합과세(연 2천만 원 초과분), 2026년부터 생긴 고배당기업 배당소득 분리과세 특례, ISA·연금계좌 비과세·과세이연, 건강보험료, 배당 성장과 주가 변동. 실제 세금은 증권사 배당 명세서나 국세청 홈택스(국번 없이 126)에서 확인하세요.</p></section>`
+  });
+}
+
+// P2-56 손절·익절·포지션 계산기: 계산식은 src/assets/pos-calc.js 한 벌(화면 t-pos.js와 아래 대조가 같은 파일을 vm으로 씀)
+// 흐름: 방향(롱|숏)·단위 → 진입가·손절(가격|%)·익절(가격|%|R) → 계좌·감당할 손실(%|금액)·환율·수수료 → 수량·포지션·손익·R:R·본전 승률 → 가격 사다리 → 한 줄 복사 → 다음 툴
+// 빌드 때 ① 손계산 7건(롱·숏·소수 주식·수수료·레버리지·오류) ② 성질 격자(수량이 손실 한도를 넘지 않고 1단위 더 사면 넘는지, 본전 승률 × (1 + R) = 1 등)와 대조하고, 다르면 빌드를 멈춤
+{
+  const ctx = {};
+  vm.createContext(ctx);
+  vm.runInContext(fs.readFileSync(path.join(ROOT, "src", "assets", "pos-calc.js"), "utf8"), ctx);
+  const PC = ctx.POSCALC;
+  const near = (a, b, tol = 1e-9) => Math.abs(a - b) <= tol * Math.max(1, Math.abs(b));
+  const chk = (name, got, want) => { if (!(got === want || (typeof got === "number" && typeof want === "number" && near(got, want)))) throw new Error(`P2-56 「${name}」 계산 불일치: ${got} ≠ ${want}`); };
+  const pc = (o) => { const r = PC.calc(o); if (r.err) throw new Error(`P2-56 계산 실패 ${r.err} ${JSON.stringify(o)}`); return r; };
+  // 손계산 1 (롱·원): 진입 50,000 손절 47,500 익절 57,500, 계좌 1,000만 원 × 1% = 100,000원 ÷ 1주 손실 2,500원 = 40주
+  //   포지션 2,000,000원(20%), 손절 −100,000원, 익절 7,500 × 40 = +300,000원, R = 7,500 ÷ 2,500 = 3, 본전 승률 1 ÷ 4 = 25%
+  const h1 = pc({ dir: "long", entry: 50000, stop: 47500, target: 57500, account: 10000000, riskPct: 0.01 });
+  chk("손계산1 수량", h1.n, 40); chk("손계산1 포지션", h1.pos, 2000000); chk("손계산1 비중", h1.weight, 0.2); chk("손계산1 손실", h1.loss, 100000); chk("손계산1 이익", h1.gain, 300000); chk("손계산1 R", h1.rr, 3); chk("손계산1 본전 승률", h1.be, 0.25); chk("손계산1 손절 %", h1.stopPct, -0.05);
+  // 손계산 2 (숏·달러): 진입 $100 손절 $105, 목표 2R → $100 − 2 × $5 = $90. 계좌 $20,000 × 2% = $400 ÷ $5 = 80주
+  //   포지션 $8,000(40%), 손절 −$400, 익절 $10 × 80 = +$800, R 2, 본전 승률 1 ÷ 3 = 33.33%
+  const h2 = pc({ dir: "short", entry: 100, stop: 105, targetR: 2, account: 20000, riskPct: 0.02 });
+  chk("손계산2 익절가", h2.target, 90); chk("손계산2 수량", h2.n, 80); chk("손계산2 포지션", h2.pos, 8000); chk("손계산2 손실", h2.loss, 400); chk("손계산2 이익", h2.gain, 800); chk("손계산2 R", h2.rr, 2); chk("손계산2 본전 승률", h2.be, 1 / 3);
+  // 손계산 3 (숏·원·정수 내림): 진입 30,000 손절 5% → 31,500, 목표 2R → 27,000. 2,000만 원 × 1% = 200,000 ÷ 1,500 = 133.33 → 133주
+  //   포지션 3,990,000원(19.95%), 손절 −199,500원, 익절 3,000 × 133 = +399,000원
+  const h3 = pc({ dir: "short", entry: 30000, stopPct: 0.05, targetR: 2, account: 20000000, riskPct: 0.01 });
+  chk("손계산3 손절가", h3.stop, 31500); chk("손계산3 익절가", h3.target, 27000); chk("손계산3 계산값", h3.exact, 400 / 3); chk("손계산3 수량", h3.n, 133); chk("손계산3 포지션", h3.pos, 3990000); chk("손계산3 비중", h3.weight, 0.1995); chk("손계산3 손실", h3.loss, 199500); chk("손계산3 이익", h3.gain, 399000);
+  // 손계산 4 (소수 주식·달러, 계좌는 원): 진입 $250, 손절 4% → $240, 목표 10% → $275. 계좌 5,000,000원 ÷ 1,400 = $3,571.43, 감당할 손실 49,000원 ÷ 1,400 = $35
+  //   $35 ÷ $10 = 3.5주(정수면 3주), 포지션 $875 = 1,225,000원(24.5%), 손절 −$35(−49,000원), 익절 $25 × 3.5 = +$87.5(122,500원), R 2.5, 본전 승률 1 ÷ 3.5 = 28.57%
+  const o4 = { dir: "long", entry: 250, stopPct: 0.04, targetPct: 0.1, account: 5000000, acctKrw: true, fx: 1400, riskAmt: 49000, frac: true };
+  const h4 = pc(o4), h4i = pc({ ...o4, frac: false });
+  chk("손계산4 손절가", h4.stop, 240); chk("손계산4 익절가", h4.target, 275); chk("손계산4 손실 한도", h4.budget, 35); chk("손계산4 소수 수량", h4.n, 3.5); chk("손계산4 포지션", h4.pos, 875); chk("손계산4 포지션 원", h4.pos * 1400, 1225000); chk("손계산4 비중", h4.weight, 0.245);
+  chk("손계산4 손실", h4.loss, 35); chk("손계산4 이익", h4.gain, 87.5); chk("손계산4 이익 원", h4.gain * 1400, 122500); chk("손계산4 R", h4.rr, 2.5); chk("손계산4 본전 승률", h4.be, 1 / 3.5); chk("손계산4 정수 수량", h4i.n, 3); chk("손계산4 정수 손실", h4i.loss, 30);
+  // 손계산 5 (수수료 0.1%, 사고 팔 때 각각): 진입 10,000 손절 9,500 익절 11,000, 1,000만 원 × 1% = 100,000원
+  //   1주 손절 손실 = 500 + 0.001 × (10,000 + 9,500) = 519.5원 → 100,000 ÷ 519.5 = 192.49 → 192주, 손절 −192 × 519.5 = −99,744원
+  //   1주 익절 이익 = 1,000 − 0.001 × (10,000 + 11,000) = 979원 → +187,968원, R = 979 ÷ 519.5 = 1.8845, 본전 승률 519.5 ÷ 1,498.5 = 34.67% (수수료 없으면 200주, R 2)
+  const h5 = pc({ dir: "long", entry: 10000, stop: 9500, target: 11000, account: 10000000, riskPct: 0.01, fee: 0.001 }), h5n = pc({ dir: "long", entry: 10000, stop: 9500, target: 11000, account: 10000000, riskPct: 0.01 });
+  chk("손계산5 1주 손실", h5.loss1, 519.5); chk("손계산5 수량", h5.n, 192); chk("손계산5 손실", h5.loss, 99744); chk("손계산5 1주 이익", h5.gain1, 979); chk("손계산5 이익", h5.gain, 187968); chk("손계산5 R", h5.rr, 979 / 519.5); chk("손계산5 본전 승률", h5.be, 519.5 / 1498.5); chk("손계산5 수수료 없을 때 수량", h5n.n, 200); chk("손계산5 가격 R", h5.rrGross, 2);
+  // 손계산 6 (레버리지 경고): 진입 $50 손절 $49.8(소수 오차로 0.2000…03), $10,000 × 1% = $100 ÷ $0.2 = 500주 → $25,000(250%) > 계좌. 현금으로는 $10,000 ÷ $50 = 200주
+  const h6 = pc({ dir: "long", entry: 50, stop: 49.8, target: 51, account: 10000, riskPct: 0.01 });
+  chk("손계산6 수량", h6.n, 500); chk("손계산6 비중", h6.weight, 2.5); chk("손계산6 레버리지", h6.lev, true); chk("손계산6 현금 한도", h6.cashMax, 200); chk("손계산1 레버리지 아님", h1.lev, false);
+  // 손계산 7 (오류 안내): 숏인데 손절가 < 진입가, 롱·숏 익절 방향, 감당할 손실 100원 < 1주 손실 2,500원, 계좌가 원인데 환율 없음, 숏 목표가 0 이하
+  chk("오류 숏 손절 방향", PC.calc({ dir: "short", entry: 100, stop: 95, target: 90, account: 10000, riskPct: 0.01 }).err, "stopSide");
+  chk("오류 숏 익절 방향", PC.calc({ dir: "short", entry: 100, stop: 105, target: 110, account: 10000, riskPct: 0.01 }).err, "targetSide");
+  chk("오류 롱 익절 방향", PC.calc({ dir: "long", entry: 100, stop: 95, target: 99, account: 10000, riskPct: 0.01 }).err, "targetSide");
+  chk("오류 1주도 못 삼", PC.calc({ dir: "long", entry: 50000, stop: 47500, account: 10000000, riskAmt: 100 }).err, "zero");
+  chk("오류 환율 없음", PC.calc({ ...o4, fx: null }).err, "fx");
+  chk("오류 숏 목표가 0 이하", PC.calc({ dir: "short", entry: 100, stop: 150, targetR: 3, account: 10000, riskPct: 0.01 }).err, "targetNeg");
+  // 성질 격자: 방향 2 × 진입가 4 × 손절 % 4 × 목표 R 3 × 위험 % 3 × 수수료 3 × 소수 주식 2
+  let grid = 0;
+  for (const dir of ["long", "short"]) for (const entry of [3.17, 48.5, 731.25, 61800]) for (const sp of [0.003, 0.02, 0.075, 0.3]) for (const tR of [0.5, 2, 3.7]) for (const rp of [0.005, 0.01, 0.02]) for (const fee of [0, 0.00015, 0.0025]) for (const frac of [false, true]) {
+    const d = dir === "long" ? 1 : -1;
+    if (d < 0 && sp * tR >= 1) continue;
+    const r = PC.calc({ dir, entry, stopPct: sp, targetR: tR, account: 25000000, riskPct: rp, fee, frac });
+    const tag = `격자 ${dir}/${entry}/${sp}/${tR}/${rp}/${fee}/${frac}`;
+    if (r.err === "zero") { if (!(r.loss1 * (frac ? 1e-6 : 1) > r.budget)) throw new Error(`P2-56 ${tag} 0주 판정 불일치`); grid++; continue; }
+    if (r.err) throw new Error(`P2-56 ${tag} 계산 실패 ${r.err}`);
+    const step = frac ? 1e-6 : 1;
+    chk(`${tag} 손절가`, r.stop, entry * (1 - d * sp)); chk(`${tag} 익절가`, r.target, entry + d * tR * entry * sp);
+    if (!(r.loss <= r.budget * (1 + 1e-9))) throw new Error(`P2-56 ${tag} 손실이 한도를 넘음`);
+    if (!((r.n + step) * r.loss1 > r.budget * (1 - 1e-9))) throw new Error(`P2-56 ${tag} 한 단위 더 살 수 있는데 내림`);
+    if (fee === 0) chk(`${tag} R`, r.rr, tR);
+    if (r.be != null) chk(`${tag} 본전 승률`, r.be * (1 + r.rr), 1);
+    chk(`${tag} 포지션`, r.pos, r.n * entry); chk(`${tag} 이익`, r.gain, r.n * (entry * sp * tR - fee * (2 * entry + d * entry * sp * tR)));
+    grid++;
+  }
+  const wn = (n) => `${Math.round(n).toLocaleString("ko-KR")}원`, dl = (n) => `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  const q = (n) => `${n.toLocaleString("ko-KR", { maximumFractionDigits: 6 })}주`, pp = (r) => `${(r * 100).toLocaleString("ko-KR", { maximumFractionDigits: 2 })}%`, rr = (r) => `1 : ${r.toFixed(2)}`;
+  const EXR = [
+    ["롱 · 원", "진입 50,000원, 손절 47,500원, 익절 57,500원, 계좌 10,000,000원, 감당할 손실 1%", "100,000 ÷ 2,500", `<b>${q(h1.n)}</b> · 포지션 ${wn(h1.pos)}(${pp(h1.weight)}) · 손절 −${wn(h1.loss)} · 익절 +${wn(h1.gain)} · 손익비 ${rr(h1.rr)} · 본전 승률 ${pp(h1.be)}`],
+    ["숏 · 달러 · 목표 R", "진입 $100, 손절 $105, 목표 2R, 계좌 $20,000, 감당할 손실 2%", "$400 ÷ $5, 익절가 100 − 2 × 5", `<b>${q(h2.n)}</b> · 익절가 ${dl(h2.target)} · 포지션 ${dl(h2.pos)}(${pp(h2.weight)}) · 손절 −${dl(h2.loss)} · 익절 +${dl(h2.gain)} · 본전 승률 ${pp(h2.be)}`],
+    ["숏 · 원 · 정수 내림", "진입 30,000원, 손절 5%, 목표 2R, 계좌 20,000,000원, 감당할 손실 1%", "200,000 ÷ 1,500 = 133.33 → 내림", `<b>${q(h3.n)}</b> · 손절가 ${wn(h3.stop)} · 익절가 ${wn(h3.target)} · 포지션 ${wn(h3.pos)}(${pp(h3.weight)}) · 손절 −${wn(h3.loss)} · 익절 +${wn(h3.gain)}`],
+    ["소수 주식 · 달러 · 계좌 원", "진입 $250, 손절 4%, 목표 10%, 계좌 5,000,000원, 감당할 손실 49,000원, 환율 1,400원", "49,000 ÷ 1,400 = $35 → $35 ÷ $10", `<b>${q(h4.n)}</b> (정수면 ${q(h4i.n)}) · 포지션 ${dl(h4.pos)} = ${wn(h4.pos * 1400)}(${pp(h4.weight)}) · 손절 −${wn(h4.loss * 1400)} · 익절 +${wn(h4.gain * 1400)} · 손익비 ${rr(h4.rr)}`],
+    ["수수료 0.1%", "진입 10,000원, 손절 9,500원, 익절 11,000원, 계좌 10,000,000원, 1%, 수수료 사고 팔 때 0.1%씩", "1주 손실 500 + 0.001 × 19,500 = 519.5 → 100,000 ÷ 519.5", `<b>${q(h5.n)}</b> (수수료 없으면 ${q(h5n.n)}) · 손절 −${wn(h5.loss)} · 익절 +${wn(h5.gain)} · 손익비 ${rr(h5.rr)} · 본전 승률 ${pp(h5.be)}`],
+    ["레버리지 경고", "진입 $50, 손절 $49.80, 계좌 $10,000, 감당할 손실 1%", "$100 ÷ $0.20", `<b>${q(h6.n)}</b> · 포지션 ${dl(h6.pos)} = 계좌의 ${pp(h6.weight)} → 레버리지 필요 경고, 현금으로는 ${q(h6.cashMax)}`],
+    ["방향 오류", "숏인데 진입 $100, 손절 $95", "숏은 오르면 손해", "<b>오류 안내</b> · 숏은 손절가가 진입가보다 높아야 해요"],
+  ];
+  const POS_WARN = "계산 결과는 참고용이에요. 투자 권유나 매매 추천이 아니에요. 손절가를 정해도 갭 하락·상승, 거래 정지, 급변동 때는 손절가보다 훨씬 불리한 가격에 체결될 수 있어요. 레버리지(신용·미수·마진)와 공매도는 원금보다 큰 손실이 날 수 있어요.";
+  utilPage(utilById.possize, `<div class="pos">
+<form class="dd-form pay-form avg-form pos-form" autocomplete="off" novalidate>
+  <fieldset class="seg pos-dir"><legend>방향</legend><label><input type="radio" name="dir" value="long" checked><span>롱 (매수 · 오르면 이익)</span></label><label><input type="radio" name="dir" value="short"><span>숏 (공매도 · 내리면 이익)</span></label></fieldset>
+  <p class="hint pos-side" data-side></p>
+  <div class="avg-opts"><fieldset class="seg"><legend>가격 단위</legend><label><input type="radio" name="unit" value="krw" checked><span>원 (₩)</span></label><label><input type="radio" name="unit" value="usd"><span>달러 ($)</span></label></fieldset>
+  <label class="check avg-frac"><input type="checkbox" name="frac"> 소수 주식 허용 (소수점 수량)</label></div>
+  <label><span>진입가 <i data-u></i> <small class="hint">사는(숏이면 파는) 가격</small></span><input name="entry" type="text" inputmode="decimal" autocomplete="off"></label>
+  <div class="row2 pos-lv2">
+    <div class="pos-in"><fieldset class="seg pos-mini"><legend>손절 <i data-su></i></legend><label><input type="radio" name="smode" value="price" checked><span>가격</span></label><label><input type="radio" name="smode" value="pct"><span>%</span></label></fieldset><input name="stop" type="text" inputmode="decimal" autocomplete="off" aria-label="손절가 또는 손절 %"></div>
+    <div class="pos-in"><fieldset class="seg pos-mini"><legend>익절 <i data-tu></i> <small class="hint">(선택)</small></legend><label><input type="radio" name="tmode" value="price" checked><span>가격</span></label><label><input type="radio" name="tmode" value="pct"><span>%</span></label><label><input type="radio" name="tmode" value="r"><span>R</span></label></fieldset><input name="target" type="text" inputmode="decimal" autocomplete="off" aria-label="익절가, 목표 % 또는 목표 R 배수"></div>
+  </div>
+  <div class="dca-quick" role="group" aria-label="목표 손익비(R 배수) 빠르게 고르기">${[1, 1.5, 2, 3].map((x) => `<button type="button" class="chip" data-tq="${x}">목표 ${x}R</button>`).join("")}</div>
+  <div class="avg-opts" data-usd hidden><fieldset class="seg"><legend>계좌 금액 단위</legend><label><input type="radio" name="acur" value="usd" checked><span>달러</span></label><label><input type="radio" name="acur" value="krw"><span>원</span></label></fieldset></div>
+  <div class="row2">
+    <label><span>계좌 금액 <i data-acct-u></i></span><input name="acct" type="text" inputmode="decimal" autocomplete="off"></label>
+    <label data-usd hidden><span>환율 (원/달러) <small class="hint" data-fx-hint></small></span><input name="fx" type="text" inputmode="decimal" autocomplete="off" placeholder="예: 1,400"></label>
+  </div>
+  <div class="pos-in"><fieldset class="seg pos-mini"><legend>감당할 손실 <i data-risk-u></i></legend><label><input type="radio" name="rmode" value="pct" checked><span>계좌의 %</span></label><label><input type="radio" name="rmode" value="amt"><span>금액</span></label></fieldset><input name="risk" type="text" inputmode="decimal" autocomplete="off" aria-label="감당할 손실"></div>
+  <div class="dca-quick" role="group" aria-label="감당할 손실 빠르게 고르기">${[0.5, 1, 2].map((x) => `<button type="button" class="chip" data-rq="${x}">계좌의 ${x}%</button>`).join("")}</div>
+  <label><span>수수료 (%) <small class="hint">(선택) 사고 팔 때 각각 드는 비율</small></span><input name="fee" type="text" inputmode="decimal" autocomplete="off" placeholder="예: 0.25"></label>
+  <div class="dd-opts pay-acts"><button type="submit" class="btn">계산하기</button><button type="button" class="btn ghost" data-copy>결과 한 줄 복사</button><button type="button" class="chip" data-example>예시 넣기</button><button type="button" class="chip" data-reset>모두 지우기</button></div>
+</form>
+<div class="dd-result pay-result avg-result pos-result" aria-live="polite"></div>
+<div class="avg-chart pos-chart" hidden><svg class="avg-svg pos-svg" role="img" aria-label="가격 사다리" xmlns="http://www.w3.org/2000/svg"></svg></div>
+<p class="sq-warn" role="note">${esc(POS_WARN)}</p>
+</div>`, {
+    scripts: ["pos-calc.js", "t-pos.js"], fileTool: false,
+    after: `<h2 class="dd-h">계산 예시 (손계산과 대조)</h2>
+<div class="table-wrap"><table class="dd-table avg-ex pos-ex"><thead><tr><th scope="col">경우</th><th scope="col">입력</th><th scope="col">계산</th><th scope="col">결과</th></tr></thead><tbody>${EXR.map((r) => `<tr><th scope="row">${esc(r[0])}</th><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${r[3]}</td></tr>`).join("")}</tbody></table></div>
+<p class="hint">수량 = 감당할 손실 ÷ 1주 손절 손실(|진입가 − 손절가| + 수수료), 정수 주는 내림, 소수 주식은 소수 6자리에서 내림. 손익비(R:R) = 1주 익절 이익 ÷ 1주 손절 손실, 본전 승률 = 1 ÷ (1 + R). 사이트를 만들 때마다 위 손계산과, 방향·가격·손절 %·목표 R·위험 %·수수료·소수 주식을 바꾼 ${grid}가지 조합에서 「손실이 한도를 넘지 않고, 한 단위 더 사면 넘는지」를 자동으로 확인해요.</p>`
   });
 }
 

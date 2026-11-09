@@ -1638,3 +1638,42 @@ li.has-fav{position:relative}
 .cmp-result .table-wrap,.div-result .table-wrap{overflow-x:auto}
 .div-result .rsb-vs{margin-top:4px}
 @media(max-width:480px){.cmp-ex th:nth-child(3),.cmp-ex td:nth-child(3){display:none}.cmp .seg span{padding:7px 10px;font-size:13.5px}.cmp-tab span{font-size:14.5px}.cmp-ytable th,.cmp-ytable td{padding:4px 5px;font-size:12.5px}.div-table td{min-width:0}}
+
+/* ===================== P2-56 손절·익절·포지션 계산기: 입력 방식 미니 탭(가격|%|R) + 가격 사다리(P2-51 avg-* 점선·칩 톤, 손실·이익 구간 칠하기) ===================== */
+.pos{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+.pos [hidden]{display:none!important}
+.pos .up{color:var(--nok)}.pos .dn{color:var(--jeok)}
+.pos-form>label,.pos-form .row2>label{display:grid;gap:6px;font-weight:700}
+.pos-form label small.hint{font-weight:600}
+.pos-form i[data-u],.pos-form i[data-su],.pos-form i[data-tu],.pos-form i[data-acct-u],.pos-form i[data-risk-u]{font-style:normal;color:var(--ink-3);font-weight:700}
+.pos-dir span{font-size:15px}
+.pos-side{margin:-6px 0 0;font-size:13px}
+.pos-in{display:grid;gap:6px}
+.pos-in input{width:100%;min-width:0}
+.pos-mini{gap:5px}
+.pos-mini legend{font-weight:700;margin-bottom:4px}
+.pos-mini span{padding:4px 12px;font-size:13.5px}
+.pos .dca-quick .chip.on{background:var(--hwang)}
+.pos-big b{font-size:clamp(40px,10vw,60px)!important;font-variant-numeric:tabular-nums}
+.pos-lev{margin:6px 0 0}
+.pos-pl{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin-top:8px}
+.pos-pl .avg-pl{margin:0}
+.pos-pl .avg-pl b+b{font-family:inherit;font-weight:800;font-size:15px}
+.pos-table td small{color:var(--ink-3);font-weight:600}
+.pos-zone{opacity:.2}.pos-zone.is-gain{fill:var(--nok)}.pos-zone.is-loss{fill:var(--jeok)}
+.pos-zt{text-anchor:middle;font-weight:900;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round}
+.pos-zt.is-gain{fill:#0d6b3b}.pos-zt.is-loss{fill:#a3170c}
+.pos-rt{stroke:var(--ink-3);stroke-width:1.2;stroke-dasharray:2 5;opacity:.8}
+.pos-rl{font-size:11px;fill:var(--ink-3);font-weight:800}
+.pos-lv{stroke-width:2.8;stroke-linecap:round}
+.pos-lv.is-entry{stroke:var(--cheong);stroke-width:3.4;stroke-dasharray:12 6}
+.pos-lv.is-stop{stroke:var(--jeok);stroke-dasharray:7 6}
+.pos-lv.is-target{stroke:var(--nok);stroke-dasharray:7 6}
+.pos-tag rect{stroke:var(--ink);stroke-width:2}
+.pos-tag text{font-weight:900;fill:var(--white)}
+.pos-tag .avg-tl{font-weight:700}
+.pos-tag.is-entry rect{fill:var(--cheong)}.pos-tag.is-entry .avg-lead{stroke:var(--cheong)}
+.pos-tag.is-stop rect{fill:var(--jeok)}.pos-tag.is-stop .avg-lead{stroke:var(--jeok)}
+.pos-tag.is-target rect{fill:var(--nok)}.pos-tag.is-target .avg-lead{stroke:var(--nok)}
+.pos-ex td,.pos-ex th{word-break:keep-all}
+@media(max-width:480px){.pos .seg span{padding:7px 11px;font-size:13.5px}.pos .pos-mini span{padding:4px 11px;font-size:13px}.pos-pl{grid-template-columns:1fr}.pos-pl .avg-pl{padding:6px 12px}.pos-ex th:nth-child(3),.pos-ex td:nth-child(3){display:none}}
