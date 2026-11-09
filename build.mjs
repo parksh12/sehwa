@@ -98,6 +98,7 @@ const ART = {
   severance: sv(`<rect x="22" y="36" width="76" height="62" rx="8" fill="${YEL}" stroke="${K}" stroke-width="4"/><path d="M44 36v-8a6 6 0 0 1 6-6h20a6 6 0 0 1 6 6v8" fill="none" stroke="${K}" stroke-width="4"/><path d="M22 60h76" stroke="${K}" stroke-width="4"/><rect x="52" y="54" width="16" height="12" rx="3" fill="${W}" stroke="${K}" stroke-width="3"/>`), // P2-45
   unemp: sv(`<path d="M60 16a36 36 0 0 1 36 36H24a36 36 0 0 1 36-36z" fill="${RED}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M60 52v40a8 8 0 0 1-16 0" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round"/><circle cx="88" cy="88" r="14" fill="${YEL}" stroke="${K}" stroke-width="4"/><text x="88" y="94" font-size="15" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">₩</text>`), // P2-45
   juhyu: sv(`<rect x="14" y="22" width="92" height="76" rx="8" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M14 40h92" stroke="${K}" stroke-width="4"/>${[0, 1, 2, 3, 4, 5, 6].map((i) => `<rect x="${20 + i * 12}" y="50" width="9" height="9" rx="2" fill="${i === 6 ? RED : i < 5 ? GRN : "#d6d6d6"}"/>`).join("")}<text x="60" y="88" font-size="18" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">+주휴</text>`), // P2-45
+  stockquiz: sv(`<rect x="10" y="14" width="100" height="92" rx="10" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M22 84 40 66l14 10 22-30 12 10" fill="none" stroke="${K}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="88" cy="56" r="7" fill="${YEL}" stroke="${K}" stroke-width="4"/><path d="M90 36c0-6 4-9 8-9s8 3 8 8c0 6-8 6-8 12" fill="none" stroke="${RED}" stroke-width="5" stroke-linecap="round"/>`), // P2-50
 };
 function doc(x, y, w, h, fill) {
   const f = Math.min(14, w / 3);
@@ -149,6 +150,7 @@ const UCATS = {
   calc: { name: "생활 계산", desc: "D-day, 연봉 실수령액, 퇴직금처럼 생활에서 자주 찾는 계산을 바로 해 주는 툴이에요." }, // P2-45 desc
   time: { name: "시간", desc: "타이머와 스톱워치처럼 시간을 재고 알려 주는 툴이에요." },
   fun: { name: "운세·재미", seo: "운세·재미 — 무료 사주·띠별 운세·성격 테스트·사다리타기", desc: "오늘의 띠별 운세, 무료 사주팔자, 16유형 성격 테스트, 생일로 보는 나, 이름 궁합, 사다리타기·돌림판처럼 재미로 보고 가볍게 정하는 툴이에요." }, // P2-49 옛 오락실 운세·테스트·사다리
+  invest: { name: "투자", seo: "투자 툴 — SOXL·TQQQ·KORU 주가 예측, 실제 차트로 연습", desc: "SOXL·TQQQ·KORU 같은 레버리지 ETF의 실제 과거 차트로 오를까 내릴까를 맞혀 보고, 백테스팅으로 결과를 돌아보는 교육·재미용 투자 툴이에요. 투자 권유가 아니에요." }, // P2-50 새 툴 카테고리(앞으로 주식투자 툴을 여기에 모음)
 };
 const NAV = [...Object.entries(UCATS).map(([k, c]) => [c.name, `/${k}/`]), [PLAY.name, PLAY.path]];
 // seo: <title> 앞부분(검색어 그대로) / also: 다른 카테고리 페이지에도 함께 노출 / beta: 베타 표시 / kw: 홈 검색용 동의어
@@ -173,8 +175,9 @@ const UTILS = [
   { id: "imgmerge", cat: "image", path: "/image/merge/", title: "사진 이어붙이기", seo: "사진 이어붙이기 — 사진 합치기·캡처 합치기·긴 캡처 만들기", h1: "사진 이어붙이기 — 여러 장을 세로·가로·격자로 한 장에", desc: "사진과 휴대폰 캡처 여러 장을 세로·가로·격자로 한 장에 이어 붙여요. 캡처의 상태바·주소창·하단 바를 자동으로 잘라 내고, 연속 캡처는 겹친 부분을 빼서 긴 캡처로 만들어요. 사진은 서버로 전송하지 않습니다.", hook: "캡처 여러 장을 한 장으로, 툴바는 자동으로 잘라요.", meta: "세로·가로·격자 · JPG·PNG", kw: "사진 합치기 사진 이어붙이기 사진 붙이기 이미지 합치기 이미지 붙이기 이미지 이어붙이기 캡처 합치기 캡처 이어붙이기 스크린샷 합치기 긴 캡처 스크롤 캡처 긴 스크린샷 사진 연결 콜라주 격자 사진 세로로 붙이기 가로로 붙이기" }, // P2-46
   { id: "heic", cat: "image", path: "/image/heic-to-jpg/", title: "HEIC JPG 변환", seo: "HEIC JPG 변환 — 아이폰 사진 JPG로, 여러 장 한꺼번에", h1: "HEIC JPG 변환 — 아이폰 사진을 여러 장 한꺼번에 JPG로", desc: "아이폰 HEIC·HEIF 사진을 여러 장 한꺼번에 JPG로 바꿔요. 화질과 크기를 고르고, 하나씩 또는 zip으로 받아요. 위치 정보(GPS)는 기본으로 지워요. 사진은 서버로 전송하지 않습니다.", hook: "아이폰 사진(HEIC)을 JPG로, 여러 장 한꺼번에.", meta: "HEIC·HEIF → JPG · zip", kw: "heic jpg 변환 heic jpg heic 변환 heic to jpg heic 파일 열기 heic 열기 heif 변환 heif jpg 아이폰 사진 jpg 아이폰 사진 변환 아이폰 사진 안 열림 아이폰 사진 윈도우 아이폰 사진 컴퓨터 heic 뷰어 사진 확장자 변환 jpg 변환 위치 정보 지우기 gps 삭제" }, // P2-47
   { id: "qr", cat: "image", path: "/image/qr-code/", title: "QR코드 생성기", seo: "QR코드 생성기 — 무료 QR코드 만들기, 와이파이·링크·명함 QR", h1: "QR코드 생성기 — 링크·와이파이·명함 QR코드 무료로 만들기", desc: "링크, 글, 와이파이, 연락처(명함), 문자를 QR코드로 만들어요. 색과 여백을 바꾸고 가운데에 로고를 넣고, PNG·SVG로 저장해요. 와이파이 안내 카드는 A6로 바로 인쇄해요. 입력한 내용은 서버로 보내지 않습니다.", hook: "링크·와이파이·명함을 QR코드로, 로고도 넣어요.", meta: "PNG·SVG · 와이파이 카드", kw: "qr코드 만들기 qr코드 생성기 qr 코드 만들기 qr 생성 qr 생성기 qr코드 생성 qr 만들기 큐알코드 만들기 큐알 코드 큐알 만들기 무료 qr 무료 qr코드 와이파이 qr 와이파이 qr코드 wifi qr 와이파이 비밀번호 qr 링크 qr url qr 주소 qr 명함 qr 연락처 qr vcard 문자 qr 로고 qr qr코드 로고 qr 색 qr svg qr png qr 인쇄 qr code generator" }, // P2-48
+  { id: "stockquiz", cat: "invest", path: "/invest/soxl-tqqq-koru/", title: "SOXL·TQQQ·KORU 주가 예측", seo: "SOXL·TQQQ·KORU 주가 예측 — 날짜 가린 실제 차트, 오를까 내릴까", h1: "SOXL·TQQQ·KORU 주가 예측 — 날짜를 가린 실제 차트로 오를까 내릴까", desc: "SOXL·TQQQ·KORU의 상장 이후 실제 일봉 종가에서 날짜를 가린 1개월·3개월·1년 차트를 보여 드려요. 다음 거래일이나 한 달 뒤 종가가 오를지, 기준가 이상일지 맞히면 실제 결과와 날짜를 공개하고, 10문제 뒤 백테스팅 요약을 보여 줘요. 교육·재미용이며 투자 권유가 아니에요.", hook: "날짜를 가린 실제 차트. 내일 종가는 오를까 내릴까?", meta: "10문제 · 3분", kw: "soxl tqqq koru 주가 예측 주식 차트 맞히기 레버리지 etf 3배 반도체 나스닥 한국 백테스팅 투자 연습 오를까 내릴까 미국 주식" }, // P2-50
 ];
-const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "heic", "qr", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "word2pdf", "dday"]; // P2-45 돈 계산기 4종, P2-46 imgmerge, P2-47 heic, P2-48 qr
+const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "heic", "qr", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "word2pdf", "dday", "stockquiz"]; // P2-50 stockquiz(투자) // P2-45 돈 계산기 4종, P2-46 imgmerge, P2-47 heic, P2-48 qr
 const NEXT = {
   pdfmerge: ["pdfsplit", "img2pdf", "imgcompress"],
   pdfsplit: ["pdfmerge", "pdf2img", "img2pdf"],
@@ -196,6 +199,7 @@ const NEXT = {
   juhyu: ["salary", "unemp", "severance"], // P2-45
   severance: ["unemp", "salary", "juhyu"], // P2-45
   unemp: ["severance", "salary", "juhyu"], // P2-45
+  stockquiz: ["salary", "dday", "draw"], // P2-50
 };
 const utilById = Object.fromEntries(UTILS.map((x) => [x.id, x]));
 const anyById = { ...toolById, ...utilById };
@@ -204,7 +208,7 @@ const catName = (k) => (UCATS[k] || CATS[k]).name;
 
 // ---------- 공통 조각 ----------
 // P2-49 운세·재미 툴 / 오락실 게임으로 문구 분리
-const DISCLAIMER = "툴로 만든 결과물은 원본과 함께 확인한 뒤 사용해 주세요. 운세·재미 툴의 테스트와 운세, 펭귄 오락실의 게임 결과는 재미로 보는 콘텐츠이며, 의학·심리·재정·법률적 판단의 근거가 될 수 없어요.";
+const DISCLAIMER = "툴로 만든 결과물은 원본과 함께 확인한 뒤 사용해 주세요. 운세·재미 툴의 테스트와 운세, 펭귄 오락실의 게임 결과는 재미로 보는 콘텐츠이며, 의학·심리·재정·법률적 판단의 근거가 될 수 없어요. 투자 툴은 과거 가격으로 하는 교육·재미용이며 투자 권유가 아니에요."; // P2-50 투자 툴 문구
 const SAFE = "파일은 서버로 전송하지 않습니다. 지금 쓰는 브라우저 안에서 처리해요.";
 // 툴 페이지 CSP: 스크립트는 자체 파일 + 애드센스·GA 도메인만. 파일 데이터를 보낼 수 있는 connect-src도 자체·Google 광고/통계로 한정
 const GDOM = "https://*.google.com https://*.google.co.kr https://*.googlesyndication.com https://*.doubleclick.net https://*.googleadservices.com https://*.adtrafficquality.google https://*.gstatic.com https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com";
@@ -444,11 +448,12 @@ const homeIn = (k) => TOOL_RANK.map((id) => anyById[id]).filter((x) => ((x.also 
 // 서랍 순서: 툴이 많은 서랍부터(같으면 UCATS 순서). 위 3개는 윗줄, 나머지는 아랫줄
 const homeOrder = () => Object.entries(UCATS).map((e, i) => [e, homeIn(e[0]).length, i]).sort((a, b) => b[1] - a[1] || a[2] - b[2]).map((x) => x[0]);
 // P2-49 데스크톱 줄 배치: 윗줄 3개(넓이 1/3). 아랫줄이 2개면 반씩, 그 밖에는 1/3씩
-const cabCls = (i, n) => (i < 3 || n - 3 !== 2 ? "cab-big" : "cab-wide");
+const cabCls = (i, n) => (n > 6 && i === n - 1 && (n - 3) % 3 === 1 ? "cab-full" : i < 3 || n - 3 !== 2 ? "cab-big" : "cab-wide"); // P2-50 서랍 7개면 마지막에 혼자 남는 서랍은 한 줄 전체
 // 오락실 타일: 홈에서 놀이 콘텐츠를 한눈에(4×2)
 // ★ 새 툴·게임을 만들면 여기에 { id, d: "출시일" }을 맨 위에 추가(대표님 지시: 새 콘텐츠는 메인에 잘 보이게).
 // 출시 30일 이내 항목 중 최신 4개가 홈 맨 위 「NEW」 띠에 나오고, 해당 행·타일에 NEW 표시가 붙음
 const NEW_ITEMS = [
+  { id: "stockquiz", d: "2026-11-10" }, // P2-50
   { id: "qr", d: "2026-11-09" }, // P2-48
   { id: "heic", d: "2026-11-09" }, // P2-47
   { id: "imgmerge", d: "2026-11-09" }, // P2-46
@@ -501,7 +506,7 @@ const byUtilRank = UTIL_RANK.map((id) => utilById[id]);
   <div class="hero-text">
     <p class="hero-kicker">펭귄 공구함 · 툴 ${TOOL_RANK.length}개</p>
     <h1>자주 쓰는 툴, <br>설치 없이 바로</h1>
-    <p class="lead">PDF·이미지·글쓰기·생활 계산·운세 툴을 서랍별로 정리해 두었어요. 가입 없이 쓰고, 파일은 서버로 전송하지 않습니다.</p>
+    <p class="lead">PDF·이미지·글쓰기·생활 계산·운세·투자 툴을 서랍별로 정리해 두었어요. 가입 없이 쓰고, 파일은 서버로 전송하지 않습니다.</p>
   </div>
   <form class="search" role="search" action="${u("/")}">
     <label for="tool-q">어떤 툴을 찾으세요?</label>
@@ -931,14 +936,17 @@ function checkLife() {
   }
 }
 
+// P2-50 투자 툴 안내 문구(시작·결과 화면·카테고리 페이지 공통)
+const STOCK_WARN = "교육·재미용이에요. 투자 권유가 아니에요. SOXL·TQQQ·KORU는 하루 수익률의 3배를 따라가는 레버리지 ETF라 위험이 매우 크고, 오래 들고 있으면 기초 지수보다 손실이 커질 수 있어요.";
 // ---------- 펭귄 툴즈 실용 툴 ----------
 // 실용 툴 카테고리 페이지 (/pdf/ /image/ /text/ /calc/)
 for (const [k, c] of Object.entries(UCATS)) {
   const list = utilsIn(k); // P2-49 운세·재미 포함
   const items = [["홈", "/"], [c.name, `/${k}/`]];
+  const inv = k === "invest"; // P2-50 투자: 파일 안내 대신 교육·재미용·투자 권유 아님 안내
   const fun = k === "fun"; // P2-49 운세·재미: 파일 안내 대신 입력값 안내 + 띠·별자리·16유형·띠별 운세 바로가기
   const body = `${crumbHtml(items)}
-<header class="page-head"><span class="eyebrow">펭귄 공구함</span><h1>${esc(c.name)} 툴</h1><p class="lead">${esc(c.desc)} ${esc(fun ? "입력한 생년월일과 이름은 브라우저 안에서만 계산하고 저장하지 않아요." : SAFE)}</p>${fun ? '<p class="fun-badge">운세와 테스트는 재미로 보는 콘텐츠예요</p>' : ""}</header>
+<header class="page-head"><span class="eyebrow">펭귄 공구함</span><h1>${esc(c.name)} 툴</h1><p class="lead">${esc(c.desc)} ${esc(fun ? "입력한 생년월일과 이름은 브라우저 안에서만 계산하고 저장하지 않아요." : inv ? "과거 실제 가격으로만 문제를 내고, 고른 답은 저장하지 않아요." : SAFE)}</p>${fun ? '<p class="fun-badge">운세와 테스트는 재미로 보는 콘텐츠예요</p>' : ""}${inv ? `<p class="sq-warn">${esc(STOCK_WARN)}</p>` : ""}</header>
 <div class="drawers drawers-1 open">${drawerHtml({ tone: k, name: `${c.name} 서랍`, tools: utilsIn(k) })}</div>
 ${fun ? FUN_EXTRA() : ""}
 <section class="reco"><h2>다른 서랍</h2><div class="drawers drawers-mini">${Object.entries(UCATS).filter(([kk]) => kk !== k).map(([kk, cc]) => drawerHtml({ tone: kk, name: cc.name, href: `/${kk}/`, tools: utilsIn(kk), tag: "h3" })).join("")}</div></section>`;
@@ -1125,6 +1133,43 @@ ${tkTail("JPG로 바꾸기")}
 
 // P2-48 QR코드 생성기: 종류 고르기 → 내용 넣기 → 바로 미리보기 → 꾸미기(색·여백·로고) → PNG·SVG 저장·이미지 복사 → (와이파이) A6 안내 카드 인쇄
 // 부호화는 qrcode-generator(MIT)를 vendor에 그대로 둠. 입력값·로고는 브라우저 안에서만 씀
+// P2-50 SOXL·TQQQ·KORU 주가 예측: 데이터(src/assets/data/stock-*.json, scripts/update-prices.mjs)를 빌드 때 읽어 범위·기준일만 표기. 문제의 날짜는 답한 뒤 t-stock.js가 공개
+const STOCK = ["SOXL", "TQQQ", "KORU"].map((t) => {
+  const f = path.join(ROOT, "src", "assets", "data", `stock-${t.toLowerCase()}.json`);
+  if (!fs.existsSync(f)) throw new Error(`P2-50 ${f} 없음 — node scripts/update-prices.mjs`);
+  const j = JSON.parse(fs.readFileSync(f, "utf8"));
+  if (j.c.length !== j.g.length + 1 || j.c.some((x) => !(x > 0))) throw new Error(`P2-50 ${t} 데이터 형식 이상`);
+  return { t, n: j.c.length, d0: j.d0, asOf: j.asOf, src: j.src, basis: j.basis };
+});
+const STOCK_NAME = { SOXL: "반도체 3배", TQQQ: "나스닥100 3배", KORU: "한국 3배" };
+utilPage(utilById.stockquiz, `<div class="sq">
+  <div class="sq-start">
+    <p class="sq-warn" role="note">${esc(STOCK_WARN)}</p>
+    <fieldset class="seg"><legend>종목</legend>${STOCK.map((x, i) => `<label><input type="radio" name="tk" value="${x.t}"${i ? "" : " checked"}><span>${x.t} <small>${STOCK_NAME[x.t]}</small></span></label>`).join("")}<label><input type="radio" name="tk" value="MIX"><span>섞어서</span></label></fieldset>
+    <fieldset class="seg"><legend>보여 줄 차트 → 맞힐 때</legend><label><input type="radio" name="mode" value="m1" checked><span>1개월 → 다음 거래일</span></label><label><input type="radio" name="mode" value="m3"><span>3개월 → 다음 거래일</span></label><label><input type="radio" name="mode" value="y1"><span>1년 → 한 달 뒤</span></label></fieldset>
+    <fieldset class="seg"><legend>질문</legend><label><input type="radio" name="kind" value="ud" checked><span>오를까 내릴까</span></label><label><input type="radio" name="kind" value="th"><span>$○○ 이상일까</span></label></fieldset>
+    <button class="btn big" type="button" data-start>10문제 시작</button>
+    <p class="tk-msg sq-msg" role="alert" hidden></p>
+    <p class="hint sq-src">가격: ${esc(STOCK[0].src)} 일봉 ${esc(STOCK[0].basis)} · 기준일 ${esc(STOCK.map((x) => x.asOf).sort()[0])} · ${STOCK.map((x) => `${x.t} ${x.d0.slice(0, 4)}년 상장 이후 ${x.n.toLocaleString("ko-KR")}거래일`).join(", ")}. 문제의 실제 날짜는 답한 뒤에 공개해요.</p>
+  </div>
+  <div class="sq-play" hidden>
+    <div class="sq-top"><span class="sq-no">1 / 10</span><b class="sq-tk">SOXL</b><span class="sq-score">맞힌 개수 0</span></div>
+    <p class="sq-look hint"></p>
+    <div class="sq-chart"><canvas class="sq-canvas" role="img" aria-label="종가 차트"></canvas></div>
+    <p class="sq-q" aria-live="polite"></p>
+    <div class="sq-ans"></div>
+    <div class="sq-reveal" aria-live="polite" hidden></div>
+    <div class="sq-nav"><button type="button" class="btn big" data-next hidden>다음 문제 ›</button><button type="button" class="btn ghost sq-quit" data-quit>그만하기</button></div>
+  </div>
+  <div class="sq-result" hidden>
+    <div class="sq-res-head"></div>
+    <p class="sq-warn" role="note">${esc(STOCK_WARN)}</p>
+    <div class="sq-bt"></div>
+    <div class="sq-tablewrap"><table class="sq-table"><caption>문제별 실제 날짜와 결과</caption><thead><tr><th>#</th><th>종목</th><th>실제 날짜</th><th>내 답</th><th>정답</th><th>사서 팔았다면</th><th>구간 보유</th></tr></thead><tbody></tbody></table></div>
+    <div class="sq-again"><button type="button" class="btn big" data-again>같은 설정으로 10문제 더</button><button type="button" class="btn ghost" data-setup>설정 바꾸기</button><button type="button" class="btn ghost" data-copy>결과 복사</button></div>
+  </div>
+</div>`, { scripts: ["t-stock.js"], fileTool: false });
+
 utilPage(utilById.qr, `<div class="qr">
   <fieldset class="seg qr-types"><legend>무엇을 담을까요?</legend>
     <label><input type="radio" name="type" value="link" checked><span>링크</span></label><label><input type="radio" name="type" value="text"><span>글</span></label><label><input type="radio" name="type" value="wifi"><span>와이파이</span></label><label><input type="radio" name="type" value="vcard"><span>연락처</span></label><label><input type="radio" name="type" value="sms"><span>문자</span></label>

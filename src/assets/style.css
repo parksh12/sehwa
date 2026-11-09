@@ -1198,3 +1198,57 @@ li.has-fav{position:relative}
 .arc-moved a{color:var(--hwang);font-weight:800}
 @media(max-width:620px){.cab-jump{flex-wrap:nowrap;overflow-x:auto;width:100%;padding-bottom:4px;-webkit-overflow-scrolling:touch}.cab-jump .chip{flex:none}}
 .drawers-mini .row-body b .new-tag{display:none} /* P2-49 좁은 「다른 서랍」에서는 NEW 생략 */
+
+/* ===================== P2-50 투자 툴: SOXL·TQQQ·KORU 주가 예측 ===================== */
+.t-invest,.c-invest{--tone:#7a3ff2}
+.c-invest{background:#7a3ff2;color:#fff}
+@media(min-width:1000px){.cab-full{grid-column:1/-1}.cab-full .rows{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.cab-full .rows li+li{border-top:0}}
+.sq{display:grid;gap:14px}
+.sq-start,.sq-play,.sq-result{display:grid;gap:14px}
+.sq [hidden]{display:none!important}
+.sq-warn{margin:0;padding:10px 12px;border:2px solid var(--ink);border-left:8px solid var(--jeok);border-radius:10px;background:#fff5f3;font-size:14px;font-weight:600;line-height:1.55}
+.page-head .sq-warn{margin-top:10px}
+.sq .seg span small{font-weight:600;color:var(--ink-3);font-size:12.5px}
+.sq .seg input:checked+span small{color:inherit;opacity:.85}
+.sq-src{margin:0}
+.sq-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sq-no{font-weight:800;font-variant-numeric:tabular-nums;border:2px solid var(--ink);border-radius:99px;padding:1px 10px;font-size:14px}
+.sq-tk{font-family:var(--display);font-weight:400;font-size:24px;letter-spacing:.02em}
+.sq-score{margin-left:auto;font-size:14px;font-weight:700;color:var(--ink-2)}
+.sq-look{margin:-6px 0 0}
+.sq-chart{border:var(--bd);border-radius:12px;background:var(--white);padding:8px 6px 4px}
+.sq-canvas{display:block;width:100%;height:220px}
+.sq-q{margin:0;font-size:17px;line-height:1.5}
+.sq-q small{color:var(--ink-3);font-size:14px;white-space:nowrap}
+.sq-ans{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sq-ans .btn.big{width:100%}
+.sq-yes{background:var(--jeok);box-shadow:3px 3px 0 var(--ink)}
+.sq-yes:hover{box-shadow:4px 4px 0 var(--ink)}
+.sq-no-btn{color:var(--cheong)!important}
+.sq-reveal{border:2px solid var(--ink);border-radius:12px;padding:10px 14px;background:var(--soft)}
+.sq-reveal p{margin:4px 0}
+.sq-ok{font-weight:900;font-size:18px}
+.sq-ok.is-ok{color:var(--nok)}.sq-ok.is-no{color:var(--jeok)}
+.sq-dates{font-size:14.5px}
+.sq-nav{display:flex;gap:10px;align-items:center}
+.sq-nav .btn.big{flex:1}
+.sq-quit{flex:none}
+.sq-big{margin:0;font-size:22px}.sq-big b{font-family:var(--display);font-weight:400;font-size:44px;margin-right:4px}
+.sq-res-head .hint{margin:2px 0 0}
+.sq-bt h3{margin:0 0 6px;font-size:17px}.sq-bt h3 small{display:block;font-weight:600;font-size:13px;color:var(--ink-3)}
+.sq-bt-list{list-style:none;margin:0;padding:0;border:var(--bd);border-radius:12px;overflow:hidden;background:var(--white)}
+.sq-bt-list li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;font-size:14.5px}
+.sq-bt-list li+li{border-top:2px solid var(--soft)}
+.sq-bt-list b{font-size:18px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.sq .up{color:var(--jeok)}.sq .dn{color:var(--cheong)}
+.sq-tablewrap{overflow-x:auto;border:var(--bd);border-radius:12px;background:var(--white)}
+.sq-table{width:100%;border-collapse:collapse;font-size:13.5px;font-variant-numeric:tabular-nums}
+.sq-table caption{text-align:left;font-weight:800;padding:8px 10px 4px}
+.sq-table th,.sq-table td{padding:7px 8px;border-top:2px solid var(--soft);text-align:left;vertical-align:top}
+.sq-table th{font-size:12.5px;color:var(--ink-3);white-space:nowrap}
+.sq-table td.ok{color:var(--nok);font-weight:900}.sq-table td.no{color:var(--jeok);font-weight:900}
+.sq-table small{color:var(--ink-3)}
+.sq-td-d{white-space:nowrap}.sq-table td:nth-child(2),.sq-table td:nth-child(4){white-space:nowrap}
+.sq-again{display:flex;flex-wrap:wrap;gap:10px}
+.sq-again .btn.big{flex:1 1 100%}
+@media(max-width:620px){.sq-table{font-size:12.5px}.sq-table th,.sq-table td{padding:6px 5px}.sq-tk{font-size:21px}.sq-q{font-size:16px}}
