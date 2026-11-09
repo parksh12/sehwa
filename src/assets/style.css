@@ -1089,3 +1089,93 @@ li.has-fav{position:relative}
 .hc-meta-hint.warn{color:#8a1209;font-weight:700}
 .hc-lic{margin:0;font-size:12.5px}
 .hc-done img{background:#eee}
+/* P2-48 QR코드 생성기 */
+.qr [hidden]{display:none!important}
+.qr{display:grid;gap:16px}
+.qr-types{margin:0;padding:0;border:0}
+.qr-main{display:grid;gap:16px}
+.qr-form{display:grid;gap:12px;min-width:0}
+.qr-pane{display:grid;gap:10px}
+.qr-pane>label,.qr-pane .row2 label{display:grid;gap:6px;font-weight:700}
+.qr-pane .hint{margin:0}
+.qr-ta{font:inherit;font-size:16px;line-height:1.6;width:100%;padding:12px;border:2px solid var(--ink);border-radius:10px;resize:vertical;background:#fff;color:var(--ink)}
+.qr-ta:focus{outline:3px solid var(--hwang);outline-offset:1px}
+.qr-pw{display:flex;gap:8px}
+.qr-pw input{flex:1;min-width:0}
+.qr-pw .btn{flex:none;padding:8px 14px}
+.qr-style{border:2px solid var(--ink);border-radius:12px;background:var(--soft);padding:0 12px}
+.qr-style summary{cursor:pointer;font-weight:800;padding:12px 0;list-style-position:inside}
+.qr-style[open] summary{padding-bottom:10px}
+.qr-style .tk-opts{padding-bottom:12px}
+.qr-colors{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px}
+.tk-opts .qr-color{display:inline-flex;align-items:center;gap:8px;font-weight:700}
+.qr-color input[type=color]{width:44px;height:36px;padding:0;border:2px solid var(--ink);border-radius:8px;background:var(--white);cursor:pointer}
+.qr-sbtn{padding:6px 12px;font-size:14px}
+.qr-cwarn{margin:0}
+.qr-logo{display:grid;gap:8px}
+.qr-logo-h{font-weight:700}
+.qr-logo-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.tk-opts .qr-logo-btn{display:inline-flex;position:relative}
+.qr-logo-btn:focus-within{outline:3px solid var(--hwang);outline-offset:2px}
+.qr-logo-name{margin:0;max-width:16em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qr-logo-opts{display:grid;gap:10px}
+.qr-logo .hint,.qr-ecl-note{margin:0}
+.qr-out{display:grid;gap:10px;align-content:start;min-width:0}
+.qr-preview{border:2px solid var(--ink);border-radius:12px;background:repeating-conic-gradient(#ececec 0 25%,#fff 0 50%) 0 0/16px 16px;padding:12px;display:grid;place-items:center;aspect-ratio:1;max-width:340px;width:100%;margin:0 auto}
+.qr-canvas{display:block;width:100%;height:auto;max-width:316px;image-rendering:pixelated}
+.qr-empty{margin:0;text-align:center;font-weight:700;color:var(--ink-2);padding:20px;background:rgba(255,255,255,.9);border-radius:10px}
+.qr-info{margin:0;text-align:center}
+.qr-out .tk-msg{margin:0}
+.qr-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:end}
+.qr-size{display:grid;gap:4px;font-size:14px;font-weight:700;flex:1 1 100%}
+.qr-actions .btn{flex:1 1 auto}
+.qr-out>.hint{margin:0}
+.qr-cardsec{display:grid;gap:12px;border-top:2px dashed var(--ink);padding-top:14px}
+.qr-card-h{margin:0;font-size:20px}
+.qr-cardsec>.hint{margin:0}
+.qr-cardopts{display:grid;gap:10px}
+.qr-cardopts>label:not(.check){display:grid;gap:6px;font-weight:700}
+.qr-cardsec [data-print]:disabled{opacity:.5}
+.qr-lic{margin:0;font-size:12.5px}
+.qr label.check{display:inline-flex;align-items:center;font-weight:400}
+/* 카드: 화면에서는 A6 비율(105:148) 미리보기, 인쇄하면 실제 A6 */
+.qr-card{width:100%;max-width:330px;aspect-ratio:105/148;margin:0 auto;border:2px solid var(--ink);border-radius:14px;background:#fff;color:#141414;padding:6% 7%;display:flex;flex-direction:column;align-items:center;text-align:center;box-shadow:var(--drop);overflow:hidden;font-size:13px;line-height:1.45}
+.qc-top{margin:0;display:flex;align-items:center;justify-content:center;gap:6px;font-family:var(--display);font-size:22px;line-height:1.2;word-break:keep-all}
+.qc-ico{display:inline-flex;width:26px;height:26px;color:var(--cheong);flex:none}
+.qc-ico svg{width:100%;height:100%}
+.qc-sub{margin:2px 0 0;font-size:12px;font-weight:700;color:#555;letter-spacing:.08em}
+.qc-qr{width:72%;aspect-ratio:1;margin:5% 0 4%;display:grid;place-items:center}
+.qc-qr svg{width:100%;height:100%;display:block}
+.qc-ph{font-size:12px;color:#767676;border:2px dashed #bbb;border-radius:10px;padding:14px;width:100%;height:100%;display:grid;place-items:center}
+.qc-info{margin:0;width:100%;display:grid;gap:4px}
+.qc-info div{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:baseline;border-bottom:1.5px solid #e2e2e2;padding:3px 0;text-align:left}
+.qc-info dt{font-size:11px;font-weight:700;color:#555;white-space:nowrap}
+.qc-info dd{margin:0;font-size:15px;font-weight:800;overflow-wrap:anywhere;word-break:break-all}
+.qc-info .qc-pw{font-family:ui-monospace,Consolas,"D2Coding",monospace;letter-spacing:.02em}
+.qc-info .qc-pw-off{font-size:12px;font-weight:700;color:#555}
+.qc-guide{margin:auto 0 0;font-size:11.5px;color:#3d3d3d;word-break:keep-all}
+@media(min-width:720px){.qr-main{grid-template-columns:minmax(0,1fr) 300px;align-items:start}.qr-out{position:sticky;top:12px}.qr-cardsec{grid-template-columns:minmax(0,1fr) 300px;align-items:start}.qr-cardsec>.qr-card-h,.qr-cardsec>.hint{grid-column:1/-1}.qr-cardopts{grid-column:1}.qr-card{grid-column:2;grid-row:3/span 2}.qr-cardsec [data-print]{grid-column:1;align-self:start}}
+@media(max-width:480px){.qr .seg span{padding:7px 12px;font-size:14px}.qr-preview{max-width:300px}}
+@media print{
+  html.qr-doc .site-header,html.qr-doc .site-footer,html.qr-doc .crumbs,html.qr-doc .page-head,html.qr-doc .prose,html.qr-doc .faq,html.qr-doc .reco,html.qr-doc .ad,html.qr-doc .skip,html.qr-doc .toast,html.qr-doc .tool-box>:not(.qr){display:none!important}
+  html.qr-doc main,html.qr-doc .wrap{max-width:none;padding:0;margin:0}
+  html.qr-doc .tool-box{border:0;box-shadow:none;padding:0;margin:0;background:none}
+  html.qr-doc body{background:#fff}
+  html.qr-doc *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  /* 와이파이: 카드 한 장(A6) */
+  html.qr-doc.qr-wifi .qr>:not(.qr-cardsec),html.qr-doc.qr-wifi .qr-cardsec>:not(.qr-card){display:none!important}
+  html.qr-doc.qr-wifi .qr,html.qr-doc.qr-wifi .qr-cardsec{display:block;border:0;padding:0;margin:0}
+  html.qr-doc.qr-wifi .qr-card{width:105mm;height:147.5mm;max-width:none;aspect-ratio:auto;margin:0;border:0;border-radius:0;box-shadow:none;padding:9mm 9mm 8mm;font-size:10pt;break-inside:avoid;page-break-inside:avoid}
+  html.qr-doc.qr-wifi .qc-top{font-size:21pt}
+  html.qr-doc.qr-wifi .qc-ico{width:8mm;height:8mm}
+  html.qr-doc.qr-wifi .qc-sub{font-size:9pt}
+  html.qr-doc.qr-wifi .qc-qr{width:68mm;margin:5mm 0 4mm}
+  html.qr-doc.qr-wifi .qc-info dt{font-size:8.5pt}
+  html.qr-doc.qr-wifi .qc-info dd{font-size:12.5pt}
+  html.qr-doc.qr-wifi .qc-info .qc-pw-off{font-size:9.5pt}
+  html.qr-doc.qr-wifi .qc-guide{font-size:9pt}
+  /* 그 밖의 종류: QR코드만 가운데에 */
+  html.qr-doc:not(.qr-wifi) .qr>:not(.qr-main),html.qr-doc:not(.qr-wifi) .qr-main>:not(.qr-out),html.qr-doc:not(.qr-wifi) .qr-out>:not(.qr-preview){display:none!important}
+  html.qr-doc:not(.qr-wifi) .qr-preview{border:0;background:none;padding:10mm;max-width:none}
+  html.qr-doc:not(.qr-wifi) .qr-canvas{width:70mm;max-width:none}
+}

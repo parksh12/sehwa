@@ -9,6 +9,7 @@
 | pdf-lib.min.js           | pdf-lib 1.17.1         | MIT           | dist/pdf-lib.min.js              |
 | mammoth.browser.min.js   | mammoth 1.13.0         | BSD-2-Clause  | mammoth.browser.min.js           |
 | fflate.min.js            | fflate 0.8.3           | MIT           | umd/index.js                     |
+| qrcode-generator/qrcode.js | qrcode-generator 2.0.4 | MIT         | dist/qrcode.js (P2-48)           |
 
 번들에 함께 포함된 하위 라이브러리(각 패키지 package.json의 dependencies 기준)
 - pdf-lib.min.js: @pdf-lib/standard-fonts (MIT), @pdf-lib/upng (MIT), pako 1.x (MIT, zlib 부분은 Zlib 라이선스), tslib (0BSD/Apache-2.0 계열)
@@ -798,6 +799,37 @@ Copyright (c) 2022 Jinil Lee
 astronomia — MIT License
 Copyright (c) 2013 Sonia Keys
 Copyright (c) 2016 commenthol
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+======================================================================
+qrcode-generator 2.0.4 — MIT   [P2-48 추가, 받은 날짜 2026-11-09, npm pack]
+======================================================================
+경로: vendor/qrcode-generator/
+- qrcode.js ← dist/qrcode.js (내용 수정 없음, SHA-256 79ec86f82856005b1c887905cfccfcfbec3821ca61c7fd5a952faa5f778f791c)
+- LICENSE   ← GitHub kazuhikoarase/qrcode-generator 저장소의 LICENSE (npm 패키지에는 라이선스 파일이 없어 저장소에서 가져옴)
+쓰는 곳: QR코드 생성기(/image/qr-code/). UTF-8 부호화는 라이브러리에 들어 있는 stringToBytesFuncs['UTF-8']을 씀.
+The word 'QR Code' is registered trademark of DENSO WAVE INCORPORATED.
+
+MIT License
+
+Copyright (c) 2009 Kazuhiko Arase
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

@@ -96,6 +96,7 @@ const ART = {
   draw: sv(`<path d="M18 14v92M48 14v92" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M18 34h30M18 60h30M18 86h30" stroke="${RED}" stroke-width="5" stroke-linecap="round"/><circle cx="84" cy="72" r="28" fill="${W}"/><path d="M84 72V44a28 28 0 0 1 24.2 14z" fill="${YEL}"/><path d="M84 72l24.2 14A28 28 0 0 1 84 100z" fill="${GRN}"/><path d="M84 72 59.8 86A28 28 0 0 1 59.8 58z" fill="${RED}"/><circle cx="84" cy="72" r="28" fill="none" stroke="${K}" stroke-width="4"/><circle cx="84" cy="72" r="4" fill="${K}"/><path d="M78 32h12l-6 11z" fill="${K}"/>`), // P2-44
   imgmerge: sv(`<rect x="30" y="10" width="60" height="32" rx="5" fill="${YEL}" stroke="${K}" stroke-width="4"/><rect x="30" y="44" width="60" height="32" rx="5" fill="${GRN}" stroke="${K}" stroke-width="4"/><rect x="30" y="78" width="60" height="32" rx="5" fill="${W}" stroke="${K}" stroke-width="4"/><circle cx="46" cy="94" r="6" fill="${RED}"/><path d="M8 26v68M2 34l6-8 6 8M2 86l6 8 6-8" fill="none" stroke="${RED}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M98 60h18" stroke="${K}" stroke-width="4" stroke-linecap="round" stroke-dasharray="4 5"/>`), // P2-46
   heic: sv(`<rect x="10" y="12" width="56" height="74" rx="10" fill="${W}" stroke="${K}" stroke-width="4"/><circle cx="28" cy="34" r="6" fill="${YEL}" stroke="${K}" stroke-width="3"/><path d="M16 66l14-14 10 8 10-10 12 16z" fill="${GRN}" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><text x="38" y="80" font-size="12" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">HEIC</text><path d="M62 96h14" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M72 88l9 8-9 8" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><rect x="74" y="44" width="38" height="44" rx="6" fill="${RED}" stroke="${K}" stroke-width="4"/><text x="93" y="71" font-size="13" font-weight="800" text-anchor="middle" fill="${W}" font-family="sans-serif">JPG</text>`), // P2-47
+  qr: sv(`<rect x="10" y="10" width="100" height="100" rx="10" fill="${W}" stroke="${K}" stroke-width="4"/>${[[20, 20], [74, 20], [20, 74]].map(([x, y]) => `<rect x="${x}" y="${y}" width="26" height="26" rx="3" fill="none" stroke="${K}" stroke-width="5"/><rect x="${x + 8}" y="${y + 8}" width="10" height="10" fill="${K}"/>`).join("")}<path d="M54 20h10v10H54zM54 40h10v10H54zM20 54h10v10H20zM40 54h10v10H40zM64 54h10v10H64zM84 54h16v10H84zM74 74h10v10H74zM90 74h10v10H90zM74 90h10v10H74zM54 84h10v16H54z" fill="${K}"/><rect x="48" y="48" width="24" height="24" rx="5" fill="${RED}" stroke="${K}" stroke-width="3"/><path d="M90 90h10v10H90z" fill="${GRN}"/>`), // P2-48
   salary: sv(`<rect x="12" y="30" width="96" height="60" rx="8" fill="${GRN}" stroke="${K}" stroke-width="4"/><circle cx="60" cy="60" r="17" fill="${W}" stroke="${K}" stroke-width="4"/><text x="60" y="67" font-size="20" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">₩</text><path d="M24 44h10M86 76h10" stroke="${K}" stroke-width="4" stroke-linecap="round"/>`), // P2-45
   severance: sv(`<rect x="22" y="36" width="76" height="62" rx="8" fill="${YEL}" stroke="${K}" stroke-width="4"/><path d="M44 36v-8a6 6 0 0 1 6-6h20a6 6 0 0 1 6 6v8" fill="none" stroke="${K}" stroke-width="4"/><path d="M22 60h76" stroke="${K}" stroke-width="4"/><rect x="52" y="54" width="16" height="12" rx="3" fill="${W}" stroke="${K}" stroke-width="3"/>`), // P2-45
   unemp: sv(`<path d="M60 16a36 36 0 0 1 36 36H24a36 36 0 0 1 36-36z" fill="${RED}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M60 52v40a8 8 0 0 1-16 0" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round"/><circle cx="88" cy="88" r="14" fill="${YEL}" stroke="${K}" stroke-width="4"/><text x="88" y="94" font-size="15" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">₩</text>`), // P2-45
@@ -134,7 +135,7 @@ const LIFE_SLUG = { adventure: "adventurer", love: "warm-heart", stable: "steady
 const PLAY = { name: "펭귄 오락실", tagline: "운세·테스트·게임, 잠깐 쉬어 가는 재미", path: "/play/", desc: "운세, 성격 테스트, 이름 궁합, Life Game, 반응속도 게임처럼 잠깐 쉬어 가는 재미 콘텐츠를 모았어요." };
 const UCATS = {
   pdf: { name: "PDF·문서", desc: "PDF를 합치고 나누고, 이미지와 워드 문서를 PDF로 바꾸는 툴이에요." },
-  image: { name: "이미지", desc: "사진 용량을 줄이고, 아이폰 HEIC 사진을 JPG로 바꾸고, 여러 장을 한 장으로 이어 붙이거나 PDF로 묶는 이미지 툴이에요." }, // P2-46 desc, P2-47 HEIC
+  image: { name: "이미지", desc: "사진 용량을 줄이고, 아이폰 HEIC 사진을 JPG로 바꾸고, 여러 장을 한 장으로 이어 붙이거나 PDF로 묶고, QR코드를 만드는 이미지 툴이에요." }, // P2-46 desc, P2-47 HEIC, P2-48 QR
   text: { name: "글쓰기", desc: "자기소개서, 리포트, 블로그 글을 쓸 때 필요한 글쓰기 툴이에요." },
   calc: { name: "생활 계산", desc: "D-day, 연봉 실수령액, 퇴직금처럼 생활에서 자주 찾는 계산을 바로 해 주는 툴이에요." }, // P2-45 desc
   time: { name: "시간", desc: "타이머와 스톱워치처럼 시간을 재고 알려 주는 툴이에요." },
@@ -161,8 +162,9 @@ const UTILS = [
   { id: "removebg", cat: "image", path: "/image/remove-bg/", title: "배경 지우기", seo: "배경 지우기 — 무료 누끼 따기", h1: "배경 지우기 — 무료 누끼 따기, 투명 PNG로 저장", desc: "사진을 넣으면 사람·물건·동물만 남기고 배경을 지워 투명 PNG나 흰 배경 사진으로 저장해요. 누른 대상만 남기고, 브러시로 다듬을 수 있어요. 사진은 서버로 전송하지 않습니다.", hook: "누끼 따기, 사진 배경을 투명하게.", meta: "투명 PNG · 흰 배경", kw: "배경 지우기 배경 제거 누끼 누끼따기 투명 png 배경 투명 remove bg 배경 삭제 흰 배경 상품 사진" }, // P2-26
   { id: "imgmerge", cat: "image", path: "/image/merge/", title: "사진 이어붙이기", seo: "사진 이어붙이기 — 사진 합치기·캡처 합치기·긴 캡처 만들기", h1: "사진 이어붙이기 — 여러 장을 세로·가로·격자로 한 장에", desc: "사진과 휴대폰 캡처 여러 장을 세로·가로·격자로 한 장에 이어 붙여요. 캡처의 상태바·주소창·하단 바를 자동으로 잘라 내고, 연속 캡처는 겹친 부분을 빼서 긴 캡처로 만들어요. 사진은 서버로 전송하지 않습니다.", hook: "캡처 여러 장을 한 장으로, 툴바는 자동으로 잘라요.", meta: "세로·가로·격자 · JPG·PNG", kw: "사진 합치기 사진 이어붙이기 사진 붙이기 이미지 합치기 이미지 붙이기 이미지 이어붙이기 캡처 합치기 캡처 이어붙이기 스크린샷 합치기 긴 캡처 스크롤 캡처 긴 스크린샷 사진 연결 콜라주 격자 사진 세로로 붙이기 가로로 붙이기" }, // P2-46
   { id: "heic", cat: "image", path: "/image/heic-to-jpg/", title: "HEIC JPG 변환", seo: "HEIC JPG 변환 — 아이폰 사진 JPG로, 여러 장 한꺼번에", h1: "HEIC JPG 변환 — 아이폰 사진을 여러 장 한꺼번에 JPG로", desc: "아이폰 HEIC·HEIF 사진을 여러 장 한꺼번에 JPG로 바꿔요. 화질과 크기를 고르고, 하나씩 또는 zip으로 받아요. 위치 정보(GPS)는 기본으로 지워요. 사진은 서버로 전송하지 않습니다.", hook: "아이폰 사진(HEIC)을 JPG로, 여러 장 한꺼번에.", meta: "HEIC·HEIF → JPG · zip", kw: "heic jpg 변환 heic jpg heic 변환 heic to jpg heic 파일 열기 heic 열기 heif 변환 heif jpg 아이폰 사진 jpg 아이폰 사진 변환 아이폰 사진 안 열림 아이폰 사진 윈도우 아이폰 사진 컴퓨터 heic 뷰어 사진 확장자 변환 jpg 변환 위치 정보 지우기 gps 삭제" }, // P2-47
+  { id: "qr", cat: "image", path: "/image/qr-code/", title: "QR코드 생성기", seo: "QR코드 생성기 — 무료 QR코드 만들기, 와이파이·링크·명함 QR", h1: "QR코드 생성기 — 링크·와이파이·명함 QR코드 무료로 만들기", desc: "링크, 글, 와이파이, 연락처(명함), 문자를 QR코드로 만들어요. 색과 여백을 바꾸고 가운데에 로고를 넣고, PNG·SVG로 저장해요. 와이파이 안내 카드는 A6로 바로 인쇄해요. 입력한 내용은 서버로 보내지 않습니다.", hook: "링크·와이파이·명함을 QR코드로, 로고도 넣어요.", meta: "PNG·SVG · 와이파이 카드", kw: "qr코드 만들기 qr코드 생성기 qr 코드 만들기 qr 생성 qr 생성기 qr코드 생성 qr 만들기 큐알코드 만들기 큐알 코드 큐알 만들기 무료 qr 무료 qr코드 와이파이 qr 와이파이 qr코드 wifi qr 와이파이 비밀번호 qr 링크 qr url qr 주소 qr 명함 qr 연락처 qr vcard 문자 qr 로고 qr qr코드 로고 qr 색 qr svg qr png qr 인쇄 qr code generator" }, // P2-48
 ];
-const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "heic", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "word2pdf", "dday"]; // P2-45 돈 계산기 4종, P2-46 imgmerge, P2-47 heic
+const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "heic", "qr", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "word2pdf", "dday"]; // P2-45 돈 계산기 4종, P2-46 imgmerge, P2-47 heic, P2-48 qr
 const NEXT = {
   pdfmerge: ["pdfsplit", "img2pdf", "imgcompress"],
   pdfsplit: ["pdfmerge", "pdf2img", "img2pdf"],
@@ -179,6 +181,7 @@ const NEXT = {
   removebg: ["imgcompress", "img2pdf", "pdf2img"], // P2-26
   imgmerge: ["imgcompress", "img2pdf", "removebg"], // P2-46
   heic: ["imgcompress", "imgmerge", "img2pdf"], // P2-47
+  qr: ["removebg", "imgcompress", "img2pdf"], // P2-48 로고 배경 지우기 → QR
   salary: ["juhyu", "severance", "unemp"], // P2-45
   juhyu: ["salary", "unemp", "severance"], // P2-45
   severance: ["unemp", "salary", "juhyu"], // P2-45
@@ -278,7 +281,7 @@ const SEO_DESC = {
   "/terms/": () => `${cfg.siteName} 이용약관: 서비스 내용, 서비스 변경·중단, 이용자의 의무, 저작권, 책임의 제한, 준거법과 분쟁 해결 안내.`,
   "/disclaimer/": () => `${cfg.siteName} 면책고지: 툴 결과물은 원본과 함께 확인해 주세요. 펭귄 오락실의 운세·테스트는 재미로 보는 콘텐츠이며 의학·법률·재정·심리 진단을 대신하지 않아요.`,
   "/contact/": () => `${cfg.siteName} 문의: 오류 제보, 의견, 제휴 문의는 이메일 ${cfg.contactEmail}로 보내 주세요. 문의할 때 알려 주시면 좋은 내용과 답변 안내.`,
-  "/licenses/": () => `${cfg.siteName}가 쓰는 오픈소스 라이브러리(pdf-lib, pdf.js, mammoth, fflate, libheif 등)와 글꼴(Pretendard, Black Han Sans)의 버전·라이선스 안내.`, // P2-47 libheif
+  "/licenses/": () => `${cfg.siteName}가 쓰는 오픈소스 라이브러리(pdf-lib, pdf.js, mammoth, fflate, libheif, qrcode-generator 등)와 글꼴(Pretendard, Black Han Sans)의 버전·라이선스 안내.`, // P2-47 libheif, P2-48 qrcode-generator
   "/editorial/": () => `${cfg.siteName}가 툴 설명과 오락실 해설을 만들고 검수하는 기준: 실제 파일로 확인, 직접 작성과 사람 검수, 단정하지 않는 표현, 계산 방식 공개.`,
 };
 // 제목 보정: ① 오락실 카테고리(나의 성격 등)는 이름만 있으면 안에 든 콘텐츠 이름을 붙임 ② 오락실 툴에 seo 제목이 없으면 h1(검색어가 든 긴 제목)을 씀
@@ -431,6 +434,7 @@ const homeOrder = () => Object.entries(UCATS).map((e, i) => [e, homeIn(e[0]).len
 // ★ 새 툴·게임을 만들면 여기에 { id, d: "출시일" }을 맨 위에 추가(대표님 지시: 새 콘텐츠는 메인에 잘 보이게).
 // 출시 30일 이내 항목 중 최신 4개가 홈 맨 위 「NEW」 띠에 나오고, 해당 행·타일에 NEW 표시가 붙음
 const NEW_ITEMS = [
+  { id: "qr", d: "2026-11-09" }, // P2-48
   { id: "heic", d: "2026-11-09" }, // P2-47
   { id: "imgmerge", d: "2026-11-09" }, // P2-46
   { id: "salary", d: "2026-11-09" }, // P2-45
@@ -1104,6 +1108,87 @@ utilPage(utilById.heic, `${dropHtml({ accept: ".heic,.heif,.hif,.jpg,.jpeg,image
 ${tkTail("JPG로 바꾸기")}
 <p class="hint hc-lic">HEIC 변환 엔진: libheif · libde265 (LGPL-3.0, 고치지 않은 공식 배포본) · <a href="${u("/licenses/")}#libheif">오픈소스 고지·소스 코드</a></p>`, { vendor: ["fflate.min.js"], scripts: ["t-heic.js"] });
 
+// P2-48 QR코드 생성기: 종류 고르기 → 내용 넣기 → 바로 미리보기 → 꾸미기(색·여백·로고) → PNG·SVG 저장·이미지 복사 → (와이파이) A6 안내 카드 인쇄
+// 부호화는 qrcode-generator(MIT)를 vendor에 그대로 둠. 입력값·로고는 브라우저 안에서만 씀
+utilPage(utilById.qr, `<div class="qr">
+  <fieldset class="seg qr-types"><legend>무엇을 담을까요?</legend>
+    <label><input type="radio" name="type" value="link" checked><span>링크</span></label><label><input type="radio" name="type" value="text"><span>글</span></label><label><input type="radio" name="type" value="wifi"><span>와이파이</span></label><label><input type="radio" name="type" value="vcard"><span>연락처</span></label><label><input type="radio" name="type" value="sms"><span>문자</span></label>
+  </fieldset>
+  <div class="qr-main">
+    <div class="qr-form">
+      <div class="qr-pane" data-pane="link"><label>링크 주소<input name="url" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="예: www.example.com/menu"></label><p class="hint">https://를 빼고 넣으면 자동으로 붙여요.</p></div>
+      <div class="qr-pane" data-pane="text" hidden><label>담을 글<textarea name="text" class="qr-ta" rows="4" maxlength="3000" placeholder="예: 3층 회의실은 엘리베이터에서 내려 오른쪽이에요."></textarea></label><p class="hint">글은 QR코드를 찍은 휴대폰 화면에 그대로 보여요. 한글은 한 글자에 3바이트를 써요.</p></div>
+      <div class="qr-pane" data-pane="wifi" hidden>
+        <label>와이파이 이름 (SSID)<input name="ssid" autocomplete="off" spellcheck="false" placeholder="예: cafe_5G"></label>
+        <label>보안 방식<select name="wsec"><option value="WPA" selected>WPA·WPA2·WPA3 (대부분의 공유기)</option><option value="WEP">WEP (아주 오래된 공유기)</option><option value="nopass">비밀번호 없음</option></select></label>
+        <label class="qr-pwrow">비밀번호<span class="qr-pw"><input name="wpass" type="password" autocomplete="off" spellcheck="false"><button type="button" class="btn ghost" data-pwtoggle aria-pressed="false">보기</button></span></label>
+        <label class="check"><input type="checkbox" name="whidden"> 숨긴 네트워크 (와이파이 목록에 이름이 안 보여요)</label>
+        <p class="hint">대소문자와 띄어쓰기까지 공유기에 적힌 것과 똑같이 넣어 주세요. 세미콜론(;)이나 쉼표 같은 특수문자도 그대로 넣으면 알아서 처리해요.</p>
+      </div>
+      <div class="qr-pane" data-pane="vcard" hidden>
+        <div class="row2"><label>성<input name="vlast" autocomplete="off" placeholder="홍"></label><label>이름<input name="vfirst" autocomplete="off" placeholder="길동"></label></div>
+        <div class="row2"><label>휴대폰<input name="vtel" type="tel" inputmode="tel" autocomplete="off" placeholder="010-1234-5678"></label><label>회사 전화<input name="vwork" type="tel" inputmode="tel" autocomplete="off" placeholder="02-123-4567"></label></div>
+        <label>이메일<input name="vmail" type="email" inputmode="email" autocomplete="off" spellcheck="false" placeholder="name@example.com"></label>
+        <div class="row2"><label>회사<input name="vorg" autocomplete="off" placeholder="세화산업"></label><label>직책·부서<input name="vtitle" autocomplete="off" placeholder="영업팀 과장"></label></div>
+        <label>웹사이트<input name="vurl" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="www.example.com"></label>
+        <label>주소<input name="vadr" autocomplete="off" placeholder="서울시 중구 세종대로 110"></label>
+        <p class="hint">명함 QR(vCard 3.0)이에요. 찍으면 휴대폰이 「연락처에 추가」를 띄워요. 비운 칸은 넣지 않아요.</p>
+      </div>
+      <div class="qr-pane" data-pane="sms" hidden>
+        <label>받는 번호<input name="snum" type="tel" inputmode="tel" autocomplete="off" placeholder="010-1234-5678"></label>
+        <label>문자 내용 (선택)<textarea name="smsg" class="qr-ta" rows="3" maxlength="1000" placeholder="예: 예약 문의합니다."></textarea></label>
+        <p class="hint">찍으면 문자 앱이 이 번호와 내용으로 열려요. 보내기는 찍은 사람이 직접 눌러요.</p>
+      </div>
+      <details class="qr-style">
+        <summary>꾸미기 · 색 · 로고 · 오류 정정</summary>
+        <div class="tk-opts">
+          <div class="qr-colors"><label class="qr-color">QR 색<input type="color" name="fg" value="#000000"></label><label class="qr-color">배경색<input type="color" name="bg" value="#ffffff"></label><button type="button" class="btn ghost qr-sbtn" data-swap-color>색 맞바꾸기</button><button type="button" class="btn ghost qr-sbtn" data-reset-color>검정·흰색으로</button></div>
+          <p class="tk-warn qr-cwarn" role="status" hidden></p>
+          <label>여백 <output class="qr-m-out">4칸</output><input type="range" name="margin" min="0" max="8" step="1" value="4"></label>
+          <div class="qr-logo"><span class="qr-logo-h">가운데 로고</span>
+            <div class="qr-logo-row"><label class="btn ghost qr-sbtn qr-logo-btn">내 이미지 넣기<input type="file" name="logo" class="sr" accept="image/png,image/jpeg,image/webp,image/svg+xml"></label><span class="qr-logo-name hint">없음</span><button type="button" class="btn ghost qr-sbtn" data-logo-rm hidden>로고 빼기</button></div>
+            <div class="qr-logo-opts" hidden>
+              <label>로고 크기 <output class="qr-l-out">18%</output><input type="range" name="logosize" min="10" max="24" step="1" value="18"></label>
+              <label class="check"><input type="checkbox" name="plate" checked> 로고 뒤를 배경색으로 비우기 (권장)</label>
+            </div>
+            <p class="hint">PNG·JPG·WEBP·SVG · 10MB까지. 로고는 QR 너비의 24%까지만 키울 수 있어요. 로고가 가린 부분은 오류 정정으로 복구해요.</p>
+          </div>
+          <fieldset class="seg"><legend>오류 정정 (가려지거나 더러워져도 읽히는 정도)</legend>
+            <label><input type="radio" name="ecl" value="L"><span>L 7%</span></label><label><input type="radio" name="ecl" value="M" checked><span>M 15%</span></label><label><input type="radio" name="ecl" value="Q"><span>Q 25%</span></label><label><input type="radio" name="ecl" value="H"><span>H 30%</span></label>
+          </fieldset>
+          <p class="hint qr-ecl-note" hidden>로고가 있어서 가장 높은 H로 맞췄어요. 로고를 빼면 원래대로 돌아가요.</p>
+        </div>
+      </details>
+    </div>
+    <div class="qr-out">
+      <div class="qr-preview"><canvas class="qr-canvas" width="640" height="640" role="img" aria-label="QR코드 미리보기" hidden></canvas><p class="qr-empty">링크 주소를 넣으면 QR코드가 바로 만들어져요.</p></div>
+      <p class="qr-info hint" aria-live="polite"></p>
+      <p class="tk-msg qr-err" role="alert" hidden></p>
+      <p class="tk-msg note qr-warn" hidden></p>
+      <div class="qr-actions">
+        <label class="qr-size">PNG 크기<select name="pngsize"><option value="256">256px (메신저)</option><option value="512">512px</option><option value="1024" selected>1024px (보통)</option><option value="2048">2048px (인쇄)</option></select></label>
+        <button type="button" class="btn" data-png disabled>PNG 저장</button><button type="button" class="btn ghost" data-svg disabled>SVG 저장</button><button type="button" class="btn ghost" data-copy disabled>이미지 복사</button>
+      </div>
+      <p class="hint">저장하기 전에 휴대폰 카메라로 화면의 QR을 한 번 찍어 보세요. SVG는 크기를 키워도 깨지지 않아 인쇄소·디자인 프로그램에 좋아요.</p>
+    </div>
+  </div>
+  <section class="qr-cardsec" hidden aria-labelledby="qr-card-h">
+    <h2 id="qr-card-h" class="qr-card-h">와이파이 안내 카드 (A6 인쇄)</h2>
+    <p class="hint">가게·사무실·숙소 벽이나 테이블에 붙일 카드예요. A6(105×148mm, 엽서 크기)에 맞춰 인쇄해요.</p>
+    <div class="qr-cardopts">
+      <label>가게 이름 (선택)<input name="cshop" autocomplete="off" maxlength="30" placeholder="예: 세화 카페"></label>
+      <label>안내 문구<input name="cguide" autocomplete="off" maxlength="60" value="휴대폰 카메라로 QR코드를 비추고, 뜨는 알림을 누르면 바로 연결돼요."></label>
+      <label class="check"><input type="checkbox" name="cshowpw" checked> 카드에 비밀번호 글자도 보이기</label>
+    </div>
+    <div class="qr-card" aria-label="와이파이 안내 카드 미리보기"></div>
+    <button type="button" class="btn big" data-print disabled>인쇄하기</button>
+    <p class="hint">인쇄 창에서 용지를 A6로 고르세요. A6가 없으면 A4에 「실제 크기(100%)」로 인쇄한 뒤 잘라 쓰면 돼요. 비밀번호 글자를 숨겨도 QR코드에는 비밀번호가 들어 있어요.</p>
+  </section>
+  <p class="safe">입력한 내용과 로고 이미지는 서버로 보내지 않습니다. 지금 쓰는 브라우저 안에서만 QR코드를 만들어요.</p>
+  <p class="hint qr-lic">QR코드 부호화: qrcode-generator (MIT) · <a href="${u("/licenses/")}">오픈소스 고지</a> · QR Code는 DENSO WAVE의 등록상표예요.</p>
+</div>
+<div class="tk-msg" role="alert" hidden></div>`, { vendor: ["qrcode-generator/qrcode.js"], scripts: ["t-qr.js"], fileTool: false });
+
 // 글자수 세기 (입력 → 결과 → 결과 복사 → 다음 툴)
 utilPage(utilById.charcount, `<label for="cc-text" class="sr">글자수를 셀 글</label>
 <textarea id="cc-text" class="cc-text" rows="10" placeholder="여기에 글을 붙여 넣거나 입력하세요. 입력한 글은 저장하지 않아요." autocomplete="off" spellcheck="false"></textarea>
@@ -1297,6 +1382,7 @@ utilPage(utilById.stopwatch, `<button type="button" class="tm-fs-close" data-fs-
     ["astronomia (VSOP87D 지구 계수)", "4.2.0", "MIT", "https://github.com/commenthol/astronomia", "사주팔자 절기 시각 계산에 쓰는 VSOP87 계수 (계수 일부를 덜어 내 직접 둠)"], // P2-22
     ["Galmuri (Galmuri11 Bold 글꼴)", "2.40.3", "SIL OFL 1.1", "https://github.com/quiple/galmuri", "지옥에서 살아남기 게임 화면 글꼴 (이 사이트에 직접 둠, 라이선스 전문: /assets/vendor/galmuri/OFL.txt)"], // P2-27
     ["libheif", "1.23.5", "LGPL-3.0", "https://github.com/strukturag/libheif", "HEIC JPG 변환 (HEIF 파일 해석, Emscripten wasm 빌드 libheif-emscripten v1.23.5)"], // P2-47
+    ["qrcode-generator", "2.0.4", "MIT", "https://github.com/kazuhikoarase/qrcode-generator", "QR코드 생성기 (QR코드 부호화. 라이선스 전문: /assets/vendor/qrcode-generator/LICENSE. QR Code는 DENSO WAVE의 등록상표)"], // P2-48
     ["libde265", "1.0.15", "LGPL-3.0", "https://github.com/strukturag/libde265", "HEIC JPG 변환 (HEVC 영상 디코더, libheif.wasm 안에 함께 묶여 있음)"], // P2-47
     ["MediaPipe Tasks Vision (@mediapipe/tasks-vision) + MagicTouch 모델(Google)", "0.10.35", "Apache-2.0", "https://github.com/google-ai-edge/mediapipe", "배경 지우기 (모델 카드: https://storage.googleapis.com/mediapipe-assets/Model%20Card%20MagicTouch.pdf, 전문: /assets/vendor/mediapipe/LICENSE)"], // P2-26
   ];
