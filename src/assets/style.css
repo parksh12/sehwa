@@ -1381,3 +1381,59 @@ li.has-fav{position:relative}
 @media(max-width:620px){.sq-legend{gap:4px 9px;font-size:12px}}
 /* P2-50e 공개 뒤 칩 줄을 390px에서 2줄 안으로 */
 @media(max-width:620px){.sq-chips{gap:5px}.sq-stamp.sq-stamp-chip{font-size:16px;padding:3px 7px 2px;margin:0 2px 0 0}.sq-chip-res{padding:2px 8px;font-size:12px}.sq-chip-res small{display:none}}
+
+/* ===================== P2-51 물타기 계산기(평단가 계산): 입력 줄 + 가격 사다리(점선 + 오른쪽 칩, P2-50 차트 톤) ===================== */
+.avg{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+.avg-form{grid-template-columns:minmax(0,1fr)}
+.avg-result .table-wrap{overflow-x:auto}
+.avg [hidden]{display:none!important}
+.avg-form>label,.avg-hold label,.avg [data-pane] label{display:grid;gap:6px;font-weight:700}
+.avg-form i[data-u]{font-style:normal;color:var(--ink-3);font-weight:700}
+.avg-opts{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 18px}
+.avg-frac{font-weight:700!important;display:inline-flex!important;padding-bottom:8px}
+.avg-sub{margin:4px 0 6px}
+.avg-rows{list-style:none;margin:0 0 10px;padding:0;display:grid;gap:8px}
+.avg-row{display:grid;grid-template-columns:26px minmax(0,1.25fr) minmax(0,1fr) 40px;grid-template-areas:"no p q del" ". amt amt .";gap:2px 8px;align-items:end;padding:8px 8px 6px;border:2px solid var(--ink);border-radius:12px;background:#fffdf5}
+.avg-no{grid-area:no;align-self:center;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--ink);color:var(--hwang);font-family:var(--display);font-size:14px;line-height:1}
+.avg-row .avg-f{display:grid;gap:3px;font-weight:700}
+.avg-row .avg-f:nth-of-type(1){grid-area:p}.avg-row .avg-f:nth-of-type(2){grid-area:q}
+.avg-fl{font-size:13px;color:var(--ink-2)}
+.avg-row input{width:100%;min-width:0}
+.avg-amt{grid-area:amt;font-size:12.5px;font-weight:700;color:var(--ink-3);min-height:1.2em;font-variant-numeric:tabular-nums}
+.avg-del{grid-area:del;width:40px;height:40px;border:2px solid var(--ink);border-radius:10px;background:var(--white);font:inherit;font-size:22px;font-weight:800;line-height:1;cursor:pointer}
+.avg-del:hover{background:var(--jeok);color:var(--white)}
+.avg-add{width:100%}
+.avg-cur-label small{font-weight:600}
+.avg-big b{font-size:clamp(36px,9vw,56px)!important;font-variant-numeric:tabular-nums}
+.avg .up{color:var(--nok)}.avg .dn{color:var(--jeok)}
+.avg-pl{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 12px;margin:8px 0 0;padding:8px 12px;border:2px solid var(--ink);border-radius:12px;background:var(--soft)}
+.avg-pl span{width:100%;font-size:14px;font-weight:700;color:var(--ink-2)}
+.avg-pl b{font-family:var(--display);font-weight:400;font-size:28px;font-variant-numeric:tabular-nums}
+.avg-pl.up b{color:var(--nok)}.avg-pl.dn b{color:var(--jeok)}
+.avg-steps{margin-top:10px}
+.avg-steps summary{cursor:pointer;font-weight:800;font-size:14.5px;margin-bottom:6px}
+.avg-stable td,.avg-stable th{white-space:nowrap;font-variant-numeric:tabular-nums}
+.avg-stable td{text-align:right}
+.avg-ex td,.avg-ex th{vertical-align:top;font-size:14px}
+.avg-chart{margin:10px 0;border:var(--bd);border-radius:var(--radius);background:#fffdf5;box-shadow:var(--drop);padding:6px}
+.avg-svg{display:block;width:100%;height:auto;font-family:"Pretendard Variable",Pretendard,system-ui,sans-serif;font-weight:800;font-variant-numeric:tabular-nums}
+.avg-plot{fill:var(--white);stroke:var(--soft);stroke-width:2}
+.avg-gap{opacity:.16}.avg-gap.is-up{fill:var(--nok)}.avg-gap.is-dn{fill:var(--jeok)}
+.avg-lv{stroke-width:2.6;stroke-linecap:round}
+.avg-lv.is-before{stroke:var(--ink-3);stroke-dasharray:8 6}
+.avg-lv.is-after{stroke:var(--cheong);stroke-width:3.4}
+.avg-lv.is-target{stroke:var(--ink);stroke-dasharray:10 6;stroke-width:3}
+.avg-lv.is-cur{stroke:var(--jeok);stroke-dasharray:1.5 6}
+.avg-buy{fill:var(--hwang);stroke:var(--ink);stroke-width:2.5}
+.avg-arrow{fill:none;stroke:var(--ink);stroke-width:2.5;stroke-dasharray:5 4}
+.avg-pt{stroke:var(--ink);stroke-width:3}.avg-pt.is-before{fill:var(--white)}.avg-pt.is-after{fill:var(--cheong)}
+.avg-xl{text-anchor:middle;font-size:12.5px;fill:var(--ink-2)}
+.avg-tag rect{stroke:var(--ink);stroke-width:2}
+.avg-tag text{font-weight:900}
+.avg-tag .avg-tl{font-weight:700}
+.avg-lead{fill:none;stroke-width:2;stroke-linecap:round}
+.avg-tag.is-before rect{fill:var(--white)}.avg-tag.is-before text{fill:var(--ink)}.avg-tag.is-before .avg-lead{stroke:var(--ink-3)}
+.avg-tag.is-after rect{fill:var(--cheong)}.avg-tag.is-after text{fill:var(--white)}.avg-tag.is-after .avg-lead{stroke:var(--cheong)}
+.avg-tag.is-target rect{fill:var(--hwang)}.avg-tag.is-target text{fill:var(--ink)}.avg-tag.is-target .avg-lead{stroke:var(--ink)}
+.avg-tag.is-cur rect{fill:var(--jeok)}.avg-tag.is-cur text{fill:var(--white)}.avg-tag.is-cur .avg-lead{stroke:var(--jeok)}
+@media(max-width:480px){.avg .seg span{padding:7px 12px;font-size:14px}.avg-hold{grid-template-columns:1fr 1fr!important}.avg [data-pane].row2{grid-template-columns:1fr 1fr}.avg-pl b{font-size:24px}.avg-ex td,.avg-ex th{font-size:13px;padding:5px}}

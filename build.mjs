@@ -99,6 +99,7 @@ const ART = {
   unemp: sv(`<path d="M60 16a36 36 0 0 1 36 36H24a36 36 0 0 1 36-36z" fill="${RED}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M60 52v40a8 8 0 0 1-16 0" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round"/><circle cx="88" cy="88" r="14" fill="${YEL}" stroke="${K}" stroke-width="4"/><text x="88" y="94" font-size="15" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">₩</text>`), // P2-45
   juhyu: sv(`<rect x="14" y="22" width="92" height="76" rx="8" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M14 40h92" stroke="${K}" stroke-width="4"/>${[0, 1, 2, 3, 4, 5, 6].map((i) => `<rect x="${20 + i * 12}" y="50" width="9" height="9" rx="2" fill="${i === 6 ? RED : i < 5 ? GRN : "#d6d6d6"}"/>`).join("")}<text x="60" y="88" font-size="18" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">+주휴</text>`), // P2-45
   stockquiz: sv(`<rect x="10" y="14" width="100" height="92" rx="10" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M22 84 40 66l14 10 22-30 12 10" fill="none" stroke="${K}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="88" cy="56" r="7" fill="${YEL}" stroke="${K}" stroke-width="4"/><path d="M90 36c0-6 4-9 8-9s8 3 8 8c0 6-8 6-8 12" fill="none" stroke="${RED}" stroke-width="5" stroke-linecap="round"/>`), // P2-50
+  avgdown: sv(`<path d="M60 10C60 10 26 48 26 72a34 34 0 0 0 68 0C94 48 60 10 60 10z" fill="#2346d8" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M40 62h40" stroke="${W}" stroke-width="5" stroke-dasharray="7 5" stroke-linecap="round"/><path d="M40 88h40" stroke="${YEL}" stroke-width="6" stroke-linecap="round"/><path d="M60 66v14m-7-7 7 7 7-7" fill="none" stroke="${W}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`), // P2-51 물타기(물방울 + 평단 내려감)
 };
 function doc(x, y, w, h, fill) {
   const f = Math.min(14, w / 3);
@@ -150,7 +151,7 @@ const UCATS = {
   calc: { name: "생활 계산", desc: "D-day, 연봉 실수령액, 퇴직금처럼 생활에서 자주 찾는 계산을 바로 해 주는 툴이에요." }, // P2-45 desc
   time: { name: "시간", desc: "타이머와 스톱워치처럼 시간을 재고 알려 주는 툴이에요." },
   fun: { name: "운세·재미", seo: "운세·재미 — 무료 사주·띠별 운세·성격 테스트·사다리타기", desc: "오늘의 띠별 운세, 무료 사주팔자, 16유형 성격 테스트, 생일로 보는 나, 이름 궁합, 사다리타기·돌림판처럼 재미로 보고 가볍게 정하는 툴이에요." }, // P2-49 옛 오락실 운세·테스트·사다리
-  invest: { name: "투자", seo: "투자 툴 — SOXL·TQQQ·KORU 주가 예측, 실제 차트로 연습", desc: "SOXL·TQQQ·KORU 같은 레버리지 ETF의 실제 과거 차트로 오를까 내릴까를 맞혀 보고, 백테스팅으로 결과를 돌아보는 교육·재미용 투자 툴이에요. 투자 권유가 아니에요." }, // P2-50 새 툴 카테고리(앞으로 주식투자 툴을 여기에 모음)
+  invest: { name: "투자", seo: "투자 툴 — 물타기 계산기, SOXL·TQQQ·KORU 주가 예측", desc: "물타기 평단가 계산처럼 주식 투자에서 자주 하는 계산과, SOXL·TQQQ·KORU 같은 레버리지 ETF의 실제 과거 차트로 오를까 내릴까를 맞혀 보는 투자 툴이에요. 투자 권유가 아니에요." }, // P2-50 새 툴 카테고리(앞으로 주식투자 툴을 여기에 모음) // P2-51 seo·desc에 물타기 계산기
 };
 const NAV = [...Object.entries(UCATS).map(([k, c]) => [c.name, `/${k}/`]), [PLAY.name, PLAY.path]];
 // seo: <title> 앞부분(검색어 그대로) / also: 다른 카테고리 페이지에도 함께 노출 / beta: 베타 표시 / kw: 홈 검색용 동의어
@@ -176,8 +177,9 @@ const UTILS = [
   { id: "heic", cat: "image", path: "/image/heic-to-jpg/", title: "HEIC JPG 변환", seo: "HEIC JPG 변환 — 아이폰 사진 JPG로, 여러 장 한꺼번에", h1: "HEIC JPG 변환 — 아이폰 사진을 여러 장 한꺼번에 JPG로", desc: "아이폰 HEIC·HEIF 사진을 여러 장 한꺼번에 JPG로 바꿔요. 화질과 크기를 고르고, 하나씩 또는 zip으로 받아요. 위치 정보(GPS)는 기본으로 지워요. 사진은 서버로 전송하지 않습니다.", hook: "아이폰 사진(HEIC)을 JPG로, 여러 장 한꺼번에.", meta: "HEIC·HEIF → JPG · zip", kw: "heic jpg 변환 heic jpg heic 변환 heic to jpg heic 파일 열기 heic 열기 heif 변환 heif jpg 아이폰 사진 jpg 아이폰 사진 변환 아이폰 사진 안 열림 아이폰 사진 윈도우 아이폰 사진 컴퓨터 heic 뷰어 사진 확장자 변환 jpg 변환 위치 정보 지우기 gps 삭제" }, // P2-47
   { id: "qr", cat: "image", path: "/image/qr-code/", title: "QR코드 생성기", seo: "QR코드 생성기 — 무료 QR코드 만들기, 와이파이·링크·명함 QR", h1: "QR코드 생성기 — 링크·와이파이·명함 QR코드 무료로 만들기", desc: "링크, 글, 와이파이, 연락처(명함), 문자를 QR코드로 만들어요. 색과 여백을 바꾸고 가운데에 로고를 넣고, PNG·SVG로 저장해요. 와이파이 안내 카드는 A6로 바로 인쇄해요. 입력한 내용은 서버로 보내지 않습니다.", hook: "링크·와이파이·명함을 QR코드로, 로고도 넣어요.", meta: "PNG·SVG · 와이파이 카드", kw: "qr코드 만들기 qr코드 생성기 qr 코드 만들기 qr 생성 qr 생성기 qr코드 생성 qr 만들기 큐알코드 만들기 큐알 코드 큐알 만들기 무료 qr 무료 qr코드 와이파이 qr 와이파이 qr코드 wifi qr 와이파이 비밀번호 qr 링크 qr url qr 주소 qr 명함 qr 연락처 qr vcard 문자 qr 로고 qr qr코드 로고 qr 색 qr svg qr png qr 인쇄 qr code generator" }, // P2-48
   { id: "stockquiz", cat: "invest", path: "/invest/soxl-tqqq-koru/", title: "SOXL·TQQQ·KORU 주가 예측", seo: "SOXL·TQQQ·KORU 주가 예측 — 날짜 가린 실제 차트, 오를까 내릴까", h1: "SOXL·TQQQ·KORU 주가 예측 — 날짜를 가린 실제 차트로 오를까 내릴까", desc: "SOXL·TQQQ·KORU의 상장 이후 실제 일봉 종가에서 날짜를 가린 1개월·3개월·1년 차트를 보여 드려요. 다음 거래일·일주일 뒤·한 달 뒤 종가가 오를지, 기준가 이상일지 맞히면 실제 결과와 날짜를 공개하고, 10문제 뒤 백테스팅 요약을 보여 줘요. 교육·재미용이며 투자 권유가 아니에요.", hook: "날짜를 가린 실제 차트. 내일 종가는 오를까 내릴까?", meta: "10문제 · 3분", kw: "soxl tqqq koru 주가 예측 주식 차트 맞히기 레버리지 etf 3배 반도체 나스닥 한국 백테스팅 투자 연습 오를까 내릴까 미국 주식" }, // P2-50
+  { id: "avgdown", cat: "invest", path: "/invest/average-down/", title: "물타기 계산기", seo: "물타기 계산기 — 평단가 계산, 평균단가·추가매수 수량 역계산", h1: "물타기 계산기 — 주식 평단가 계산과 목표 평단 역계산", desc: "지금 평단과 보유 수량에 추가 매수 가격·수량을 여러 줄 넣으면 새 평단(평균단가), 총 수량, 총 투자금과 현재가 기준 수익률을 계산해요. 「평단을 얼마로 낮추려면 몇 주를 사야 하나」 역계산도 돼요. 원화·달러, 소수점 수량을 지원해요. 투자 권유가 아니에요.", hook: "추가 매수하면 평단이 얼마? 목표 평단까지 몇 주?", meta: "원화·달러 · 역계산", kw: "물타기 계산기 물타기 평단가 계산기 평단가 계산 평균단가 계산 평균 단가 평단 낮추기 평단 계산 추가매수 계산 추가 매수 주식 평단 주식 평균단가 불타기 분할매수 소수점 주식 미국 주식 국내 주식 목표 평단 역계산" }, // P2-51
 ];
-const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "heic", "qr", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "word2pdf", "dday", "stockquiz"]; // P2-50 stockquiz(투자) // P2-45 돈 계산기 4종, P2-46 imgmerge, P2-47 heic, P2-48 qr
+const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "heic", "qr", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "word2pdf", "dday", "stockquiz", "avgdown"]; // P2-50 stockquiz(투자) // P2-51 avgdown // P2-45 돈 계산기 4종, P2-46 imgmerge, P2-47 heic, P2-48 qr
 const NEXT = {
   pdfmerge: ["pdfsplit", "img2pdf", "imgcompress"],
   pdfsplit: ["pdfmerge", "pdf2img", "img2pdf"],
@@ -199,7 +201,8 @@ const NEXT = {
   juhyu: ["salary", "unemp", "severance"], // P2-45
   severance: ["unemp", "salary", "juhyu"], // P2-45
   unemp: ["severance", "salary", "juhyu"], // P2-45
-  stockquiz: ["salary", "dday", "draw"], // P2-50
+  stockquiz: ["avgdown", "salary", "dday"], // P2-50 // P2-51 물타기 계산기로 이어지게
+  avgdown: ["stockquiz", "salary", "dday"], // P2-51
 };
 const utilById = Object.fromEntries(UTILS.map((x) => [x.id, x]));
 const anyById = { ...toolById, ...utilById };
@@ -453,6 +456,7 @@ const cabCls = (i, n) => (n > 6 && i === n - 1 && (n - 3) % 3 === 1 ? "cab-full"
 // ★ 새 툴·게임을 만들면 여기에 { id, d: "출시일" }을 맨 위에 추가(대표님 지시: 새 콘텐츠는 메인에 잘 보이게).
 // 출시 30일 이내 항목 중 최신 4개가 홈 맨 위 「NEW」 띠에 나오고, 해당 행·타일에 NEW 표시가 붙음
 const NEW_ITEMS = [
+  { id: "avgdown", d: "2026-11-10" }, // P2-51
   { id: "stockquiz", d: "2026-11-10" }, // P2-50
   { id: "qr", d: "2026-11-09" }, // P2-48
   { id: "heic", d: "2026-11-09" }, // P2-47
@@ -946,7 +950,7 @@ for (const [k, c] of Object.entries(UCATS)) {
   const inv = k === "invest"; // P2-50 투자: 파일 안내 대신 교육·재미용·투자 권유 아님 안내
   const fun = k === "fun"; // P2-49 운세·재미: 파일 안내 대신 입력값 안내 + 띠·별자리·16유형·띠별 운세 바로가기
   const body = `${crumbHtml(items)}
-<header class="page-head"><span class="eyebrow">펭귄 공구함</span><h1>${esc(c.name)} 툴</h1><p class="lead">${esc(c.desc)} ${esc(fun ? "입력한 생년월일과 이름은 브라우저 안에서만 계산하고 저장하지 않아요." : inv ? "과거 실제 가격으로만 문제를 내고, 고른 답은 저장하지 않아요." : SAFE)}</p>${fun ? '<p class="fun-badge">운세와 테스트는 재미로 보는 콘텐츠예요</p>' : ""}${inv ? `<p class="sq-warn">${esc(STOCK_WARN)}</p>` : ""}</header>
+<header class="page-head"><span class="eyebrow">펭귄 공구함</span><h1>${esc(c.name)} 툴</h1><p class="lead">${esc(c.desc)} ${esc(fun ? "입력한 생년월일과 이름은 브라우저 안에서만 계산하고 저장하지 않아요." : inv ? "넣은 숫자와 고른 답은 브라우저 안에서만 계산하고 저장하지 않아요." /* P2-51 계산기 추가로 문구 일반화 */ : SAFE)}</p>${fun ? '<p class="fun-badge">운세와 테스트는 재미로 보는 콘텐츠예요</p>' : ""}${inv ? `<p class="sq-warn">${esc(STOCK_WARN)}</p>` : ""}</header>
 <div class="drawers drawers-1 open">${drawerHtml({ tone: k, name: `${c.name} 서랍`, tools: utilsIn(k) })}</div>
 ${fun ? FUN_EXTRA() : ""}
 <section class="reco"><h2>다른 서랍</h2><div class="drawers drawers-mini">${Object.entries(UCATS).filter(([kk]) => kk !== k).map(([kk, cc]) => drawerHtml({ tone: kk, name: cc.name, href: `/${kk}/`, tools: utilsIn(kk), tag: "h3" })).join("")}</div></section>`;
@@ -1177,6 +1181,77 @@ utilPage(utilById.stockquiz, `<div class="sq">
     <div class="sq-again"><button type="button" class="btn big" data-again>같은 설정으로 10문제 더</button><button type="button" class="btn ghost" data-setup>설정 바꾸기</button><button type="button" class="btn ghost" data-copy>결과 복사</button></div>
   </div>
 </div>`, { scripts: ["t-stock.js"], fileTool: false });
+
+// P2-51 물타기 계산기(평단가 계산): 계산식은 src/assets/avg-calc.js 한 벌(화면 t-avg.js와 아래 예시 표가 같은 파일을 vm으로 씀)
+// 흐름: 보유(평단·수량) + 추가 매수 여러 줄 → 새 평단·총 수량·총 투자금·평가손익 → 한 줄 복사 → 다음 툴 / 역계산 탭: 목표 평단·현재가 → 필요 수량·금액
+// 예시 표의 값은 손계산 값과 빌드 때 대조하고, 다르면 빌드를 멈춤
+{
+  const ctx = {};
+  vm.createContext(ctx);
+  vm.runInContext(fs.readFileSync(path.join(ROOT, "src", "assets", "avg-calc.js"), "utf8"), ctx);
+  const AC = ctx.AVGCALC;
+  const nf = (n, a, b) => Math.abs(n).toLocaleString("ko-KR", { minimumFractionDigits: a, maximumFractionDigits: b });
+  const sg = (n, plus) => (n < 0 ? "−" : plus && n > 0 ? "+" : "");
+  const usdP = (n) => `$${nf(n, 2, 4)}`, usdM = (n, p) => `${sg(n, p)}$${nf(n, 2, 2)}`;
+  const krwP = (n) => `${nf(n, 0, 2)}원`, krwM = (n, p) => `${sg(n, p)}${nf(Math.round(n), 0, 0)}원`;
+  const pc = (r) => `${sg(r, true)}${nf(r * 100, 2, 2)}%`;
+  const near = (a, b, tol = 1e-6) => Math.abs(a - b) <= tol * Math.max(1, Math.abs(b));
+  const chk = (name, got, want) => { if (!near(got, want)) throw new Error(`P2-51 예시 「${name}」 계산 불일치: ${got} ≠ 손계산 ${want}`); };
+  // 손계산 값(want)은 업무보고 P2-51 대조 표와 같음
+  const f1 = AC.forward({ avg: 50, qty: 10, buys: [{ p: 30, q: 10 }], cur: 35 });
+  chk("예시1 평단", f1.avg, 40); chk("예시1 손익", f1.pnl, -100); chk("예시1 수익률", f1.rate, -0.125);
+  const f2 = AC.forward({ avg: 70000, qty: 30, buys: [{ p: 60000, q: 20 }, { p: 50000, q: 30 }], cur: 55000 });
+  chk("예시2 평단", f2.avg, 60000); chk("예시2 투자금", f2.cost, 4800000); chk("예시2 손익", f2.pnl, -400000);
+  const f3 = AC.forward({ avg: 60.25, qty: 2.5, buys: [{ p: 45.1, q: 1.2345 }], cur: 50 });
+  chk("예시3 투자금", f3.cost, 206.30095); chk("예시3 평단", f3.avg, 206.30095 / 3.7345);
+  const r1 = AC.reverse({ avg: 50, qty: 10, target: 40, cur: 30 });
+  chk("역계산1 수량", r1.n, 10); chk("역계산1 금액", r1.amt, 300); chk("역계산1 평단", r1.avg, 40);
+  const r2 = AC.reverse({ avg: 80000, qty: 15, target: 70000, cur: 62000 });
+  chk("역계산2 계산값", r2.exact, 18.75); chk("역계산2 수량", r2.n, 19); chk("역계산2 금액", r2.amt, 1178000); chk("역계산2 평단", r2.avg, 2378000 / 34);
+  const r2f = AC.reverse({ avg: 80000, qty: 15, target: 70000, cur: 62000, frac: true });
+  chk("역계산2 소수 수량", r2f.n, 18.75); chk("역계산2 소수 평단", r2f.avg, 70000);
+  const r3 = AC.reverse({ avg: 80000, qty: 15, target: 70000, cur: 72000 });
+  if (r3.err !== "impossible") throw new Error("P2-51 예시 「역계산3 불가」 판정 불일치");
+  const EXR = [
+    ["달러 · 1번 물타기", "$50 × 10주 + $30 × 10주, 현재가 $35", `(500 + 300) ÷ 20 = <b>${usdP(f1.avg)}</b>`, `총 20주 · ${usdM(f1.cost)} · 현재가 기준 ${usdM(f1.pnl, true)} (${pc(f1.rate)})`],
+    ["원화 · 2번 물타기", "70,000원 × 30주 + 60,000원 × 20주 + 50,000원 × 30주, 현재가 55,000원", `4,800,000 ÷ 80 = <b>${krwP(f2.avg)}</b>`, `총 80주 · ${krwM(f2.cost)} · 현재가 기준 ${krwM(f2.pnl, true)} (${pc(f2.rate)})`],
+    ["달러 · 소수 주식", "$60.25 × 2.5주 + $45.10 × 1.2345주, 현재가 $50", `206.30095 ÷ 3.7345 = <b>${usdP(f3.avg)}</b>`, `총 3.7345주 · ${usdM(f3.cost)} · 현재가 기준 ${usdM(f3.pnl, true)} (${pc(f3.rate)})`],
+    ["역계산 · 달러", "평단 $50 × 10주 → 목표 평단 $40, 현재가 $30", `10 × (50 − 40) ÷ (40 − 30) = <b>${nf(r1.n, 0, 4)}주</b>`, `필요 금액 ${usdM(r1.amt)} · 산 뒤 평단 ${usdP(r1.avg)}`],
+    ["역계산 · 원화", "평단 80,000원 × 15주 → 목표 평단 70,000원, 현재가 62,000원", `15 × 10,000 ÷ 8,000 = 18.75주 → 정수로 올려 <b>${r2.n}주</b>`, `필요 금액 ${krwM(r2.amt)} · 산 뒤 평단 ${krwP(r2.avg)} (소수 주식이면 18.75주 · ${krwM(r2f.amt)} · 평단 ${krwP(r2f.avg)})`],
+    ["역계산 · 불가능", "평단 80,000원 × 15주 → 목표 평단 70,000원, 현재가 72,000원", "<b>불가능</b>", "현재가가 목표 평단보다 높으면 아무리 사도 평단이 목표까지 내려가지 않아요"],
+  ];
+  const AVG_WARN = "계산 결과는 참고용이에요. 투자 권유나 매수 추천이 아니에요. 물타기는 손실을 없애는 방법이 아니라 같은 종목에 돈을 더 넣는 일이라, 주가가 더 내리면 손실 금액도 커져요. 레버리지 ETF는 특히 위험이 커요.";
+  utilPage(utilById.avgdown, `<div class="avg">
+<form class="dd-form pay-form avg-form" autocomplete="off" novalidate>
+  <fieldset class="seg avg-mode"><legend>무엇을 계산할까요?</legend><label><input type="radio" name="mode" value="fwd" checked><span>물타기 평단 계산</span></label><label><input type="radio" name="mode" value="rev"><span>목표 평단 역계산</span></label></fieldset>
+  <div class="avg-opts"><fieldset class="seg avg-unit"><legend>단위</legend><label><input type="radio" name="unit" value="krw" checked><span>원 (₩)</span></label><label><input type="radio" name="unit" value="usd"><span>달러 ($)</span></label></fieldset>
+  <label class="check avg-frac"><input type="checkbox" name="frac"> 소수점 수량 허용 (소수 주식)</label></div>
+  <div class="row2 avg-hold">
+    <label><span>지금 평단 <i data-u></i></span><input name="avg" type="text" inputmode="decimal" autocomplete="off" data-ph="70,000|50.00"></label>
+    <label><span>보유 수량</span><input name="qty" type="text" inputmode="numeric" autocomplete="off" data-qty></label>
+  </div>
+  <div data-pane="fwd">
+    <p class="avg-sub"><b>추가 매수</b> <small class="hint">가격과 수량을 줄마다 넣으세요</small></p>
+    <ol class="avg-rows"></ol>
+    <button type="button" class="btn ghost avg-add" data-add>+ 매수 줄 추가</button>
+  </div>
+  <div class="row2" data-pane="rev" hidden>
+    <label><span>목표 평단 <i data-u></i></span><input name="target" type="text" inputmode="decimal" autocomplete="off" data-ph="65,000|40.00"></label>
+    <label><span>현재가 (살 가격) <i data-u></i></span><input name="rcur" type="text" inputmode="decimal" autocomplete="off" data-ph="55,000|30.00"></label>
+  </div>
+  <label class="avg-cur-label"><span>현재가 <i data-u></i> <small class="hint">(선택) 넣으면 평가손익·수익률까지</small></span><input name="cur" type="text" inputmode="decimal" autocomplete="off" data-ph="55,000|35.00"></label>
+  <div class="dd-opts pay-acts"><button type="submit" class="btn">계산하기</button><button type="button" class="btn ghost" data-copy>결과 한 줄 복사</button><button type="button" class="chip" data-example>예시 넣기</button><button type="button" class="chip" data-reset>모두 지우기</button></div>
+</form>
+<div class="dd-result pay-result avg-result" aria-live="polite"></div>
+<div class="avg-chart" hidden><svg class="avg-svg" role="img" aria-label="가격 비교" xmlns="http://www.w3.org/2000/svg"></svg></div>
+<p class="sq-warn" role="note">${esc(AVG_WARN)}</p>
+</div>`, {
+    scripts: ["avg-calc.js", "t-avg.js"], fileTool: false,
+    after: `<h2 class="dd-h">평단가 계산 예시 (손계산과 대조)</h2>
+<div class="table-wrap"><table class="dd-table avg-ex"><thead><tr><th scope="col">경우</th><th scope="col">입력</th><th scope="col">계산</th><th scope="col">결과</th></tr></thead><tbody>${EXR.map((r) => `<tr><th scope="row">${r[0]}</th><td>${esc(r[1])}</td><td>${r[2]}</td><td>${esc(r[3])}</td></tr>`).join("")}</tbody></table></div>
+<p class="hint">새 평단 = (지금 평단 × 보유 수량 + Σ 추가 매수 가격 × 수량) ÷ 총 수량. 필요 수량 = 보유 수량 × (지금 평단 − 목표 평단) ÷ (목표 평단 − 현재가). 수수료·세금·환율은 넣지 않았어요.</p>`
+  });
+}
 
 utilPage(utilById.qr, `<div class="qr">
   <fieldset class="seg qr-types"><legend>무엇을 담을까요?</legend>
