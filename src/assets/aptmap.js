@@ -13,6 +13,12 @@
   const BAND = Object.fromEntries(C.BANDS.map((b) => [b.k, b]));
   const SORT_SHORT = { price: "가격순", dist: "역 가까운 순", built: "최신 준공순" };
   const PAGE = 100;
+  // P2-63b-2 네이버페이 부동산 링크(새 창). 네이버 단지 ID는 쓰지 않고 우리 데이터(단지명·동·좌표)로만 주소를 만듦(크롤링·API 호출 없음).
+  // 주소 형식은 사람이 일반 브라우저로 확인하기 전까지 꺼 둠(""). 확인 뒤 "search"(단지명+동 검색) 또는 "map"(좌표 중심 지도)로 바꾸면 카드에 버튼이 나옴
+  const NAVER_MODE = "map"; // 대표님 PC 확인(11-10): map 정상, search는 「검색결과가 없습니다」
+  const naverUrl = (c) => NAVER_MODE === "search"
+    ? `https://m.land.naver.com/search/result/${encodeURIComponent(`${c.name} ${c.dong}`)}`
+    : `https://new.land.naver.com/complexes?ms=${c.lat},${c.lng},17&a=APT&e=RETAIL`;
 
   const S = C.parse(location.search);
   let all = [], byId = new Map(), filtered = [], inView = [], sidoName = {}, shown = PAGE;
@@ -124,7 +130,7 @@ ${c.rc.length ? `<p class="am-k">최근 거래</p><ul class="am-recent">${c.rc.m
 <div class="am-st"><p class="am-st-n"><b>${H(C.stName(s0.n))}</b> <small>(${H(s0.l.join("·"))})</small></p><p>직선 ${s0.d}m · 도보 약 ${C.walkMin(s0.d)}분(추정)</p><span class="am-badge${C.isWalk10(s0.d) ? " w10" : ""}">${H(C.badge(s0.d))}</span>${near ? `<p class="am-near">1km 안 다른 역: ${near}</p>` : ""}</div>
 <p class="am-hh"><b>${c.hh.toLocaleString("ko-KR")}세대</b> · ${c.built}년 준공</p>
 <p class="am-note">단지 좌표는 대표 주소 1점이라 동마다 역까지 실제 거리는 다를 수 있어요. 거래 완료 기록이라 현재 호가와 다를 수 있어요.</p>
-<div class="am-acts"><a class="btn ghost" href="https://rt.molit.go.kr/" target="_blank" rel="noopener">국토부 실거래 원문 보기 ↗<span class="sr"> (새 창, 국토교통부 실거래가 공개시스템)</span></a><button type="button" class="btn" data-share-c>이 단지 링크 공유</button></div>`;
+<div class="am-acts"><a class="btn ghost" href="https://rt.molit.go.kr/" target="_blank" rel="noopener">국토부 실거래 원문 보기 ↗<span class="sr"> (새 창, 국토교통부 실거래가 공개시스템)</span></a>${NAVER_MODE ? `<a class="btn ghost" href="${H(naverUrl(c))}" target="_blank" rel="noopener noreferrer" data-naver>네이버페이 부동산에서 보기 ↗<span class="sr"> (새 창, 외부 사이트)</span></a>` : ""}<button type="button" class="btn" data-share-c>이 단지 링크 공유</button></div>${NAVER_MODE ? '<p class="am-ext">외부 사이트(네이버)로 이동해요</p>' : ""}`;
     // 정책대출 참고 문구 자리(P2-63b 보류: 주택도시기금·주택금융공사 원문 대조 뒤 이 아래에 넣음)
   }
   function openCard(c, from) {
@@ -364,6 +370,7 @@ ${c.rc.length ? `<p class="am-k">최근 거래</p><ul class="am-recent">${c.rc.m
       lastOpener = t; openCard(all[+t.dataset.i], "list");
     } else if (t.hasAttribute("data-close")) closeCard();
     else if (t.hasAttribute("data-share-c")) shareComplex();
+    else if (t.hasAttribute("data-naver")) { const c = byId.get(S.c); ga("aptmap_naver", { complex_id: c ? c.id : "", complex_name: c ? c.name : "", link_mode: NAVER_MODE }); } // 새 창 이동은 브라우저 기본 동작
     else if (t.hasAttribute("data-am-copy")) copyFilter();
     else if (t.hasAttribute("data-zoom")) { if (map) { userMoved = true; map.setLevel(map.getLevel() - +t.dataset.zoom, { animate: true }); } }
     else if (t.hasAttribute("data-locate")) locate();

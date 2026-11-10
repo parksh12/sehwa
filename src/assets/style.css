@@ -2103,3 +2103,4 @@ li.has-fav{position:relative}
   .am-nomap .am-list{grid-area:l}
 }
 @media(prefers-reduced-motion:reduce){.am-focus{animation:none}.am-mk,.am-walk i,.am-walk i::after,.am-sheet-ar{transition:none}}
+.am-ext{margin:6px 0 0;font-size:12px;color:var(--ink-3)} /* P2-63b-2 */
