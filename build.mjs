@@ -83,8 +83,8 @@ const ART = {
   pdfmerge: sv(`${doc(14, 14, 40, 52, W)}${doc(30, 26, 40, 52, YEL)}<path d="M74 60h14" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M84 52l9 8-9 8" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>${doc(66, 52, 40, 54, RED)}<text x="86" y="90" font-size="15" font-weight="800" text-anchor="middle" fill="${W}" font-family="sans-serif">PDF</text>`),
   pdfsplit: sv(`${doc(16, 16, 54, 72, RED)}<text x="43" y="60" font-size="16" font-weight="800" text-anchor="middle" fill="${W}" font-family="sans-serif">PDF</text><path d="M8 96h104" stroke="${K}" stroke-width="4" stroke-dasharray="7 6"/>${doc(56, 58, 30, 40, W)}${doc(80, 66, 30, 40, YEL)}`),
   img2pdf: sv(`<rect x="12" y="20" width="56" height="48" rx="6" fill="${W}" stroke="${K}" stroke-width="4"/><circle cx="28" cy="36" r="6" fill="${YEL}" stroke="${K}" stroke-width="3"/><path d="M16 64l16-14 10 8 12-12 12 18z" fill="${GRN}" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M40 82h16" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M52 74l9 8-9 8" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>${doc(64, 46, 44, 60, RED)}<text x="86" y="84" font-size="15" font-weight="800" text-anchor="middle" fill="${W}" font-family="sans-serif">PDF</text>`),
-  word2pdf: sv(`${doc(10, 18, 46, 62, W)}<path d="M20 40h26M20 50h26M20 60h18" stroke="${K}" stroke-width="4" stroke-linecap="round"/><path d="M56 88h12" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M64 80l9 8-9 8" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>${doc(66, 40, 44, 66, RED)}<text x="88" y="80" font-size="15" font-weight="800" text-anchor="middle" fill="${W}" font-family="sans-serif">PDF</text>`),
   hwpview: sv(`${doc(14, 10, 62, 84, W)}<rect x="24" y="22" width="34" height="24" rx="4" fill="${GRN}" stroke="${K}" stroke-width="3"/><text x="41" y="40" font-size="17" font-weight="800" text-anchor="middle" fill="${W}" font-family="sans-serif">한</text><path d="M24 58h36M24 68h28" stroke="${K}" stroke-width="4" stroke-linecap="round"/><circle cx="80" cy="76" r="17" fill="${YEL}" stroke="${K}" stroke-width="5"/><path d="M92 88l16 16" stroke="${K}" stroke-width="8" stroke-linecap="round"/>`), // P2-64 한글 문서 + 돋보기
+  docx2pdf: sv(`${doc(10, 18, 46, 62, W)}<rect x="17" y="30" width="30" height="22" rx="4" fill="#2b5cd6" stroke="${K}" stroke-width="3"/><text x="32" y="47" font-size="16" font-weight="800" text-anchor="middle" fill="${W}" font-family="sans-serif">W</text><path d="M20 62h24" stroke="${K}" stroke-width="4" stroke-linecap="round"/><path d="M56 88h12" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M64 80l9 8-9 8" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>${doc(66, 40, 44, 66, RED)}<text x="88" y="80" font-size="15" font-weight="800" text-anchor="middle" fill="${W}" font-family="sans-serif">PDF</text>`), // P2-65 워드 → PDF
   hwp2pdf: sv(`${doc(10, 18, 46, 62, W)}<rect x="17" y="30" width="30" height="22" rx="4" fill="${GRN}" stroke="${K}" stroke-width="3"/><text x="32" y="47" font-size="15" font-weight="800" text-anchor="middle" fill="${W}" font-family="sans-serif">한</text><path d="M20 62h24" stroke="${K}" stroke-width="4" stroke-linecap="round"/><path d="M56 88h12" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M64 80l9 8-9 8" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>${doc(66, 40, 44, 66, RED)}<text x="88" y="80" font-size="15" font-weight="800" text-anchor="middle" fill="${W}" font-family="sans-serif">PDF</text>`), // P2-64 한글 → PDF
   imgcompress: sv(`<rect x="22" y="22" width="76" height="76" rx="8" fill="${W}" stroke="${K}" stroke-width="4"/><circle cx="44" cy="46" r="8" fill="${YEL}" stroke="${K}" stroke-width="3"/><path d="M28 92l22-22 14 12 14-16 16 26z" fill="${GRN}" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><g fill="none" stroke="${RED}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 8l14 14M22 10v12H10"/><path d="M112 8 98 22M98 10v12h12"/><path d="M8 112l14-14M22 110V98H10"/><path d="M112 112 98 98M98 110V98h12"/></g>`),
   charcount: sv(`<rect x="16" y="14" width="66" height="88" rx="6" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M28 34h42M28 48h42M28 62h30M28 76h38" stroke="${K}" stroke-width="4" stroke-linecap="round"/><rect x="58" y="70" width="50" height="34" rx="8" fill="${YEL}" stroke="${K}" stroke-width="4"/><text x="83" y="94" font-size="17" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">123</text>`),
@@ -163,7 +163,7 @@ const LIFE_SLUG = { adventure: "adventurer", love: "warm-heart", stable: "steady
 // 기존 콘텐츠(CATS: me·love·luck·story·arcade)는 주소를 그대로 두고 「펭귄 오락실」(/play/)로 묶습니다.
 const PLAY = { name: "펭귄 오락실", tagline: "RPG·생존 게임·순발력 게임, 잠깐 쉬어 가는 한 판", path: "/play/", desc: "펭귄 RPG, 지옥에서 살아남기, 헬조선에서 살아남기, Life Game, 지뢰찾기, 블록 쌓기, 반응속도 게임처럼 잠깐 쉬어 가는 게임을 모았어요." }; // P2-49 게임만
 const UCATS = {
-  pdf: { name: "PDF·문서", desc: "PDF를 합치고 나누고, 이미지와 워드 문서를 PDF로 바꾸고, 한글(HWPX) 문서를 열어 보는 툴이에요." }, // P2-64 desc
+  pdf: { name: "PDF·문서", desc: "PDF를 합치고 나누고, 이미지·워드(DOCX)·한글(HWPX) 문서를 열어 보고 PDF로 바꾸는 툴이에요." }, // P2-64 desc
   image: { name: "이미지", desc: "사진 용량을 줄이고, 아이폰 HEIC 사진을 JPG로 바꾸고, 여러 장을 한 장으로 이어 붙이거나 PDF로 묶고, QR코드를 만드는 이미지 툴이에요." }, // P2-46 desc, P2-47 HEIC, P2-48 QR
   text: { name: "글쓰기", desc: "자기소개서, 리포트, 블로그 글을 쓸 때 필요한 글쓰기 툴이에요. 글자수 세기, PDF에서 복사한 글의 줄바꿈·공백 정리, 읽기·발표 시간과 원고지 매수 계산, 이모지·특수문자 복사를 브라우저 안에서 바로 해요." }, // P2-57 desc
   calc: { name: "생활 계산", desc: "D-day, 연봉 실수령액, 퇴직금처럼 생활에서 자주 찾는 계산을 바로 해 주는 툴이에요." }, // P2-45 desc
@@ -178,7 +178,7 @@ const UTILS = [
   { id: "pdfmerge", cat: "pdf", path: "/pdf/merge/", title: "PDF 합치기", seo: "PDF 합치기 — 무료", h1: "PDF 합치기 — 여러 PDF를 순서대로 한 파일로", desc: "여러 개의 PDF를 원하는 순서대로 한 파일로 합쳐요. 파일은 서버로 전송하지 않고 브라우저 안에서 처리합니다.", hook: "PDF 여러 개를 순서 정해서 한 파일로.", meta: "PDF 30개까지", kw: "pdf 병합 합치기 묶기 merge 하나로" },
   { id: "pdfsplit", cat: "pdf", path: "/pdf/split/", title: "PDF 나누기", seo: "PDF 나누기 — 무료, 페이지 추출", h1: "PDF 나누기 — 페이지 추출, 한 쪽씩 나누기", desc: "PDF에서 원하는 페이지만 뽑거나 한 쪽씩 나눠 zip으로 받아요. 파일은 서버로 전송하지 않고 브라우저 안에서 처리합니다.", hook: "필요한 쪽만 뽑거나 한 쪽씩 쪼개기.", meta: "범위 추출 · zip", kw: "pdf 분할 자르기 추출 페이지 split 쪼개기" },
   { id: "img2pdf", cat: "pdf", also: ["image"], path: "/pdf/image-to-pdf/", title: "JPG PDF 변환", seo: "JPG PDF 변환 — 무료, 이미지 여러 장을 PDF로", h1: "JPG PDF 변환 — 이미지 여러 장을 PDF 한 파일로", desc: "JPG·PNG 이미지 여러 장을 순서대로 PDF 한 파일로 만들어요. A4 또는 원본 크기를 고를 수 있고, 파일은 서버로 전송하지 않습니다.", hook: "사진·스캔 이미지 여러 장을 PDF 하나로.", meta: "JPG·PNG · A4", kw: "이미지 pdf 사진 png jpeg 변환 스캔 영수증" },
-  { id: "word2pdf", cat: "pdf", beta: true, path: "/pdf/word-to-pdf/", title: "워드 PDF 변환(간단)", seo: "워드 PDF 변환(간단) — 무료, docx를 PDF로", h1: "워드 PDF 변환(간단) — docx 미리보고 PDF로 저장", desc: "워드(docx) 문서를 브라우저에서 미리 보고 인쇄의 「PDF로 저장」으로 PDF를 만들어요. 표·머리글·각주·복잡한 서식은 깨질 수 있는 간단 변환(베타)입니다.", hook: "docx를 열어 보고 PDF로 저장. 글 위주 문서용.", meta: "docx · 베타", kw: "word docx 워드 문서 pdf 변환 docs" },
+  { id: "docx2pdf", cat: "pdf", beta: true, path: "/docx-to-pdf/", title: "워드 PDF 변환 (DOCX)", seo: "워드 PDF 변환 — DOCX를 PDF로, 워드 없이 무료로 열어 보기", h1: "워드 PDF 변환 — DOCX 문서를 열어 보고 PDF로 저장", desc: "워드(DOCX) 문서를 워드 프로그램 없이 브라우저에서 열어 보고, A4 인쇄 모양으로 맞춘 뒤 인쇄 창의 「PDF로 저장」으로 글자가 선택되는 PDF를 만들어요. 글자 모양, 목록 번호, 표, 그림을 보여 줘요. 파일은 서버로 전송하지 않습니다.", hook: "DOCX를 열어 보고 PDF로 저장. 표·그림·목록까지.", meta: "DOCX → PDF · 베타", kw: "워드 pdf 변환 docx pdf 변환 word pdf 변환 워드 파일 pdf 워드 뷰어 docx 뷰어 docx 열기 워드 열기 word to pdf docx to pdf docs to pdf 문서 pdf 변환 ms워드" }, // P2-65
   { id: "hwpview", cat: "pdf", beta: true, path: "/hwp-viewer/", title: "한글 파일 뷰어 (HWPX)", seo: "한글 파일 뷰어 — HWPX 열기, 한글 프로그램 없이 무료로 보기", h1: "한글 파일 뷰어 — HWPX 문서를 설치 없이 열어 보기", desc: "한글(한컴오피스) HWPX 문서를 프로그램 설치 없이 브라우저에서 열어 봐요. 글자 모양, 표, 그림을 보여 주고 PDF로도 저장할 수 있어요. 지금은 HWPX만 열 수 있고, 예전 HWP 형식은 준비 중이에요. 파일은 서버로 전송하지 않습니다.", hook: "HWPX를 설치 없이 열어 보기. HWP는 준비 중.", meta: "HWPX · 베타", kw: "한글 파일 뷰어 한글 뷰어 hwp 뷰어 hwpx 뷰어 hwp 열기 hwpx 열기 한글 문서 열기 한컴 한컴오피스 아래아한글 hwp hwpx viewer 한글파일 보기" }, // P2-64
   { id: "hwp2pdf", cat: "pdf", beta: true, path: "/hwp-to-pdf/", title: "한글 PDF 변환 (HWPX)", seo: "한글 PDF 변환 — HWPX를 PDF로, 무료·설치 없이", h1: "한글 PDF 변환 — HWPX 문서를 PDF로 저장", desc: "한글(한컴오피스) HWPX 문서를 브라우저에서 열어 A4 인쇄 모양으로 맞춘 뒤, 인쇄 창의 「PDF로 저장」으로 글자가 선택되는 PDF를 만들어요. 지금은 HWPX만 지원하고, 예전 HWP 형식은 준비 중이에요. 파일은 서버로 전송하지 않습니다.", hook: "HWPX를 PDF로 저장. 글자 선택되는 PDF.", meta: "HWPX → PDF · 베타", kw: "hwp pdf 변환 hwpx pdf 변환 한글 pdf 변환 한글 파일 pdf 한글 문서 pdf hwp to pdf hwpx to pdf 한컴 pdf 아래아한글 pdf 저장" }, // P2-64
   { id: "imgcompress", cat: "image", path: "/image/compress/", title: "이미지 용량 줄이기", seo: "이미지 용량 줄이기 — 무료, 사진 압축", h1: "이미지 용량 줄이기 — 품질과 크기를 골라 사진 압축", desc: "JPG·PNG·WEBP 사진의 품질과 최대 너비를 조절해 용량을 줄이고, 얼마나 줄었는지 보여 드려요. 파일은 서버로 전송하지 않습니다.", hook: "품질·너비 조절해서 사진 용량 줄이기.", meta: "JPG·WEBP 저장", kw: "사진 압축 용량 줄이기 리사이즈 크기 jpg png webp 이미지 압축" },
@@ -209,13 +209,13 @@ const UTILS = [
   { id: "emoji", cat: "text", path: "/text/emoji-special-characters/", title: "이모지 · 특수문자 복사", seo: "이모지 · 특수문자 복사 — 하트 특수문자, 화살표, 별, 원문자 모음과 일괄 삽입", h1: "이모지 · 특수문자 복사 — 누르면 바로 복사, 목록 꾸미기까지", desc: "표정·사람·동물·음식·사물·기호 이모지와 하트·화살표·별(★※→)·괄호·원문자(①㉠) 같은 특수문자를 한글로 찾아 누르면 바로 복사해요. 글을 넣으면 줄마다 이모지·기호를 붙이고 1\uFE0F⃣ 2\uFE0F⃣ 번호도 자동으로 매겨요. 유니코드 표준 문자만 써요.", hook: "하트·화살표·별 특수문자, 누르면 바로 복사.", meta: "1,000여 개 · 일괄 삽입", kw: "이모지 이모지 복사 이모티콘 이모티콘 복사 특수문자 특수문자 복사 특수기호 기호 모음 특수문자 모음 특수문자표 하트 특수문자 하트 이모지 하트 기호 하트 복사 ♥ ♡ 별 특수문자 별 기호 ★ ☆ 화살표 특수문자 화살표 기호 → 당구장 표시 ※ 체크 표시 체크 이모지 ✔ ✅ 동그라미 숫자 원문자 원숫자 ① 괄호 숫자 낫표 겹낫표 「」 『』 꺾쇠 말머리 기호 글머리 기호 블로그 꾸미기 인스타 꾸미기 목록 꾸미기 번호 이모지 1\uFE0F⃣ 숫자 이모지 일괄 삽입 줄 앞에 이모지 구분선 emoji copy special characters symbols" }, // P2-57
   { id: "aptmap", cat: "house", path: "/apt-map/", title: "역세권 아파트 지도", seo: "역세권 아파트 지도 — 사회초년생 20평대 실거래가, 가격대별 2억대·3억대·4억대", h1: "사회초년생이 살 만한 역세권 아파트 지도", desc: "역에서 직선 1km 안, 300세대 이상, 전용 40~60㎡(20평대) 아파트를 국토교통부 실거래가 중위값으로 2억 미만부터 8억대까지 가격대별로 지도에 보여 줘요. 지역·노선·준공연도로 좁히고 「도보 10분 이내만」(직선 500m)으로 더 가까운 단지만 볼 수 있어요. 거래 완료 기록 기준이라 현재 호가와 다를 수 있고, 투자 권유가 아니에요.", hook: "20평대 역세권 아파트, 가격대별로 지도에서.", meta: "실거래 중위값 · 역 1km · 매달 갱신", kw: "아파트 지도 역세권 아파트 역세권 아파트 지도 역세권 20평대 20평대 아파트 24평 전용 59 전용 49 소형 아파트 싼 아파트 제일 싼 아파트 저렴한 아파트 2억 아파트 3억 아파트 4억 아파트 5억 아파트 2억대 3억대 4억대 아파트 실거래가 실거래가 조회 아파트 시세 아파트 가격 지하철역 근처 아파트 역 근처 아파트 도보 10분 사회초년생 내 집 마련 첫 집 신혼부부 아파트 서울 경기 인천 부산 대구 수도권 아파트 아파트 매매 국토부 실거래" }, // P2-63b
 ];
-const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "heic", "qr", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "word2pdf", "hwpview", "hwp2pdf", "dday", "stockquiz", "avgdown", "dca", "ostax", "rsibt", "compound", "possize", "linebreak", "readtime", "emoji", "aptmap"]; // P2-63b aptmap // P2-57 linebreak·readtime·emoji // P2-56 possize // P2-55 compound // P2-50 stockquiz(투자) // P2-51 avgdown // P2-52 dca // P2-53 ostax // P2-54 rsibt // P2-45 돈 계산기 4종, P2-46 imgmerge, P2-47 heic, P2-48 qr
+const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "heic", "qr", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "docx2pdf", "hwpview", "hwp2pdf", "dday", "stockquiz", "avgdown", "dca", "ostax", "rsibt", "compound", "possize", "linebreak", "readtime", "emoji", "aptmap"]; // P2-63b aptmap // P2-57 linebreak·readtime·emoji // P2-56 possize // P2-55 compound // P2-50 stockquiz(투자) // P2-51 avgdown // P2-52 dca // P2-53 ostax // P2-54 rsibt // P2-45 돈 계산기 4종, P2-46 imgmerge, P2-47 heic, P2-48 qr
 const NEXT = {
   pdfmerge: ["pdfsplit", "img2pdf", "imgcompress"],
   pdfsplit: ["pdfmerge", "pdf2img", "img2pdf"],
   img2pdf: ["pdfmerge", "imgcompress", "pdfsplit"],
-  word2pdf: ["pdfmerge", "charcount", "pdfsplit"],
-  hwpview: ["hwp2pdf", "pdfmerge", "word2pdf"], // P2-64 열어 본 문서 → PDF로 저장 → 합치기
+  docx2pdf: ["pdfmerge", "hwp2pdf", "pdfsplit"], // P2-65 만든 PDF 합치기 · 한글 문서도
+  hwpview: ["hwp2pdf", "pdfmerge", "docx2pdf"], // P2-64 열어 본 문서 → PDF로 저장 → 합치기
   hwp2pdf: ["pdfmerge", "hwpview", "pdfsplit"], // P2-64 만든 PDF 합치기·나누기
   imgcompress: ["img2pdf", "pdfmerge", "charcount"],
   charcount: ["readtime", "linebreak", "emoji"], // P2-57 글쓰기 툴끼리 잇기
@@ -344,7 +344,7 @@ const SEO_DESC = {
   "/terms/": () => `${cfg.siteName} 이용약관: 서비스 내용, 서비스 변경·중단, 이용자의 의무, 저작권, 책임의 제한, 준거법과 분쟁 해결 안내.`,
   "/disclaimer/": () => `${cfg.siteName} 면책고지: 툴 결과물은 원본과 함께 확인해 주세요. 운세·재미 툴의 운세·테스트는 재미로 보는 콘텐츠이며 의학·법률·재정·심리 진단을 대신하지 않아요.`,
   "/contact/": () => `${cfg.siteName} 문의: 오류 제보, 의견, 제휴 문의는 이메일 ${cfg.contactEmail}로 보내 주세요. 문의할 때 알려 주시면 좋은 내용과 답변 안내.`,
-  "/licenses/": () => `${cfg.siteName}가 쓰는 오픈소스 라이브러리(pdf-lib, pdf.js, mammoth, fflate, libheif, qrcode-generator 등)와 글꼴(Pretendard, Black Han Sans)의 버전·라이선스 안내.`, // P2-47 libheif, P2-48 qrcode-generator
+  "/licenses/": () => `${cfg.siteName}가 쓰는 오픈소스 라이브러리(pdf-lib, pdf.js, fflate, libheif, qrcode-generator 등)와 글꼴(Pretendard, Black Han Sans)의 버전·라이선스 안내.`, // P2-47 libheif, P2-48 qrcode-generator
   "/editorial/": () => `${cfg.siteName}가 툴 설명과 오락실 해설을 만들고 검수하는 기준: 실제 파일로 확인, 직접 작성과 사람 검수, 단정하지 않는 표현, 계산 방식 공개.`,
 };
 // 제목 보정: ① 오락실 카테고리(나의 성격 등)는 이름만 있으면 안에 든 콘텐츠 이름을 붙임 ② 오락실 툴에 seo 제목이 없으면 h1(검색어가 든 긴 제목)을 씀
@@ -511,6 +511,7 @@ const cabCls = (i, n) => (i < nToolCabs ? cabCls0(i, nToolCabs) : "cab-full"); /
 // ★ 새 툴·게임을 만들면 여기에 { id, d: "출시일" }을 맨 위에 추가(대표님 지시: 새 콘텐츠는 메인에 잘 보이게).
 // 출시 30일 이내 항목 중 최신 4개가 홈 맨 위 「NEW」 띠에 나오고, 해당 행·타일에 NEW 표시가 붙음
 const NEW_ITEMS = [
+  { id: "docx2pdf", d: "2026-11-10" }, // P2-65
   { id: "hwpview", d: "2026-11-10" }, // P2-64
   { id: "hwp2pdf", d: "2026-11-10" }, // P2-64
   { id: "aptmap", d: "2026-11-10" }, // P2-63b
@@ -1108,6 +1109,7 @@ function checkLife() {
 {
   const moved = [["/brain/", "/arcade/"], ["/brain/reaction/", "/arcade/reaction/"], ...REACTION_KEYS.flatMap((k) => [[`/brain/reaction/${REACTION_SLUG[k]}/`, "/arcade/reaction/"], [`/arcade/reaction/${REACTION_SLUG[k]}/`, "/arcade/reaction/"]])];
   moved.push(...FUN_MOVED); // P2-49 운세·재미 이동
+  moved.push(["/pdf/word-to-pdf/", "/docx-to-pdf/"]); // P2-65 옛 워드 PDF 변환(간단) → 워드 PDF 변환(DOCX)
   if (moved.some(([f]) => pageHtml.has(f))) throw new Error("P2-49 리디렉트가 실제 페이지를 덮어씀");
   for (const [from, to] of moved) {
     const file = path.join(DIST, from, "index.html");
@@ -1224,10 +1226,7 @@ utilPage(utilById.img2pdf, `${dropHtml({ accept: ".jpg,.jpeg,.png,image/jpeg,ima
 </div>
 ${tkTail("PDF 만들기")}`, { vendor: ["pdf-lib.min.js"], scripts: ["t-img2pdf.js"] });
 
-// 워드 PDF 변환(간단, 베타)
-utilPage(utilById.word2pdf, `<p class="tk-warn" role="note"><b>베타 · 간단 변환</b> 표·머리글·각주·복잡한 서식은 깨질 수 있습니다. docx만 지원하며 .doc와 .hwp(한글)는 지원하지 않아요.</p>
-${dropHtml({ accept: ".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document", label: "PDF로 바꿀 워드(docx) 파일을 넣어 주세요", limit: "docx 1개 · 20MB까지 (.doc·.hwp 미지원)" })}
-${tkTail("")}`, { vendor: ["mammoth.browser.min.js"], scripts: ["t-word2pdf.js"], after: `<section class="w2p" id="w2p-preview" hidden aria-label="문서 미리보기"><p class="w2p-note">미리보기 · 표·머리글·각주·복잡한 서식은 깨질 수 있습니다</p><div class="w2p-paper"></div></section>` });
+// P2-65 옛 「워드 PDF 변환(간단)」(mammoth)은 폐지 → /pdf/word-to-pdf/는 /docx-to-pdf/로 이동(아래 moved)
 
 // P2-64 한글 파일 뷰어 · 한글 PDF 변환(HWPX, 베타): 두 페이지가 같은 코드(hwp-doc.js 해석 → 공통 문서 모델 → hwp-render.js 그리기, t-hwp.js 화면)
 // HWP(5.0 바이너리) 해석기는 아직 없음(외부 라이브러리 실행 승인 대기) → .hwp를 넣으면 안내만. 해석기는 hwp-doc.js의 PARSERS에 붙이면 됨
@@ -1242,6 +1241,11 @@ const hwpAfter = `<section class="hwpv" id="hwpv" hidden aria-label="문서 미�
 <div class="hwpv-stage" aria-live="polite"></div>
 </section>`;
 utilPage(utilById.hwpview, hwpToolHtml(false), { vendor: ["fflate.min.js"], scripts: ["hwp-doc.js", "hwp-render.js", "t-hwp.js"], after: hwpAfter });
+// P2-65 워드 PDF 변환(DOCX): 같은 화면 코드, 해석기만 docx-doc.js
+utilPage(utilById.docx2pdf, `<p class="tk-warn" role="note"><b>원본과 모양이 다를 수 있어요.</b> 줄 바꿈·쪽 나눔·글꼴은 워드와 다를 수 있으니 중요한 문서는 원본과 함께 확인하세요. 예전 형식(.doc)은 열 수 없어요.</p>
+${dropHtml({ accept: ".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.doc", multiple: true, label: "PDF로 바꿀 워드 파일(DOCX)을 넣어 주세요", limit: "DOCX · 파일당 50MB · 10개까지 (.doc 미지원)" })}
+<div class="hwpv-help" hidden><p>열지 못한 파일은 워드 프로그램의 「다른 이름으로 저장 → PDF」를 이용해 주세요. 예전 형식(.doc)은 워드에서 「다른 이름으로 저장 → Word 문서(*.docx)」로 저장하면 여기서 열 수 있어요.</p></div>
+${tkTail("")}`, { vendor: ["fflate.min.js"], scripts: ["hwp-doc.js", "docx-doc.js", "hwp-render.js", "t-hwp.js"], after: hwpAfter });
 utilPage(utilById.hwp2pdf, hwpToolHtml(true), { vendor: ["fflate.min.js"], scripts: ["hwp-doc.js", "hwp-render.js", "t-hwp.js"], after: hwpAfter });
 
 // 이미지 용량 줄이기
@@ -2440,7 +2444,6 @@ utilPage(utilById.stopwatch, `<button type="button" class="tm-fs-close" data-fs-
   const p = "/licenses/";
   const libs = [
     ["pdf-lib", "1.17.1", "MIT", "https://github.com/Hopding/pdf-lib", "PDF 합치기 · PDF 나누기 · JPG PDF 변환"],
-    ["mammoth", "1.13.0", "BSD-2-Clause", "https://github.com/mwilliamson/mammoth.js", "워드 PDF 변환(간단)"],
     ["fflate", "0.8.3", "MIT", "https://github.com/101arrowz/fflate", "PDF 나누기 · 이미지 용량 줄이기 · PDF JPG 변환의 zip 묶기"],
     ["pdf.js (pdfjs-dist, legacy build)", "6.4.299", "Apache-2.0", "https://github.com/mozilla/pdf.js", "PDF JPG 변환 (함께 둔 CMap: Adobe BSD-3, 이미지 디코더 wasm: OpenJPEG BSD-2·PDFium BSD-3·qcms MIT, ICC: CC0)"],
     ["korean-lunar-calendar", "0.4.0", "MIT", "https://github.com/usingsky/korean_lunar_calendar_js", "사주팔자 음력 변환표 대조 (변환표 자체는 한국천문연구원 음양력 자료로 만듦)"], // P2-22
@@ -2521,6 +2524,7 @@ write("/404.html", layout({ title: "페이지를 찾을 수 없어요", desc: "�
   const favIdx = {};
   UTILS.forEach((x) => { favIdx[x.id] = { t: x.title, p: u(x.path), c: catName(x.cat) }; });
   TOOLS.forEach((x) => { favIdx[x.id] = { t: x.title, p: u(x.path), c: playCat(x) }; }); // P2-49 id는 그대로, 주소·분류만 새로
+  favIdx.word2pdf = { ...favIdx.docx2pdf, a: "docx2pdf" }; // P2-65 옛 「워드 PDF 변환(간단)」을 즐겨찾기에 담아 둔 사용자 → 새 워드 PDF 변환으로(UTILS 뒤에 넣어 현재 페이지 판별은 docx2pdf가 먼저)
   favIdx.family = { t: FAMILY.name, p: FAMILY.url, c: `${CHAT.name} · 새 창`, x: 1 }; // 외부 사이트 // P2-61 분류명 = 새 서랍 이름
   fs.writeFileSync(path.join(DIST, "assets", "fav-index.js"), `window.FAV_INDEX=${JSON.stringify(favIdx).replace(/</g, String.fromCharCode(92) + "u003c")};\n`);
 }

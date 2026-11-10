@@ -1,14 +1,16 @@
 // P2-64 한글 문서 해석 → 공통 문서 모델. 화면(hwp-render.js)은 이 모델만 보고 그립니다.
-// 지금 붙어 있는 해석기: HWPX(zip + OWPML XML, 의존: vendor/fflate.min.js + 브라우저 DOMParser).
-// HWP(5.0 바이너리) 해석기는 아직 없음 → HwpDoc.register({ name, test(u8), parse(u8, name) })로 붙이면 화면 코드는 그대로 씁니다.
+// 붙어 있는 해석기: HWPX(이 파일), DOCX(docx-doc.js, P2-65). 둘 다 zip + XML(의존: vendor/fflate.min.js + 브라우저 DOMParser).
+// HWP(5.0 바이너리) 해석기는 아직 없음 → HwpDoc.register({ name, test(u8, info), parse(u8, name) })로 붙이면 화면 코드는 그대로 씁니다.
+// info = { name, kind:"zip"|"cfb"|"hwp3"|"", names:[zip 안 경로] }
 // 원칙: 파일은 이 브라우저 안에서만 읽습니다. 문서 글자는 textContent로만 그리고(hwp-render.js), 그림은 이미지 형식만 blob 주소로 씁니다.
 //
 // 공통 문서 모델 (길이 단위는 HWPUNIT = 1/7200인치, 글자 크기는 pt)
 // doc  = { format, sections:[sec], stats:{ paras, tables, images }, skipped:{ 이름: 개수 }, urls:[blob 주소] }
 // sec  = { page:{ w, h, ml, mr, mt, mb }, paras:[para], notes:[[para]] }
-// para = { align, ml, mr, indent, before, after, lh:{ type:"PERCENT"|"FIXED"|..., v }, brk, items:[item] }
+// para = { align, ml, mr, indent, before, after, lh:{ type:"PERCENT"|"FIXED"|..., v }, brk, label?:{ s, st }(목록 번호·글머리표), items:[item] }
+//        (ml은 둘째 줄부터가 아니라 「첫 줄 기준」 왼쪽 여백. indent<0이면 내어쓰기)
 // item = { k:"t", s, st } | { k:"br" } | { k:"tab", st } | { k:"img", src, w, h } | { k:"tbl", w, align, inline, rows:[[cell]] }
-//      | { k:"box", w, h, paras } | { k:"eq", s, st } | { k:"note", n, st } | { k:"miss", s }
+//      | { k:"box", w, h, paras } | { k:"eq", s, st } | { k:"note", n, st } | { k:"miss", s } | { k:"pbr" }(문단 안 쪽 나눔)
 // cell = { cs, rs, w, h, va, bf, pad:[l, r, t, b], paras }
 // st   = { sz, color, b, i, u, s, sup, sub, font, serif, bg }
 // bf   = { l, r, t, b: { style, width, color }, bg }
@@ -25,18 +27,43 @@
   // 파일 머리 바이트로 형식 판별(확장자보다 우선)
   const sig = (u8, arr) => arr.every((b, i) => u8[i] === b);
   HwpDoc.sniff = (u8) => {
-    if (sig(u8, [0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1])) return "hwp"; // OLE 복합 파일(HWP 5.0)
-    if (sig(u8, [0x48, 0x57, 0x50, 0x20, 0x44, 0x6f, 0x63])) return "hwp"; // "HWP Doc…"(HWP 3.0 이하)
+    if (sig(u8, [0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1])) return "cfb"; // OLE 복합 파일(HWP 5.0, 예전 .doc, 암호 걸린 docx)
+    if (sig(u8, [0x48, 0x57, 0x50, 0x20, 0x44, 0x6f, 0x63])) return "hwp3"; // "HWP Doc…"(HWP 3.0 이하)
     if (sig(u8, [0x50, 0x4b, 0x03, 0x04])) return "zip";
     return "";
+  };
+
+  // OLE 복합 파일 안의 스트림 이름(UTF-16)으로 종류 구분: 암호 걸린 Office 문서 / 예전 워드 / HWP
+  const u16 = (s) => [...s].flatMap((c) => [c.charCodeAt(0), 0]);
+  const has = (u8, pat) => {
+    const n = Math.min(u8.length, 8 * 1048576);
+    outer: for (let i = 0; i + pat.length <= n; i++) {
+      for (let j = 0; j < pat.length; j++) if (u8[i + j] !== pat[j]) continue outer;
+      return true;
+    }
+    return false;
+  };
+  const cfbKind = (u8) => (has(u8, u16("EncryptedPackage")) ? "encrypted" : has(u8, u16("WordDocument")) ? "doc" : has(u8, u16("FileHeader")) || has(u8, u16("HwpSummary")) ? "hwp" : "notdoc");
+  // zip 안 경로 목록(압축은 풀지 않음)
+  const zipNames = (u8) => {
+    const names = [];
+    try { fflate.unzipSync(u8, { filter: (f) => { names.push(f.name); return false; } }); } catch (e) { return null; }
+    return names;
   };
 
   // 여는 입구: 등록된 해석기 중 맞는 것을 고름
   HwpDoc.open = async (buf, name) => {
     const u8 = new Uint8Array(buf);
-    for (const p of PARSERS) if (p.test(u8)) return p.parse(u8, name);
     const kind = HwpDoc.sniff(u8);
-    if (kind === "hwp") throw new HwpError("hwp");
+    const info = { name, kind, names: [] };
+    if (kind === "zip") {
+      const names = window.fflate ? zipNames(u8) : null;
+      if (!names) throw new HwpError("broken");
+      info.names = names;
+    }
+    for (const p of PARSERS) if (p.test(u8, info)) return p.parse(u8, name);
+    if (kind === "cfb") throw new HwpError(cfbKind(u8));
+    if (kind === "hwp3") throw new HwpError("hwp");
     throw new HwpError("notdoc");
   };
 
@@ -315,7 +342,10 @@
     } else ctx.skip("도형 그림");
   }
 
-  HwpDoc.register({ name: "HWPX", test: (u8) => HwpDoc.sniff(u8) === "zip", parse: (u8) => parseHwpx(u8) });
+  HwpDoc.register({ name: "HWPX", test: (u8, info) => info.kind === "zip" && info.names.some((n) => /^Contents\/(header\.xml|content\.hpf)$/i.test(n)), parse: (u8) => parseHwpx(u8) });
+
+  // 다른 해석기(docx-doc.js 등)가 같이 쓰는 도구
+  HwpDoc.util = { kids, kid, all, num, attr, color, xml, unzip, IMG_MIME, HwpError };
 
   // 다 쓴 문서의 그림 주소 해제
   HwpDoc.free = (doc) => { (doc && doc.urls || []).forEach((u) => URL.revokeObjectURL(u)); if (doc) doc.urls = []; };

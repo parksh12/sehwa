@@ -2183,3 +2183,6 @@ li.has-fav{position:relative}
   html.print-hwp .hwp-page+.hwp-page{break-before:page}
   html.print-hwp .h-tbl tr{break-inside:avoid}
 }
+/* P2-65 목록 번호·문단 안 쪽 나눔(DOCX) */
+.hwp-page .h-label{display:inline-block;text-indent:0;white-space:pre}
+.hwp-page .h-pbr{display:block;height:0;break-before:page}

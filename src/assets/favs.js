@@ -7,7 +7,8 @@
   const toast = (m) => (window.NALGI && NALGI.toast ? NALGI.toast(m) : null);
   const STAR = '<svg class="fav-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.9 6 6.5.8-4.8 4.5 1.2 6.5L12 17.2l-5.8 3.2 1.2-6.5L2.6 9.4l6.5-.8z"/></svg>';
 
-  const read = () => { try { const a = JSON.parse(localStorage.getItem(KEY) || "[]"); return Array.isArray(a) ? a.filter((id) => typeof id === "string" && IDX[id]).slice(0, MAX) : []; } catch (e) { return []; } };
+  // P2-65 폐지된 툴 id(IDX[id].a = 새 id)는 새 id로 바꾸고 중복은 하나만 남김
+  const read = () => { try { const a = JSON.parse(localStorage.getItem(KEY) || "[]"); return Array.isArray(a) ? [...new Set(a.filter((id) => typeof id === "string" && IDX[id]).map((id) => IDX[id].a || id))].filter((id) => IDX[id]).slice(0, MAX) : []; } catch (e) { return []; } };
   const write = (a) => { try { localStorage.setItem(KEY, JSON.stringify(a)); } catch (e) { toast("이 브라우저에서는 즐겨찾기를 저장할 수 없어요"); } };
   let favs = read();
 

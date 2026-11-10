@@ -52,12 +52,20 @@
     s.fontSize = (st.sz || 10) + "pt";
     s.fontFamily = fontCss(st);
     let hasText = false;
+    if (p.label) { // 목록 번호·글머리표: 내어쓰기 폭만큼 자리를 잡아 둠
+      const lb = h("span", "h-label");
+      lb.textContent = p.label.s;
+      styleRun(lb, p.label.st || st);
+      if (p.indent < 0) lb.style.minWidth = pt(-p.indent);
+      d.appendChild(lb);
+      hasText = true;
+    }
     for (const it of p.items) {
       const el = item(it, ctx);
       if (el) d.appendChild(el);
       if (it.k === "t" && it.s.trim()) hasText = true;
     }
-    if (!p.items.length) d.appendChild(document.createTextNode("\u200b")); // 빈 줄도 한 줄 높이
+    if (!p.items.length && !p.label) d.appendChild(document.createTextNode("\u200b")); // 빈 줄도 한 줄 높이
     if (!hasText && p.items.some((x) => x.k === "tbl" || x.k === "img" || x.k === "box")) d.classList.add("hp-obj");
     return d;
   }
@@ -84,6 +92,7 @@
       case "eq": { const sp = h("span", "h-eq"); sp.textContent = it.s || "수식"; sp.title = "수식(글자로 표시)"; return sp; }
       case "note": { const sp = h("sup", "h-note"); sp.textContent = `${it.n})`; return sp; }
       case "miss": { const sp = h("span", "h-miss"); sp.textContent = it.s; return sp; }
+      case "pbr": return h("span", "h-pbr");
       default: return null;
     }
   }
@@ -162,7 +171,8 @@
 
   // 화면 폭에 맞춰 종이를 줄여 보이기(인쇄 때는 CSS가 원래 크기로 되돌림)
   R.fit = (stage) => {
-    const avail = stage.clientWidth;
+    const cs = getComputedStyle(stage);
+    const avail = stage.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight); // 안쪽 여백을 뺀 폭
     stage.querySelectorAll(".hwp-page").forEach((pg) => {
       pg.style.zoom = "";
       const w = pg.offsetWidth;
