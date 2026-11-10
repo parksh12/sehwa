@@ -2104,3 +2104,42 @@ li.has-fav{position:relative}
 }
 @media(prefers-reduced-motion:reduce){.am-focus{animation:none}.am-mk,.am-walk i,.am-walk i::after,.am-sheet-ar{transition:none}}
 .am-ext{margin:6px 0 0;font-size:12px;color:var(--ink-3)} /* P2-63b-2 */
+/* ===================== P2-63c 역세권 아파트 지도 시·도별 요약 (/apt-map/<시도>/) =====================
+   표는 상자 안에서만 가로로 밀림(문서 가로 넘침 없음). 색은 사이트 변수(다크 자동), 가격대 배지는 지도와 같은 .am-bd */
+.amr .page-head .lead{font-size:15.5px}
+.amr-key{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 14px}
+.amr-key>div{border:var(--bd);border-radius:12px;background:var(--white);padding:10px 12px;min-width:0}
+.amr-key small{display:block;font-size:12.5px;font-weight:700;color:var(--ink-3)}
+.amr-key b{display:block;font-family:var(--display);font-weight:400;font-size:25px;line-height:1.25}
+.amr-key span{display:block;font-size:12.5px;color:var(--ink-2);overflow-wrap:anywhere}
+.amr-cta{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 6px}
+.amr-box{border:var(--bd);border-radius:12px;background:var(--white);overflow-x:auto;margin:8px 0 18px}
+.amr-tbl{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+.amr-tbl th,.amr-tbl td{padding:7px 9px;border-top:2px solid var(--soft);text-align:left;vertical-align:top}
+.amr-tbl thead th{border-top:0;border-bottom:2px solid var(--ink);font-size:12.5px;color:var(--ink-3);white-space:nowrap;vertical-align:bottom}
+.amr-tbl thead small{font-weight:600}
+.amr-tbl tfoot th,.amr-tbl tfoot td{border-top:2px solid var(--ink);font-weight:800}
+.amr-tbl .n{text-align:right;white-space:nowrap}
+.amr-tbl td small{display:block;color:var(--ink-3);font-size:12px;line-height:1.4}
+.amr-tbl td a{font-weight:800}
+.amr-tbl td .am-low{display:inline-block;margin-top:3px}
+.amr-cnt th[scope="row"]{white-space:nowrap}
+.amr-top td:nth-child(2){min-width:9em}
+.amr-top td:nth-child(4){min-width:8.5em}
+.amr h3 small{font-size:13px;font-weight:600;color:var(--ink-3)}
+.amr h3 .am-bd{font-size:15px}
+.amr-notice{margin:18px 0 0;padding:9px 12px;font-size:12.5px;line-height:1.55;color:var(--ink-2);background:var(--soft);border:2px solid var(--ink);border-radius:12px}
+.amr-notice span{display:block}
+.amr-links{list-style:none;display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:8px 0 12px}
+.amr-links .chip{display:inline-block}
+.amr-links .chip small{font-weight:600;color:var(--ink-3)}
+.amr-links .chip.on{background:var(--ink);color:var(--white)}
+.amr-links .chip.on small{color:inherit}
+@media(max-width:560px){
+  .amr-key{grid-template-columns:1fr 1fr;gap:8px}
+  .amr-key>div:last-child{grid-column:1/-1}
+  .amr-key b{font-size:22px}
+  .amr-cta .btn{flex:1 1 100%}
+  .amr-tbl{font-size:13px}
+  .amr-tbl th,.amr-tbl td{padding:6px 6px}
+}

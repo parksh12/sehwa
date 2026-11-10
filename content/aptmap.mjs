@@ -13,6 +13,10 @@ const SIDO = [[11, "서울"], [41, "경기"], [28, "인천"], [26, "부산"], [2
 const SIDO_BY_NAME = { ...Object.fromEntries(SIDO.map(([c, n]) => [n, c])), 광주: 12, 전남: 12, 광주전남: 12 };
 const OLD_CODE = { 29: 12, 46: 12, 42: 51, 45: 52 }; // 옛 시·도 코드 → 현재 코드
 const r5 = (x) => Math.round(x * 1e5) / 1e5;
+// P2-63c 시·도별 요약 페이지 주소(/apt-map/<slug>/). 광주·전남은 통합 코드 12 하나로 jeonnam-gwangju
+const REGION_SLUG = { 11: "seoul", 41: "gyeonggi", 28: "incheon", 26: "busan", 27: "daegu", 12: "jeonnam-gwangju", 30: "daejeon", 31: "ulsan", 36: "sejong", 51: "gangwon", 43: "chungbuk", 44: "chungnam", 52: "jeonbuk", 47: "gyeongbuk", 48: "gyeongnam", 50: "jeju" };
+const REGION_MIN_INDEX = 20; // P2-63c COO 결정: 단지가 이 수 미만인 시·도 페이지는 noindex,follow + sitemap 제외(얇은 콘텐츠). 이 수 이상이 되면 자동 색인
+const REGION_TITLE = { 12: "전남광주(광주·전남)" }; // 제목·설명에만 쓰는 긴 이름(검색어 「광주」「전남」)
 
 // 카카오맵 JavaScript 키: 브라우저에 그대로 보이는 공개 키이며 카카오 콘솔에서 도메인(penguintools.kr, localhost:8000)으로 제한됨(COO 결정 2026-11-10).
 // REST 키 등 다른 키는 절대 여기에 넣지 않는다. 환경변수 KAKAO_JS_KEY가 있으면 그 값을 우선 씀
@@ -96,9 +100,10 @@ export default async function buildAptmap(h) {
   // ── 데이터 ──
   const SRC = path.join(root, "scripts", "aptmap", "out", "aptmap.json");
   const SNAP = path.join(root, "content", "aptmap-data.json");
-  let data = null;
+  let data = null, srcRaw = null;
   if (fs.existsSync(SRC)) {
-    data = compact(JSON.parse(fs.readFileSync(SRC, "utf8")), logic, warnings);
+    srcRaw = JSON.parse(fs.readFileSync(SRC, "utf8"));
+    data = compact(srcRaw, logic, warnings);
     const txt = JSON.stringify(data);
     if (!process.env.CI && (!fs.existsSync(SNAP) || fs.readFileSync(SNAP, "utf8") !== txt)) fs.writeFileSync(SNAP, txt);
   } else if (fs.existsSync(SNAP)) {
@@ -143,6 +148,9 @@ export default async function buildAptmap(h) {
     ["역세권과 도보 시간", "단지 대표 좌표와 역 좌표 사이의 직선거리예요. 도보 시간은 직선거리 × 1.3 ÷ 분당 67m로 어림한 추정이에요. 「도보 10분 이내만」을 켜면 직선 500m 이내(500m 포함) 단지만 보이고, 카드 배지는 500m 이내 「도보 10분 역세권」, 그보다 멀면 「역까지 도보 약 N분」이에요."],
   ];
   const ruleHtml = RULE_TXT.map(([h1, p]) => `<h3>${esc(h1)}</h3><p>${esc(p)}</p>`).join("");
+  // P2-63c 시·도별 요약 페이지 목록(데이터에 단지가 있는 시·도만). 지도 페이지 하단과 각 시·도 페이지 하단에 같은 링크 목록
+  const regions = data ? data.sido.map(([code, name]) => ({ code, name, slug: REGION_SLUG[code], n: data.c.filter((r) => r[2] === code).length })).filter((r) => r.n > 0 && r.slug) : [];
+  const regionLinks = (cur) => regions.length ? `<ul class="amr-links">${regions.map((r) => r.code === cur ? `<li><span class="chip on" aria-current="page">${esc(r.name)} <small>${r.n.toLocaleString("en-US")}곳</small></span></li>` : `<li><a class="chip" href="${u(`${tool.path}${r.slug}/`)}">${esc(r.name)} <small>${r.n.toLocaleString("en-US")}곳</small></a></li>`).join("")}</ul>` : "";
   const body = `
 ${crumbHtml(items)}
 <article class="tool am-page">
@@ -207,6 +215,7 @@ ${crumbHtml(items)}
     <p>${t(g.limits)}</p>
   </section>
   ${faqHtml(g.faq)}
+  ${regions.length ? `<section class="amr-more" aria-labelledby="amr-more-h"><h2 id="amr-more-h">시·도별 가격대 정리</h2><p class="hint">시·도마다 가격대별 단지 수와 최저가 TOP10을 표로 정리했어요(${esc(thr)}).</p>${regionLinks(0)}</section>` : ""}
   ${recoRows(h.next, "다른 툴도 써 보세요")}
 </article>`;
   // CSP: 툴 페이지 CSP + 카카오맵 SDK(dapi.kakao.com이 t1.daumcdn.net의 지도 코드를 불러옴). 지도 타일은 이미지(img-src https:)
@@ -217,5 +226,148 @@ ${crumbHtml(items)}
     title: tool.seo, desc: tool.desc, path: tool.path, body, wide: true, csp: pageCsp, scripts: ["aptmap-core.js", "aptmap.js"],
     jsonld: [faqLd(g.faq), crumbs(items), { "@context": "https://schema.org", "@type": "WebApplication", name: tool.h1, url: abs(tool.path), applicationCategory: "ReferenceApplication", operatingSystem: "Any", offers: { "@type": "Offer", price: "0", priceCurrency: "KRW" } }],
   }));
-  return { ...dataInfo, checks: nCheck, key: !!key };
+  const reg = data ? await buildRegions({ ...h, data, srcRaw, logic, core, regions, regionLinks, ruleHtml, NOTICE, SOURCES, items }) : { pages: [], checks: 0, empty: [] }; // P2-63c
+  return { ...dataInfo, checks: nCheck, key: !!key, regions: reg.pages, regionChecks: reg.checks, regionsEmpty: reg.empty };
+}
+
+// ───────────────────────── P2-63c 시·도별 요약 페이지 ─────────────────────────
+// 기준: 요청서 6장 + 업무지시서 P2-63c. 빌드 때마다 aptmap 데이터로 자동 생성(데이터에 단지가 있는 시·도만).
+// 표 숫자는 원본 scripts/aptmap/out/aptmap.json을 따로 세어 페이지 HTML에서 읽은 값과 대조하고, 하나라도 다르면 빌드 실패.
+// 지역 해설(사람 검수)은 content/aptmap-regions.mjs. 비어 있으면 데이터 숫자만으로 만든 사실 요약 1~2문장만 나감
+const pct = (a, b) => (b ? Math.round((a * 100) / b) : 0);
+const num = (n) => Number(n).toLocaleString("en-US");
+// 가격 낮은 순(같으면 역 가까운 순, 그다음 단지 id) — 지도 목록의 「가격 낮은 순」과 같은 기준
+const byPrice = (price, dist, id) => (a, b) => price(a) - price(b) || dist(a) - dist(b) || (id(a) < id(b) ? -1 : id(a) > id(b) ? 1 : 0);
+const sidoOf = (c) => SIDO_BY_NAME[c.sido] || OLD_CODE[+String(c.id).slice(0, 2)] || +String(c.id).slice(0, 2); // compact()와 같은 규칙
+
+async function buildRegions(h) {
+  const { root, dist, data, srcRaw, logic, core, regions, regionLinks, ruleHtml, NOTICE, SOURCES, items: mapItems, write, layout, crumbHtml, crumbs, adSlotFixed, esc, u, warnings, tool } = h;
+  let human = {};
+  const HF = path.join(root, "content", "aptmap-regions.mjs");
+  if (fs.existsSync(HF)) human = (await import(new URL(`file:///${HF.replace(/\\/g, "/")}`).href)).default || {};
+  for (const k of Object.keys(human)) if (!Object.values(REGION_SLUG).includes(k)) warnings.push(`content/aptmap-regions.mjs: 알 수 없는 시·도 주소 「${k}」`);
+
+  const [y, m] = String(data.through).split("-");
+  const ym = `${y}년 ${+m}월`;
+  const lines = data.lines;
+  const near0 = (r) => r[14][0][2];
+  const pages = [];
+  let checks = 0;
+  for (const R of regions) {
+    const rows = data.c.filter((r) => r[2] === R.code);
+    const total = rows.length;
+    const w10 = rows.filter((r) => core.isWalk10(near0(r))).length;
+    const sorted = rows.slice().sort(byPrice((r) => r[9], near0, (r) => r[0]));
+    const bands = core.BANDS.map((b, i) => {
+      const list = sorted.filter((r) => r[10] === i + 1);
+      return { ...b, cnt: list.length, w: list.filter((r) => core.isWalk10(near0(r))).length, top: list.slice(0, 10) };
+    });
+    const cheapest = sorted[0];
+    const most = bands.reduce((a, b) => (b.cnt > a.cnt ? b : a));
+    const under3 = bands[0].cnt + bands[1].cnt;
+    const name = R.name, tname = REGION_TITLE[R.code] || name;
+    const p = `${tool.path}${R.slug}/`;
+    const mapQ = (q) => u(`${tool.path}?sido=${R.code}${q || ""}`);
+    const title = `${tname} 역세권 20평대 아파트 가격대별 정리 (${ym} 실거래 기준)`;
+    const desc = `${tname}에서 역 1km 안, 300세대 이상, 전용 40~60㎡(20평대) 아파트 ${num(total)}곳을 국토교통부 실거래 중위값(${ym} 거래분까지)으로 가격대별로 정리했어요. 가격대별 단지 수, 최저가 TOP10, 도보 10분 역세권 단지 수를 볼 수 있어요. 투자 권유가 아니에요.`;
+    // 사실 요약(데이터 숫자만, 사람 해설이 아님)
+    const facts = [
+      `${name}에서 지도 조건(역 직선 1km·300세대 이상·전용 40~60㎡·대표가격 9억 미만)에 맞는 단지는 ${num(total)}곳이에요. 가장 많은 가격대는 ${most.n}로 ${num(most.cnt)}곳(전체의 ${pct(most.cnt, total)}%)이에요.`,
+      `${under3 ? `3억 미만 단지는 ${num(under3)}곳으로 전체의 ${pct(under3, total)}%이고` : "3억 미만 단지는 없고"}, 역까지 직선 500m 이내인 도보 10분 역세권 단지는 ${num(w10)}곳(${pct(w10, total)}%)이에요.`,
+    ];
+    const hu = human[R.slug];
+    const huParas = hu ? (Array.isArray(hu) ? hu : hu.paras || []).filter((x) => String(x).trim()) : [];
+    const huHtml = huParas.length ? `<h3>지역 해설</h3>${huParas.map((x) => `<p>${esc(x)}</p>`).join("")}${hu.by || hu.date ? `<p class="hint">작성·검수: ${esc([hu.by, hu.date].filter(Boolean).join(", "))}</p>` : ""}` : "";
+
+    const bd = (b) => `<span class="am-bd am-${b.k}"><i aria-hidden="true">${esc(b.m)}</i>${esc(b.n)}</span>`;
+    const stCell = (r) => { const s = r[14][0]; return `${esc(core.stName(s[0]))}<small>${esc(s[1].map((k) => lines[k]).join("·"))}</small><small>직선 ${esc(core.fmtDist(s[2]))} · ${esc(core.badge(s[2]))}</small>`; };
+    const bandTbl = `<div class="amr-box"><table class="amr-tbl amr-cnt">
+<caption class="sr">${esc(name)} 가격대별 단지 수</caption>
+<thead><tr><th scope="col">가격대</th><th scope="col" class="n">단지 수</th><th scope="col" class="n">비율</th><th scope="col" class="n">도보 10분<br>역세권</th><th scope="col"><span class="sr">지도</span></th></tr></thead>
+<tbody>${bands.map((b) => `<tr data-band="${b.k}" data-n="${b.cnt}" data-w="${b.w}"><th scope="row">${bd(b)}</th><td class="n">${num(b.cnt)}곳</td><td class="n">${pct(b.cnt, total)}%</td><td class="n">${num(b.w)}곳</td><td>${b.cnt ? `<a href="${mapQ(`&p=${b.k}`)}">지도<span class="sr">에서 ${esc(b.n)} 보기</span></a>` : ""}</td></tr>`).join("")}</tbody>
+<tfoot><tr><th scope="row">합계</th><td class="n">${num(total)}곳</td><td class="n">100%</td><td class="n">${num(w10)}곳</td><td></td></tr></tfoot>
+</table></div>`;
+    const topHtml = bands.filter((b) => b.cnt).map((b) => `<h3 id="top-${b.k}">${bd(b)} ${b.cnt > 10 ? `최저가 TOP10 <small>(${num(b.cnt)}곳 중)</small>` : `단지 ${num(b.cnt)}곳 <small>(가격 낮은 순)</small>`}</h3>
+<div class="amr-box"><table class="amr-tbl amr-top" data-top="${b.k}">
+<caption class="sr">${esc(name)} ${esc(b.n)} 대표가격 낮은 순</caption>
+<thead><tr><th scope="col" class="n">#</th><th scope="col">단지명 <small>시군구·동</small></th><th scope="col" class="n">대표가격</th><th scope="col">가까운 역·거리</th><th scope="col" class="n">세대수</th><th scope="col" class="n">준공</th></tr></thead>
+<tbody>${b.top.map((r, i) => `<tr data-id="${esc(r[0])}" data-price="${r[9]}"><td class="n">${i + 1}</td><td><a href="${mapQ(`&c=${encodeURIComponent(r[0])}`)}">${esc(r[1])}</a><small>${esc([r[3], r[4]].filter(Boolean).join(" "))}</small></td><td class="n"><b>${esc(core.fmtPrice(r[9]))}</b>${r[13] ? '<small><span class="am-low">거래 적음</span></small>' : ""}</td><td>${stCell(r)}</td><td class="n">${num(r[7])}</td><td class="n">${r[8] || "-"}</td></tr>`).join("")}</tbody>
+</table></div>`).join("\n");
+
+    const items = [...mapItems, [name, p]];
+    const body = `
+${crumbHtml(items)}
+<article class="amr" data-sido="${R.code}" data-total="${total}" data-w10="${w10}">
+  <header class="page-head">
+    <span class="eyebrow">내 집 마련</span>
+    <h1>${esc(title)}</h1>
+    <p class="lead">${esc(desc)}</p>
+  </header>
+  <div class="amr-key">
+    <div><small>지도에 오른 단지</small><b>${num(total)}곳</b><span>역 직선 1km 안</span></div>
+    <div><small>도보 10분 역세권</small><b>${num(w10)}곳</b><span>역까지 직선 500m 이내</span></div>
+    <div><small>가장 낮은 대표가격</small><b>${esc(core.fmtPrice(cheapest[9]))}</b><span>${esc(cheapest[1])}${cheapest[13] ? " · 거래 적음" : ""}</span></div>
+  </div>
+  <p class="amr-cta"><a class="btn" href="${mapQ()}">이 지역 지도로 보기 →</a><a class="btn ghost" href="${mapQ("&walk10=1")}">도보 10분 이내만 지도로</a></p>
+  <section class="prose amr-sum" aria-labelledby="amr-sum-h">
+    <h2 id="amr-sum-h">한눈에 보기</h2>
+    ${facts.map((x) => `<p>${esc(x)}</p>`).join("")}
+    ${huHtml}
+  </section>
+  <section aria-labelledby="amr-cnt-h">
+    <h2 id="amr-cnt-h">가격대별 단지 수</h2>
+    ${bandTbl}
+  </section>
+  ${adSlotFixed("below-tool")}
+  <section aria-labelledby="amr-top-h">
+    <h2 id="amr-top-h">가격대별 최저가 TOP10</h2>
+    <p class="hint">대표가격이 낮은 순서예요. 단지명을 누르면 지도에서 그 단지 카드(최근 거래·역·세대수)가 열려요. 값이 같으면 역이 가까운 단지를 먼저 적었어요.</p>
+    ${topHtml}
+  </section>
+  <section class="prose" aria-labelledby="amr-rule-h">
+    <h2 id="amr-rule-h">기준과 계산법</h2>
+    ${ruleHtml}
+    <p>표는 매달 실거래 자료를 새로 받으면 다시 만들어져요. 대표가격은 거래가 끝난 기록의 중위값이라 지금 부르는 값(호가)과 다를 수 있어요. 단지 좌표는 대표 주소 1점이라 큰 단지는 동마다 역까지 거리가 달라요.</p>
+  </section>
+  <p class="amr-notice"><span>${esc(NOTICE)}</span> <span>${esc(SOURCES)}</span></p>
+  <section class="amr-more" aria-labelledby="amr-other-h">
+    <h2 id="amr-other-h">다른 시·도 보기</h2>
+    ${regionLinks(R.code)}
+    <p><a href="${u(tool.path)}">← 전국 역세권 아파트 지도로</a></p>
+  </section>
+</article>`;
+    const noindex = total < REGION_MIN_INDEX;
+    write(p, layout({ title, desc, path: p, body, csp: true, noindex, jsonld: [crumbs(items)] }));
+    pages.push({ path: p, name, n: total, w10, noindex });
+
+    // ── 빌드 대조: 원본(aptmap.json)을 따로 세어 방금 만든 HTML의 숫자·TOP10·링크와 비교 ──
+    if (srcRaw) {
+      const err = [];
+      const raw = (srcRaw.complexes || []).filter((c) => sidoOf(c) === R.code);
+      const near = (c) => Math.min(...[c.station, ...(c.stationsNear || [])].filter(Boolean).map((s) => Math.round(s.dist)));
+      const html = fs.readFileSync(path.join(dist, p, "index.html"), "utf8");
+      const art = html.match(/<article class="amr" data-sido="(\d+)" data-total="(\d+)" data-w10="(\d+)"/);
+      const rw10 = raw.filter((c) => logic.isWalk10(near(c))).length;
+      if (!art || +art[2] !== raw.length) err.push(`합계 ${art && art[2]} ≠ 원본 ${raw.length}`);
+      if (!art || +art[3] !== rw10) err.push(`도보 10분 ${art && art[3]} ≠ 원본 ${rw10}`);
+      const got = Object.fromEntries([...html.matchAll(/<tr data-band="(p\d)" data-n="(\d+)" data-w="(\d+)"/g)].map((x) => [x[1], [+x[2], +x[3]]]));
+      for (const b of core.BAND_KEYS) {
+        const rb = raw.filter((c) => logic.priceBand(c.price) === b);
+        const want = [rb.length, rb.filter((c) => logic.isWalk10(near(c))).length];
+        if (!got[b] || got[b].join() !== want.join()) err.push(`${b} 단지 수 ${got[b]} ≠ 원본 ${want}`);
+        const wantIds = rb.slice().sort(byPrice((c) => c.price, near, (c) => String(c.id))).slice(0, 10).map((c) => `${c.id}:${c.price}`);
+        const tb = html.match(new RegExp(`data-top="${b}"[\\s\\S]*?</table>`));
+        const gotIds = tb ? [...tb[0].matchAll(/<tr data-id="([^"]+)" data-price="(\d+)"/g)].map((x) => `${x[1]}:${x[2]}`) : [];
+        if (wantIds.join() !== gotIds.join()) err.push(`${b} TOP10 [${gotIds.slice(0, 2)}…] ≠ 원본 [${wantIds.slice(0, 2)}…]`);
+        const links = tb ? [...tb[0].matchAll(/href="[^"]*\?sido=(\d+)&c=([^"]+)"/g)] : [];
+        if (links.length !== gotIds.length || links.some((x, i) => +x[1] !== R.code || decodeURIComponent(x[2]) !== gotIds[i].split(":")[0])) err.push(`${b} TOP10 지도 링크`);
+        checks += 3;
+      }
+      checks += 2;
+      if (/매물/.test(html)) err.push("「매물」 표현");
+      if (err.length) throw new Error(`P2-63c ${p} 표 숫자 대조 실패: ${err.slice(0, 6).join(" / ")}`);
+    }
+  }
+  const empty = Object.entries(REGION_SLUG).filter(([c]) => !regions.some((r) => r.code === +c)).map(([c]) => (SIDO.find(([k]) => k === +c) || [])[1]);
+  return { pages, checks, empty };
 }

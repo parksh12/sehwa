@@ -2453,6 +2453,7 @@ utilPage(utilById.stopwatch, `<button type="button" class="tm-fs-close" data-fs-
   const next = NEXT.aptmap.filter((x) => utilById[x]).concat(UTIL_RANK.filter((x) => x !== "aptmap" && !NEXT.aptmap.includes(x))).slice(0, 4);
   const r = await (await import("./content/aptmap.mjs")).default({ root: ROOT, dist: DIST, write, layout, crumbHtml, crumbs, faqHtml, faqLd, adSlotFixed, recoRows, favBtn, esc, t, u, abs, warnings, tool, guide: g, csp: CSP, buildV: BUILD_V, next });
   console.log(`  아파트 지도: 단지 ${r.n}곳, 데이터 ${Math.round(r.raw / 1024)}KB (gzip ${Math.round(r.gz / 1024)}KB), 화면 계산 대조 ${r.checks}건 통과, 카카오 JS 키 ${r.key ? "있음" : "없음"}`);
+  console.log(`  아파트 지도 시·도 요약(P2-63c): ${r.regions.length}쪽(${r.regions.map((x) => `${x.name} ${x.n}${x.noindex ? "(noindex)" : ""}`).join(", ")}), 원본 대조 ${r.regionChecks}건 통과${r.regionsEmpty?.length ? `, 단지 0곳이라 안 만든 시·도: ${r.regionsEmpty.join("·")}` : ""}`); // P2-63c
 }
 
 // 정보 페이지
