@@ -35,6 +35,8 @@ jobs:
           # P2-35 검색 등록 소유 확인 메타 태그(값이 있으면 모든 페이지 <head>에 출력). 절차: 산출물/P2-35_검색등록_절차.md
           GOOGLE_VERIFICATION: ${{ vars.GOOGLE_VERIFICATION }}
           NAVER_VERIFICATION: ${{ vars.NAVER_VERIFICATION }}
+          # P2-63b 카카오맵 JS 키 덮어쓰기용(선택). 비어 있으면 content/aptmap.mjs의 공개 키 상수를 씀(등록 불필요)
+          KAKAO_JS_KEY: ${{ vars.KAKAO_JS_KEY }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

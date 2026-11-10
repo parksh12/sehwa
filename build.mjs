@@ -113,6 +113,7 @@ const ART = {
   readtime: sv(`${doc(10, 12, 58, 78, W)}<path d="M22 34h32M22 48h32M22 62h20" stroke="${K}" stroke-width="4" stroke-linecap="round"/><circle cx="80" cy="78" r="30" fill="${YEL}" stroke="${K}" stroke-width="4"/><path d="M80 60v18l12 8" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M74 42h12" stroke="${K}" stroke-width="5" stroke-linecap="round"/>`), // P2-57 글 + 시계
   emoji: sv(`<circle cx="50" cy="56" r="38" fill="${YEL}" stroke="${K}" stroke-width="4"/><circle cx="37" cy="48" r="5" fill="${K}"/><circle cx="63" cy="48" r="5" fill="${K}"/><path d="M33 66c8 12 26 12 34 0" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M92 62l6 13 14 2-10 10 2 14-12-7-12 7 2-14-10-10 14-2z" fill="${RED}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/>`), // P2-57 웃는 얼굴 + 별(그림, 이모지 글꼴 아님)
   ostax: sv(`<path d="M24 10h72v92l-12-8-12 8-12-8-12 8-12-8-12 8z" fill="${W}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><circle cx="60" cy="38" r="17" fill="${YEL}" stroke="${K}" stroke-width="4"/><text x="60" y="45.5" font-size="21" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">$</text><text x="60" y="80" font-size="21" font-weight="900" text-anchor="middle" fill="${RED}" font-family="sans-serif">22%</text>`), // P2-53 해외주식 양도세(영수증 + 달러 + 22%)
+  aptmap: sv(`<rect x="10" y="12" width="100" height="96" rx="10" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M10 70 40 52l26 14 44-26" fill="none" stroke="#2346d8" stroke-width="8" stroke-linejoin="round"/><circle cx="66" cy="66" r="8" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M36 22h22v24H36z" fill="${YEL}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M41 29h4M49 29h4M41 37h4M49 37h4" stroke="${K}" stroke-width="3"/><path d="M84 96c0 0-14-16-14-26a14 14 0 0 1 28 0c0 10-14 26-14 26z" fill="${RED}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><circle cx="84" cy="70" r="5" fill="${W}" stroke="${K}" stroke-width="3"/>`), // P2-63b 지도 + 역(노선·역 점) + 아파트 + 위치 핀
 };
 function doc(x, y, w, h, fill) {
   const f = Math.min(14, w / 3);
@@ -167,6 +168,7 @@ const UCATS = {
   time: { name: "시간", desc: "타이머와 스톱워치처럼 시간을 재고 알려 주는 툴이에요." },
   fun: { name: "운세·재미", seo: "운세·재미 — 무료 타로·무료 사주·띠별 운세·성격 테스트·사다리타기", desc: "오늘의 띠별 운세, 무료 타로, 무료 사주팔자, 16유형 성격 테스트, 생일로 보는 나, 이름 궁합, 사다리타기·돌림판처럼 재미로 보고 가볍게 정하는 툴이에요." }, // P2-49 옛 오락실 운세·테스트·사다리 // P2-58 타로
   invest: { name: "투자", seo: "투자 툴 — 손절·익절·포지션 계산기, 복리 계산기·배당 계산기, RSI 백테스트, 해외주식 양도세 계산기, 적립식 백테스트, 물타기 계산기, SOXL·TQQQ·KORU 주가 예측", desc: "손절가·익절가와 감당할 손실로 몇 주를 사야 하는지와 손익비를 계산하는 손절·익절·포지션 계산기, 적립식 복리로 몇 년 뒤 얼마가 되는지, 월 배당 100만 원을 받으려면 얼마가 필요한지 계산하는 복리·배당 계산기, 미국주식 양도소득세 계산, SOXL·TQQQ·KORU를 매달 샀다면 지금 얼마인지 보는 적립식 백테스트, RSI 30에 사고 70에 팔았다면 얼마인지 보는 RSI 매매 백테스트, 물타기 평단가 계산처럼 주식 투자에서 자주 하는 계산과, 레버리지 ETF의 실제 과거 차트로 오를까 내릴까를 맞혀 보는 투자 툴이에요. 투자 권유가 아니에요." }, // P2-50 새 툴 카테고리(앞으로 주식투자 툴을 여기에 모음) // P2-51 seo·desc에 물타기 계산기 // P2-52 적립식 백테스트 // P2-53 해외주식 양도세 // P2-54 RSI 백테스트 // P2-55 복리·배당 계산기 // P2-56 손절·익절·포지션 계산기
+  house: { name: "내 집 마련", seo: "내 집 마련 — 역세권 아파트 지도, 20평대 실거래 가격대별", desc: "국토교통부 실거래가로 역세권 20평대(전용 40~60㎡) 아파트를 가격대별로 지도에서 보는 툴이에요. 사회초년생이 첫 집을 알아볼 때 어느 동네에서 얼마쯤인지 한눈에 볼 수 있어요. 투자 권유가 아니에요." }, // P2-63b 새 서랍(홈에서는 툴 서랍 맨 뒤, 오락실 앞)
 };
 const NAV = [...Object.entries(UCATS).map(([k, c]) => [c.name, `/${k}/`]), [PLAY.name, PLAY.path]];
 // seo: <title> 앞부분(검색어 그대로) / also: 다른 카테고리 페이지에도 함께 노출 / beta: 베타 표시 / kw: 홈 검색용 동의어
@@ -201,8 +203,9 @@ const UTILS = [
   { id: "linebreak", cat: "text", path: "/text/line-break-remover/", title: "줄바꿈 제거 · 공백 정리", seo: "줄바꿈 제거 · 공백 정리 — PDF 복사 줄바꿈 없애기, 엔터 제거, 공백 제거", h1: "줄바꿈 제거 · 공백 정리 — PDF에서 복사한 글의 깨진 줄바꿈까지", desc: "PDF에서 복사해 문장 중간마다 끊긴 줄바꿈을 문단은 살린 채 이어 붙여요. 연속 공백, 줄 앞뒤 공백, 빈 줄, 탭, 전각 공백·NBSP, 제로폭 같은 보이지 않는 문자를 정리하고, 줄바꿈(엔터)을 모두 지워 한 줄로도 만들어요. 입력한 글은 저장하지 않습니다.", hook: "PDF 복사 줄바꿈 복구, 엔터·공백 한 번에 정리.", meta: "전후 글자수 비교", kw: "줄바꿈 제거 줄바꿈 없애기 줄바꿈 삭제 줄 바꿈 엔터 제거 엔터 없애기 엔터 삭제 개행 제거 개행문자 줄넘김 한 줄로 만들기 한줄로 PDF 줄바꿈 PDF 복사 줄바꿈 PDF 붙여넣기 PDF 텍스트 정리 공백 제거 공백 없애기 띄어쓰기 제거 연속 공백 스페이스 제거 빈 줄 제거 빈줄 삭제 탭 제거 전각 공백 nbsp 제로폭 공백 보이지 않는 문자 특수 공백 하이픈 텍스트 정리 글 정리 문단 정리 line break remover remove line breaks whitespace" }, // P2-57
   { id: "readtime", cat: "text", path: "/text/reading-time/", title: "읽기 시간 계산기", seo: "읽기 시간 계산기 — 읽는 시간·발표 시간, 원고지 매수 계산", h1: "읽기 시간 계산기 — 읽는 시간, 발표 시간, 원고지 매수까지", desc: "글을 붙여 넣으면 예상 읽기 시간과 발표(말하기) 시간, 200자 원고지 매수(공백 포함·제외·칸 채우기), 문장 수와 평균 문장 길이, 60자 넘는 긴 문장, 자주 나온 낱말을 바로 알려 줘요. 기준 속도는 직접 바꿀 수 있어요. 입력한 글은 저장하지 않습니다.", hook: "읽는 시간·발표 시간·원고지 매수를 한 번에.", meta: "읽기·발표 · 원고지 · 긴 문장", kw: "읽기 시간 읽는 시간 읽는데 걸리는 시간 독서 시간 리딩 타임 reading time 발표 시간 발표 시간 계산 말하기 시간 스피치 시간 대본 시간 원고 시간 1분 스피치 3분 스피치 5분 발표 몇 자 원고지 원고지 매수 원고지 계산 200자 원고지 원고지 몇 장 매수 계산 문장 수 문장 길이 평균 문장 길이 긴 문장 가독성 가독성 검사 키워드 빈도 단어 빈도 빈출 단어 키워드 분석 블로그 글 분석 글 분석 단어 수 wpm 분당 글자" }, // P2-57
   { id: "emoji", cat: "text", path: "/text/emoji-special-characters/", title: "이모지 · 특수문자 복사", seo: "이모지 · 특수문자 복사 — 하트 특수문자, 화살표, 별, 원문자 모음과 일괄 삽입", h1: "이모지 · 특수문자 복사 — 누르면 바로 복사, 목록 꾸미기까지", desc: "표정·사람·동물·음식·사물·기호 이모지와 하트·화살표·별(★※→)·괄호·원문자(①㉠) 같은 특수문자를 한글로 찾아 누르면 바로 복사해요. 글을 넣으면 줄마다 이모지·기호를 붙이고 1\uFE0F⃣ 2\uFE0F⃣ 번호도 자동으로 매겨요. 유니코드 표준 문자만 써요.", hook: "하트·화살표·별 특수문자, 누르면 바로 복사.", meta: "1,000여 개 · 일괄 삽입", kw: "이모지 이모지 복사 이모티콘 이모티콘 복사 특수문자 특수문자 복사 특수기호 기호 모음 특수문자 모음 특수문자표 하트 특수문자 하트 이모지 하트 기호 하트 복사 ♥ ♡ 별 특수문자 별 기호 ★ ☆ 화살표 특수문자 화살표 기호 → 당구장 표시 ※ 체크 표시 체크 이모지 ✔ ✅ 동그라미 숫자 원문자 원숫자 ① 괄호 숫자 낫표 겹낫표 「」 『』 꺾쇠 말머리 기호 글머리 기호 블로그 꾸미기 인스타 꾸미기 목록 꾸미기 번호 이모지 1\uFE0F⃣ 숫자 이모지 일괄 삽입 줄 앞에 이모지 구분선 emoji copy special characters symbols" }, // P2-57
+  { id: "aptmap", cat: "house", path: "/apt-map/", title: "역세권 아파트 지도", seo: "역세권 아파트 지도 — 사회초년생 20평대 실거래가, 가격대별 2억대·3억대·4억대", h1: "사회초년생이 살 만한 역세권 아파트 지도", desc: "역에서 직선 1km 안, 300세대 이상, 전용 40~60㎡(20평대) 아파트를 국토교통부 실거래가 중위값으로 2억 미만부터 8억대까지 가격대별로 지도에 보여 줘요. 지역·노선·준공연도로 좁히고 「도보 10분 이내만」(직선 500m)으로 더 가까운 단지만 볼 수 있어요. 거래 완료 기록 기준이라 현재 호가와 다를 수 있고, 투자 권유가 아니에요.", hook: "20평대 역세권 아파트, 가격대별로 지도에서.", meta: "실거래 중위값 · 역 1km · 매달 갱신", kw: "아파트 지도 역세권 아파트 역세권 아파트 지도 역세권 20평대 20평대 아파트 24평 전용 59 전용 49 소형 아파트 싼 아파트 제일 싼 아파트 저렴한 아파트 2억 아파트 3억 아파트 4억 아파트 5억 아파트 2억대 3억대 4억대 아파트 실거래가 실거래가 조회 아파트 시세 아파트 가격 지하철역 근처 아파트 역 근처 아파트 도보 10분 사회초년생 내 집 마련 첫 집 신혼부부 아파트 서울 경기 인천 부산 대구 수도권 아파트 아파트 매매 국토부 실거래" }, // P2-63b
 ];
-const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "heic", "qr", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "word2pdf", "dday", "stockquiz", "avgdown", "dca", "ostax", "rsibt", "compound", "possize", "linebreak", "readtime", "emoji"]; // P2-57 linebreak·readtime·emoji // P2-56 possize // P2-55 compound // P2-50 stockquiz(투자) // P2-51 avgdown // P2-52 dca // P2-53 ostax // P2-54 rsibt // P2-45 돈 계산기 4종, P2-46 imgmerge, P2-47 heic, P2-48 qr
+const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "heic", "qr", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "word2pdf", "dday", "stockquiz", "avgdown", "dca", "ostax", "rsibt", "compound", "possize", "linebreak", "readtime", "emoji", "aptmap"]; // P2-63b aptmap // P2-57 linebreak·readtime·emoji // P2-56 possize // P2-55 compound // P2-50 stockquiz(투자) // P2-51 avgdown // P2-52 dca // P2-53 ostax // P2-54 rsibt // P2-45 돈 계산기 4종, P2-46 imgmerge, P2-47 heic, P2-48 qr
 const NEXT = {
   pdfmerge: ["pdfsplit", "img2pdf", "imgcompress"],
   pdfsplit: ["pdfmerge", "pdf2img", "img2pdf"],
@@ -234,6 +237,7 @@ const NEXT = {
   linebreak: ["charcount", "readtime", "emoji"], // P2-57 정리한 글 → 글자수 → 읽기 시간 → 꾸미기
   readtime: ["charcount", "linebreak", "emoji"], // P2-57 글자수 ↔ 읽기 시간 ↔ 정리 ↔ 꾸미기
   emoji: ["linebreak", "charcount", "readtime"], // P2-57 꾸미기 전 정리 → 글자수 → 읽기 시간
+  aptmap: ["salary", "pyeong", "compound"], // P2-63b 내 연봉 실수령액 → 평수 환산 → 모으는 기간(복리)
 };
 const utilById = Object.fromEntries(UTILS.map((x) => [x.id, x]));
 const anyById = { ...toolById, ...utilById };
@@ -383,7 +387,7 @@ function layout({ title: title0, desc: desc0, path: p, body, scripts = [], jsonl
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-${csp ? `<meta http-equiv="Content-Security-Policy" content="${CSP}">` : ""}
+${csp ? `<meta http-equiv="Content-Security-Policy" content="${typeof csp === "string" ? csp : CSP}">` : ""}
 ${THEME_HEAD}
 <title>${esc(pageTitle)}</title>
 <meta name="description" content="${esc(desc)}">
@@ -491,15 +495,17 @@ fs.cpSync(path.join(ROOT, "src", "assets"), path.join(DIST, "assets"), { recursi
 // 홈 배치(COO 개편): 툴은 홈에서 대표 서랍 한 곳에만 보임(also가 있으면 also[0]) → 중복 행 없음
 const homeIn = (k) => TOOL_RANK.map((id) => anyById[id]).filter((x) => ((x.also || [])[0] || x.cat) === k); // P2-49 운세·재미 포함
 // 서랍 순서: 툴이 많은 서랍부터(같으면 UCATS 순서). 위 3개는 윗줄, 나머지는 아랫줄
-const homeOrder = () => Object.entries(UCATS).map((e, i) => [e, homeIn(e[0]).length, i]).sort((a, b) => b[1] - a[1] || a[2] - b[2]).map((x) => x[0]);
+const HOME_TAIL_CATS = ["house"]; // P2-63b 「내 집 마련」은 툴 수와 상관없이 툴 서랍 맨 뒤(오락실·랜덤채팅 앞), 한 줄 전체 서랍
+const homeOrder = () => Object.entries(UCATS).filter(([k]) => !HOME_TAIL_CATS.includes(k)).map((e, i) => [e, homeIn(e[0]).length, i]).sort((a, b) => b[1] - a[1] || a[2] - b[2]).map((x) => x[0]);
 // P2-49 데스크톱 줄 배치: 윗줄 3개(넓이 1/3). 아랫줄이 2개면 반씩, 그 밖에는 1/3씩
 const cabCls0 = (i, n) => (n > 6 && i === n - 1 && (n - 3) % 3 === 1 ? "cab-full" : i < 3 || n - 3 !== 2 ? "cab-big" : "cab-wide"); // P2-50 서랍 7개면 마지막에 혼자 남는 서랍은 한 줄 전체
-const nToolCabs = Object.keys(UCATS).length;
+const nToolCabs = Object.keys(UCATS).length - HOME_TAIL_CATS.length; // P2-63b 내 집 마련 서랍은 배치 계산에서 빼고 한 줄 전체
 const cabCls = (i, n) => (i < nToolCabs ? cabCls0(i, nToolCabs) : "cab-full"); // P2-61 툴 카테고리 배치는 그대로, 뒤에 붙는 오락실·랜덤채팅 서랍은 한 줄 전체(데스크톱 3열 행)
 // P2-61 홈 NEW 띠: 맨 위(검색·즐겨찾기 바로 아래)
 // ★ 새 툴·게임을 만들면 여기에 { id, d: "출시일" }을 맨 위에 추가(대표님 지시: 새 콘텐츠는 메인에 잘 보이게).
 // 출시 30일 이내 항목 중 최신 4개가 홈 맨 위 「NEW」 띠에 나오고, 해당 행·타일에 NEW 표시가 붙음
 const NEW_ITEMS = [
+  { id: "aptmap", d: "2026-11-10" }, // P2-63b
   { id: "mines", d: "2026-11-10" }, // P2-60
   { id: "tarot", d: "2026-11-10" }, // P2-58
   { id: "emoji", d: "2026-11-10" }, // P2-57
@@ -550,7 +556,7 @@ const funTile = (id) => {
 // 홈 — 「펭귄 공구함」: 검색 → NEW 띠 → 카테고리 서랍마다 툴 행(게임·랜덤채팅도 같은 서랍, P2-61). 툴이 늘면 행만 늘어남
 // P2-61 홈 서랍 목록: 툴 카테고리(툴 많은 순) → 펭귄 오락실(게임 7종) → 랜덤채팅(랜덤7942 단독, 새 창). 모두 drawerHtml 한 부품
 const homeCabs = () => [
-  ...homeOrder().map(([k, c]) => ({ k, name: c.name, n: homeIn(k).length, html: drawerHtml({ tone: k, name: c.name, href: `/${k}/`, tools: homeIn(k), tag: "h3" }) })),
+  ...[...homeOrder(), ...HOME_TAIL_CATS.map((k) => [k, UCATS[k]])].map(([k, c]) => ({ k, name: c.name, n: homeIn(k).length, html: drawerHtml({ tone: k, name: c.name, href: `/${k}/`, tools: homeIn(k), tag: "h3" }) })), // P2-63b 내 집 마련은 툴 서랍 맨 뒤
   { k: "play", name: PLAY.name, n: HOME_GAMES.length, html: drawerHtml({ tone: "play", name: PLAY.name, href: PLAY.path, tools: HOME_GAMES.map((id) => toolById[id]), tag: "h3" }) },
   { k: "chat", name: CHAT.name, n: 1, html: drawerHtml({ tone: "chat", name: CHAT.name, tools: [], ext: [FAMILY], tag: "h3" }) },
 ];
@@ -1111,9 +1117,10 @@ for (const [k, c] of Object.entries(UCATS)) {
   const list = utilsIn(k); // P2-49 운세·재미 포함
   const items = [["홈", "/"], [c.name, `/${k}/`]];
   const inv = k === "invest"; // P2-50 투자: 파일 안내 대신 교육·재미용·투자 권유 아님 안내
+  const house = k === "house"; // P2-63b 내 집 마련: 파일 안내 대신 필터·내 위치 안내
   const fun = k === "fun"; // P2-49 운세·재미: 파일 안내 대신 입력값 안내 + 띠·별자리·16유형·띠별 운세 바로가기
   const body = `${crumbHtml(items)}
-<header class="page-head"><span class="eyebrow">펭귄 공구함</span><h1>${esc(c.name)} 툴</h1><p class="lead">${esc(c.desc)} ${esc(fun ? "입력한 생년월일과 이름은 브라우저 안에서만 계산하고 저장하지 않아요." : inv ? "넣은 숫자와 고른 답은 브라우저 안에서만 계산하고 저장하지 않아요." /* P2-51 계산기 추가로 문구 일반화 */ : SAFE)}</p>${fun ? '<p class="fun-badge">운세와 테스트는 재미로 보는 콘텐츠예요</p>' : ""}${inv ? `<p class="sq-warn">${esc(STOCK_WARN)}</p>` : ""}</header>
+<header class="page-head"><span class="eyebrow">펭귄 공구함</span><h1>${esc(c.name)} 툴</h1><p class="lead">${esc(c.desc)} ${esc(house ? "고른 필터는 주소에만 남고, 내 위치는 이 기기 안에서 지도를 옮길 때만 써요." : fun ? "입력한 생년월일과 이름은 브라우저 안에서만 계산하고 저장하지 않아요." : inv ? "넣은 숫자와 고른 답은 브라우저 안에서만 계산하고 저장하지 않아요." /* P2-51 계산기 추가로 문구 일반화 */ : SAFE)}</p>${fun ? '<p class="fun-badge">운세와 테스트는 재미로 보는 콘텐츠예요</p>' : ""}${inv ? `<p class="sq-warn">${esc(STOCK_WARN)}</p>` : ""}</header>
 <div class="drawers drawers-1 open">${drawerHtml({ tone: k, name: `${c.name} 서랍`, tools: utilsIn(k) })}</div>
 ${fun ? FUN_EXTRA() : ""}
 <section class="reco"><h2>다른 서랍</h2><div class="drawers drawers-mini">${Object.entries(UCATS).filter(([kk]) => kk !== k).map(([kk, cc]) => drawerHtml({ tone: kk, name: cc.name, href: `/${kk}/`, tools: utilsIn(kk), tag: "h3" })).join("")}</div></section>`;
@@ -2439,8 +2446,17 @@ utilPage(utilById.stopwatch, `<button type="button" class="tm-fs-close" data-fs-
   write(p, layout({ title: "오픈소스 고지", desc: `${cfg.siteName}가 사용하는 오픈소스 라이브러리와 라이선스 안내`, path: p, body }));
 }
 
+// P2-63b 역세권 아파트 지도 (본문·데이터 변환은 content/aptmap.mjs, 화면은 src/assets/aptmap-core.js · aptmap.js). 화면 계산이 파이프라인(scripts/aptmap/logic.mjs)과 다르면 빌드 실패
+{
+  const tool = utilById.aptmap, g = toolText.aptmap;
+  if (!g) throw new Error("tools.aptmap 원고 없음");
+  const next = NEXT.aptmap.filter((x) => utilById[x]).concat(UTIL_RANK.filter((x) => x !== "aptmap" && !NEXT.aptmap.includes(x))).slice(0, 4);
+  const r = await (await import("./content/aptmap.mjs")).default({ root: ROOT, dist: DIST, write, layout, crumbHtml, crumbs, faqHtml, faqLd, adSlotFixed, recoRows, favBtn, esc, t, u, abs, warnings, tool, guide: g, csp: CSP, buildV: BUILD_V, next });
+  console.log(`  아파트 지도: 단지 ${r.n}곳, 데이터 ${Math.round(r.raw / 1024)}KB (gzip ${Math.round(r.gz / 1024)}KB), 화면 계산 대조 ${r.checks}건 통과, 카카오 JS 키 ${r.key ? "있음" : "없음"}`);
+}
+
 // 정보 페이지
-const INFO = ["about", "privacy", "terms", "disclaimer", "contact"];
+const INFO =["about", "privacy", "terms", "disclaimer", "contact"];
 for (const k of INFO) {
   const d = pages[k];
   const p = `/${k}/`;
