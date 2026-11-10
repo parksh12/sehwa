@@ -2143,3 +2143,43 @@ li.has-fav{position:relative}
   .amr-tbl{font-size:13px}
   .amr-tbl th,.amr-tbl td{padding:6px 6px}
 }
+
+/* P2-64 한글 파일 뷰어 · 한글 PDF 변환: 문서 영역은 다크 모드에서도 흰 종이(라이트 섬), 화면은 폭에 맞춰 zoom, 인쇄는 원래 크기 */
+.hwpv-help{border:2px dashed var(--ink);border-radius:8px;padding:10px 12px;margin:10px 0;font-size:14px}
+.hwpv-help p{margin:0}
+.hwpv{margin:18px 0}
+.hwpv-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin:0 0 8px}
+.hwpv-tabs{display:flex;flex-wrap:wrap;gap:6px;min-width:0}
+.hwpv-tab{cursor:pointer;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:inherit}
+.hwpv-tab[aria-pressed="true"]{background:var(--ink);color:var(--white)}
+.hwpv-note{font-size:13px;font-weight:800;color:var(--jeok);margin:0 0 8px}
+.hwpv-stage{background:var(--soft);border:2px solid var(--ink);border-radius:6px;padding:10px;overflow:hidden}
+.hwp-page{box-sizing:border-box;background:#fff;color:#000;margin:0 auto 12px;box-shadow:0 1px 4px rgba(0,0,0,.25);overflow-wrap:break-word;color-scheme:light;font-size:10pt;line-height:1.6;letter-spacing:0;text-align:justify}
+.hwp-page:last-child{margin-bottom:0}
+.hwp-page .hp{white-space:pre-wrap;tab-size:4;margin:0}
+.hwp-page .hp-brk{break-before:page}
+.hwp-page .h-img{display:inline-block;max-width:100%;height:auto;vertical-align:bottom;object-fit:contain}
+.hwp-page .h-tblw{display:block;max-width:100%;text-indent:0;white-space:normal}
+.hwp-page .h-tblw.is-c .h-tbl{margin-left:auto;margin-right:auto}
+.hwp-page .h-tblw.is-r .h-tbl{margin-left:auto}
+.hwp-page .h-tbl{border-collapse:collapse;max-width:100%;color:#000;background:transparent}
+.hwp-page .h-tbl td{border:0;box-sizing:border-box;overflow-wrap:anywhere}
+.hwp-page .h-box{display:block;max-width:100%;text-indent:0;white-space:normal;margin:2pt 0}
+.hwp-page .h-eq{font-family:"Cambria Math","Times New Roman",serif;font-style:italic;color:#333}
+.hwp-page .h-miss{color:#777;font-size:9pt}
+.hwp-page .h-note{font-size:7pt}
+.hwp-page .h-notes{border-top:1px solid #000;margin-top:14pt;padding-top:6pt;font-size:9pt}
+.hwp-page .h-note-row{display:flex;gap:4pt}
+.hwp-page .h-note-row .hp{flex:1}
+.hwp-page a{color:#2346d8}
+[data-theme="dark"] .hwpv-stage{background:#2a2a2a}
+[data-theme="dark"] .hwp-page{background:#fff;color:#000;box-shadow:0 0 0 1px #000}
+[data-theme="dark"] .hwpv-note{color:var(--jeok-t)}
+@media print{
+  html.print-hwp .hwpv-bar,html.print-hwp .hwpv-note,html.print-hwp .tk-next,html.print-hwp .rest-card{display:none!important}
+  html.print-hwp .hwpv{margin:0}
+  html.print-hwp .hwpv-stage{border:0;padding:0;background:none;overflow:visible;border-radius:0}
+  html.print-hwp .hwp-page{zoom:1!important;width:auto!important;min-height:0!important;padding:0!important;margin:0!important;box-shadow:none!important}
+  html.print-hwp .hwp-page+.hwp-page{break-before:page}
+  html.print-hwp .h-tbl tr{break-inside:avoid}
+}
