@@ -1231,22 +1231,83 @@ ${tkTail("PDF 만들기")}`, { vendor: ["pdf-lib.min.js"], scripts: ["t-img2pdf.
 // P2-64 한글 파일 뷰어 · 한글 PDF 변환(HWPX, 베타): 두 페이지가 같은 코드(hwp-doc.js 해석 → 공통 문서 모델 → hwp-render.js 그리기, t-hwp.js 화면)
 // HWP(5.0 바이너리) 해석기는 아직 없음(외부 라이브러리 실행 승인 대기) → .hwp를 넣으면 안내만. 해석기는 hwp-doc.js의 PARSERS에 붙이면 됨
 const HWP_OFFICIAL = "https://www.hancom.com/support/downloadCenter/download"; // 한컴 다운로드 센터(공식 뷰어)
-const hwpToolHtml = (pdfFirst) => `<p class="tk-warn" role="note"><b>지금은 HWPX만 열 수 있어요.</b> HWP(구형 바이너리) 지원은 준비 중이에요. 원본과 모양(줄 바꿈·쪽 나눔·글꼴)이 다를 수 있으니 중요한 문서는 원본과 함께 확인하세요.</p>
-${dropHtml({ accept: ".hwpx,.hwp,application/hwp+zip,application/x-hwp", multiple: true, label: pdfFirst ? "PDF로 바꿀 한글 파일(HWPX)을 넣어 주세요" : "열어 볼 한글 파일(HWPX)을 넣어 주세요", limit: "HWPX · 파일당 50MB · 10개까지 (HWP는 준비 중)" })}
-<div class="hwpv-help" hidden><p>열지 못한 파일은 <a href="${HWP_OFFICIAL}" target="_blank" rel="noopener">한컴 공식 뷰어(한컴 다운로드 센터) ↗<span class="sr"> (새 창, 외부 사이트)</span></a>를 이용해 주세요. HWP 파일은 한글 프로그램에서 「다른 이름으로 저장 → HWPX」로 저장하면 여기서 열 수 있어요.</p></div>
-${tkTail("")}`;
-const hwpAfter = `<section class="hwpv" id="hwpv" hidden aria-label="문서 미리보기">
-<div class="hwpv-bar"><div class="hwpv-tabs" role="group" aria-label="연 파일"></div><button type="button" class="btn hwpv-print" data-print>PDF로 저장</button></div>
-<p class="hwpv-note">미리보기 · 원본과 모양이 다를 수 있음(쪽 나눔은 인쇄할 때 다시 계산돼요)</p>
-<div class="hwpv-stage" aria-live="polite"></div>
-</section>`;
-utilPage(utilById.hwpview, hwpToolHtml(false), { vendor: ["fflate.min.js"], scripts: ["hwp-doc.js", "hwp-render.js", "t-hwp.js"], after: hwpAfter });
+// P2-64c 문서 뷰어(세 페이지 공통): 제목 바로 아래 뷰어. 처음엔 큰 「파일 열기」 칸, 열면 도구 막대 + 쪽 미리보기 + 회색 작업 영역에 A4 종이를 쪽마다 쌓음
+const HV_I = { // 도구 막대 아이콘(선 그림, 이름은 옆 글자나 화면 읽기용 글자로)
+  side: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></svg>',
+  prev: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>',
+  next: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>',
+  out: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg>',
+  in: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5v14"/></svg>',
+  print: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 9V3h10v6M7 17H4v-7h16v7h-3"/><rect x="7" y="14" width="10" height="7"/></svg>',
+  open: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7v12h18V9h-9l-2-2z"/></svg>',
+  full: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg>',
+  info: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>',
+  more: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>',
+  pdf: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>',
+};
+const HV_ZOOMS = [50, 75, 90, 100, 125, 150, 200];
+const hvZoomSel = `<select class="hv-zsel" aria-label="배율"><option value="width">폭 맞춤</option><option value="page">쪽 맞춤</option>${HV_ZOOMS.map((z) => `<option value="${z}">${z}%</option>`).join("")}<option value="custom" hidden>100%</option></select>`;
+const docViewerHtml = ({ drop, warn, help, hint }) => `${tkTail("")}
+${help}
+<div class="hv" id="hwpv" data-state="empty">
+  <div class="hv-empty">${drop}</div>
+  <div class="hv-app" hidden>
+    <div class="hv-bar" role="toolbar" aria-label="문서 보기 도구">
+      <div class="hv-g hv-g-file">
+        <button type="button" class="hv-b hv-only-wide" data-act="side" aria-pressed="true" title="쪽 미리보기 열기·닫기">${HV_I.side}<span class="sr">쪽 미리보기</span></button>
+        <span class="hv-name"></span>
+        <select class="hv-files hv-only-wide" aria-label="연 파일" hidden></select>
+      </div>
+      <div class="hv-g hv-g-page">
+        <button type="button" class="hv-b" data-act="prev" title="이전 쪽 (←, PageUp)">${HV_I.prev}<span class="sr">이전 쪽</span></button>
+        <span class="hv-pg"><input class="hv-pn" type="text" inputmode="numeric" autocomplete="off" value="1" aria-label="현재 쪽 (번호를 넣고 Enter)"><span class="hv-pt">/ 1</span></span>
+        <button type="button" class="hv-b" data-act="next" title="다음 쪽 (→, PageDown)">${HV_I.next}<span class="sr">다음 쪽</span></button>
+      </div>
+      <div class="hv-g hv-g-zoom hv-only-wide">
+        <button type="button" class="hv-b" data-act="zout" title="축소 (Ctrl -)">${HV_I.out}<span class="sr">축소</span></button>
+        ${hvZoomSel}
+        <button type="button" class="hv-b" data-act="zin" title="확대 (Ctrl +)">${HV_I.in}<span class="sr">확대</span></button>
+      </div>
+      <div class="hv-g hv-g-act">
+        <button type="button" class="hv-b hv-only-wide" data-act="print" title="인쇄">${HV_I.print}<span class="hv-t">인쇄</span></button>
+        <button type="button" class="hv-b hv-only-wide" data-act="open" title="다른 파일 열기">${HV_I.open}<span class="hv-t">열기</span></button>
+        <button type="button" class="hv-b hv-only-wide" data-act="full" aria-pressed="false" title="전체 화면">${HV_I.full}<span class="sr">전체 화면</span></button>
+        <button type="button" class="hv-b hv-only-wide hv-info-btn" data-act="info" aria-expanded="false" aria-controls="hv-info" title="문서 정보">${HV_I.info}<span class="sr">문서 정보</span></button>
+        <button type="button" class="hv-b hv-pdf" data-print title="PDF로 저장 (Ctrl+P)">${HV_I.pdf}<span class="hv-t">PDF로 저장</span></button>
+        <button type="button" class="hv-b hv-only-narrow hv-info-btn" data-act="more" aria-expanded="false" aria-controls="hv-menu" title="더보기">${HV_I.more}<span class="sr">더보기</span></button>
+      </div>
+    </div>
+    <div class="hv-menu" id="hv-menu" hidden>
+      <select class="hv-files" aria-label="연 파일" hidden></select>
+      <div class="hv-mrow"><button type="button" class="hv-b" data-act="zout">${HV_I.out}<span class="sr">축소</span></button><span class="hv-zlabel">100%</span><button type="button" class="hv-b" data-act="zin">${HV_I.in}<span class="sr">확대</span></button><button type="button" class="hv-b" data-act="zwidth"><span class="hv-t">폭 맞춤</span></button><button type="button" class="hv-b" data-act="zpage"><span class="hv-t">쪽 맞춤</span></button></div>
+      <div class="hv-mrow"><button type="button" class="hv-b" data-act="print">${HV_I.print}<span class="hv-t">인쇄</span></button><button type="button" class="hv-b" data-act="open">${HV_I.open}<span class="hv-t">다른 파일</span></button><button type="button" class="hv-b" data-act="full" aria-pressed="false">${HV_I.full}<span class="hv-t">전체 화면</span></button><button type="button" class="hv-b hv-info-btn" data-act="info" aria-expanded="false" aria-controls="hv-info">${HV_I.info}<span class="hv-t">문서 정보</span></button></div>
+    </div>
+    <div class="hv-info" id="hv-info" role="dialog" aria-label="문서 정보" hidden><div class="hv-info-body"></div><button type="button" class="hv-b hv-info-x" data-act="info"><span class="hv-t">닫기</span></button></div>
+    <div class="hv-body">
+      <nav class="hv-side" aria-label="쪽 미리보기"><ol class="hv-thumbs"></ol></nav>
+      <div class="hv-work" tabindex="0" aria-label="문서 쪽"><div class="hwpv-stage hv-pages"></div></div>
+    </div>
+    <input class="hv-file2" type="file" accept="${drop.match(/accept="([^"]*)"/)[1]}" multiple tabindex="-1" aria-hidden="true">
+  </div>
+</div>
+<p class="hv-hint" hidden>${esc(hint)}</p>
+${warn}`;
+const HV_HINT = "「PDF로 저장」을 누르면 인쇄 창이 열려요. 대상(프린터)을 「PDF로 저장」 또는 「Microsoft Print to PDF」로 고르면 글자가 선택되는 PDF가 만들어져요. 휴대폰은 공유 → 인쇄에서 PDF로 저장할 수 있어요(기기마다 다름).";
+const hwpToolHtml = (pdfFirst) => docViewerHtml({
+  drop: dropHtml({ accept: ".hwpx,.hwp,application/hwp+zip,application/x-hwp", multiple: true, label: pdfFirst ? "PDF로 바꿀 한글 파일(HWPX)을 넣어 주세요" : "열어 볼 한글 파일(HWPX)을 넣어 주세요", limit: "HWPX · 파일당 50MB · 10개까지 (HWP는 준비 중)" }),
+  help: `<div class="hwpv-help" hidden><p>열지 못한 파일은 <a href="${HWP_OFFICIAL}" target="_blank" rel="noopener">한컴 공식 뷰어(한컴 다운로드 센터) ↗<span class="sr"> (새 창, 외부 사이트)</span></a>를 이용해 주세요. HWP 파일은 한글 프로그램에서 「다른 이름으로 저장 → HWPX」로 저장하면 여기서 열 수 있어요.</p></div>`,
+  warn: `<p class="tk-warn" role="note"><b>지금은 HWPX만 열 수 있어요.</b> HWP(구형 바이너리) 지원은 준비 중이에요. 원본과 모양(줄 바꿈·쪽 나눔·글꼴)이 다를 수 있으니 중요한 문서는 원본과 함께 확인하세요.</p>`,
+  hint: HV_HINT,
+});
+utilPage(utilById.hwpview, hwpToolHtml(false), { vendor: ["fflate.min.js"], scripts: ["hwp-doc.js", "hwp-render.js", "t-hwp.js"] });
 // P2-65 워드 PDF 변환(DOCX): 같은 화면 코드, 해석기만 docx-doc.js
-utilPage(utilById.docx2pdf, `<p class="tk-warn" role="note"><b>원본과 모양이 다를 수 있어요.</b> 줄 바꿈·쪽 나눔·글꼴은 워드와 다를 수 있으니 중요한 문서는 원본과 함께 확인하세요. 예전 형식(.doc)은 열 수 없어요.</p>
-${dropHtml({ accept: ".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.doc", multiple: true, label: "PDF로 바꿀 워드 파일(DOCX)을 넣어 주세요", limit: "DOCX · 파일당 50MB · 10개까지 (.doc 미지원)" })}
-<div class="hwpv-help" hidden><p>열지 못한 파일은 워드 프로그램의 「다른 이름으로 저장 → PDF」를 이용해 주세요. 예전 형식(.doc)은 워드에서 「다른 이름으로 저장 → Word 문서(*.docx)」로 저장하면 여기서 열 수 있어요.</p></div>
-${tkTail("")}`, { vendor: ["fflate.min.js"], scripts: ["hwp-doc.js", "docx-doc.js", "hwp-render.js", "t-hwp.js"], after: hwpAfter });
-utilPage(utilById.hwp2pdf, hwpToolHtml(true), { vendor: ["fflate.min.js"], scripts: ["hwp-doc.js", "hwp-render.js", "t-hwp.js"], after: hwpAfter });
+utilPage(utilById.docx2pdf, docViewerHtml({
+  drop: dropHtml({ accept: ".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.doc", multiple: true, label: "PDF로 바꿀 워드 파일(DOCX)을 넣어 주세요", limit: "DOCX · 파일당 50MB · 10개까지 (.doc 미지원)" }),
+  help: `<div class="hwpv-help" hidden><p>열지 못한 파일은 워드 프로그램의 「다른 이름으로 저장 → PDF」를 이용해 주세요. 예전 형식(.doc)은 워드에서 「다른 이름으로 저장 → Word 문서(*.docx)」로 저장하면 여기서 열 수 있어요.</p></div>`,
+  warn: `<p class="tk-warn" role="note"><b>원본과 모양이 다를 수 있어요.</b> 줄 바꿈·쪽 나눔·글꼴은 워드와 다를 수 있으니 중요한 문서는 원본과 함께 확인하세요. 예전 형식(.doc)은 열 수 없어요.</p>`,
+  hint: HV_HINT,
+}), { vendor: ["fflate.min.js"], scripts: ["hwp-doc.js", "docx-doc.js", "hwp-render.js", "t-hwp.js"] });
+utilPage(utilById.hwp2pdf, hwpToolHtml(true), { vendor: ["fflate.min.js"], scripts: ["hwp-doc.js", "hwp-render.js", "t-hwp.js"] });
 
 // 이미지 용량 줄이기
 utilPage(utilById.imgcompress, `${dropHtml({ accept: ".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp", multiple: true, label: "용량을 줄일 이미지를 넣어 주세요", limit: "JPG·PNG·WEBP · 장당 30MB · 30장까지" })}

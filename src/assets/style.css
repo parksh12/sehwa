@@ -2144,21 +2144,92 @@ li.has-fav{position:relative}
   .amr-tbl th,.amr-tbl td{padding:6px 6px}
 }
 
-/* P2-64 한글 파일 뷰어 · 한글 PDF 변환: 문서 영역은 다크 모드에서도 흰 종이(라이트 섬), 화면은 폭에 맞춰 zoom, 인쇄는 원래 크기 */
-.hwpv-help{border:2px dashed var(--ink);border-radius:8px;padding:10px 12px;margin:10px 0;font-size:14px}
+/* P2-64 한글 파일 뷰어 · 한글 PDF 변환, P2-65 워드 PDF 변환, P2-64c 문서 뷰어 화면(세 페이지 공통)
+   제목 바로 아래 뷰어: 도구 막대(고정) + 쪽 미리보기 + 회색 작업 영역에 A4 종이를 쪽마다 쌓음. 종이는 다크 모드에서도 흰색(라이트 섬). 화면 쪽 = 인쇄 쪽 */
+.hwpv-help{border:2px dashed var(--ink);border-radius:8px;padding:10px 12px;margin:0;font-size:14px}
 .hwpv-help p{margin:0}
-.hwpv{margin:18px 0}
-.hwpv-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin:0 0 8px}
-.hwpv-tabs{display:flex;flex-wrap:wrap;gap:6px;min-width:0}
-.hwpv-tab{cursor:pointer;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:inherit}
-.hwpv-tab[aria-pressed="true"]{background:var(--ink);color:var(--white)}
-.hwpv-note{font-size:13px;font-weight:800;color:var(--jeok);margin:0 0 8px}
-.hwpv-stage{background:var(--soft);border:2px solid var(--ink);border-radius:6px;padding:10px;overflow:hidden}
-.hwp-page{box-sizing:border-box;background:#fff;color:#000;margin:0 auto 12px;box-shadow:0 1px 4px rgba(0,0,0,.25);overflow-wrap:break-word;color-scheme:light;font-size:10pt;line-height:1.6;letter-spacing:0;text-align:justify}
-.hwp-page:last-child{margin-bottom:0}
+.tool-box[data-tool="hwpview"],.tool-box[data-tool="hwp2pdf"],.tool-box[data-tool="docx2pdf"]{--hvw:min(1180px,calc(100vw - 32px));width:var(--hvw);margin-left:calc((100% - var(--hvw)) / 2);padding:14px;grid-template-columns:minmax(0,1fr)}
+.hv,.hv-app{min-width:0}
+.hv-empty .drop{min-height:clamp(260px,50vh,500px);justify-content:center}
+.hv-empty .drop strong{font-size:20px}
+.hv-empty .safe{margin:8px 0 0}
+.hv-hint{margin:0;font-size:13px;color:var(--ink-2)}
+.hv-app{display:flex;flex-direction:column;height:85vh;min-height:460px;border:2px solid var(--ink);border-radius:10px;overflow:hidden;background:var(--white);position:relative;scroll-margin-top:calc(var(--hdr,64px) + 6px)}
+.hv-file2{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden}
+.hv-app[hidden]{display:none}
+.hv-app.over{outline:4px dashed var(--cheong);outline-offset:-4px}
+.hv-app:fullscreen{height:100vh;border:0;border-radius:0}
+.hv-app.is-max{position:fixed;inset:0;z-index:60;height:100vh;height:100dvh;border:0;border-radius:0}
+html.hv-lock,html.hv-lock body{overflow:hidden}
+.hv-bar{flex:none;display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;padding:6px 8px;border-bottom:2px solid var(--ink);background:var(--white);position:relative;z-index:2}
+.hv-g{display:flex;align-items:center;gap:3px;min-width:0}
+.hv-g-file{flex:1 1 150px}
+.hv-g-act{margin-left:auto}
+.hv-b{appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:5px;min-width:34px;height:34px;padding:0 7px;border:1.5px solid transparent;border-radius:8px;background:none;color:var(--ink);font:inherit;font-size:14px;font-weight:700;line-height:1;cursor:pointer;white-space:nowrap;position:relative}
+.hv-b:hover{background:var(--soft);border-color:var(--ink-3)}
+.hv-b:focus-visible,.hv-th:focus-visible,.hv-pn:focus-visible,.hv-zsel:focus-visible,.hv-files:focus-visible{outline:3px solid var(--cheong);outline-offset:1px}
+.hv-b:disabled{opacity:.35;cursor:default;background:none;border-color:transparent}
+.hv-b svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.hv-b[aria-pressed="true"],.hv-b[aria-expanded="true"]{background:var(--soft);border-color:var(--ink)}
+.hv-b.hv-pdf{background:var(--ink);color:var(--white);border-color:var(--ink);padding:0 11px}
+.hv-b.hv-pdf:hover{opacity:.88}
+.hv-info-btn.has-dot::after{content:"";position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:var(--jeok)}
+.hv-name{font-weight:800;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;padding:0 4px}
+.hv-files,.hv-zsel{font:inherit;font-size:14px;height:34px;border:1.5px solid var(--ink-3);border-radius:8px;background:var(--white);color:var(--ink);padding:0 4px;min-width:0}
+.hv-files{flex:0 1 280px;max-width:100%}
+.hv-files[hidden]{display:none}
+.hv-pg{display:inline-flex;align-items:center;gap:5px;font-size:14px;font-weight:700;white-space:nowrap}
+.hv-pn{font:inherit;font-size:14px;font-weight:700;text-align:center;height:30px;border:1.5px solid var(--ink-3);border-radius:6px;background:var(--white);color:var(--ink);padding:0 2px;min-width:3ch}
+.hv-pt{color:var(--ink-2)}
+.hv-only-narrow{display:none}
+.hv-menu{flex:none;display:grid;gap:6px;padding:8px;border-bottom:2px solid var(--ink);background:var(--white)}
+.hv-menu[hidden]{display:none}
+.hv-menu .hv-files{flex:none;width:100%}
+.hv-mrow{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.hv-zlabel{min-width:46px;text-align:center;font-size:14px;font-weight:800}
+.hv-info{flex:none;display:flex;gap:10px;align-items:flex-start;padding:10px 14px;border-bottom:2px solid var(--ink);background:var(--white);font-size:14px;max-height:45%;overflow:auto}
+.hv-info[hidden]{display:none}
+.hv-info-body{flex:1;min-width:0}
+.hv-info h3{font-size:15px;margin:0 0 6px}
+.hv-info dl{display:grid;grid-template-columns:auto 1fr;gap:2px 14px;margin:0}
+.hv-info dt{font-weight:800}
+.hv-info dd{margin:0;overflow-wrap:anywhere}
+.hv-info-note{margin:8px 0 0;font-size:13px;color:var(--ink-2)}
+.hv-info-x{border-color:var(--ink-3)}
+.hv-body{flex:1;min-height:0;display:flex}
+.hv-side{flex:none;width:148px;overflow-y:auto;background:var(--soft);border-right:2px solid var(--ink);padding:12px 0;overscroll-behavior:contain}
+.no-side .hv-side{display:none}
+.hv-thumbs{list-style:none;margin:0;padding:0;display:grid;gap:8px;justify-items:center}
+.hv-th{appearance:none;border:0;background:none;padding:4px;border-radius:6px;cursor:pointer;display:grid;justify-items:center;gap:4px;color:var(--ink-2);font:inherit;font-size:12px;font-weight:700;line-height:1.2}
+.hv-th-paper{display:block;background:#fff;overflow:hidden;box-shadow:0 0 0 1px rgba(0,0,0,.28);pointer-events:none;contain:strict}
+.hv-th-paper .hwp-page{margin:0;transform-origin:0 0}
+.hv-th:hover .hv-th-paper{box-shadow:0 0 0 2px var(--ink-3)}
+.hv-th[aria-current="page"] .hv-th-paper{box-shadow:0 0 0 3px var(--cheong)}
+.hv-th[aria-current="page"] .hv-th-no{color:var(--cheong)}
+.hv-work{flex:1;min-width:0;overflow:auto;background:#d6d6d2;overscroll-behavior:contain;touch-action:pan-x pan-y;-webkit-overflow-scrolling:touch}
+.hv-work:focus-visible{outline:3px solid var(--cheong);outline-offset:-3px}
+.hv-pages{--z:1;display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px;width:max-content;min-width:100%;box-sizing:border-box}
+.hv-sheet{flex:none;width:calc(var(--sw) * var(--z));height:calc(var(--sh) * var(--z));background:#fff;overflow:hidden;content-visibility:auto;contain-intrinsic-size:auto calc(var(--sw) * var(--z)) auto calc(var(--sh) * var(--z));box-shadow:0 1px 3px rgba(0,0,0,.3),0 6px 16px rgba(0,0,0,.16)}
+.hv-sheet>.hwp-page{transform:scale(var(--z));transform-origin:0 0}
+.hwp-page.is-over{height:auto!important}
+.hv-measure{position:fixed;left:-40000px;top:0;height:0;overflow:hidden;visibility:hidden;pointer-events:none}
+.hv-flow{display:flow-root;position:relative}
+@media(max-width:760px){
+  .tool-box[data-tool="hwpview"],.tool-box[data-tool="hwp2pdf"],.tool-box[data-tool="docx2pdf"]{--hvw:calc(100vw - 16px);padding:8px;border-radius:14px}
+  .hv-app{height:calc(100vh - var(--hdr,100px) - 8px);height:calc(100dvh - var(--hdr,100px) - 8px);min-height:380px;border-radius:8px;scroll-margin-top:calc(var(--hdr,100px) + 4px)}
+  .hv-only-wide{display:none!important}
+  .hv-only-narrow{display:inline-flex}
+  .hv-g-file{display:none}
+  .hv-bar{flex-wrap:nowrap;gap:2px;padding:5px 4px}
+  .hv-g-page{flex:1 1 auto}
+  .hv-b{min-width:34px;padding:0 5px}
+  .hv-b.hv-pdf{padding:0 9px;font-size:13px}
+  .hv-side{display:none}
+  .hv-pages{padding:8px;gap:8px}
+}
+.hwp-page{box-sizing:border-box;background:#fff;color:#000;overflow-wrap:break-word;color-scheme:light;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-size:10pt;line-height:1.6;letter-spacing:0;text-align:justify}
 .hwp-page .hp{white-space:pre-wrap;tab-size:4;margin:0}
-.hwp-page .hp-brk{break-before:page}
-.hwp-page .h-img{display:inline-block;max-width:100%;height:auto;vertical-align:bottom;object-fit:contain}
+.hwp-page .h-img{display:inline-block;max-width:100%;max-height:var(--ch,none);height:auto;vertical-align:bottom;object-fit:contain}
 .hwp-page .h-tblw{display:block;max-width:100%;text-indent:0;white-space:normal}
 .hwp-page .h-tblw.is-c .h-tbl{margin-left:auto;margin-right:auto}
 .hwp-page .h-tblw.is-r .h-tbl{margin-left:auto}
@@ -2168,21 +2239,25 @@ li.has-fav{position:relative}
 .hwp-page .h-eq{font-family:"Cambria Math","Times New Roman",serif;font-style:italic;color:#333}
 .hwp-page .h-miss{color:#777;font-size:9pt}
 .hwp-page .h-note{font-size:7pt}
-.hwp-page .h-notes{border-top:1px solid #000;margin-top:14pt;padding-top:6pt;font-size:9pt}
-.hwp-page .h-note-row{display:flex;gap:4pt}
+.hwp-page .h-note-row{display:flex;gap:4pt;font-size:9pt}
 .hwp-page .h-note-row .hp{flex:1}
+.hwp-page .h-notes-first{border-top:1px solid #000;margin-top:14pt;padding-top:6pt}
 .hwp-page a{color:#2346d8}
-[data-theme="dark"] .hwpv-stage{background:#2a2a2a}
-[data-theme="dark"] .hwp-page{background:#fff;color:#000;box-shadow:0 0 0 1px #000}
-[data-theme="dark"] .hwpv-note{color:var(--jeok-t)}
-@media print{
-  html.print-hwp .hwpv-bar,html.print-hwp .hwpv-note,html.print-hwp .tk-next,html.print-hwp .rest-card{display:none!important}
-  html.print-hwp .hwpv{margin:0}
-  html.print-hwp .hwpv-stage{border:0;padding:0;background:none;overflow:visible;border-radius:0}
-  html.print-hwp .hwp-page{zoom:1!important;width:auto!important;min-height:0!important;padding:0!important;margin:0!important;box-shadow:none!important}
-  html.print-hwp .hwp-page+.hwp-page{break-before:page}
-  html.print-hwp .h-tbl tr{break-inside:avoid}
-}
-/* P2-65 목록 번호·문단 안 쪽 나눔(DOCX) */
+/* P2-65 목록 번호(DOCX). 문단 안 쪽 나눔은 쪽 나누기에서 처리하므로 화면에서는 숨김 */
 .hwp-page .h-label{display:inline-block;text-indent:0;white-space:pre}
-.hwp-page .h-pbr{display:block;height:0;break-before:page}
+.hwp-page .h-pbr{display:none}
+[data-theme="dark"] .hv-work{background:#3a3a38}
+[data-theme="dark"] .hv-sheet{background:#fff;box-shadow:0 0 0 1px #000,0 6px 16px rgba(0,0,0,.5)}
+[data-theme="dark"] .hv-th[aria-current="page"] .hv-th-paper{box-shadow:0 0 0 3px var(--link)}
+[data-theme="dark"] .hv-th[aria-current="page"] .hv-th-no{color:var(--link)}
+[data-theme="dark"] .hv-b:focus-visible,[data-theme="dark"] .hv-th:focus-visible,[data-theme="dark"] .hv-pn:focus-visible,[data-theme="dark"] .hv-zsel:focus-visible,[data-theme="dark"] .hv-files:focus-visible,[data-theme="dark"] .hv-work:focus-visible{outline-color:var(--link)}
+@media print{
+  html.print-hwp .tool-box[data-tool]{display:block!important;width:auto!important;margin:0!important;padding:0!important;border:0!important;box-shadow:none!important;background:none!important}
+  html.print-hwp .tool-box[data-tool]>:not(.hv),html.print-hwp .hv-empty,html.print-hwp .hv-bar,html.print-hwp .hv-menu,html.print-hwp .hv-info,html.print-hwp .hv-side,html.print-hwp .hv-file2{display:none!important}
+  html.print-hwp .hv-app,html.print-hwp .hv-body,html.print-hwp .hv-work{display:block!important;position:static!important;height:auto!important;min-height:0!important;overflow:visible!important;border:0!important;border-radius:0!important;background:none!important;outline:0!important}
+  html.print-hwp .hv-pages{display:block!important;width:auto!important;min-width:0!important;padding:0!important;transform:none!important}
+  html.print-hwp .hv-sheet{width:auto!important;height:auto!important;overflow:visible!important;box-shadow:none!important;content-visibility:visible!important;background:none!important;break-after:page}
+  html.print-hwp .hv-sheet:last-child{break-after:auto}
+  html.print-hwp .hwp-page{transform:none!important;zoom:var(--pz,1)!important;height:calc(var(--ph) - 2px)!important;margin:0!important;box-shadow:none!important}
+  html.print-hwp .hwp-page.is-over{height:auto!important}
+}
