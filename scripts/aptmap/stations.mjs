@@ -11,7 +11,7 @@ import { readXlsx } from "./xlsx.mjs";
 import { distM } from "./logic.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const CACHE = path.join(HERE, ".cache");
+const CACHE = process.env.APTMAP_CACHE_DIR ? path.resolve(process.env.APTMAP_CACHE_DIR) : path.join(HERE, ".cache"); // net.mjs 와 같은 규칙
 const OUTDIR = path.join(HERE, "data");
 const SRC_URL = "https://data.kric.go.kr/rips/dataset/download.file?type=filedata&id=32&operation=1";
 

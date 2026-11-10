@@ -237,7 +237,7 @@ eq("카카오", "빈 주소", L.cleanAddr(""), "");
 eq("카카오", "쉼표로 이어진 여러 지번 주소 → 첫 주소만(카카오 400 방지)", L.cleanAddr("경기도 남양주시 오남읍 오남리 632,경기도 남양주시 오남읍 오남리 683-40,경기도 남양주시 오남읍 오남리 683-25"), "경기도 남양주시 오남읍 오남리 632");
 { // 호출 집계: 서비스별 파일, 예전 합본 파일 값이 크면 이어서 셈, 깨진 파일이면 0으로 되돌리지 않고 멈춤
   const N = await import("./net.mjs");
-  const d = "1999-01-01", dir = path.join(HERE, ".cache");
+  const d = "1999-01-01", dir = N.CACHE;
   const lf = path.join(dir, `calls-${d}.json`), sf = path.join(dir, `calls-${d}.testsvc.json`);
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(lf, JSON.stringify({ testsvc: 7 })); fs.writeFileSync(sf, JSON.stringify({ count: 3 }));
@@ -247,6 +247,30 @@ eq("카카오", "쉼표로 이어진 여러 지번 주소 → 첫 주소만(카�
   fs.writeFileSync(sf, "{\"count\": 1");
   eq("호출 집계", "깨진 집계 파일 → 0으로 되돌리지 않고 멈춤(예외)", (() => { try { N.callsToday("testsvc", d); return "통과"; } catch (e) { return /되돌리지 않으려고 멈춥니다/.test(e.message); } })(), true);
   fs.unlinkSync(lf); fs.unlinkSync(sf);
+}
+{ // 안전한 쓰기(2026-11-11 OneDrive EPERM 사고): 가짜 파일 함수로 이름 바꾸기 실패를 흉내 낸다
+  const N = await import("./net.mjs");
+  const mk = (fails, code = "EPERM") => {
+    const log = [], files = {}; let n = 0;
+    const io = {
+      writeFileSync: (p, t) => { files[p] = t; log.push("write " + (p.endsWith(".tmp") ? "tmp" : "file")); },
+      renameSync: (a, b) => { if (n++ < fails) { const e = new Error(code); e.code = code; throw e; } files[b] = files[a]; delete files[a]; log.push("rename"); },
+      unlinkSync: (p) => { delete files[p]; log.push("unlink"); },
+      wait: (ms) => log.push("wait " + ms), delays: [50, 100, 200],
+    };
+    return { io, log, files };
+  };
+  let t = mk(0);
+  eq("안전한 쓰기", "정상: 임시 파일 → 이름 바꾸기", [N.safeWrite("x.json", "A", t.io), t.files["x.json"], Object.keys(t.files)], ["rename", "A", ["x.json"]]);
+  t = mk(2);
+  eq("안전한 쓰기", "EPERM 2번 → 50·100ms 기다린 뒤 이름 바꾸기 성공", [N.safeWrite("x.json", "B", t.io), t.log.filter((l) => l.startsWith("wait")), t.files["x.json"]], ["rename", ["wait 50", "wait 100"], "B"]);
+  t = mk(99, "EBUSY");
+  eq("안전한 쓰기", "EBUSY 계속 → 3번 기다린 뒤 덮어쓰기로 넘어감, 임시 파일 지움", [N.safeWrite("x.json", "C", t.io), t.files["x.json"], Object.keys(t.files)], ["overwrite", "C", ["x.json"]]);
+  t = mk(1, "ENOSPC");
+  eq("안전한 쓰기", "다른 오류(ENOSPC)는 다시 시도하지 않고 그대로 알림, 임시 파일 지움", [(() => { try { N.safeWrite("x.json", "D", t.io); return "통과"; } catch (e) { return e.code; } })(), Object.keys(t.files)], ["ENOSPC", []]);
+  const src = fs.readFileSync(path.join(HERE, "net.mjs"), "utf8");
+  eq("안전한 쓰기", "호출 집계·캐시 JSON 모두 safeWrite 사용, renameSync 직접 호출은 safeWrite 안에만", [/safeWrite\(serviceFile\(service\)/.test(src), /writeJson[^\n]*safeWrite\(p,/.test(src), (src.match(/renameSync\(/g) || []).length], [true, true, 0]);
+  eq("안전한 쓰기", "캐시 폴더 옵션 APTMAP_CACHE_DIR", /process\.env\.APTMAP_CACHE_DIR/.test(src), true);
 }
 // 카카오 응답 예(공식 문서 형식: x=경도, y=위도 문자열). 변환 없이 그대로 위경도
 const kj = { meta: { total_count: 1 }, documents: [{ address_name: "경기 군포시 금정동 876", x: "126.9430001", y: "37.3612349", address: { address_name: "경기 군포시 금정동 876" }, road_address: { address_name: "경기 군포시 오금로 43" } }] };
@@ -383,7 +407,7 @@ eq("역", "서울역 3개 노선 합침(괄호·「역」 무시)", find("서울
 eq("역", "경원선 용산 → 경의중앙, 회기 → 1호선", [find("용산"), find("회기")], [["경의중앙"], ["1호선"]]);
 eq("역", "양평 두 곳 따로", find("양평").length, 2);
 eq("역", "자기부상·좌표 없는 행 제외", bs.dropped.length, 2);
-const xlsxPath = path.join(HERE, ".cache", "stations-src.xlsx");
+const xlsxPath = path.join(process.env.APTMAP_CACHE_DIR ? path.resolve(process.env.APTMAP_CACHE_DIR) : path.join(HERE, ".cache"), "stations-src.xlsx");
 if (fs.existsSync(xlsxPath)) {
   const real = buildStations(readXlsx(fs.readFileSync(xlsxPath)));
   eq("역(실자료)", "대응표에 없는 노선 0", real.unknownLines, []);

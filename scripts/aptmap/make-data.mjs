@@ -178,7 +178,7 @@ function main() {
   const inp = loadInputs(through);
   const missing = [!inp.stations && "data/stations.json (stations.mjs)", !inp.kaptList && ".cache/kapt-list.json (fetch-kapt.mjs list)", !inp.tradeItems.length && ".cache/trades (fetch-trades.mjs)"].filter(Boolean);
   if (missing.length) { console.log("아직 만들 수 없습니다. 먼저 준비할 것:\n  - " + missing.join("\n  - ")); process.exit(2); }
-  const { rows, complexes, match } = assemble(inp);
+  const { rows, complexes, match, geoTargets } = assemble(inp);
   const prev = readJson(path.join(OUT, "aptmap.json"), null);
   const out = { updated: todayKST(), dataThrough: through, kaptFileAsOf: (inp.basicMeta && inp.basicMeta.fileAsOf) || null, rules: RULES, complexes };
   writeJson(path.join(OUT, "aptmap.json"), out);
@@ -204,7 +204,10 @@ function main() {
   for (const [s, v] of Object.entries(match).sort()) { lines.push(`| ${s} | ${v.total} | ${v.stage1} | ${v.stage2} | ${v.none} | ${pct(v.stage1 + v.stage2, v.total)} |`); for (const k in T) T[k] += v[k]; }
   lines.push(`| 합계 | ${T.total} | ${T.stage1} | ${T.stage2} | ${T.none} | ${pct(T.stage1 + T.stage2, T.total)} |`);
   const gm = inp.geoMeta;
-  if (gm) lines.push("", `- 좌표 출처(COO 6차: 지번 주소 1순위): 지번 ${gm.jibun}곳 / 지번 실패→도로명 ${gm.doroFallback}곳 / **지번 아직 안 받아 도로명 임시 ${gm.doroTemp}곳** / 둘 다 실패 ${gm.fail}곳. 지번·도로명 좌표를 둘 다 가진 ${gm.compared}곳 중 **300m 넘게 차이 ${gm.over300}곳**`);
+  // 좌표 대상(지금 300세대·9억 통과 단지) 기준으로 센다. 캐시에는 예전 매칭 때 받은 대상 밖 단지도 남아 있을 수 있다
+  const tg = [...new Set(geoTargets.map((g) => g.kaptCode))], tb = {}; for (const c of tg) { const b = (inp.geo[c] && (inp.geo[c].basis || (inp.geo[c].fail ? "fail" : "?"))) || "없음"; tb[b] = (tb[b] || 0) + 1; }
+  lines.push("", `- **좌표 대상 ${tg.length}곳 기준**: 지번 ${tb.jibun || 0}곳 / 지번 실패→도로명 ${tb.doro || 0}곳 / **도로명 임시(지번 아직 안 받음) ${tb["doro-temp"] || 0}곳** / 좌표 없음·실패 ${(tb["없음"] || 0) + (tb.fail || 0)}곳`);
+  if (gm) lines.push(`- 좌표 캐시 전체(대상 밖 포함, COO 6차: 지번 주소 1순위): 지번 ${gm.jibun}곳 / 지번 실패→도로명 ${gm.doroFallback}곳 / 도로명 임시 ${gm.doroTemp}곳 / 둘 다 실패 ${gm.fail}곳. 지번·도로명 좌표를 둘 다 가진 ${gm.compared}곳 중 **300m 넘게 차이 ${gm.over300}곳**`);
   const AUX = Object.values(match).reduce((x, v) => x + (v.aux || 0), 0);
   lines.push("", `- 1·2순위 중 보조 규칙(본번 일치·이름 일부)으로 붙은 단지: ${AUX}곳`);
   // 큰 단지 기준 일치율: 12개월 40~60㎡ 중개 매매 10건 이상(대단지의 근사치). K-apt는 의무관리 대상(대략 150세대 이상) 위주라 소규모 단지는 원래 없다

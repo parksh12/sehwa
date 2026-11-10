@@ -5,7 +5,31 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 export const HERE = path.dirname(fileURLToPath(import.meta.url));
-export const CACHE = path.join(HERE, ".cache");
+// 캐시 폴더: 기본은 scripts/aptmap/.cache. OneDrive 동기화가 파일을 잡는 문제를 피하려면 APTMAP_CACHE_DIR 로 OneDrive 밖을 지정
+//   예) APTMAP_CACHE_DIR=C:/Users/user/.sehwa/aptmap-cache  (기존 .cache 내용을 그 폴더로 복사한 뒤 사용)
+export const CACHE = process.env.APTMAP_CACHE_DIR ? path.resolve(process.env.APTMAP_CACHE_DIR) : path.join(HERE, ".cache");
+
+// ───────── 안전한 파일 쓰기 ─────────
+// 임시 파일에 쓴 뒤 이름 바꾸기(원자적 교체). OneDrive 등이 파일을 잡고 있어 EPERM·EBUSY·EACCES가 나면
+// 짧게 기다렸다가 다시 시도(50·100·200·400·800ms)하고, 그래도 안 되면 대상 파일에 바로 덮어쓴다(2026-11-11 사고 대응).
+const RETRY_CODES = new Set(["EPERM", "EBUSY", "EACCES"]);
+const waitMs = (ms) => { const t = Date.now() + ms; while (Date.now() < t); };
+export function safeWrite(file, text, io = {}) {
+  const rename = io.renameSync || fs.renameSync, write = io.writeFileSync || fs.writeFileSync, unlink = io.unlinkSync || fs.unlinkSync, wait = io.wait || waitMs;
+  const delays = io.delays || [50, 100, 200, 400, 800];
+  const tmp = `${file}.${process.pid}.tmp`;
+  write(tmp, text);
+  for (let i = 0; ; i++) {
+    try { rename(tmp, file); return "rename"; }
+    catch (e) {
+      if (!RETRY_CODES.has(e.code)) { try { unlink(tmp); } catch {} throw e; }
+      if (i < delays.length) { wait(delays[i]); continue; }
+      write(file, text); // 이름 바꾸기를 끝내 못 하면 덮어쓰기로 넘어간다
+      try { unlink(tmp); } catch {}
+      return "overwrite";
+    }
+  }
+}
 export const DATA = path.join(HERE, "data");
 export const OUT = path.join(HERE, "out");
 export const todayKST = () => new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
@@ -66,9 +90,7 @@ export function spend(service) {
   const limit = +(process.env["APTMAP_BUDGET_" + service] || BUDGET[service] || Infinity);
   if (used >= limit) throw new BudgetExceeded(`${service} 오늘 호출 ${used}회 → 한도(${limit}) 도달. 내일 다시 실행하면 캐시에 이어서 받습니다.`);
   fs.mkdirSync(budgetDir(), { recursive: true });
-  const f = serviceFile(service), tmp = `${f}.${process.pid}.tmp`;
-  fs.writeFileSync(tmp, JSON.stringify({ service, date: todayKST(), count: used + 1 }));
-  fs.renameSync(tmp, f);
+  safeWrite(serviceFile(service), JSON.stringify({ service, date: todayKST(), count: used + 1 }));
 }
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -135,7 +157,8 @@ export function parseApi(text) {
 export const okCode = (c) => /^0+$/.test(c); // "00", "000" 모두 정상
 
 export function readJson(p, fallback) { try { return JSON.parse(fs.readFileSync(p, "utf8")); } catch { return fallback; } }
-export function writeJson(p, v) { fs.mkdirSync(path.dirname(p), { recursive: true }); fs.writeFileSync(p, JSON.stringify(v)); }
+// 캐시 JSON도 안전한 쓰기로(좌표·기본정보 캐시가 쓰다 끊겨 깨지지 않게, OneDrive 잠금 대응)
+export function writeJson(p, v) { fs.mkdirSync(path.dirname(p), { recursive: true }); safeWrite(p, JSON.stringify(v)); }
 export function arg(name, def) { const i = process.argv.indexOf("--" + name); return i > 0 ? process.argv[i + 1] : def; }
 export const flag = (name) => process.argv.includes("--" + name);
 // 지난달(KST) "YYYY-MM": 실거래는 계약 후 30일 안에 신고되므로 기본 반영 범위는 지난달까지
