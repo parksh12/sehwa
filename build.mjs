@@ -163,7 +163,7 @@ const LIFE_SLUG = { adventure: "adventurer", love: "warm-heart", stable: "steady
 // 기존 콘텐츠(CATS: me·love·luck·story·arcade)는 주소를 그대로 두고 「펭귄 오락실」(/play/)로 묶습니다.
 const PLAY = { name: "펭귄 오락실", tagline: "RPG·생존 게임·순발력 게임, 잠깐 쉬어 가는 한 판", path: "/play/", desc: "펭귄 RPG, 지옥에서 살아남기, 헬조선에서 살아남기, Life Game, 지뢰찾기, 블록 쌓기, 반응속도 게임처럼 잠깐 쉬어 가는 게임을 모았어요." }; // P2-49 게임만
 const UCATS = {
-  pdf: { name: "PDF·문서", desc: "PDF를 합치고 나누고, 이미지·워드(DOCX)·한글(HWPX) 문서를 열어 보고 PDF로 바꾸는 툴이에요." }, // P2-64 desc
+  pdf: { name: "PDF·문서", desc: "PDF를 합치고 나누고, 이미지·워드(DOCX)·한글(HWP·HWPX) 문서를 열어 보고 PDF로 바꾸는 툴이에요." }, // P2-64 desc, P2-64d HWP
   image: { name: "이미지", desc: "사진 용량을 줄이고, 아이폰 HEIC 사진을 JPG로 바꾸고, 여러 장을 한 장으로 이어 붙이거나 PDF로 묶고, QR코드를 만드는 이미지 툴이에요." }, // P2-46 desc, P2-47 HEIC, P2-48 QR
   text: { name: "글쓰기", desc: "자기소개서, 리포트, 블로그 글을 쓸 때 필요한 글쓰기 툴이에요. 글자수 세기, PDF에서 복사한 글의 줄바꿈·공백 정리, 읽기·발표 시간과 원고지 매수 계산, 이모지·특수문자 복사를 브라우저 안에서 바로 해요." }, // P2-57 desc
   calc: { name: "생활 계산", desc: "D-day, 연봉 실수령액, 퇴직금처럼 생활에서 자주 찾는 계산을 바로 해 주는 툴이에요." }, // P2-45 desc
@@ -178,9 +178,8 @@ const UTILS = [
   { id: "pdfmerge", cat: "pdf", path: "/pdf/merge/", title: "PDF 합치기", seo: "PDF 합치기 — 무료", h1: "PDF 합치기 — 여러 PDF를 순서대로 한 파일로", desc: "여러 개의 PDF를 원하는 순서대로 한 파일로 합쳐요. 파일은 서버로 전송하지 않고 브라우저 안에서 처리합니다.", hook: "PDF 여러 개를 순서 정해서 한 파일로.", meta: "PDF 30개까지", kw: "pdf 병합 합치기 묶기 merge 하나로" },
   { id: "pdfsplit", cat: "pdf", path: "/pdf/split/", title: "PDF 나누기", seo: "PDF 나누기 — 무료, 페이지 추출", h1: "PDF 나누기 — 페이지 추출, 한 쪽씩 나누기", desc: "PDF에서 원하는 페이지만 뽑거나 한 쪽씩 나눠 zip으로 받아요. 파일은 서버로 전송하지 않고 브라우저 안에서 처리합니다.", hook: "필요한 쪽만 뽑거나 한 쪽씩 쪼개기.", meta: "범위 추출 · zip", kw: "pdf 분할 자르기 추출 페이지 split 쪼개기" },
   { id: "img2pdf", cat: "pdf", also: ["image"], path: "/pdf/image-to-pdf/", title: "JPG PDF 변환", seo: "JPG PDF 변환 — 무료, 이미지 여러 장을 PDF로", h1: "JPG PDF 변환 — 이미지 여러 장을 PDF 한 파일로", desc: "JPG·PNG 이미지 여러 장을 순서대로 PDF 한 파일로 만들어요. A4 또는 원본 크기를 고를 수 있고, 파일은 서버로 전송하지 않습니다.", hook: "사진·스캔 이미지 여러 장을 PDF 하나로.", meta: "JPG·PNG · A4", kw: "이미지 pdf 사진 png jpeg 변환 스캔 영수증" },
-  { id: "docx2pdf", cat: "pdf", beta: true, path: "/docx-to-pdf/", title: "워드 PDF 변환 (DOCX)", seo: "워드 PDF 변환 — DOCX를 PDF로, 워드 없이 무료로 열어 보기", h1: "워드 PDF 변환 — DOCX 문서를 열어 보고 PDF로 저장", desc: "워드(DOCX) 문서를 워드 프로그램 없이 브라우저에서 열어 보고, A4 인쇄 모양으로 맞춘 뒤 인쇄 창의 「PDF로 저장」으로 글자가 선택되는 PDF를 만들어요. 글자 모양, 목록 번호, 표, 그림을 보여 줘요. 파일은 서버로 전송하지 않습니다.", hook: "DOCX를 열어 보고 PDF로 저장. 표·그림·목록까지.", meta: "DOCX → PDF · 베타", kw: "워드 pdf 변환 docx pdf 변환 word pdf 변환 워드 파일 pdf 워드 뷰어 docx 뷰어 docx 열기 워드 열기 word to pdf docx to pdf docs to pdf 문서 pdf 변환 ms워드" }, // P2-65
-  { id: "hwpview", cat: "pdf", beta: true, path: "/hwp-viewer/", title: "한글 파일 뷰어 (HWPX)", seo: "한글 파일 뷰어 — HWPX 열기, 한글 프로그램 없이 무료로 보기", h1: "한글 파일 뷰어 — HWPX 문서를 설치 없이 열어 보기", desc: "한글(한컴오피스) HWPX 문서를 프로그램 설치 없이 브라우저에서 열어 봐요. 글자 모양, 표, 그림을 보여 주고 PDF로도 저장할 수 있어요. 지금은 HWPX만 열 수 있고, 예전 HWP 형식은 준비 중이에요. 파일은 서버로 전송하지 않습니다.", hook: "HWPX를 설치 없이 열어 보기. HWP는 준비 중.", meta: "HWPX · 베타", kw: "한글 파일 뷰어 한글 뷰어 hwp 뷰어 hwpx 뷰어 hwp 열기 hwpx 열기 한글 문서 열기 한컴 한컴오피스 아래아한글 hwp hwpx viewer 한글파일 보기" }, // P2-64
-  { id: "hwp2pdf", cat: "pdf", beta: true, path: "/hwp-to-pdf/", title: "한글 PDF 변환 (HWPX)", seo: "한글 PDF 변환 — HWPX를 PDF로, 무료·설치 없이", h1: "한글 PDF 변환 — HWPX 문서를 PDF로 저장", desc: "한글(한컴오피스) HWPX 문서를 브라우저에서 열어 A4 인쇄 모양으로 맞춘 뒤, 인쇄 창의 「PDF로 저장」으로 글자가 선택되는 PDF를 만들어요. 지금은 HWPX만 지원하고, 예전 HWP 형식은 준비 중이에요. 파일은 서버로 전송하지 않습니다.", hook: "HWPX를 PDF로 저장. 글자 선택되는 PDF.", meta: "HWPX → PDF · 베타", kw: "hwp pdf 변환 hwpx pdf 변환 한글 pdf 변환 한글 파일 pdf 한글 문서 pdf hwp to pdf hwpx to pdf 한컴 pdf 아래아한글 pdf 저장" }, // P2-64
+  { id: "docx2pdf", cat: "pdf", beta: true, path: "/docx-to-pdf/", title: "워드 파일 뷰어·PDF 변환 (DOCX)", seo: "워드 파일 뷰어·PDF 변환 — DOCX 열어 보기와 PDF 저장, 워드 없이 무료", h1: "워드 파일 뷰어·PDF 변환 — DOCX 문서를 열어 보고 PDF로 저장", desc: "워드(DOCX) 문서를 워드 프로그램 없이 브라우저에서 열어 보고, A4 인쇄 모양으로 맞춘 뒤 인쇄 창의 「PDF로 저장」으로 글자가 선택되는 PDF를 만들어요. 글자 모양, 목록 번호, 표, 그림을 보여 줘요. 파일은 서버로 전송하지 않습니다.", hook: "DOCX를 열어 보고 PDF로 저장. 표·그림·목록까지.", meta: "DOCX 보기·PDF · 베타", kw: "워드 pdf 변환 docx pdf 변환 word pdf 변환 워드 파일 pdf 워드 뷰어 docx 뷰어 docx 열기 워드 열기 word to pdf docx to pdf docs to pdf 문서 pdf 변환 ms워드" }, // P2-65 (P2-64d 이름: 뷰어·PDF 변환)
+  { id: "hwpview", cat: "pdf", beta: true, path: "/hwp-viewer/", title: "한글 파일 뷰어·PDF 변환 (HWP·HWPX)", seo: "한글 파일 뷰어·HWP PDF 변환 — HWP·HWPX 열기와 PDF 저장, 무료·설치 없이", h1: "한글 파일 뷰어·PDF 변환 — HWP·HWPX 문서를 열어 보고 PDF로 저장", desc: "한글(한컴오피스) HWP·HWPX 문서를 한글 프로그램 없이 브라우저에서 열어 보고, 인쇄 창의 「PDF로 저장」으로 글자가 선택되는 PDF로 바꿔요(HWP PDF 변환). 글자 모양, 표, 그림을 A4 쪽으로 보여 줘요. 파일은 서버로 전송하지 않습니다.", hook: "HWP·HWPX를 설치 없이 열어 보고 PDF로 저장.", meta: "HWP·HWPX 보기·PDF · 베타", kw: "한글 파일 뷰어 한글 뷰어 hwp 뷰어 hwpx 뷰어 hwp 열기 hwpx 열기 한글 문서 열기 hwp pdf 변환 hwpx pdf 변환 한글 pdf 변환 한글 파일 pdf 한글 문서 pdf hwp to pdf hwpx to pdf 한컴 한컴오피스 아래아한글 hwp hwpx viewer 한글파일 보기 한컴 pdf 아래아한글 pdf 저장" }, // P2-64, P2-64d HWP 지원 + 「한글 PDF 변환」(/hwp-to-pdf/) 통합
   { id: "imgcompress", cat: "image", path: "/image/compress/", title: "이미지 용량 줄이기", seo: "이미지 용량 줄이기 — 무료, 사진 압축", h1: "이미지 용량 줄이기 — 품질과 크기를 골라 사진 압축", desc: "JPG·PNG·WEBP 사진의 품질과 최대 너비를 조절해 용량을 줄이고, 얼마나 줄었는지 보여 드려요. 파일은 서버로 전송하지 않습니다.", hook: "품질·너비 조절해서 사진 용량 줄이기.", meta: "JPG·WEBP 저장", kw: "사진 압축 용량 줄이기 리사이즈 크기 jpg png webp 이미지 압축" },
   { id: "charcount", cat: "text", path: "/text/char-count/", title: "글자수 세기", seo: "글자수 세기 — 무료, 공백 포함·제외·바이트", h1: "글자수 세기 — 공백 포함·제외, 바이트까지", desc: "자기소개서와 리포트 글자수를 공백 포함·제외, 바이트(UTF-8·한글 2바이트), 줄·단락 수로 바로 세어 드려요. 입력한 글은 저장하지 않습니다.", hook: "자소서 글자수, 공백 포함·제외, 바이트까지.", meta: "실시간 계산", kw: "글자 수 글자수 자소서 자기소개서 바이트 공백 단어 세기 카운터" },
   { id: "dday", cat: "calc", also: ["time"], path: "/calc/d-day/", title: "디데이 계산기", seo: "디데이 계산기 (D-day 계산) — 무료", h1: "디데이 계산기 — D-day, 날짜 사이 일수, 기념일", desc: "목표일까지 남은 날(D-day)과 두 날짜 사이의 일수를 계산하고, 100일·1000일 같은 기념일 날짜를 한 번에 보여 드려요.", hook: "시험·전역·기념일까지 며칠? 100일·1000일도.", meta: "날짜 두 개", kw: "d-day 디데이 날짜 계산 기념일 100일 1000일 며칠 남았는지 일수" },
@@ -209,14 +208,13 @@ const UTILS = [
   { id: "emoji", cat: "text", path: "/text/emoji-special-characters/", title: "이모지 · 특수문자 복사", seo: "이모지 · 특수문자 복사 — 하트 특수문자, 화살표, 별, 원문자 모음과 일괄 삽입", h1: "이모지 · 특수문자 복사 — 누르면 바로 복사, 목록 꾸미기까지", desc: "표정·사람·동물·음식·사물·기호 이모지와 하트·화살표·별(★※→)·괄호·원문자(①㉠) 같은 특수문자를 한글로 찾아 누르면 바로 복사해요. 글을 넣으면 줄마다 이모지·기호를 붙이고 1\uFE0F⃣ 2\uFE0F⃣ 번호도 자동으로 매겨요. 유니코드 표준 문자만 써요.", hook: "하트·화살표·별 특수문자, 누르면 바로 복사.", meta: "1,000여 개 · 일괄 삽입", kw: "이모지 이모지 복사 이모티콘 이모티콘 복사 특수문자 특수문자 복사 특수기호 기호 모음 특수문자 모음 특수문자표 하트 특수문자 하트 이모지 하트 기호 하트 복사 ♥ ♡ 별 특수문자 별 기호 ★ ☆ 화살표 특수문자 화살표 기호 → 당구장 표시 ※ 체크 표시 체크 이모지 ✔ ✅ 동그라미 숫자 원문자 원숫자 ① 괄호 숫자 낫표 겹낫표 「」 『』 꺾쇠 말머리 기호 글머리 기호 블로그 꾸미기 인스타 꾸미기 목록 꾸미기 번호 이모지 1\uFE0F⃣ 숫자 이모지 일괄 삽입 줄 앞에 이모지 구분선 emoji copy special characters symbols" }, // P2-57
   { id: "aptmap", cat: "house", path: "/apt-map/", title: "역세권 아파트 지도", seo: "역세권 아파트 지도 — 사회초년생 20평대 실거래가, 가격대별 2억대·3억대·4억대", h1: "사회초년생이 살 만한 역세권 아파트 지도", desc: "역에서 직선 1km 안, 300세대 이상, 전용 40~60㎡(20평대) 아파트를 국토교통부 실거래가 중위값으로 2억 미만부터 8억대까지 가격대별로 지도에 보여 줘요. 지역·노선·준공연도로 좁히고 「도보 10분 이내만」(직선 500m)으로 더 가까운 단지만 볼 수 있어요. 거래 완료 기록 기준이라 현재 호가와 다를 수 있고, 투자 권유가 아니에요.", hook: "20평대 역세권 아파트, 가격대별로 지도에서.", meta: "실거래 중위값 · 역 1km · 매달 갱신", kw: "아파트 지도 역세권 아파트 역세권 아파트 지도 역세권 20평대 20평대 아파트 24평 전용 59 전용 49 소형 아파트 싼 아파트 제일 싼 아파트 저렴한 아파트 2억 아파트 3억 아파트 4억 아파트 5억 아파트 2억대 3억대 4억대 아파트 실거래가 실거래가 조회 아파트 시세 아파트 가격 지하철역 근처 아파트 역 근처 아파트 도보 10분 사회초년생 내 집 마련 첫 집 신혼부부 아파트 서울 경기 인천 부산 대구 수도권 아파트 아파트 매매 국토부 실거래" }, // P2-63b
 ];
-const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "heic", "qr", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "docx2pdf", "hwpview", "hwp2pdf", "dday", "stockquiz", "avgdown", "dca", "ostax", "rsibt", "compound", "possize", "linebreak", "readtime", "emoji", "aptmap"]; // P2-63b aptmap // P2-57 linebreak·readtime·emoji // P2-56 possize // P2-55 compound // P2-50 stockquiz(투자) // P2-51 avgdown // P2-52 dca // P2-53 ostax // P2-54 rsibt // P2-45 돈 계산기 4종, P2-46 imgmerge, P2-47 heic, P2-48 qr
+const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "heic", "qr", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "docx2pdf", "hwpview", "dday", "stockquiz", "avgdown", "dca", "ostax", "rsibt", "compound", "possize", "linebreak", "readtime", "emoji", "aptmap"]; // P2-63b aptmap // P2-57 linebreak·readtime·emoji // P2-56 possize // P2-55 compound // P2-50 stockquiz(투자) // P2-51 avgdown // P2-52 dca // P2-53 ostax // P2-54 rsibt // P2-45 돈 계산기 4종, P2-46 imgmerge, P2-47 heic, P2-48 qr
 const NEXT = {
   pdfmerge: ["pdfsplit", "img2pdf", "imgcompress"],
   pdfsplit: ["pdfmerge", "pdf2img", "img2pdf"],
   img2pdf: ["pdfmerge", "imgcompress", "pdfsplit"],
-  docx2pdf: ["pdfmerge", "hwp2pdf", "pdfsplit"], // P2-65 만든 PDF 합치기 · 한글 문서도
-  hwpview: ["hwp2pdf", "pdfmerge", "docx2pdf"], // P2-64 열어 본 문서 → PDF로 저장 → 합치기
-  hwp2pdf: ["pdfmerge", "hwpview", "pdfsplit"], // P2-64 만든 PDF 합치기·나누기
+  docx2pdf: ["pdfmerge", "hwpview", "pdfsplit"], // P2-65 만든 PDF 합치기 · 한글 문서도
+  hwpview: ["pdfmerge", "docx2pdf", "pdfsplit"], // P2-64 만든 PDF 합치기 → 워드 문서도 → 나누기 (P2-64d 한글 PDF 변환 통합)
   imgcompress: ["img2pdf", "pdfmerge", "charcount"],
   charcount: ["readtime", "linebreak", "emoji"], // P2-57 글쓰기 툴끼리 잇기
   dday: ["age", "timer", "charcount"],
@@ -419,7 +417,7 @@ ${cfg.naverVerification ? `<meta name="naver-site-verification" content="${esc(c
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap">
 <link rel="stylesheet" href="${u("/assets/style.css")}?v=${BUILD_V}">
 ${cfg.adsenseClient ? `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${esc(cfg.adsenseClient)}" crossorigin="anonymous"></script>` : ""}
-${cfg.gaId ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${esc(cfg.gaId)}"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${esc(cfg.gaId)}');</script>` : ""}
+${cfg.gaId ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${esc(cfg.gaId)}"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());if(!/^(localhost|127\.)/.test(location.hostname))gtag('config','${esc(cfg.gaId)}');</script>` : ""}
 <script type="application/ld+json">${JSON.stringify(ld.length === 1 ? ld[0] : ld).replace(/</g, "\\u003c")}</script>
 </head>
 <body>
@@ -511,9 +509,8 @@ const cabCls = (i, n) => (i < nToolCabs ? cabCls0(i, nToolCabs) : "cab-full"); /
 // ★ 새 툴·게임을 만들면 여기에 { id, d: "출시일" }을 맨 위에 추가(대표님 지시: 새 콘텐츠는 메인에 잘 보이게).
 // 출시 30일 이내 항목 중 최신 4개가 홈 맨 위 「NEW」 띠에 나오고, 해당 행·타일에 NEW 표시가 붙음
 const NEW_ITEMS = [
+  { id: "hwpview", d: "2026-11-15" }, // P2-64, P2-64d HWP 지원·한글 PDF 변환 통합
   { id: "docx2pdf", d: "2026-11-10" }, // P2-65
-  { id: "hwpview", d: "2026-11-10" }, // P2-64
-  { id: "hwp2pdf", d: "2026-11-10" }, // P2-64
   { id: "aptmap", d: "2026-11-10" }, // P2-63b
   { id: "mines", d: "2026-11-10" }, // P2-60
   { id: "tarot", d: "2026-11-10" }, // P2-58
@@ -1110,6 +1107,7 @@ function checkLife() {
   const moved = [["/brain/", "/arcade/"], ["/brain/reaction/", "/arcade/reaction/"], ...REACTION_KEYS.flatMap((k) => [[`/brain/reaction/${REACTION_SLUG[k]}/`, "/arcade/reaction/"], [`/arcade/reaction/${REACTION_SLUG[k]}/`, "/arcade/reaction/"]])];
   moved.push(...FUN_MOVED); // P2-49 운세·재미 이동
   moved.push(["/pdf/word-to-pdf/", "/docx-to-pdf/"]); // P2-65 옛 워드 PDF 변환(간단) → 워드 PDF 변환(DOCX)
+  moved.push(["/hwp-to-pdf/", "/hwp-viewer/"]); // P2-64d 한글 PDF 변환 → 한글 파일 뷰어·PDF 변환(통합)
   if (moved.some(([f]) => pageHtml.has(f))) throw new Error("P2-49 리디렉트가 실제 페이지를 덮어씀");
   for (const [from, to] of moved) {
     const file = path.join(DIST, from, "index.html");
@@ -1228,8 +1226,8 @@ ${tkTail("PDF 만들기")}`, { vendor: ["pdf-lib.min.js"], scripts: ["t-img2pdf.
 
 // P2-65 옛 「워드 PDF 변환(간단)」(mammoth)은 폐지 → /pdf/word-to-pdf/는 /docx-to-pdf/로 이동(아래 moved)
 
-// P2-64 한글 파일 뷰어 · 한글 PDF 변환(HWPX, 베타): 두 페이지가 같은 코드(hwp-doc.js 해석 → 공통 문서 모델 → hwp-render.js 그리기, t-hwp.js 화면)
-// HWP(5.0 바이너리) 해석기는 아직 없음(외부 라이브러리 실행 승인 대기) → .hwp를 넣으면 안내만. 해석기는 hwp-doc.js의 PARSERS에 붙이면 됨
+// P2-64 한글 파일 뷰어·PDF 변환(HWP·HWPX, 베타): hwp-doc.js(HWPX)·hwp5-doc.js(HWP 5.0, P2-64d 자체 해석기) → 공통 문서 모델 → hwp-render.js 그리기, t-hwp.js 화면
+// P2-64d 옛 「한글 PDF 변환」(/hwp-to-pdf/)은 이 페이지로 통합 → moved로 이동. 한컴 공개 문서 이용 조건에 따라 툴 페이지 하단과 /licenses/에 고지 문구
 const HWP_OFFICIAL = "https://www.hancom.com/support/downloadCenter/download"; // 한컴 다운로드 센터(공식 뷰어)
 // P2-64c 문서 뷰어(세 페이지 공통): 제목 바로 아래 뷰어. 처음엔 큰 「파일 열기」 칸, 열면 도구 막대 + 쪽 미리보기 + 회색 작업 영역에 A4 종이를 쪽마다 쌓음
 const HV_I = { // 도구 막대 아이콘(선 그림, 이름은 옆 글자나 화면 읽기용 글자로)
@@ -1293,13 +1291,14 @@ ${help}
 <p class="hv-hint" hidden>${esc(hint)}</p>
 ${warn}`;
 const HV_HINT = "「PDF로 저장」을 누르면 인쇄 창이 열려요. 대상(프린터)을 「PDF로 저장」 또는 「Microsoft Print to PDF」로 고르면 글자가 선택되는 PDF가 만들어져요. 휴대폰은 「PDF로 저장」을 누르면 문서만 담긴 인쇄용 화면이 열리고, 거기서 「인쇄·PDF 저장」을 누르면 돼요.";
-const hwpToolHtml = (pdfFirst) => docViewerHtml({
-  drop: dropHtml({ accept: ".hwpx,.hwp,application/hwp+zip,application/x-hwp", multiple: true, label: pdfFirst ? "PDF로 바꿀 한글 파일(HWPX)을 넣어 주세요" : "열어 볼 한글 파일(HWPX)을 넣어 주세요", limit: "HWPX · 파일당 50MB · 10개까지 (HWP는 준비 중)" }),
-  help: `<div class="hwpv-help" hidden><p>열지 못한 파일은 <a href="${HWP_OFFICIAL}" target="_blank" rel="noopener">한컴 공식 뷰어(한컴 다운로드 센터) ↗<span class="sr"> (새 창, 외부 사이트)</span></a>를 이용해 주세요. HWP 파일은 한글 프로그램에서 「다른 이름으로 저장 → HWPX」로 저장하면 여기서 열 수 있어요.</p></div>`,
-  warn: `<p class="tk-warn" role="note"><b>지금은 HWPX만 열 수 있어요.</b> HWP(구형 바이너리) 지원은 준비 중이에요. 원본과 모양(줄 바꿈·쪽 나눔·글꼴)이 다를 수 있으니 중요한 문서는 원본과 함께 확인하세요.</p>`,
+const HWP_SPEC_NOTE = "본 제품은 한컴의 HWP 문서 파일(.hwp) 공개 문서를 참고하여 개발하였습니다."; // P2-64d 한컴 공개 문서 이용 조건의 필수 문구(store.hancom.com/etc/hwpDownload.do)
+const hwpToolHtml = () => docViewerHtml({
+  drop: dropHtml({ accept: ".hwp,.hwpx,application/x-hwp,application/haansofthwp,application/vnd.hancom.hwp,application/hwp+zip,application/vnd.hancom.hwpx", multiple: true, label: "열어 보거나 PDF로 바꿀 한글 파일(HWP·HWPX)을 넣어 주세요", limit: "HWP·HWPX · 파일당 50MB · 10개까지" }),
+  help: `<div class="hwpv-help" hidden><p>열지 못한 파일은 <a href="${HWP_OFFICIAL}" target="_blank" rel="noopener">한컴 공식 뷰어(한컴 다운로드 센터) ↗<span class="sr"> (새 창, 외부 사이트)</span></a>를 이용해 주세요. 암호·배포용 문서와 한글 97 이전 형식은 여기서 열 수 없어요.</p></div>`,
+  warn: `<p class="tk-warn" role="note"><b>원본과 모양이 다를 수 있어요.</b> 줄 바꿈·쪽 나눔·글꼴은 한글 프로그램과 다를 수 있으니 중요한 문서는 원본과 함께 확인하세요. 암호가 걸린 문서와 배포용 문서는 열 수 없어요.</p>`,
   hint: HV_HINT,
 });
-utilPage(utilById.hwpview, hwpToolHtml(false), { vendor: ["fflate.min.js"], scripts: ["hwp-doc.js", "hwp-render.js", "t-hwp.js"] });
+utilPage(utilById.hwpview, hwpToolHtml(), { vendor: ["fflate.min.js"], scripts: ["hwp-doc.js", "hwp5-doc.js", "hwp-render.js", "t-hwp.js"], after: `<p class="hint hv-spec">${HWP_SPEC_NOTE} · <a href="${u("/licenses/")}#hwp-spec">고지 보기</a></p>` });
 // P2-65 워드 PDF 변환(DOCX): 같은 화면 코드, 해석기만 docx-doc.js
 utilPage(utilById.docx2pdf, docViewerHtml({
   drop: dropHtml({ accept: ".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.doc", multiple: true, label: "PDF로 바꿀 워드 파일(DOCX)을 넣어 주세요", limit: "DOCX · 파일당 50MB · 10개까지 (.doc 미지원)" }),
@@ -1307,7 +1306,6 @@ utilPage(utilById.docx2pdf, docViewerHtml({
   warn: `<p class="tk-warn" role="note"><b>원본과 모양이 다를 수 있어요.</b> 줄 바꿈·쪽 나눔·글꼴은 워드와 다를 수 있으니 중요한 문서는 원본과 함께 확인하세요. 예전 형식(.doc)은 열 수 없어요.</p>`,
   hint: HV_HINT,
 }), { vendor: ["fflate.min.js"], scripts: ["hwp-doc.js", "docx-doc.js", "hwp-render.js", "t-hwp.js"] });
-utilPage(utilById.hwp2pdf, hwpToolHtml(true), { vendor: ["fflate.min.js"], scripts: ["hwp-doc.js", "hwp-render.js", "t-hwp.js"] });
 
 // 이미지 용량 줄이기
 utilPage(utilById.imgcompress, `${dropHtml({ accept: ".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp", multiple: true, label: "용량을 줄일 이미지를 넣어 주세요", limit: "JPG·PNG·WEBP · 장당 30MB · 30장까지" })}
@@ -2388,20 +2386,21 @@ utilPage(utilById.age, `<form class="dd-form" autocomplete="off">
 <ul>${PAY.sources.filter((x) => keys.includes(x.k)).map((x) => `<li><b>${esc(x.name)}</b> — <a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.by)}<span class="sr"> (새 창, 외부 사이트)</span></a> · ${esc(x.date)}${x.check === "보도" ? " · <small>고시 원문 대신 공개 보도로 확인</small>" : ""}</li>`).join("")}</ul>
 <p class="hint">요율은 해마다 바뀌어요. 이 계산기는 ${PAY.year}년 값으로 계산하는 <b>참고용 추정치</b>이고, 정확한 금액은 회사 급여 담당자나 해당 기관(국민연금공단·국민건강보험공단·국세청 홈택스·고용24)에서 확인하세요.</p></section>`;
   const tail = `<div class="dd-opts pay-acts"><button type="submit" class="btn">계산하기</button><button type="button" class="btn ghost" data-copy>결과 한 줄 복사</button></div>`;
-  const money = (name, label, ph, { value = "", kor = true, help = "" } = {}) => `<label${name === "amt" ? ' class="pay-amt-label"' : name === "wv" ? ' class="pay-wv-label"' : ""}>${label}<input name="${name}" type="text" inputmode="numeric" autocomplete="off" placeholder="${ph}"${value !== "" ? ` value="${value}"` : ""}${kor ? " data-kor" : ""}>${help ? `<small class="hint">${help}</small>` : ""}</label>`;
+  // P2-67 max: 금액 칸 상한(원). 넘으면 t-pay.js가 계산하지 않고 결과 칸에 안내(연봉·월급, 평균임금은 넣는 방식에 따라 화면에서 바꿈)
+  const money = (name, label, ph, { value = "", kor = true, help = "", max = 1e10 } = {}) => `<label${name === "amt" ? ' class="pay-amt-label"' : name === "wv" ? ' class="pay-wv-label"' : ""}>${label}<input name="${name}" type="text" inputmode="numeric" autocomplete="off" placeholder="${ph}"${value !== "" ? ` value="${value}"` : ""}${kor ? " data-kor" : ""} data-max="${max}">${help ? `<small class="hint">${help}</small>` : ""}</label>`;
   const box = (id, form) => `<div class="pay" data-pay="${id}"><form class="dd-form pay-form" autocomplete="off" novalidate>${form}${tail}</form><div class="dd-result pay-result" aria-live="polite"></div></div>${rates}`;
   const opts = { scripts: ["pay-calc.js", "t-pay.js"], fileTool: false };
 
-  // 연봉 실수령액
+  // 연봉 실수령액 (P2-67: 월급 칩 글자 Math.round — 2.2×100 = 220.00000000000003 표시 오류)
   {
     const ANN = [24, 28, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100].map((x) => x * 1e6);
     const rowsY = ANN.map((a) => { const r = PC.salary(PAY, { annual: a, nontax: 200000, family: 1, kids: 0, ratio: 1, date: PAY.checked }); return `<tr><th scope="row">${(a / 1e4).toLocaleString("ko-KR")}만원</th><td>${wn(r.gross)}</td><td>${wn(r.pension + r.health + r.ltc + r.employ)}</td><td>${wn(r.tax + r.local)}</td><td><b>${wn(r.net)}</b></td></tr>`; }).join("");
     utilPage(utilById.salary, box("salary", `
 <fieldset class="seg"><legend>무엇을 넣을까요?</legend><label><input type="radio" name="mode" value="year" checked><span>연봉</span></label><label><input type="radio" name="mode" value="month"><span>월급</span></label></fieldset>
 ${money("amt", "연봉 (세전)", "예: 40,000,000")}
-<div class="dd-opts pay-quick"><span class="hint">빠르게</span>${[30, 40, 50, 60].map((m) => `<button type="button" class="chip pay-quick-y" data-fill="amt=${m * 1e6}">${m.toLocaleString("ko-KR")}00만</button>`).join("")}${[2.2, 2.5, 3, 4].map((m) => `<button type="button" class="chip pay-quick-m" data-fill="amt=${m * 1e6}" hidden>월 ${m * 100}만</button>`).join("")}</div>
+<div class="dd-opts pay-quick"><span class="hint">빠르게</span>${[30, 40, 50, 60].map((m) => `<button type="button" class="chip pay-quick-y" data-fill="amt=${m * 1e6}">${m.toLocaleString("ko-KR")}00만</button>`).join("")}${[2.2, 2.5, 3, 4].map((m) => `<button type="button" class="chip pay-quick-m" data-fill="amt=${m * 1e6}" hidden>월 ${Math.round(m * 100)}만</button>`).join("")}</div>
 <div class="row2">
-  ${money("nontax", "비과세 (월)", "예: 200,000", { value: "200000", kor: false, help: "식대는 월 20만원까지 비과세" })}
+  ${money("nontax", "비과세 (월)", "예: 200,000", { value: "200000", kor: false, help: "식대는 월 20만원까지 비과세", max: 1e9 })}
   <label>원천징수 비율<select name="ratio"><option value="80">80%</option><option value="100" selected>100% (기본)</option><option value="120">120%</option></select></label>
 </div>
 <div class="row2">
@@ -2420,7 +2419,7 @@ ${srcHtml(["pension", "health", "employ", "tax", "wage"])}`
   // 주휴수당
   utilPage(utilById.juhyu, box("juhyu", `
 <div class="row2">
-  ${money("wage", "시급", "예: 10,320", { value: String(PAY.minWage[PAY.year]), kor: false, help: `${PAY.year}년 최저임금 ${PAY.minWage[PAY.year].toLocaleString("ko-KR")}원` })}
+  ${money("wage", "시급", "예: 10,320", { value: String(PAY.minWage[PAY.year]), kor: false, help: `${PAY.year}년 최저임금 ${PAY.minWage[PAY.year].toLocaleString("ko-KR")}원`, max: 1e6 })}
   <label>일주일 근무시간<input name="hours" type="number" min="0" max="80" step="0.5" value="20" inputmode="decimal"></label>
 </div>
 <div class="dd-opts pay-quick"><span class="hint">주 근무시간</span>${[15, 20, 25, 30, 40].map((h) => `<button type="button" class="chip" data-fill="hours=${h}">${h}시간</button>`).join("")}</div>
@@ -2432,13 +2431,13 @@ ${srcHtml(["pension", "health", "employ", "tax", "wage"])}`
   <label>입사일<input type="date" name="start" min="1970-01-01" max="2100-12-31"></label>
   <label>마지막 근무일<input type="date" name="last" min="1970-01-01" max="2100-12-31"></label>
 </div>
-${money("wage", "월급 (세전, 기본급 + 고정 수당)", "예: 3,000,000")}
-${money("wage3", "퇴직 전 3개월 임금 총액 (세전)", "월급을 넣으면 × 3이 들어가요", { help: "달마다 다르면 실제 3개월 합계로 고쳐 넣으세요" })}
+${money("wage", "월급 (세전, 기본급 + 고정 수당)", "예: 3,000,000", { max: 1e9 })}
+${money("wage3", "퇴직 전 3개월 임금 총액 (세전)", "월급을 넣으면 × 3이 들어가요", { help: "달마다 다르면 실제 3개월 합계로 고쳐 넣으세요", max: 3e9 })}
 <div class="row2">
   ${money("bonus", "1년 동안 받은 상여금", "예: 4,000,000", { help: "3/12만 반영" })}
-  ${money("leave", "연차수당 (전년도 미사용분)", "예: 300,000", { help: "3/12만 반영" })}
+  ${money("leave", "연차수당 (전년도 미사용분)", "예: 300,000", { help: "3/12만 반영", max: 1e9 })}
 </div>
-<details class="pay-more"><summary>1일 통상임금도 넣기 (선택)</summary>${money("ord", "1일 통상임금", "예: 110,000", { kor: false, help: "평균임금이 통상임금보다 적으면 통상임금으로 계산해요(근로기준법 제2조②)" })}</details>`), {
+<details class="pay-more"><summary>1일 통상임금도 넣기 (선택)</summary>${money("ord", "1일 통상임금", "예: 110,000", { kor: false, help: "평균임금이 통상임금보다 적으면 통상임금으로 계산해요(근로기준법 제2조②)", max: 1e8 })}</details>`), {
     ...opts,
     after: srcHtml(["severance"])
   });
@@ -2449,7 +2448,7 @@ ${money("wage3", "퇴직 전 3개월 임금 총액 (세전)", "월급을 넣으�
     utilPage(utilById.unemp, box("unemp", `
 <fieldset class="seg"><legend>퇴사(이직)한 해</legend>${Object.keys(PAY.unemp.dayCap).map((y) => `<label><input type="radio" name="year" value="${y}"${+y === PAY.year ? " checked" : ""}><span>${y}년</span></label>`).join("")}</fieldset>
 <fieldset class="seg"><legend>평균임금 넣는 방법</legend><label><input type="radio" name="wmode" value="month" checked><span>월 평균 임금</span></label><label><input type="radio" name="wmode" value="day"><span>1일 평균임금</span></label></fieldset>
-${money("wv", "퇴직 전 월 평균 임금 (세전)", "예: 3,000,000")}
+${money("wv", "퇴직 전 월 평균 임금 (세전)", "예: 3,000,000", { max: 1e9 })}
 <div class="row2">
   <label>퇴사일 기준 나이 (만)<input name="age" type="number" min="15" max="99" value="35" inputmode="numeric"></label>
   <label>고용보험 가입기간<select name="period">${H.map((h, i) => `<option value="${i}"${i === 1 ? " selected" : ""}>${h}</option>`).join("")}</select></label>
@@ -2528,6 +2527,7 @@ utilPage(utilById.stopwatch, `<button type="button" class="tm-fs-close" data-fs-
 <li>소스 코드(이 사이트 사본): <a href="${u("/assets/vendor/libheif/source/libheif-1.23.5.tar.gz")}">libheif-1.23.5.tar.gz</a> · <a href="${u("/assets/vendor/libheif/source/libde265-1.0.15.tar.gz")}">libde265-1.0.15.tar.gz</a> · 빌드 설정 <a href="${u("/assets/vendor/libheif/source/libheif-emscripten-v1.23.5_emscripten.yml")}">emscripten.yml</a>, <a href="${u("/assets/vendor/libheif/source/libheif-emscripten-v1.23.5_dist-prep.sh")}">dist-prep.sh</a></li>
 <li>원본 저장소: <a href="https://github.com/strukturag/libheif/releases/tag/v1.23.5" rel="noopener">libheif v1.23.5</a> · <a href="https://github.com/strukturag/libde265/releases/tag/v1.0.15" rel="noopener">libde265 v1.0.15</a></li>
 </ul>
+<h2 id="hwp-spec">한글 문서 형식(HWP)</h2><p>${HWP_SPEC_NOTE} 「한글 파일 뷰어·PDF 변환」의 HWP 해석기는 한컴이 공개한 「한글 문서 파일 형식 5.0」 문서를 보고 직접 만들었고, 외부 HWP 해석 라이브러리는 쓰지 않습니다. 한컴은 이 문서를 참고해 만든 결과물의 정확성을 보증하지 않습니다.</p>
 <h2>글꼴</h2><p>본문 글꼴 Pretendard와 제목 글꼴 Black Han Sans는 SIL Open Font License 1.1 글꼴입니다. 두 글꼴은 각각 jsDelivr와 Google Fonts에서 불러오며, 이 요청에는 파일이나 입력한 글이 포함되지 않습니다.</p>
 <p class="hint">고지에 빠진 내용이 있다면 <a href="${u("/contact/")}">문의</a>로 알려 주세요.</p></article>`;
   write(p, layout({ title: "오픈소스 고지", desc: `${cfg.siteName}가 사용하는 오픈소스 라이브러리와 라이선스 안내`, path: p, body }));
@@ -2585,6 +2585,7 @@ write("/404.html", layout({ title: "페이지를 찾을 수 없어요", desc: "�
   const favIdx = {};
   UTILS.forEach((x) => { favIdx[x.id] = { t: x.title, p: u(x.path), c: catName(x.cat) }; });
   TOOLS.forEach((x) => { favIdx[x.id] = { t: x.title, p: u(x.path), c: playCat(x) }; }); // P2-49 id는 그대로, 주소·분류만 새로
+  favIdx.hwp2pdf = { ...favIdx.hwpview, a: "hwpview" }; // P2-64d 옛 「한글 PDF 변환」 즐겨찾기 → 통합 페이지
   favIdx.word2pdf = { ...favIdx.docx2pdf, a: "docx2pdf" }; // P2-65 옛 「워드 PDF 변환(간단)」을 즐겨찾기에 담아 둔 사용자 → 새 워드 PDF 변환으로(UTILS 뒤에 넣어 현재 페이지 판별은 docx2pdf가 먼저)
   favIdx.family = { t: FAMILY.name, p: FAMILY.url, c: `${CHAT.name} · 새 창`, x: 1 }; // 외부 사이트 // P2-61 분류명 = 새 서랍 이름
   fs.writeFileSync(path.join(DIST, "assets", "fav-index.js"), `window.FAV_INDEX=${JSON.stringify(favIdx).replace(/</g, String.fromCharCode(92) + "u003c")};\n`);

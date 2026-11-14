@@ -87,6 +87,7 @@ ${NOTE}`;
       box.querySelectorAll(".pay-quick-y").forEach((x) => (x.hidden = m));
       box.querySelectorAll(".pay-quick-m").forEach((x) => (x.hidden = !m));
       $(".pay-sev").hidden = m;
+      $('[name="amt"]').dataset.max = m ? 1e9 : 1e10; // P2-67 상한: 월급 10억원, 연봉 100억원
     }));
   }
 
@@ -127,7 +128,7 @@ ${NOTE}`;
   if (tool === "unemp") {
     if (q.get("daily")) { const d = box.querySelector('[name="wmode"][value="day"]'); d.checked = true; setVal("wv", Math.round(num(q.get("daily")))); }
     if (q.get("years")) { const y = num(q.get("years")); $('[name="period"]').value = y < 1 ? 0 : y < 3 ? 1 : y < 5 ? 2 : y < 10 ? 3 : 4; }
-    const lab = () => { const day = val("wmode") === "day"; $(".pay-wv-label").firstChild.textContent = day ? "1일 평균임금 (세전)" : "퇴직 전 월 평균 임금 (세전)"; $('[name="wv"]').placeholder = day ? "예: 100,000" : "예: 3,000,000"; };
+    const lab = () => { const day = val("wmode") === "day"; $(".pay-wv-label").firstChild.textContent = day ? "1일 평균임금 (세전)" : "퇴직 전 월 평균 임금 (세전)"; $('[name="wv"]').placeholder = day ? "예: 100,000" : "예: 3,000,000"; $('[name="wv"]').dataset.max = day ? 1e8 : 1e9; };
     box.querySelectorAll('[name="wmode"]').forEach((el) => el.addEventListener("change", lab)); lab();
     calc = () => {
       line = "";
@@ -188,14 +189,52 @@ ${NOTE}`;
     };
   }
 
-  box.querySelector("form").addEventListener("submit", (e) => { e.preventDefault(); calc(); });
-  box.querySelector("form").addEventListener("input", () => calc());
-  box.querySelector("form").addEventListener("change", () => calc());
-  box.querySelectorAll("[data-fill]").forEach((b) => b.addEventListener("click", () => calc()));
+  // P2-67 입력 범위 확인(점검표 T2·C11): 음수·상한 초과·범위 밖 숫자·날짜는 계산하지 않고 결과 칸에 안내.
+  // 입력 중(input)에 최솟값보다 작은 것은 아직 치는 중일 수 있어 회색 안내, 칸을 벗어나거나(change) 계산하기를 누르면 빨간 안내.
+  const nf = (n) => Number(n).toLocaleString("ko-KR");
+  const labelOf = (el) => { const l = el.closest("label"); const t = l && l.firstChild && l.firstChild.nodeType === 3 ? l.firstChild.textContent : el.getAttribute("aria-label") || el.name; return String(t).trim(); };
+  const check = (strict) => {
+    let msg = "", soft = false, bad = null;
+    for (const el of box.querySelectorAll("input")) {
+      if (el.type === "radio" || el.type === "checkbox") continue;
+      el.removeAttribute("aria-invalid");
+      if (bad || el.closest("[hidden]")) continue;
+      const raw = String(el.value || "").trim();
+      if (!raw) continue;
+      let m = "", s = false;
+      if (el.type === "date") {
+        if ((el.min && raw < el.min) || (el.max && raw > el.max)) m = `${el.min.slice(0, 4)}년부터 ${el.max.slice(0, 4)}년 사이 날짜로 넣어 주세요.`;
+      } else if (el.type === "number") {
+        const v = Number(raw), lo = el.min === "" ? null : +el.min, hi = el.max === "" ? null : +el.max;
+        const range = lo != null && hi != null ? `${nf(lo)}~${nf(hi)} 사이로` : hi != null ? `${nf(hi)} 이하로` : `${nf(lo)} 이상으로`;
+        if (!isFinite(v)) m = "숫자로 넣어 주세요.";
+        else if (v < 0 && (lo == null || lo >= 0)) m = `음수는 넣을 수 없어요. ${range} 넣어 주세요.`;
+        else if (hi != null && v > hi) m = `${range} 넣어 주세요.`;
+        else if (lo != null && v < lo) { m = `${range} 넣어 주세요.`; s = true; }
+      } else {
+        const hi = +el.dataset.max || 0, v = num(raw);
+        if (/^[-−–]/.test(raw)) m = "음수는 넣을 수 없어요. 0보다 큰 금액으로 넣어 주세요.";
+        else if (hi && v != null && v > hi) m = `${kor(hi)}(${nf(hi)}원) 이하로 넣어 주세요.`;
+      }
+      if (m) { bad = el; msg = `「${labelOf(el)}」: ${m}`; soft = s; }
+    }
+    if (!bad) return false;
+    const show = strict || !soft;
+    if (show) bad.setAttribute("aria-invalid", "true");
+    if (strict) { const d = bad.closest("details"); if (d && !d.open) d.open = true; }
+    res.innerHTML = show ? `<p class="tk-msg" role="alert">${msg.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]))}</p>` : `<p class="hint">${msg.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]))}</p>`;
+    line = "";
+    return true;
+  };
+  const run = (strict) => { if (!check(strict)) calc(); };
+  box.querySelector("form").addEventListener("submit", (e) => { e.preventDefault(); run(true); });
+  box.querySelector("form").addEventListener("input", () => run(false));
+  box.querySelector("form").addEventListener("change", () => run(true));
+  box.querySelectorAll("[data-fill]").forEach((b) => b.addEventListener("click", () => run(true)));
   box.querySelector("[data-copy]").addEventListener("click", async () => {
     if (!line) { toast("먼저 값을 넣어 계산해 주세요"); return; }
     toast((await copy(line)) ? "결과 한 줄을 복사했어요" : "복사에 실패했어요");
   });
   box.querySelectorAll("[data-kor]").forEach((el) => el.dispatchEvent(new Event("pay-upd")));
-  calc();
+  run(true);
 })();

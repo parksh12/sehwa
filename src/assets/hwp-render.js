@@ -109,6 +109,12 @@
     else if (t.align === "RIGHT") wrap.classList.add("is-r");
     const tb = h("table", "h-tbl");
     if (t.w) tb.style.width = pt(t.w);
+    if (t.cols) { // P2-64d 열 폭을 아는 표(HWP): 열 묶음 + 고정 배치(병합이 많은 서식 표의 열 어긋남 방지)
+      const cg = h("colgroup");
+      t.cols.forEach((w) => { const c = h("col"); c.style.width = pt(w); cg.appendChild(c); });
+      tb.appendChild(cg);
+      tb.style.tableLayout = "fixed";
+    }
     const body = h("tbody");
     for (const row of t.rows) {
       const tr = h("tr");
@@ -227,6 +233,8 @@
       }
     }
     const b = el.cloneNode(false), wb = wrap.cloneNode(false), tb2 = tb.cloneNode(false), body2 = body.cloneNode(false);
+    const cg = tb.querySelector(":scope > colgroup");
+    if (cg) tb2.appendChild(cg.cloneNode(true)); // P2-64d 나뉜 뒤쪽 표도 같은 열 폭
     if (rest) body2.appendChild(rest);
     rows.slice(rest ? 1 : cut + 1).forEach((tr) => body2.appendChild(tr));
     tb2.appendChild(body2); wb.appendChild(tb2); b.appendChild(wb);

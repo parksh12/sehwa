@@ -1,4 +1,4 @@
-// P2-64 한글 파일 뷰어 · 한글 PDF 변환, P2-65 워드 PDF 변환, P2-64c 뷰어 화면(세 페이지 공통). 의존: tool-kit.js, hwp-doc.js(+docx-doc.js), hwp-render.js
+// P2-64 한글 파일 뷰어·PDF 변환, P2-65 워드 파일 뷰어·PDF 변환, P2-64c 뷰어 화면(공통). 의존: tool-kit.js, hwp-doc.js(+hwp5-doc.js P2-64d 또는 docx-doc.js), hwp-render.js
 // 흐름: 파일 넣기(여러 개) → HwpDoc.open(형식별 해석기 → 공통 모델) → HwpRender.render(쪽 나누기) → 뷰어(도구 막대·쪽 미리보기·A4 쪽) → 인쇄의 「PDF로 저장」
 (function () {
   const box = document.querySelector('[data-tool="hwpview"],[data-tool="hwp2pdf"],[data-tool="docx2pdf"]');
@@ -10,35 +10,37 @@
   const side = $(".hv-side"), thumbs = $(".hv-thumbs"), info = $(".hv-info"), menu = $(".hv-menu");
   const pn = $(".hv-pn"), ptot = $(".hv-pt"), nameEl = $(".hv-name"), zsel = $(".hv-zsel"), file2 = $(".hv-file2");
   const help = box.querySelector(".hwpv-help"), hint = box.querySelector(".hv-hint"), next = box.querySelector(".tk-next");
-  const HWP_MSG = "HWP(구형 바이너리) 지원을 준비 중이에요. 한글에서 '다른 이름으로 저장 → HWPX'로 저장하거나, 한컴 공식 뷰어를 이용해 주세요.";
+  const HWP3_MSG = "한글 97 이전(HWP 3.0 이하)의 옛 형식은 지원하지 않아요. 한글에서 「다른 이름으로 저장 → HWPX 또는 HWP」로 다시 저장하거나, 한컴 공식 뷰어를 이용해 주세요."; // P2-64d HWP 5.0은 지원
   const DOC_MSG = "예전 워드 형식(.doc)은 지원하지 않아요. 워드에서 「다른 이름으로 저장 → Word 문서(*.docx)」로 저장한 뒤 넣어 주세요.";
   const isDocx = box.dataset.tool === "docx2pdf";
   const OPT = isDocx ? {
     exts: ["docx"], maxSize: 50 * PT.MB, maxCount: 10,
     reject: {
       doc: DOC_MSG, dot: DOC_MSG, docm: "매크로가 든 문서(.docm)는 지원하지 않아요. docx로 저장한 뒤 넣어 주세요.", rtf: "RTF 문서는 지원하지 않아요. 워드에서 docx로 저장한 뒤 넣어 주세요.", odt: "ODT 문서는 지원하지 않아요. docx로 저장한 뒤 넣어 주세요.",
-      hwp: "한글 문서는 「한글 PDF 변환」을 이용해 주세요.", hwpx: "한글 문서는 「한글 PDF 변환」을 이용해 주세요.",
+      hwp: "한글 문서는 「한글 파일 뷰어·PDF 변환」을 이용해 주세요.", hwpx: "한글 문서는 「한글 파일 뷰어·PDF 변환」을 이용해 주세요.",
       pdf: "이미 PDF 파일이에요. PDF 합치기나 나누기를 이용해 보세요.",
     },
   } : {
-    exts: ["hwpx"], maxSize: 50 * PT.MB, maxCount: 10,
+    exts: ["hwpx", "hwp"], maxSize: 50 * PT.MB, maxCount: 10,
     reject: {
-      hwp: HWP_MSG, hwt: HWP_MSG, hml: "HML(한글 XML) 문서는 지원하지 않아요. 한글에서 HWPX로 저장한 뒤 넣어 주세요.",
-      docx: "워드 문서는 「워드 PDF 변환」을 이용해 주세요.", doc: "워드 문서는 지원하지 않아요.",
+      hwt: "한글 서식 파일(.hwt)은 한글에서 문서(HWP·HWPX)로 저장한 뒤 넣어 주세요.", hml: "HML(한글 XML) 문서는 지원하지 않아요. 한글에서 HWPX로 저장한 뒤 넣어 주세요.",
+      docx: "워드 문서는 「워드 파일 뷰어·PDF 변환」을 이용해 주세요.", doc: "워드 문서는 지원하지 않아요.",
       pdf: "이미 PDF 파일이에요. PDF 합치기나 나누기를 이용해 보세요.",
     },
   };
   const why = (e, name) => {
     const code = e && e.code;
-    if (code === "hwp") return `「${name}」은(는) HWP(구형) 형식이에요. ${HWP_MSG}`;
+    if (code === "hwp" && !isDocx) return `「${name}」은(는) 옛 한글 형식이에요. ${HWP3_MSG}`;
+    if (code === "hwp") return `「${name}」은(는) 한글 문서예요. 「한글 파일 뷰어·PDF 변환」을 이용해 주세요.`;
     if (code === "doc") return `「${name}」은(는) 예전 워드 형식(.doc)이에요. ${DOC_MSG}`;
     if (isDocx) {
       if (code === "encrypted") return `「${name}」은(는) 암호가 걸린 문서라서 열 수 없어요. 워드에서 암호를 해제하고 다시 저장한 뒤 넣어 주세요.`;
       if (code === "notdoc" || code === "hwp") return `「${name}」은(는) 워드(DOCX) 문서가 아니거나 내용이 없어요.`;
       return `「${name}」을(를) 열지 못했어요. 파일이 깨졌거나 아직 지원하지 않는 구성일 수 있어요. 워드에서 「PDF로 저장」을 이용해 주세요.`;
     }
-    if (code === "encrypted") return `「${name}」은(는) 암호가 걸렸거나 배포용으로 보호된 문서라서 열 수 없어요. 한컴 공식 뷰어를 이용해 주세요.`;
-    if (code === "notdoc") return `「${name}」은(는) 한글(HWPX) 문서가 아니거나 내용이 없어요.`;
+    if (code === "encrypted") return `「${name}」은(는) 암호가 걸린 문서라서 열 수 없어요. 한글에서 암호를 해제하고 다시 저장하거나, 한컴 공식 뷰어를 이용해 주세요.`;
+    if (code === "dist") return `「${name}」은(는) 배포용(읽기 전용 보호) 문서라서 열 수 없어요. 한컴 공식 뷰어를 이용해 주세요.`;
+    if (code === "notdoc") return `「${name}」은(는) 한글(HWP·HWPX) 문서가 아니거나 내용이 없어요.`;
     return `「${name}」을(를) 열지 못했어요. 파일이 깨졌거나 아직 지원하지 않는 구성일 수 있어요. 한컴 공식 뷰어를 이용해 주세요.`;
   };
 
@@ -271,6 +273,7 @@
         try {
           const doc = await HwpDoc.open(await PT.readBuf(f), f.name);
           docs.push({ name: f.name, base: PT.base(f.name), doc });
+          if (doc.partial) errs.push(`「${f.name}」은(는) 구성을 다 읽지 못해 문서에 든 미리보기 글자만 일부 표시했어요(표·그림·서식 없음). 원본은 한컴 공식 뷰어로 확인해 주세요.`); // P2-64d
         } catch (e) { errs.push(why(e, f.name)); }
       }
     } finally { PT.busy(box, false); }

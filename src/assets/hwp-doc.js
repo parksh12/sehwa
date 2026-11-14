@@ -1,6 +1,7 @@
 // P2-64 한글 문서 해석 → 공통 문서 모델. 화면(hwp-render.js)은 이 모델만 보고 그립니다.
-// 붙어 있는 해석기: HWPX(이 파일), DOCX(docx-doc.js, P2-65). 둘 다 zip + XML(의존: vendor/fflate.min.js + 브라우저 DOMParser).
-// HWP(5.0 바이너리) 해석기는 아직 없음 → HwpDoc.register({ name, test(u8, info), parse(u8, name) })로 붙이면 화면 코드는 그대로 씁니다.
+// 붙어 있는 해석기: HWPX(이 파일), DOCX(docx-doc.js, P2-65) — zip + XML(의존: vendor/fflate.min.js + 브라우저 DOMParser)
+//                  HWP 5.0 바이너리(hwp5-doc.js, P2-64d) — OLE 복합 파일 + 레코드, 자체 해석기
+// 해석기는 HwpDoc.register({ name, test(u8, info), parse(u8, name) })로 붙고, 화면 코드는 그대로 씁니다.
 // info = { name, kind:"zip"|"cfb"|"hwp3"|"", names:[zip 안 경로] }
 // 원칙: 파일은 이 브라우저 안에서만 읽습니다. 문서 글자는 textContent로만 그리고(hwp-render.js), 그림은 이미지 형식만 blob 주소로 씁니다.
 //

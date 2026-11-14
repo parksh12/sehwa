@@ -2,6 +2,7 @@
 :root{
   --white:#fff; --ink:#141414; --ink-2:#3d3d3d; --ink-3:#6b6b6b; --line:#141414; --soft:#f2f1ec; /* P2-66 #767676→#6b6b6b: 연회색 바탕(--soft) 위 4.5:1 */
   --cheong:#2346d8; --jeok:#e5372b; --hwang:#ffc21a; --heuk:#141414; --nok:#1e9e5a;
+  --jeok-t:#a3170c; --nok-t:#0f6136; /* P2-67 글자로 쓰는 적·녹(투자 결과 오름·내림 등): 흰·크림·연회색·황 바탕 모두 4.5:1 이상. 다크는 아래 [data-theme=dark]에서 밝은 값 */
   --bd:2.5px solid var(--ink); --shd:var(--ink); --drop:5px 5px 0 var(--shd); --radius:14px; /* P2-62 --shd: 하드 섀도 색(다크에서는 황색) */
   --display:"Black Han Sans","Pretendard Variable",sans-serif;
   font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
@@ -1198,7 +1199,7 @@ li.has-fav{position:relative}
 .sq-reveal{border:2px solid var(--ink);border-radius:12px;padding:10px 14px;background:var(--soft)}
 .sq-reveal p{margin:4px 0}
 .sq-ok{font-weight:900;font-size:18px}
-.sq-ok.is-ok{color:var(--nok)}.sq-ok.is-no{color:var(--jeok)}
+.sq-ok.is-ok{color:var(--nok-t)}.sq-ok.is-no{color:var(--jeok-t)}
 .sq-dates{font-size:14.5px}
 .sq-nav{display:flex;gap:10px;align-items:center}
 .sq-nav .btn.big{flex:1}
@@ -1210,13 +1211,13 @@ li.has-fav{position:relative}
 .sq-bt-list li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;font-size:14.5px}
 .sq-bt-list li+li{border-top:2px solid var(--soft)}
 .sq-bt-list b{font-size:18px;font-variant-numeric:tabular-nums;white-space:nowrap}
-.sq .up{color:var(--jeok)}.sq .dn{color:var(--cheong)}
+.sq .up{color:var(--jeok-t)}.sq .dn{color:var(--cheong)}
 .sq-tablewrap{overflow-x:auto;border:var(--bd);border-radius:12px;background:var(--white)}
 .sq-table{width:100%;border-collapse:collapse;font-size:13.5px;font-variant-numeric:tabular-nums}
 .sq-table caption{text-align:left;font-weight:800;padding:8px 10px 4px}
 .sq-table th,.sq-table td{padding:7px 8px;border-top:2px solid var(--soft);text-align:left;vertical-align:top}
 .sq-table th{font-size:12.5px;color:var(--ink-3);white-space:nowrap}
-.sq-table td.ok{color:var(--nok);font-weight:900}.sq-table td.no{color:var(--jeok);font-weight:900}
+.sq-table td.ok{color:var(--nok-t);font-weight:900}.sq-table td.no{color:var(--jeok-t);font-weight:900}
 .sq-table small{color:var(--ink-3)}
 .sq-td-d{white-space:nowrap}.sq-table td:nth-child(2),.sq-table td:nth-child(4){white-space:nowrap}
 .sq-again{display:flex;flex-wrap:wrap;gap:10px}
@@ -1258,7 +1259,7 @@ li.has-fav{position:relative}
 @keyframes sqc-fade{to{opacity:.22}}
 @keyframes sqc-show{to{opacity:1}}
 .sq-stamp{position:absolute;left:16px;top:14px;font-family:var(--display);font-size:clamp(22px,6vw,30px);line-height:1;padding:7px 14px 6px;border:4px solid currentColor;border-radius:10px;background:rgba(255,255,255,.9);transform:rotate(-9deg);pointer-events:none;box-shadow:inset 0 0 0 2px rgba(255,255,255,.9),inset 0 0 0 4px currentColor}
-.sq-stamp.is-ok{color:var(--nok)}.sq-stamp.is-no{color:var(--jeok)}
+.sq-stamp.is-ok{color:var(--nok-t)}.sq-stamp.is-no{color:var(--jeok-t)}
 .sq-stamp:not(.no-anim){opacity:0;animation:sq-stamp .35s .9s cubic-bezier(.2,1.6,.4,1) forwards}
 @keyframes sq-stamp{from{opacity:0;transform:rotate(-9deg) scale(1.8)}to{opacity:1;transform:rotate(-9deg) scale(1)}}
 @media(prefers-reduced-motion:reduce){.sq-svg .sqc-fut,.sq-svg .sqc-farea,.sq-svg .sqc-end,.sq-svg .sqc-endbub,.sq-stamp{animation:none!important;opacity:1!important;stroke-dashoffset:0!important}.sq-svg .sqc-farea{opacity:.22!important}}
@@ -1267,8 +1268,8 @@ li.has-fav{position:relative}
 .sq-yes:hover{box-shadow:6px 6px 0 var(--shd)}
 .sq-no-btn{background:var(--jeok)!important;color:var(--white)!important;box-shadow:var(--drop)!important}
 .sq-reveal{border:var(--bd);border-radius:var(--radius);background:var(--white);box-shadow:var(--drop)}
-.sq-ok.is-ok{color:var(--nok)}.sq-ok.is-no{color:var(--jeok)}
-.sq .up{color:var(--nok)}.sq .dn{color:var(--jeok)}
+.sq-ok.is-ok{color:var(--nok-t)}.sq-ok.is-no{color:var(--jeok-t)}
+.sq .up{color:var(--nok-t)}.sq .dn{color:var(--jeok-t)}
 .sq-no{background:var(--hwang)}
 /* 결과: 요약·표도 같은 톤 */
 .sq-bt-list,.sq-tablewrap{box-shadow:var(--drop);border-radius:var(--radius)}
@@ -1348,7 +1349,7 @@ li.has-fav{position:relative}
 .sq-lg{display:inline-flex;align-items:center;gap:4px}
 .sq-lg i{display:inline-block;width:16px;height:0;border-top:3px dotted currentColor}
 .sq-lg b{font-weight:900}
-.sq-lg.is-last{color:var(--cheong)}.sq-lg.is-hi{color:var(--jeok)}.sq-lg.is-lo{color:var(--nok)}.sq-lg.is-thr{color:var(--ink)}
+.sq-lg.is-last{color:var(--cheong)}.sq-lg.is-hi{color:var(--jeok-t)}.sq-lg.is-lo{color:var(--nok-t)}.sq-lg.is-thr{color:var(--ink)}
 .sq-lg.is-thr i{border-top-style:dashed}
 @media(max-width:620px){.sq-legend{gap:4px 9px;font-size:12px}}
 /* P2-50e 공개 뒤 칩 줄을 390px에서 2줄 안으로 */
@@ -1377,11 +1378,11 @@ li.has-fav{position:relative}
 .avg-add{width:100%}
 .avg-cur-label small{font-weight:600}
 .avg-big b{font-size:clamp(36px,9vw,56px)!important;font-variant-numeric:tabular-nums}
-.avg .up{color:var(--nok)}.avg .dn{color:var(--jeok)}
+.avg .up{color:var(--nok-t)}.avg .dn{color:var(--jeok-t)}
 .avg-pl{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 12px;margin:8px 0 0;padding:8px 12px;border:2px solid var(--ink);border-radius:12px;background:var(--soft)}
 .avg-pl span{width:100%;font-size:14px;font-weight:700;color:var(--ink-2)}
 .avg-pl b{font-family:var(--display);font-weight:400;font-size:28px;font-variant-numeric:tabular-nums}
-.avg-pl.up b{color:var(--nok)}.avg-pl.dn b{color:var(--jeok)}
+.avg-pl.up b{color:var(--nok-t)}.avg-pl.dn b{color:var(--jeok-t)}
 .avg-steps{margin-top:10px}
 .avg-steps summary{cursor:pointer;font-weight:800;font-size:14.5px;margin-bottom:6px}
 .avg-stable td,.avg-stable th{white-space:nowrap;font-variant-numeric:tabular-nums}
@@ -1428,7 +1429,7 @@ li.has-fav{position:relative}
 .dca{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
 .dca [hidden]{display:none!important}
 .dca-form{grid-template-columns:minmax(0,1fr)}
-.dca .up{color:var(--nok)}.dca .dn{color:var(--jeok)}
+.dca .up{color:var(--nok-t)}.dca .dn{color:var(--jeok-t)}
 .dca .seg span small{font-weight:600;color:var(--ink-3);font-size:12.5px}
 .dca .seg input:checked+span small{color:inherit;opacity:.85}
 .dca-period{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -1449,7 +1450,7 @@ li.has-fav{position:relative}
 .dca-stats span{font-size:13px;font-weight:700;color:var(--ink-2)}
 .dca-stats b{font-family:var(--display);font-weight:400;font-size:24px;line-height:1.15;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 .dca-stats small{font-size:12px;color:var(--ink-3);font-weight:600;font-variant-numeric:tabular-nums}
-.dca-stats li.up b{color:var(--nok)}.dca-stats li.dn b{color:var(--jeok)}
+.dca-stats li.up b{color:var(--nok-t)}.dca-stats li.dn b{color:var(--jeok-t)}
 .dca-def{margin:4px 0 10px}
 .dca-h3{margin:14px 0 6px;font-size:17px}
 .dca-cmp th,.dca-cmp td{font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -1497,21 +1498,21 @@ li.has-fav{position:relative}
 .dca-hd{fill:var(--white);stroke:var(--ink);stroke-width:3}
 .dca-hd.is-inv{stroke:var(--cheong)}.dca-hd.is-soxl{stroke:var(--cheong)}.dca-hd.is-tqqq{stroke:var(--jeok)}.dca-hd.is-koru{stroke:var(--nok)}.dca-hd.is-main{fill:var(--hwang)}
 .dca-chip b{font-weight:900}
-.dca-chip small .up,.dca-chip small.up{color:var(--nok)}.dca-chip small.dn{color:var(--jeok)}
+.dca-chip small .up,.dca-chip small.up{color:var(--nok-t)}.dca-chip small.dn{color:var(--jeok-t)}
 .dca-chip.is-soxl{border-color:var(--cheong)}.dca-chip.is-tqqq{border-color:var(--jeok)}.dca-chip.is-koru{border-color:var(--nok)}.dca-chip.is-inv{border-color:var(--cheong);border-style:dashed}
 .dca-chip-res{color:var(--white)!important}.dca-chip-res.up{background:var(--nok)}.dca-chip-res.dn{background:var(--jeok)}
 .dca-legend{flex-wrap:wrap}
 .dca-lg i{border-top-style:solid!important;border-top-width:4px!important}
-.dca-lg.is-main{color:var(--ink)}.dca-lg.is-lump{color:var(--ink-3)}.dca-lg.is-soxl{color:var(--cheong)}.dca-lg.is-tqqq{color:var(--jeok)}.dca-lg.is-koru{color:var(--nok)}
+.dca-lg.is-main{color:var(--ink)}.dca-lg.is-lump{color:var(--ink-3)}.dca-lg.is-soxl{color:var(--cheong)}.dca-lg.is-tqqq{color:var(--jeok-t)}.dca-lg.is-koru{color:var(--nok-t)}
 .dca-lg.is-inv{color:var(--cheong)}.dca-lg.is-inv i{border-top-style:dashed!important;border-top-width:3px!important}
-.dca-lg.is-mdd{color:var(--jeok)}.dca-lg.is-mdd i{height:10px;border:0!important;background:var(--jeok);opacity:.25}
+.dca-lg.is-mdd{color:var(--jeok-t)}.dca-lg.is-mdd i{height:10px;border:0!important;background:var(--jeok);opacity:.25}
 @media(max-width:620px){.dca-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.dca-stats b{font-size:21px}.dca-chart{padding:4px;box-shadow:4px 4px 0 var(--shd)}}
 @media(max-width:480px){.dca-cmp3 th,.dca-cmp3 td{font-size:11.5px;padding:5px 3px}.dca-cmp3 tbody th{white-space:normal;word-break:keep-all;min-width:3.6em}.dca-cmp3 td{white-space:normal;word-break:keep-all;overflow-wrap:normal}.dca-cmp th,.dca-cmp td{padding:5px 5px}.dca-stats b{font-size:18px;overflow-wrap:normal}.dca-stats li{padding:7px 8px}.dca .seg span{padding:7px 11px;font-size:14px}.dca-period{grid-template-columns:1fr}.dca-money{grid-template-columns:1fr 1fr}.dca-ex td,.dca-ex th{font-size:13px;padding:5px}.dca-ytable th,.dca-ytable td{font-size:12.5px;padding:4px 5px}}
 
 /* ===================== P2-53 해외주식 양도소득세 계산기: 종목 줄(종목명·통화 / 매수·매도 / 환율 2칸) + 결과 표 + 공제·세금 막대(P2-51 줄 톤 재사용) ===================== */
 .ost{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
 .ost [hidden]{display:none!important}
-.ost .up{color:var(--nok)}.ost .dn{color:var(--jeok)}
+.ost .up{color:var(--nok-t)}.ost .dn{color:var(--jeok-t)}
 .ost-form>label,.ost-form [data-fee]{display:grid;gap:6px;font-weight:700}
 .ost-year select{max-width:360px}
 .ost-sub{margin:4px 0 0}
@@ -1525,7 +1526,7 @@ li.has-fav{position:relative}
 .ost-nm{grid-area:nm}.ost-cur{grid-area:cur}.ost-buy{grid-area:buy}.ost-sell{grid-area:sell}.ost-bfx{grid-area:bfx}.ost-sfx{grid-area:sfx}
 .ost-row input,.ost-row select{width:100%;min-width:0}
 .ost-amt{grid-area:amt;font-size:12.5px;font-weight:700;color:var(--ink-3);min-height:1.2em;font-variant-numeric:tabular-nums}
-.ost-amt.up{color:var(--nok)}.ost-amt.dn{color:var(--jeok)}
+.ost-amt.up{color:var(--nok-t)}.ost-amt.dn{color:var(--jeok-t)}
 .ost-fxnote{margin:0}
 .ost-big b{font-variant-numeric:tabular-nums}
 .ost-bar{display:flex;height:22px;margin:10px 0 4px;border:2px solid var(--ink);border-radius:8px;overflow:hidden;background:var(--white)}
@@ -1555,7 +1556,7 @@ li.has-fav{position:relative}
 .rsb-vs-a{background:var(--hwang)!important}
 .rsb-vs span{font-weight:800;font-size:14px}
 .rsb-vs b{font-family:var(--display);font-weight:400;font-size:clamp(28px,7.6vw,44px);line-height:1.1;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
-.rsb-vs .up b{color:var(--nok)}.rsb-vs .dn b{color:var(--jeok)}
+.rsb-vs .up b{color:var(--nok-t)}.rsb-vs .dn b{color:var(--jeok-t)}
 .rsb-vs-a.up b{color:#0f6b3b}
 .rsb-vs small{font-size:12.5px;font-weight:700;color:var(--ink-2);font-variant-numeric:tabular-nums}
 .rsb-psvg{display:block;width:100%;height:auto;font-family:"Pretendard Variable",Pretendard,system-ui,sans-serif;font-weight:800;font-variant-numeric:tabular-nums;touch-action:pan-y;cursor:crosshair}
@@ -1567,7 +1568,7 @@ li.has-fav{position:relative}
 .rsb-lv.is-buy{stroke:var(--nok);opacity:1}.rsb-lv.is-sell{stroke:var(--jeok);opacity:1}
 .rsb-rline{stroke-width:2}
 .rsb-ico{display:inline-block;vertical-align:-1px;stroke:var(--ink);stroke-width:1.4;stroke-linejoin:round}.rsb-ico.is-buy{fill:var(--nok)}.rsb-ico.is-sell{fill:var(--jeok)}.rsb-ico.is-stop{fill:var(--white);stroke:var(--jeok);stroke-width:1.8}
-.rsb-lg.is-buy{color:var(--nok)}.rsb-lg.is-sell,.rsb-lg.is-stop{color:var(--jeok)}
+.rsb-lg.is-buy{color:var(--nok-t)}.rsb-lg.is-sell,.rsb-lg.is-stop{color:var(--jeok-t)}
 .rsb .dca-gl{paint-order:stroke;stroke:var(--white);stroke-width:3.5px;stroke-linejoin:round}
 .rsb-ttable thead th small{display:block;font-weight:600;font-size:11.5px;color:var(--ink-3)}
 .rsb-lg.is-hold{color:var(--ink-2)}.rsb-lg.is-hold i{width:14px;height:10px;border:0;background:var(--hwang);opacity:.7;border-radius:2px}
@@ -1591,7 +1592,7 @@ li.has-fav{position:relative}
 /* ===================== P2-55 복리 계산기 · 배당 계산기: 탭 2개 + 원금 vs 자산 그래프(dca-* 차트 톤 재사용: 굵은 먹선·노랑 채움·칩) ===================== */
 .cmp{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
 .cmp [hidden]{display:none!important}
-.cmp .up{color:var(--nok)}.cmp .dn{color:var(--jeok)}
+.cmp .up{color:var(--nok-t)}.cmp .dn{color:var(--jeok-t)}
 .cmp-tab{margin:0}
 .cmp-tab span{font-size:15.5px;font-weight:800}
 .cmp-form label,.div-form label{display:grid;gap:6px;font-weight:700}
@@ -1614,7 +1615,7 @@ li.has-fav{position:relative}
 /* ===================== P2-56 손절·익절·포지션 계산기: 입력 방식 미니 탭(가격|%|R) + 가격 사다리(P2-51 avg-* 점선·칩 톤, 손실·이익 구간 칠하기) ===================== */
 .pos{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
 .pos [hidden]{display:none!important}
-.pos .up{color:var(--nok)}.pos .dn{color:var(--jeok)}
+.pos .up{color:var(--nok-t)}.pos .dn{color:var(--jeok-t)}
 .pos-form>label,.pos-form .row2>label{display:grid;gap:6px;font-weight:700}
 .pos-form label small.hint{font-weight:600}
 .pos-form i[data-u],.pos-form i[data-su],.pos-form i[data-tu],.pos-form i[data-acct-u],.pos-form i[data-risk-u]{font-style:normal;color:var(--ink-3);font-weight:700}
@@ -2317,4 +2318,26 @@ html:has(main .tool-box) .hv-app{scroll-margin-top:-6px} /* 뷰어 높이(화면
   .hv-pn{height:36px}
   .hv-pn,.hv-files,.hv-zsel{font-size:16px}
   .hv-files,.hv-zsel{height:40px}
+}
+
+/* === P2-67 툴 최적화 2단계: 생활 계산·투자·지도 (P2-66 점검표) ===
+   1) 생활 계산(C11·T2): 범위 밖 입력 칸 표시(t-pay.js가 aria-invalid를 붙이고 결과 칸에 안내)
+   2) 투자(C8): 결과 글자는 위 규칙에서 --jeok-t·--nok-t(라이트 4.5:1 이상). 범례 선 견본은 그래프 선과 같은 오방색 유지.
+      흰 글자를 얹는 결과 칩 면은 다크와 같은 짙은 적·녹(흰 글자 4.9:1 이상). 황 바탕(칩·강조 행)의 작은 회색 글자는 --ink-2
+   3) 손절·포지션(T19): 단위 바꾸기(%·R) 칸도 터치 기기에서 40px
+   4) 아파트 지도(T16·T17, 화면만): 터치 기기에서 고르기 칸 16px(iOS 확대 방지, 잘리지 않게 고르기 칸을 2줄로), 칩·정보 단추·정렬·도보 스위치 40px. 데스크톱 14px 그대로 */
+.pay input[aria-invalid="true"]{border-color:#d42e22;box-shadow:0 0 0 2px #d42e22}
+html:not([data-theme="dark"]) :is(.sq-lg.is-hi,.dca-lg.is-tqqq,.rsb-lg.is-sell,.rsb-lg.is-stop) i{border-top-color:var(--jeok)}
+html:not([data-theme="dark"]) :is(.sq-lg.is-lo,.dca-lg.is-koru,.rsb-lg.is-buy) i{border-top-color:var(--nok)}
+.sq-chip-res.is-up,.dca-chip-res.up{background:#17804a}
+.sq-chip-res.is-dn,.dca-chip-res.dn{background:#d42e22}
+.sq-chip-bar small,.dd-table tr.on small{color:var(--ink-2)}
+@media (pointer:coarse){
+  .pos .pos-mini span{min-width:40px;justify-content:center}
+  .am-sels select,.am-list-head select{font-size:16px}
+  .am-sels{grid-template-columns:repeat(2,minmax(0,1fr)) 40px} /* 16px 글자가 잘리지 않게: 1줄 지역·노선·초기화, 2줄 준공 */
+  .am-sels label:nth-of-type(3){grid-column:1/-1}
+  .am-sels .am-reset{grid-column:3;grid-row:1}
+  .am-chip,.am-info-btn,.am-list-head select{min-height:40px}
+  .am-walk{min-height:40px}
 }

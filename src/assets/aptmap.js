@@ -395,16 +395,30 @@ ${c.rc.length ? `<p class="am-k">최근 거래</p><ul class="am-recent">${c.rc.m
 
   // ───────── 시작 ─────────
   syncControls();
-  fetch(root.dataset.src, { credentials: "same-origin" }).then((r) => { if (!r.ok) throw new Error(String(r.status)); return r.json(); }).then((d) => {
-    sidoName = Object.fromEntries(d.sido.map(([k, n]) => [String(k), n]));
-    all = C.inflate(d);
-    byId = new Map(all.map((c) => [c.id, c]));
-    if (S.sido && !sidoName[S.sido]) S.sido = "";
-    syncControls();
-    loadKakao(root.dataset.k).then(initMap, (e) => mapFail(e && e.message));
-  }).catch(() => {
-    el.loading.classList.add("err");
-    el.loading.textContent = "실거래 데이터를 불러오지 못했어요. 잠시 뒤 새로고침해 주세요.";
-    root.dataset.ready = "fail";
-  });
+  // P2-67 첫 표시 개선(점검표 T18): ① 실거래 데이터(약 140KB)는 첫 화면을 그린 뒤, 지도 상자가 화면 가까이 올 때 받음
+  // (글꼴·CSS와 대역폭을 다투지 않게) ② 카카오 지도 SDK는 데이터를 다 받은 뒤가 아니라 데이터와 동시에 받음 → 지도 준비 = 둘 중 늦은 쪽
+  let started = false;
+  function start() {
+    if (started) return;
+    started = true;
+    const sdk = loadKakao(root.dataset.k).then(() => null, (e) => (e && e.message) || "sdk");
+    sdk.catch(() => {});
+    fetch(root.dataset.src, { credentials: "same-origin" }).then((r) => { if (!r.ok) throw new Error(String(r.status)); return r.json(); }).then((d) => {
+      sidoName = Object.fromEntries(d.sido.map(([k, n]) => [String(k), n]));
+      all = C.inflate(d);
+      byId = new Map(all.map((c) => [c.id, c]));
+      if (S.sido && !sidoName[S.sido]) S.sido = "";
+      syncControls();
+      return sdk.then((err) => (err ? mapFail(err) : initMap()));
+    }).catch(() => {
+      el.loading.classList.add("err");
+      el.loading.textContent = "실거래 데이터를 불러오지 못했어요. 잠시 뒤 새로고침해 주세요.";
+      root.dataset.ready = "fail";
+    });
+  }
+  const afterPaint = (fn) => requestAnimationFrame(() => setTimeout(fn, 0));
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { io.disconnect(); afterPaint(start); } }, { rootMargin: "600px 0px" });
+    io.observe(root);
+  } else afterPaint(start);
 })();
