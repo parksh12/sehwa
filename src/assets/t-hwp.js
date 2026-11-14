@@ -226,6 +226,7 @@
     }
     stage.replaceChildren(...d.sheets);
     hv.dataset.state = "open";
+    setPrintPage(d);
     setHdr();
     empty.hidden = true; app.hidden = false; hint.hidden = false;
     if (next) next.hidden = false;
@@ -248,6 +249,7 @@
     stage.textContent = ""; thumbs.textContent = "";
     if (io) io.disconnect();
     closePanels();
+    setPrintPage(null);
   }
   function toEmpty() {
     hv.dataset.state = "empty";
@@ -361,6 +363,7 @@
   // ---------- 단축키 ----------
   const inView = () => { const r = app.getBoundingClientRect(); return !app.hidden && r.bottom > innerHeight * 0.3 && r.top < innerHeight * 0.7; };
   document.addEventListener("keydown", (e) => {
+    if (pvOn) { if (e.key === "Escape") { e.preventDefault(); closePv(); } return; } // 인쇄용 화면: Esc = 돌아가기, Ctrl+P는 브라우저 기본(종이만 인쇄)
     if (cur < 0 || app.hidden) return;
     const k = e.key, mod = e.ctrlKey || e.metaKey;
     if (mod && !e.altKey && (k === "p" || k === "P")) { e.preventDefault(); printDoc(); return; }
@@ -419,22 +422,89 @@
   let rt = 0;
   addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => { if (cur >= 0 && !app.hidden) { setHdr(); setNames(); if (zoom.mode !== "num") applyZoom(zoom.mode); } }, 120); });
 
-  // ---------- PDF 저장 = 인쇄 창. @page(A4, 여백 0)를 넣고, 화면의 쪽 = 인쇄의 쪽. 끝나면 되돌림 ----------
+  // ---------- PDF 저장 = 인쇄 창. 화면의 쪽 = 인쇄의 쪽 ----------
+  // P2-66: 휴대폰은 print()가 기다리지 않고 바로 돌아오고 인쇄 창이 늦게 떠서, 인쇄 뒤 되돌리는 방식이면 사이트 화면이 섞였음.
+  // 그래서 인쇄 규칙(@page A4·여백 0, print-hwp 클래스)은 문서가 열려 있는 동안 계속 붙여 두고, 인쇄 앞뒤에는 제목(파일 이름)만 바꿈.
+  // CSS(:has)는 클래스 없이도 종이만 인쇄하므로 브라우저 메뉴·공유 → 인쇄도 같음.
+  let pageCss = null;
+  function setPrintPage(d) {
+    const root = document.documentElement;
+    if (!d) { if (pageCss) { pageCss.remove(); pageCss = null; } root.classList.remove("print-doc", "print-hwp"); return; }
+    if (!pageCss) { pageCss = document.createElement("style"); pageCss.id = "hv-page-css"; document.head.appendChild(pageCss); }
+    pageCss.textContent = d.print + d.print.replace("@page", "@page hvdoc");
+    root.classList.add("print-doc", "print-hwp");
+  }
+  let oldTitle = null;
+  const titleOn = () => { if (cur < 0) return; if (oldTitle === null) oldTitle = document.title; document.title = docs[cur].base; };
+  const titleOff = () => { if (oldTitle !== null && !pvOn) { document.title = oldTitle; oldTitle = null; } };
+  addEventListener("beforeprint", titleOn);
+  addEventListener("afterprint", () => setTimeout(titleOff, 0));
+  const mobile = () => narrow() || matchMedia("(hover:none) and (pointer:coarse)").matches;
   function printDoc() {
     if (cur < 0) return;
-    const d = docs[cur];
     closePanels();
-    const old = document.title;
-    document.title = d.base;
-    const css = document.createElement("style");
-    css.textContent = d.print;
-    document.head.appendChild(css);
-    document.documentElement.classList.add("print-doc", "print-hwp");
-    let done = false;
-    const end = () => { if (done) return; done = true; document.documentElement.classList.remove("print-doc", "print-hwp"); css.remove(); document.title = old; removeEventListener("afterprint", end); };
-    addEventListener("afterprint", end);
+    if (mobile()) { openPv(); return; }
+    titleOn();
     window.print();
-    setTimeout(() => { if (!matchMedia("print").matches) end(); }, 1000);
+    setTimeout(() => { if (!matchMedia("print").matches) titleOff(); }, 1000);
   }
+
+  // ---------- 휴대폰: 문서만 담은 인쇄용 화면(같은 탭 덮개) → 인쇄·공유, 「돌아가기」 ----------
+  let pv = null, pvOn = false, pvBack = null;
+  function buildPv() {
+    pv = document.createElement("div");
+    pv.className = "hv-pv"; pv.hidden = true;
+    pv.setAttribute("role", "dialog"); pv.setAttribute("aria-modal", "true"); pv.setAttribute("aria-label", "인쇄용 화면");
+    const barEl = document.createElement("div"); barEl.className = "hv-pv-bar";
+    const back = document.createElement("button"); back.type = "button"; back.className = "hv-b"; back.dataset.pv = "back"; back.textContent = "‹ 돌아가기";
+    const t = document.createElement("span"); t.className = "hv-pv-t";
+    const pr = document.createElement("button"); pr.type = "button"; pr.className = "hv-b hv-pdf"; pr.dataset.pv = "print"; pr.textContent = "인쇄·PDF 저장";
+    const how = document.createElement("p"); how.className = "hv-pv-how";
+    how.textContent = "문서만 담은 화면이에요. 「인쇄·PDF 저장」을 누른 뒤 안드로이드는 프린터를 「PDF로 저장」으로, 아이폰은 인쇄 화면의 공유 단추 → 「파일에 저장」을 고르세요. 인쇄 단추가 안 되면 브라우저 메뉴(공유) → 인쇄를 이용하세요.";
+    barEl.append(back, t, pr, how);
+    const sc = document.createElement("div"); sc.className = "hv-pv-scroll";
+    const ps = document.createElement("div"); ps.className = "hv-pv-pages";
+    sc.appendChild(ps); pv.append(barEl, sc);
+    pv.addEventListener("click", (e) => {
+      const b = e.target.closest("[data-pv]");
+      if (!b) return;
+      if (b.dataset.pv === "back") closePv();
+      else { titleOn(); window.print(); }
+    });
+    document.body.appendChild(pv);
+  }
+  function fitPv() {
+    if (!pvOn) return;
+    const ps = pv.querySelector(".hv-pv-pages"), b = baseSize();
+    ps.style.setProperty("--z", Math.min(1, (pv.clientWidth - 22) / b.w).toFixed(4));
+  }
+  function openPv() {
+    if (pvOn || cur < 0) return;
+    if (!pv) buildPv();
+    const d = docs[cur];
+    pvBack = { page, el: document.activeElement };
+    pv.querySelector(".hv-pv-t").textContent = d.name;
+    pv.querySelector(".hv-pv-pages").replaceChildren(...d.sheets); // 종이를 덮개로 옮김(복제하지 않음 → 메모리 그대로)
+    pvOn = true; pv.hidden = false;
+    document.documentElement.classList.add("hv-pv-on", "hv-lock");
+    titleOn();
+    fitPv();
+    pv.querySelector(".hv-pv-scroll").scrollTop = 0;
+    try { history.pushState({ hvpv: 1 }, ""); } catch (e) { /* 무시 */ }
+    pv.querySelector('[data-pv="back"]').focus();
+  }
+  function closePv(fromPop) {
+    if (!pvOn) return;
+    pvOn = false; pv.hidden = true;
+    document.documentElement.classList.remove("hv-pv-on");
+    if (!app.classList.contains("is-max")) document.documentElement.classList.remove("hv-lock");
+    if (cur >= 0) stage.replaceChildren(...docs[cur].sheets);
+    titleOff();
+    if (zoom.mode !== "num") applyZoom(zoom.mode, false);
+    if (pvBack) { go(pvBack.page); if (pvBack.el && pvBack.el.focus) pvBack.el.focus({ preventScroll: true }); }
+    if (!fromPop && history.state && history.state.hvpv) history.back();
+  }
+  addEventListener("popstate", () => { if (pvOn) closePv(true); }); // 안드로이드 뒤로 가기 = 돌아가기
+  addEventListener("resize", () => { if (pvOn) fitPv(); });
   document.addEventListener("click", (e) => { if (e.target.closest("[data-print]")) printDoc(); });
 })();

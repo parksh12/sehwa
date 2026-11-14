@@ -1,6 +1,6 @@
 /* 펭귄 툴즈 — 오방색(청·적·황·흑·백)에서 가져온 팔레트, 뽑기 카드처럼 두꺼운 테두리와 그림자 없는 면 */
 :root{
-  --white:#fff; --ink:#141414; --ink-2:#3d3d3d; --ink-3:#767676; --line:#141414; --soft:#f2f1ec;
+  --white:#fff; --ink:#141414; --ink-2:#3d3d3d; --ink-3:#6b6b6b; --line:#141414; --soft:#f2f1ec; /* P2-66 #767676→#6b6b6b: 연회색 바탕(--soft) 위 4.5:1 */
   --cheong:#2346d8; --jeok:#e5372b; --hwang:#ffc21a; --heuk:#141414; --nok:#1e9e5a;
   --bd:2.5px solid var(--ink); --shd:var(--ink); --drop:5px 5px 0 var(--shd); --radius:14px; /* P2-62 --shd: 하드 섀도 색(다크에서는 황색) */
   --display:"Black Han Sans","Pretendard Variable",sans-serif;
@@ -368,7 +368,7 @@ details.opt summary{cursor:pointer;color:var(--cheong);font-weight:700;font-size
 .quick{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
 .quick .chip{font-size:13px;padding:3px 9px}
 .cat-h{font-size:20px;margin:0 0 12px}.cat-h a{color:var(--ink);text-decoration:none}.cat-h small{color:var(--ink-3);font-size:15px}
-.beta{font-style:normal;font-size:11px;font-weight:800;background:var(--jeok);color:#fff;border-radius:5px;padding:0 6px;vertical-align:middle}
+.beta{font-style:normal;font-size:11px;font-weight:800;background:#d42e22;color:#fff;border-radius:5px;padding:0 6px;vertical-align:middle}
 .c-pdf{background:var(--jeok);color:#fff}
 .c-image{background:var(--cheong);color:#fff}
 .c-text{background:var(--hwang);color:var(--ink)}
@@ -437,7 +437,7 @@ details.opt summary{cursor:pointer;color:var(--cheong);font-weight:700;font-size
 .tk-next b{margin-right:4px}
 .tk-next .chip{font-size:13.5px}
 .tk-warn{margin:0;border:2px solid var(--ink);border-left:8px solid var(--jeok);border-radius:10px;padding:10px 12px;background:#fff6d6;font-size:14px}
-.beta-tag{background:var(--jeok);color:#fff}
+.beta-tag{background:#d42e22;color:#fff} /* P2-66 흰 글자 4.5:1 (NEW와 같은 색) */
 .ad-fixed{min-height:280px;margin:22px 0}
 .util .prose ol{padding-left:1.3em}.util .prose li{margin:.3em 0}
 @media(prefers-reduced-motion:reduce){.spin{animation:none}.tk-bar i{transition:none}}
@@ -886,7 +886,7 @@ li.has-fav{position:relative}
 /* === COO 홈 NEW 띠 (2026-11-02) === */
 .new-band{margin:6px 0 22px}
 .new-band h2{display:flex;align-items:center;gap:8px;margin:0 0 10px;font-family:var(--display);font-weight:400;font-size:clamp(22px,2.6vw,28px)}
-.new-tag{display:inline-block;background:var(--jeok);color:var(--white);font:800 11px/1 "Pretendard Variable",sans-serif;letter-spacing:.06em;border:2px solid var(--heuk);border-radius:999px;padding:4px 7px;vertical-align:middle}
+.new-tag{display:inline-block;background:#d42e22;color:var(--white);font:800 11px/1 "Pretendard Variable",sans-serif;letter-spacing:.06em;border:2px solid var(--heuk);border-radius:999px;padding:4px 7px;vertical-align:middle}
 .new-grid{list-style:none;margin:0;padding:0;display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
 @media(min-width:880px){.new-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}}
 .new-card{position:relative;display:flex;flex-direction:column;gap:4px;height:100%;box-sizing:border-box;background:var(--white);color:var(--ink);text-decoration:none;border:var(--bd);border-radius:14px;box-shadow:var(--drop);padding:14px 12px 12px;transition:transform .12s}
@@ -2251,13 +2251,70 @@ html.hv-lock,html.hv-lock body{overflow:hidden}
 [data-theme="dark"] .hv-th[aria-current="page"] .hv-th-paper{box-shadow:0 0 0 3px var(--link)}
 [data-theme="dark"] .hv-th[aria-current="page"] .hv-th-no{color:var(--link)}
 [data-theme="dark"] .hv-b:focus-visible,[data-theme="dark"] .hv-th:focus-visible,[data-theme="dark"] .hv-pn:focus-visible,[data-theme="dark"] .hv-zsel:focus-visible,[data-theme="dark"] .hv-files:focus-visible,[data-theme="dark"] .hv-work:focus-visible{outline-color:var(--link)}
+/* P2-66 휴대폰 「PDF로 저장」: 문서만 담은 인쇄용 화면(같은 탭 덮개). 뷰어의 종이를 덮개로 옮겨 오고, 돌아가면 되돌림.
+   화면에서는 폭에 맞춰 줄이고(transform), 인쇄는 원래 크기 */
+.hv-pv{position:fixed;inset:0;z-index:90;display:flex;flex-direction:column;background:#d6d6d2;color:var(--ink)}
+.hv-pv[hidden]{display:none}
+.hv-pv-bar{flex:none;display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:8px 10px;padding-top:max(8px,env(safe-area-inset-top));background:var(--white);border-bottom:2px solid var(--ink)}
+.hv-pv-bar .hv-b{height:44px;min-width:44px;border-color:var(--ink-3);font-size:15px}
+.hv-pv-bar .hv-b.hv-pdf{border-color:var(--ink)}
+.hv-pv-t{flex:1 1 0;min-width:0;font-weight:800;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hv-pv-how{flex:1 1 100%;margin:0;font-size:13px;line-height:1.45;color:var(--ink-2);word-break:keep-all}
+.hv-pv-scroll{flex:1;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.hv-pv-pages{--z:1;display:flex;flex-direction:column;align-items:center;gap:10px;padding:10px;padding-bottom:max(10px,env(safe-area-inset-bottom))}
+[data-theme="dark"] .hv-pv{background:#3a3a38}
 @media print{
+  /* 예전 브라우저(:has 없음) 대비: 문서가 열려 있는 동안 JS가 print-doc·print-hwp를 붙여 둠(인쇄 뒤에 떼지 않음 → 휴대폰의 늦게 뜨는 인쇄 창에서도 유지) */
+  html.print-hwp body>:not(main):not(.hv-pv),html.print-hwp main>:not(.tool-box){display:none!important}
+  html.print-hwp main,html.print-hwp .wrap{display:block!important;max-width:none!important;margin:0!important;padding:0!important}
   html.print-hwp .tool-box[data-tool]{display:block!important;width:auto!important;margin:0!important;padding:0!important;border:0!important;box-shadow:none!important;background:none!important}
   html.print-hwp .tool-box[data-tool]>:not(.hv),html.print-hwp .hv-empty,html.print-hwp .hv-bar,html.print-hwp .hv-menu,html.print-hwp .hv-info,html.print-hwp .hv-side,html.print-hwp .hv-file2{display:none!important}
   html.print-hwp .hv-app,html.print-hwp .hv-body,html.print-hwp .hv-work{display:block!important;position:static!important;height:auto!important;min-height:0!important;overflow:visible!important;border:0!important;border-radius:0!important;background:none!important;outline:0!important}
   html.print-hwp .hv-pages{display:block!important;width:auto!important;min-width:0!important;padding:0!important;transform:none!important}
-  html.print-hwp .hv-sheet{width:auto!important;height:auto!important;overflow:visible!important;box-shadow:none!important;content-visibility:visible!important;background:none!important;break-after:page}
-  html.print-hwp .hv-sheet:last-child{break-after:auto}
-  html.print-hwp .hwp-page{transform:none!important;zoom:var(--pz,1)!important;height:calc(var(--ph) - 2px)!important;margin:0!important;box-shadow:none!important}
-  html.print-hwp .hwp-page.is-over{height:auto!important}
+  /* P2-66: JS(인쇄 단추) 없이도 — 브라우저 메뉴·공유 → 인쇄 — 열린 문서의 종이만 인쇄.
+     종이를 품지 않은 요소는 모두 숨기고(머리글·바닥글·광고·도구 막대·설명·쿠키·토스트 등), 종이를 품은 조상은 틀을 벗김 */
+  :is(html.hv-pv-on,html:has(.hv-app:not([hidden]) .hv-sheet)) body *:not(:has(.hv-sheet)):not(.hv-sheet):not(.hv-sheet *){display:none!important}
+  :is(html.hv-pv-on,html:has(.hv-app:not([hidden]) .hv-sheet)) body :has(.hv-sheet){display:block!important;position:static!important;inset:auto!important;width:auto!important;max-width:none!important;min-width:0!important;height:auto!important;min-height:0!important;max-height:none!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;outline:0!important;background:none!important;overflow:visible!important;transform:none!important;filter:none!important;content-visibility:visible!important}
+  :is(html.print-hwp,html.hv-pv-on,html:has(.hv-app:not([hidden]) .hv-sheet)),:is(html.print-hwp,html.hv-pv-on,html:has(.hv-app:not([hidden]) .hv-sheet)) body{background:#fff!important;margin:0!important;padding:0!important;overflow:visible!important;height:auto!important;min-height:0!important}
+  :is(html.print-hwp,html.hv-pv-on,html:has(.hv-app:not([hidden]) .hv-sheet)) .hv-sheet{display:block!important;width:auto!important;height:auto!important;margin:0!important;overflow:visible!important;box-shadow:none!important;content-visibility:visible!important;background:none!important;break-after:page;page-break-after:always;page:hvdoc}
+  :is(html.print-hwp,html.hv-pv-on,html:has(.hv-app:not([hidden]) .hv-sheet)) .hv-sheet:last-child{break-after:auto;page-break-after:auto}
+  :is(html.print-hwp,html.hv-pv-on,html:has(.hv-app:not([hidden]) .hv-sheet)) .hwp-page{transform:none!important;zoom:var(--pz,1)!important;height:calc(var(--ph) - 2px)!important;margin:0!important;box-shadow:none!important}
+  :is(html.print-hwp,html.hv-pv-on,html:has(.hv-app:not([hidden]) .hv-sheet)) .hwp-page.is-over{height:auto!important}
+  /* 인쇄용 화면(덮개)을 띄운 상태: 덮개의 종이만 */
+  html.hv-pv-on body>:not(.hv-pv),html.hv-pv-on .hv-pv-bar{display:none!important}
+  html.hv-pv-on .hv-pv,html.hv-pv-on .hv-pv-scroll,html.hv-pv-on .hv-pv-pages{display:block!important;position:static!important;overflow:visible!important;height:auto!important;padding:0!important;background:none!important}
+}
+/* 문서 종이는 A4·여백 0(쪽 안 여백 = 문서 여백). 가로 문서 등은 JS가 같은 이름으로 덮어씀 */
+@page hvdoc{size:A4 portrait;margin:0}
+
+/* === P2-66 전 툴 공통 다듬기 (점검표 공통 문제) ===
+   1) 고정 머리글: 앵커·결과·초점으로 스크롤할 때 머리글 높이만큼 비움(--hdr-h는 app.js가 잼). 툴 페이지에서만 → 요소별 여백은 0으로(두 번 더해지지 않게)
+   2) 인쇄: 머리글·바닥글·광고·추천·즐겨찾기 등 사이트 화면을 빼고, 툴 페이지는 설명·FAQ도 뺌(제목 + 툴·결과만)
+   3) 터치 기기: 누르는 곳 40px 이상(머리글 메뉴·칩·즐겨찾기·접기 제목·체크 칸·경로·바닥글 링크)
+   4) 문서 뷰어 입력칸 16px(iOS 확대 방지)
+   5) 라이트 모드 대비: 회색 글자(--ink-3)와 NEW 표시 4.5:1 이상 */
+html:has(main .tool-box){scroll-padding-top:calc(var(--hdr-h,72px) + 10px)}
+html:has(main .tool-box) :is(.result,#tool,.today-card,.cab){scroll-margin-top:0}
+html:has(main .tool-box) .hv-app{scroll-margin-top:-6px} /* 뷰어 높이(화면 − 머리글 − 8px)가 화면 안에 들어오게 */
+@media print{
+  .site-header,.site-footer,.skip,.crumbs,.ad,ins.adsbygoogle,.google-auto-placed,.fav,.fav-bar,.fav-menu,.theme-btn,.toast,.tk-next,.reco{display:none!important}
+  html:has(main .tool-box) main :is(.prose,.faq){display:none!important}
+  main{padding-top:0}
+}
+@media (pointer:coarse){
+  .nav a{display:inline-flex;align-items:center;min-height:40px}
+  .fav-menu,.theme-btn{min-width:40px;height:40px}
+  .fav-title{width:40px;height:40px}
+  .fav-row::after{content:"";position:absolute;inset:-5px}
+  .chip{display:inline-flex;align-items:center;justify-content:center;min-height:40px;box-sizing:border-box}
+  main summary{padding-top:9px;padding-bottom:9px}
+  .seg span{display:inline-flex;align-items:center;min-height:40px;box-sizing:border-box}
+  .check{min-height:40px}
+  .crumbs a{display:inline-block;padding:12px 14px;margin:-12px -14px}
+  .foot-links{gap:0 16px}
+  .foot-links a{display:inline-block;padding:9px 7px;margin:0 -7px}
+  .hv-b{min-width:40px;height:40px}
+  .hv-pn{height:36px}
+  .hv-pn,.hv-files,.hv-zsel{font-size:16px}
+  .hv-files,.hv-zsel{height:40px}
 }

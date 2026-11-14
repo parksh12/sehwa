@@ -150,3 +150,34 @@
   NALGI.zodiacOf = (m, d) => { let k = "capricorn"; for (const [key, mm, dd] of Z) if (m > mm || (m === mm && d >= dd)) k = key; return k; };
   NALGI.validDate = (y, m, d) => { const dt = new Date(y, m - 1, d); return dt.getFullYear() === y && dt.getMonth() === m - 1 && dt.getDate() === d; };
 })();
+
+// P2-66 전 툴 공통: (1) 고정 머리글 높이를 CSS 변수(--hdr-h)로 → 앵커·결과·초점 스크롤 때 머리글 밑으로
+// (2) 툴 상자 안의 양식을 제출(계산하기·보기 등)했는데 결과가 화면 밖(아래)에 생기면 결과 머리로 스크롤
+(function () {
+  const root = document.documentElement;
+  const hdr = document.querySelector(".site-header");
+  const hdrH = () => (hdr && getComputedStyle(hdr).position === "sticky" ? hdr.offsetHeight : 0);
+  const setH = () => root.style.setProperty("--hdr-h", hdrH() + "px");
+  setH();
+  if (hdr && "ResizeObserver" in window) new ResizeObserver(setH).observe(hdr);
+  else addEventListener("resize", setH);
+
+  const RES = '.result,.dd-result,[class*="-result"],output,[aria-live]';
+  const shown = (el) => !!(el.offsetParent || el.getClientRects().length) && (el.innerText || "").trim().length > 0;
+  document.addEventListener("submit", (e) => {
+    const form = e.target;
+    const box = form && form.closest && form.closest(".tool-box");
+    if (!box || box.hasAttribute("data-no-autoscroll")) return;
+    const y0 = scrollY;
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      if (Math.abs(scrollY - y0) > 2) return; // 툴이 이미 스크롤함(운세·사주 등)
+      const list = [...box.querySelectorAll(RES)].filter((el) => !form.contains(el) && shown(el) && !el.closest("[hidden]"));
+      const out = list.find((el) => form.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING) || list[0];
+      if (!out) return;
+      const r = out.getBoundingClientRect(), top = hdrH();
+      if (r.top < innerHeight - 64 && r.bottom > top + 8) return; // 이미 보임
+      const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      scrollTo({ top: Math.max(0, scrollY + r.top - top - 10), behavior: reduce ? "auto" : "smooth" });
+    }));
+  });
+})();

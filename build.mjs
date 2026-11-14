@@ -1292,7 +1292,7 @@ ${help}
 </div>
 <p class="hv-hint" hidden>${esc(hint)}</p>
 ${warn}`;
-const HV_HINT = "「PDF로 저장」을 누르면 인쇄 창이 열려요. 대상(프린터)을 「PDF로 저장」 또는 「Microsoft Print to PDF」로 고르면 글자가 선택되는 PDF가 만들어져요. 휴대폰은 공유 → 인쇄에서 PDF로 저장할 수 있어요(기기마다 다름).";
+const HV_HINT = "「PDF로 저장」을 누르면 인쇄 창이 열려요. 대상(프린터)을 「PDF로 저장」 또는 「Microsoft Print to PDF」로 고르면 글자가 선택되는 PDF가 만들어져요. 휴대폰은 「PDF로 저장」을 누르면 문서만 담긴 인쇄용 화면이 열리고, 거기서 「인쇄·PDF 저장」을 누르면 돼요.";
 const hwpToolHtml = (pdfFirst) => docViewerHtml({
   drop: dropHtml({ accept: ".hwpx,.hwp,application/hwp+zip,application/x-hwp", multiple: true, label: pdfFirst ? "PDF로 바꿀 한글 파일(HWPX)을 넣어 주세요" : "열어 볼 한글 파일(HWPX)을 넣어 주세요", limit: "HWPX · 파일당 50MB · 10개까지 (HWP는 준비 중)" }),
   help: `<div class="hwpv-help" hidden><p>열지 못한 파일은 <a href="${HWP_OFFICIAL}" target="_blank" rel="noopener">한컴 공식 뷰어(한컴 다운로드 센터) ↗<span class="sr"> (새 창, 외부 사이트)</span></a>를 이용해 주세요. HWP 파일은 한글 프로그램에서 「다른 이름으로 저장 → HWPX」로 저장하면 여기서 열 수 있어요.</p></div>`,
