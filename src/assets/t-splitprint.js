@@ -320,7 +320,7 @@
       }
       geo = { view, s, W0, H0: h + 2 * pad, area: { x: X, y: Y, w, h }, bx: X, by: Y };
     }
-    if (!live) cv.setAttribute("aria-label", `${view === "paper" ? "종이로 보기" : "붙였을 때"} 미리보기: ${$(".sp-line").textContent}, 완성 ${$(".sp-cm").textContent}. 화살표 키로 그림을 1mm(Shift는 10mm)씩 옮기고 + − 키로 크기를 1%씩 바꿔요. Enter를 누르면 한 장씩 보기로 열려요.`);
+    if (!live) cv.setAttribute("aria-label", `${view === "paper" ? "종이로 보기" : "붙였을 때"} 미리보기: ${$(".sp-line").textContent}, 완성 ${$(".sp-cm").textContent}. 화살표 키로 그림을 1mm(Shift는 10mm)씩 옮기고 + − 키로 크기를 1%씩 바꿔요. C 키는 크기를 그대로 두고 가운데로 맞춰요. Enter를 누르면 한 장씩 보기로 열려요.`);
   }
   // 판 좌표(mm) ↔ 미리보기 화소. 「종이로 보기」는 장 사이 틈·여백이 있어 장마다 따로 계산(side 1 = 끝 모서리는 앞 장에 붙임)
   function axPx(v, side, n, t, o, base, step) {
@@ -529,7 +529,7 @@
     zoomUi.hidden = !canZoom();
     $(".sp-move-hint").textContent = !canZoom() ? "완성 크기로 나눌 때는 크기가 정해져 있어 모서리 손잡이를 숨겼어요. 그림을 끌어 위치만 옮길 수 있어요."
       : coarse ? "그림을 끌어 옮기고, 모서리 □를 끌거나 두 손가락으로 벌려 크기를 바꿔요. 그림 밖을 끌면 화면이 움직여요."
-      : "그림을 끌어 옮기고, 모서리 □를 끌거나 휠로 크기를 바꿔요(커서 자리 기준). 화살표 1mm · Shift+화살표 10mm.";
+      : "그림을 끌어 옮기고, 모서리 □를 끌거나 휠로 크기를 바꿔요(커서 자리 기준). 화살표 1mm · Shift+화살표 10mm · C 중앙 맞추기.";
   }
   // 보이는 부분의 가운데를 고정하고 배율(%)을 정함(슬라이더·숫자 칸·−+)
   function setPct(pct) {
@@ -624,6 +624,7 @@
     if (e.key === "+" || e.key === "=") { e.preventDefault(); if (canZoom()) { setPct(L.adj.zoom * 100 + 1); commitSoon(300); } }
     else if (e.key === "-" || e.key === "_") { e.preventDefault(); if (canZoom()) { setPct(L.adj.zoom * 100 - 1); commitSoon(300); } }
     else if (e.key === "0") { e.preventDefault(); adj = { zoom: 1, ox: 0, oy: 0 }; update(); }
+    else if ((e.key === "c" || e.key === "C" || e.code === "KeyC") && !e.ctrlKey && !e.metaKey && !e.altKey) { e.preventDefault(); centerTo(); } // C 중앙 맞추기(한글 입력 상태 「ㅊ」도 KeyC)
     else if (e.key === "Enter") { e.preventDefault(); setView("one"); }
   });
   // − + : 1%씩, 길게 누르면 계속(1.5초가 지나면 3%씩)
@@ -663,6 +664,9 @@
     }
   });
   $("[data-center]").addEventListener("click", () => { adj = { zoom: 1, ox: 0, oy: 0 }; update(); });
+  // 중앙 맞추기(P2-73c): 배율은 그대로 두고 그림을 완성 영역 가운데로. 가로만·세로만은 작은 아이콘 단추
+  function centerTo(axis) { if (!L || !src) return; adj = SC.centerAdj(adj, axis); update(); }
+  box.querySelectorAll("[data-mid]").forEach((b) => b.addEventListener("click", () => centerTo(b.dataset.mid || undefined)));
 
   // ---------- 설정이 바뀌면 바로 다시 그리기 ----------
   box.querySelector(".sp-opts").addEventListener("input", (e) => {

@@ -163,5 +163,12 @@
     return adjFromImg(L0, { x: sx > 0 ? ax : ax - w, y: sy > 0 ? ay : ay - h, w });
   }
 
-  root.SPLITCALC = { PAPERS, ORDER, PT, MAXN, MAXCOUNT, ZMIN, ZMAX, need, span, sheet, layout, pageRects, orientMatrix, label, adjFromImg, zoomAt, resizeCorner };
+  // P2-73c 중앙 맞추기: 배율은 그대로, 그림 가운데를 완성 영역(판 W×H) 가운데로. axis "x" = 가로만, "y" = 세로만, 없으면 둘 다
+  // (「처음 위치로」는 배율까지 1로 되돌림. 이 함수는 옮긴 값만 0으로)
+  function centerAdj(a, axis) {
+    const z = a && ok(a.zoom) && a.zoom > 0 ? a.zoom : 1, ox = a && ok(a.ox) ? a.ox : 0, oy = a && ok(a.oy) ? a.oy : 0;
+    return { zoom: z, ox: axis === "y" ? ox : 0, oy: axis === "x" ? oy : 0 };
+  }
+
+  root.SPLITCALC = { PAPERS, ORDER, PT, MAXN, MAXCOUNT, ZMIN, ZMAX, need, span, sheet, layout, pageRects, orientMatrix, label, adjFromImg, zoomAt, resizeCorner, centerAdj };
 })(typeof window !== "undefined" ? window : globalThis);

@@ -1479,6 +1479,22 @@ ${tkTail("")}
   const R14 = SC.pageRects(L14b, L14b.tiles[0]), R14d = SC.pageRects(L14b, L14b.tiles[3]);
   chk("14 PDF 가1 그림 x(pt)", R14.img.x, -50 * K); chk("14 PDF 가1 그림 가로(pt)", R14.img.w, 556.5 * K); chk("14 PDF 가1 그림 y(pt)", R14.img.y, (297 - 10 - 278.25) * K);
   chk("14 PDF 나2 그림 x(pt)", R14d.img.x, (-50 - 210) * K);
+  // 15 P2-73c 중앙 맞추기: 14의 그림(132.5%, x −50, y 10, 556.5 × 278.25mm)을 배율 그대로 판(420×594) 가운데로
+  //   둘 다: x = (420 − 556.5)/2 = −68.25, y = (594 − 278.25)/2 = 157.875 · 가로만: y 10 그대로 · 세로만: x −50 그대로
+  const L15 = lay({ ...b0, adj: SC.centerAdj(L14b.adj) }), L15x = lay({ ...b0, adj: SC.centerAdj(L14b.adj, "x") }), L15y = lay({ ...b0, adj: SC.centerAdj(L14b.adj, "y") });
+  chk("15 중앙 배율 그대로", L15.adj.zoom, 1.325); chk("15 중앙 그림 가로 그대로", L15.img.w, 556.5);
+  chk("15 중앙 x", L15.img.x, -68.25); chk("15 중앙 y", L15.img.y, 157.875); chk("15 중앙 ox", L15.adj.ox, 0); chk("15 중앙 oy", L15.adj.oy, 0);
+  chk("15 중앙 좌우 여유 같음", L15.img.x, L15.W - (L15.img.x + L15.img.w)); chk("15 중앙 위아래 여유 같음", L15.img.y, L15.H - (L15.img.y + L15.img.h));
+  chk("15 가로만 x", L15x.img.x, -68.25); chk("15 가로만 y 그대로", L15x.img.y, 10); chk("15 가로만 배율", L15x.adj.zoom, 1.325);
+  chk("15 세로만 x 그대로", L15y.img.x, -50); chk("15 세로만 y", L15y.img.y, 157.875); chk("15 세로만 배율", L15y.adj.zoom, 1.325);
+  //   화면 = PDF: 가1 쪽 그림 자리(pt), 나2 쪽은 인쇄 칸(210·297)만큼 밀림
+  const R15 = SC.pageRects(L15, L15.tiles[0]), R15d = SC.pageRects(L15, L15.tiles[3]);
+  chk("15 PDF 가1 x(pt)", R15.img.x, -68.25 * K); chk("15 PDF 가1 y(pt)", R15.img.y, (297 - 157.875 - 278.25) * K); chk("15 PDF 가1 가로(pt)", R15.img.w, 556.5 * K);
+  chk("15 PDF 나2 x(pt)", R15d.img.x, (-68.25 - 210) * K); chk("15 PDF 나2 y(pt)", R15d.img.y, (297 - (157.875 - 297) - 278.25) * K);
+  //   완성 크기 모드(크기 고정)·이미 가운데·빈 값도 안전
+  const L15s = lay({ paper: "a4", orient: "p", margin: 0, overlap: 0, mode: "size", wCm: 30, iw: 1000, ih: 1000, adj: SC.centerAdj({ zoom: 1, ox: 40, oy: -25 }) });
+  chk("15 완성 크기 모드 중앙 x", L15s.img.x, (L15s.W - 300) / 2); chk("15 완성 크기 모드 중앙 y", L15s.img.y, (L15s.H - 300) / 2);
+  chk("15 이미 가운데", SC.centerAdj({ zoom: 2, ox: 0, oy: 0 }).zoom, 2); chk("15 빈 값", SC.centerAdj(null).zoom, 1);
   console.log(`✔ P2-73 이미지 분할 인쇄: 배열·쪽 크기·이음매 계산 대조 ${nChk}건 통과`);
 }
 const SP_OPT = (vals, sel, fmt = (v) => v) => vals.map((v) => `<option value="${v}"${v === sel ? " selected" : ""}>${fmt(v)}</option>`).join("");
@@ -1518,7 +1534,7 @@ ${tkTail("")}
         <div class="sp-cvwrap"><canvas class="sp-canvas" tabindex="0" role="img" aria-label="미리보기" width="1" height="1"></canvas><div class="sp-box" aria-hidden="true" hidden><i data-h="nw"></i><i data-h="ne"></i><i data-h="sw"></i><i data-h="se"></i></div></div>
         <p class="sp-read" aria-live="polite"><span></span> <span></span></p>
         <div class="sp-zoom" role="group" aria-label="그림 크기 조절"><button type="button" class="btn ghost" data-zout aria-label="그림 1% 작게 (길게 누르면 계속)">−</button><input type="range" name="zr" class="sp-zr" min="0" max="1000" step="1" value="500" aria-label="그림 크기 (20~800%)"><button type="button" class="btn ghost" data-zin aria-label="그림 1% 크게 (길게 누르면 계속)">+</button><label class="sp-zn"><span class="sr">그림 크기 (%)</span><input name="zn" type="text" inputmode="decimal" autocomplete="off" value="100.0"><span aria-hidden="true">%</span></label></div>
-        <div class="sp-tools"><button type="button" class="btn ghost" data-center>처음 위치로</button><p class="hint sp-move-hint" aria-live="polite"></p></div>
+        <div class="sp-tools"><button type="button" class="btn ghost" data-center>처음 위치로</button><span class="sp-mid" role="group" aria-label="중앙 맞추기 (크기는 그대로)"><button type="button" class="btn ghost" data-mid title="크기는 그대로 두고 그림을 가운데로 (C)" aria-keyshortcuts="C">중앙 맞추기</button><button type="button" class="btn ghost sp-mid-i" data-mid="x" title="가로만 가운데로" aria-label="가로만 가운데로"><svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><path d="M10 2v16" stroke-dasharray="2 2"/><path d="M1 10h6M4.5 7.5 7 10l-2.5 2.5M19 10h-6M15.5 7.5 13 10l2.5 2.5"/></svg><span class="sp-mid-t" aria-hidden="true">가로만</span></button><button type="button" class="btn ghost sp-mid-i" data-mid="y" title="세로만 가운데로" aria-label="세로만 가운데로"><svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><path d="M2 10h16" stroke-dasharray="2 2"/><path d="M10 1v6M7.5 4.5 10 7l2.5-2.5M10 19v-6M7.5 15.5 10 13l2.5 2.5"/></svg><span class="sp-mid-t" aria-hidden="true">세로만</span></button></span><p class="hint sp-move-hint" aria-live="polite"></p></div>
       </div>
       <div class="sp-one" hidden>
         <div class="sp-one-top"><button type="button" class="btn ghost" data-prev>◀ 이전 장</button><b class="sp-one-name" aria-live="polite"></b><button type="button" class="btn ghost" data-next>다음 장 ▶</button></div>
