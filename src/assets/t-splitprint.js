@@ -19,7 +19,7 @@
   const coarse = matchMedia("(pointer: coarse)").matches;
 
   let src = null; // { file, base, img, w, h, kind, bytes, orient, bmp, emb }
-  let L = null, adj = { zoom: 1, ox: 0, oy: 0 }, view = "paper", cur = 0, skipBlank = false, sizeBy = "w", moveMode = false;
+  let L = null, adj = { zoom: 1, ox: 0, oy: 0 }, view = "paper", cur = 0, skipBlank = false, sizeBy = "w";
   let pdfCache = { key: "", blob: null, pages: 0, note: "" };
 
   // ---------- 그림 넣기: 선택 · 끌어 놓기 · 붙여 넣기 ----------
@@ -79,8 +79,11 @@
       const k = Math.min(1, 2400 / Math.max(w, h));
       const bmp = document.createElement("canvas"); bmp.width = Math.max(1, Math.round(w * k)); bmp.height = Math.max(1, Math.round(h * k));
       bmp.getContext("2d").drawImage(img, 0, 0, bmp.width, bmp.height);
+      // 단계별 축소본(반씩, 긴 변 300px까지): 미리보기에 보이는 크기에 맞는 것을 골라 그려 조작 중에도 가볍게(P2-73b)
+      const mips = [bmp];
+      for (let m = bmp; Math.max(m.width, m.height) > 600;) { const n = document.createElement("canvas"); n.width = Math.max(1, Math.round(m.width / 2)); n.height = Math.max(1, Math.round(m.height / 2)); const g = n.getContext("2d"); g.imageSmoothingQuality = "high"; g.drawImage(m, 0, 0, n.width, n.height); mips.push(n); m = n; }
       if (src && src.url) URL.revokeObjectURL(src.url);
-      src = { file, url, base: PT.base(file.name), img, w, h, kind, bytes: b, orient: kind === "jpg" ? orientation(buf) : 1, bmp, emb: null };
+      src = { file, url, base: PT.base(file.name), img, w, h, kind, bytes: b, orient: kind === "jpg" ? orientation(buf) : 1, bmp, mips, emb: null };
       adj = { zoom: 1, ox: 0, oy: 0 }; cur = 0; skipBlank = false; pdfCache = { key: "" };
       $(".sp-fname").innerHTML = `<b>${PT.esc(file.name)}</b> · ${w.toLocaleString("ko-KR")} × ${h.toLocaleString("ko-KR")}px · ${PT.size(file.size)}`;
       ui.hidden = false;
@@ -124,7 +127,7 @@
     const r = SC.layout({ ...o, iw: src.w, ih: src.h, adj });
     const okL = !r.err;
     $(".sp-err").hidden = okL;
-    if (!okL) { $(".sp-err").textContent = (ERR[r.err] || (() => "설정을 확인해 주세요."))(r); setDisabled(true); return; }
+    if (!okL) { $(".sp-err").textContent = (ERR[r.err] || (() => "설정을 확인해 주세요."))(r); setDisabled(true); hbox.hidden = true; return; }
     setDisabled(false);
     L = r; L.o = o;
     adj = { zoom: L.adj.zoom, ox: L.adj.ox, oy: L.adj.oy };
@@ -134,7 +137,7 @@
     }
     if (cur >= L.tiles.length) cur = 0;
     $(".sp-dlg-paper").textContent = `${PAPER_SHORT[o.paper]} (${ORI[L.orient]})`;
-    summary(); drawScale(); drawMain(); if (view === "one") drawOne(); drawOrder(); names();
+    summary(); drawScale(); drawMain(); placeBox(); readout(); hints(); if (view === "one") drawOne(); drawOrder(); names();
   }
   function setDisabled(on) { box.querySelectorAll("[data-save],[data-print],[data-zip],[data-tile]").forEach((b) => (b.disabled = on)); }
   const usedTiles = () => L.tiles.filter((t) => !(skipBlank && t.blank));
@@ -205,8 +208,8 @@
     const cx = X + m * s, cy = Y + m * s, cw = L.tw * s, ch = L.th * s;
     if (!t.blank) {
       ctx.save(); ctx.beginPath(); ctx.rect(cx, cy, cw, ch); ctx.clip();
-      ctx.imageSmoothingQuality = "high";
-      ctx.drawImage(src.bmp, cx + (L.img.x - t.x0) * s, cy + (L.img.y - t.y0) * s, L.img.w * s, L.img.h * s);
+      ctx.imageSmoothingQuality = opt.live ? "medium" : "high";
+      ctx.drawImage(opt.pic || src.bmp, cx + (L.img.x - t.x0) * s, cy + (L.img.y - t.y0) * s, L.img.w * s, L.img.h * s);
       if (opt.hatch !== false) for (const [bx, by, bw, bh] of bands(t)) { ctx.fillStyle = hatch(ctx); ctx.fillRect(cx + bx * s, cy + by * s, bw * s, bh * s); }
       ctx.restore();
     }
@@ -272,29 +275,37 @@
   // ---------- 큰 미리보기: 종이로 보기 · 붙였을 때 ----------
   let hits = [], geo = null;
   function availH() { return coarse || innerWidth < 700 ? Math.max(260, innerHeight * 0.5) : Math.max(320, Math.min(640, innerHeight * 0.66)); }
-  function drawMain() {
+  // 보이는 크기(기기 화소)보다 크거나 같은 것 중 가장 작은 축소본
+  function pick(needW) { const m = src.mips || [src.bmp]; for (let i = m.length - 1; i >= 0; i--) if (m[i].width >= needW) return m[i]; return m[0]; }
+  // live = 손으로 조작하는 동안(가벼운 미리보기만, 요약·조립도·썸네일은 손을 뗀 뒤)
+  function drawMain(live) {
     if (view === "one") return;
     const W0 = Math.max(200, Math.floor(innerW(stage))), pad = 12;
     hits = [];
+    if (!src.warm) { // 축소본을 처음 그릴 때 생기는 멈칫(그래픽 메모리로 올리기)을 조작 전에 미리 한 번
+      src.warm = true;
+      const c = cv.getContext("2d"); for (const m of src.mips || []) c.drawImage(m, 0, 0, 1, 1);
+    }
     if (view === "paper") {
       const g = innerWidth < 500 ? 6 : 10;
       const s = Math.min((W0 - 2 * pad - (L.cols - 1) * g) / (L.cols * L.pw), (availH() - 2 * pad - (L.rows - 1) * g) / (L.rows * L.ph));
       const tw = L.cols * L.pw * s + (L.cols - 1) * g, th = L.rows * L.ph * s + (L.rows - 1) * g;
       const ctx = sizeCanvas(cv, W0, th + 2 * pad);
-      const ox = (W0 - tw) / 2;
+      const ox = (W0 - tw) / 2, pic = { live, pic: pick(L.img.w * s * dpr()) };
       for (const t of L.tiles) {
         const X = ox + t.c * (L.pw * s + g), Y = pad + t.r * (L.ph * s + g);
-        drawSheet(ctx, t, X, Y, s);
+        drawSheet(ctx, t, X, Y, s, pic);
         hits.push({ t, x: X, y: Y, w: L.pw * s, h: L.ph * s });
       }
-      geo = { s };
+      geo = { view, s, W0, H0: th + 2 * pad, area: { x: ox, y: pad, w: tw, h: th }, bx: ox, by: pad, sx: L.pw * s + g, sy: L.ph * s + g };
     } else {
       const s = Math.min((W0 - 2 * pad) / L.W, (availH() - 2 * pad) / L.H);
       const w = L.W * s, h = L.H * s, ctx = sizeCanvas(cv, W0, h + 2 * pad), X = (W0 - w) / 2, Y = pad;
       ctx.fillStyle = "rgba(0,0,0,.22)"; ctx.fillRect(X + 3, Y + 3, w, h);
       ctx.fillStyle = "#fff"; ctx.fillRect(X, Y, w, h);
       ctx.save(); ctx.beginPath(); ctx.rect(X, Y, w, h); ctx.clip();
-      ctx.drawImage(src.bmp, X + L.img.x * s, Y + L.img.y * s, L.img.w * s, L.img.h * s);
+      ctx.imageSmoothingQuality = live ? "medium" : "high";
+      ctx.drawImage(pick(L.img.w * s * dpr()), X + L.img.x * s, Y + L.img.y * s, L.img.w * s, L.img.h * s);
       ctx.restore();
       // 이음선: 다음 장의 가장자리가 놓이는 곳(장 c의 시작 x = c × (인쇄 칸 − 겹침))
       ctx.save(); ctx.setLineDash([5, 4]); ctx.lineWidth = 1.5; ctx.strokeStyle = "rgba(229,55,43,.95)";
@@ -307,10 +318,25 @@
         if (!t.blank) pill(ctx, (x0 + x1) / 2, (y0 + y1) / 2, t.label, Math.max(10, Math.min(15, (x1 - x0) / 5)), "#141414");
         hits.push({ t, x: x0, y: y0, w: x1 - x0, h: y1 - y0 });
       }
-      geo = { s };
+      geo = { view, s, W0, H0: h + 2 * pad, area: { x: X, y: Y, w, h }, bx: X, by: Y };
     }
-    cv.setAttribute("aria-label", `${view === "paper" ? "종이로 보기" : "붙였을 때"} 미리보기: ${$(".sp-line").textContent}, 완성 ${$(".sp-cm").textContent}. 화살표 키로 그림을 옮기고 + − 키로 크기를 바꿔요. Enter를 누르면 한 장씩 보기로 열려요.`);
+    if (!live) cv.setAttribute("aria-label", `${view === "paper" ? "종이로 보기" : "붙였을 때"} 미리보기: ${$(".sp-line").textContent}, 완성 ${$(".sp-cm").textContent}. 화살표 키로 그림을 1mm(Shift는 10mm)씩 옮기고 + − 키로 크기를 1%씩 바꿔요. Enter를 누르면 한 장씩 보기로 열려요.`);
   }
+  // 판 좌표(mm) ↔ 미리보기 화소. 「종이로 보기」는 장 사이 틈·여백이 있어 장마다 따로 계산(side 1 = 끝 모서리는 앞 장에 붙임)
+  function axPx(v, side, n, t, o, base, step) {
+    if (geo.view !== "paper") return base + v * geo.s;
+    const p = t - o; let c = side ? Math.ceil(v / p - 1e-9) - 1 : Math.floor(v / p + 1e-9);
+    c = Math.max(0, Math.min(n - 1, c));
+    return base + c * step + (L.margin + v - c * p) * geo.s;
+  }
+  function axMm(px, n, t, o, base, step) {
+    if (geo.view !== "paper") return (px - base) / geo.s;
+    const c = Math.max(0, Math.min(n - 1, Math.floor((px - base) / step)));
+    return c * (t - o) + (px - base - c * step) / geo.s - L.margin;
+  }
+  const pxX = (v, side) => axPx(v, side, L.cols, L.tw, L.overlap, geo.bx, geo.sx);
+  const pxY = (v, side) => axPx(v, side, L.rows, L.th, L.overlap, geo.by, geo.sy);
+  function toMm(clientX, clientY) { const r = cv.getBoundingClientRect(); return { x: axMm(clientX - r.left, L.cols, L.tw, L.overlap, geo.bx, geo.sx), y: axMm(clientY - r.top, L.rows, L.th, L.overlap, geo.by, geo.sy) }; }
 
   // ---------- 한 장씩 보기 ----------
   function drawOne() {
@@ -348,7 +374,7 @@
     ol.querySelectorAll("button").forEach((b, i) => {
       const t = L.tiles[i];
       const ctx = sizeCanvas(b.querySelector("canvas"), L.pw * s + 4, L.ph * s + 4);
-      drawSheet(ctx, t, 1, 1, s, { shadow: false, badge: false, hatch: false, frame: false, warn: false });
+      drawSheet(ctx, t, 1, 1, s, { shadow: false, badge: false, hatch: false, frame: false, warn: false, pic: pick(L.img.w * s * dpr()) });
       b.setAttribute("aria-current", i === cur ? "true" : "false");
       b.classList.toggle("blank", t.blank);
     });
@@ -364,7 +390,7 @@
     view = v;
     const r = box.querySelector(`[name="view"][value="${v}"]`); if (r) r.checked = true;
     stage.hidden = v === "one"; one.hidden = v !== "one";
-    if (v === "one") drawOne(); else drawMain();
+    if (v === "one") { hbox.hidden = true; drawOne(); } else { drawMain(); placeBox(); }
   }
   box.querySelectorAll('[name="view"]').forEach((r) => r.addEventListener("change", () => setView(r.value)));
 
@@ -450,66 +476,192 @@
     c.setAttribute("aria-label", `조립도: ${L.cols}열 × ${L.rows}행, 가1부터 순서대로`);
   }
 
-  // ---------- 손으로 옮기기·키우기 (마우스 끌기·휠, 손가락 끌기·두 손가락, 키보드) ----------
-  const pts = new Map();
-  let drag = null;
+  // ---------- 손으로 맞추기 (P2-73b) ----------
+  // 그림 위(점선 상자): 한 손가락·마우스로 끌어 옮김. 네 모서리 손잡이(44px): 반대편 모서리를 고정하고 비율대로 키우고 줄임.
+  // 두 손가락: 늘 확대·축소(가운데 고정) + 옮김. 휠·트랙패드 핀치: 커서 자리 고정. 그림 밖(종이 여백·틀)에서 시작한 한 손가락은 화면 스크롤.
+  // 조작하는 동안에는 계산(SC.layout, 가벼움) + 다음 프레임에 큰 미리보기만 그리고, 요약·크기 비교·조립도·한 장 보기는 손을 뗀 뒤 다시 그림.
+  const wrap = $(".sp-cvwrap"), hbox = $(".sp-box"), zr = f("zr"), zn = f("zn"), zoomUi = $(".sp-zoom");
+  const hdl = [...hbox.querySelectorAll("[data-h]")];
   const canZoom = () => L && L.o.mode !== "size";
-  function nudge(dx, dy) { adj.ox += dx; adj.oy += dy; schedule(); }
-  function zoomBy(k) { if (!canZoom()) { hint("완성 크기로 나눌 때는 크기가 정해져 있어 위치만 옮길 수 있어요."); return; } adj.zoom = Math.max(0.2, Math.min(8, adj.zoom * k)); schedule(); }
-  function hint(t) { const h = $(".sp-move-hint"); h.textContent = t; }
-  cv.addEventListener("pointerdown", (e) => {
-    if (!L || (e.pointerType === "touch" && !moveMode)) return;
-    cv.setPointerCapture(e.pointerId);
-    pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    drag = { x: e.clientX, y: e.clientY, moved: false, d: pts.size === 2 ? dist() : 0 };
-  });
-  const dist = () => { const [a, b] = [...pts.values()]; return Math.hypot(a.x - b.x, a.y - b.y); };
-  cv.addEventListener("pointermove", (e) => {
-    if (!drag || !pts.has(e.pointerId)) return;
-    const p = pts.get(e.pointerId), dx = e.clientX - p.x, dy = e.clientY - p.y;
-    pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    if (Math.abs(e.clientX - drag.x) + Math.abs(e.clientY - drag.y) > 5) drag.moved = true;
-    if (pts.size === 2) { const d = dist(); if (drag.d) zoomBy(d / drag.d); drag.d = d; drag.moved = true; return; }
-    if (drag.moved && geo) nudge(dx / geo.s / pts.size, dy / geo.s / pts.size);
-  });
-  const up = (e) => {
-    if (!pts.has(e.pointerId)) return;
-    pts.delete(e.pointerId);
-    if (drag && !drag.moved && !moveMode && pts.size === 0 && e.type === "pointerup") { // 누르기 = 그 장을 한 장씩 보기로
-      const r = cv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
-      const h = hits.find((q) => x >= q.x && x <= q.x + q.w && y >= q.y && y <= q.y + q.h);
-      if (h) { cur = L.tiles.indexOf(h.t); setView("one"); names(); }
-    }
-    if (!pts.size) drag = null; else if (drag) drag.d = pts.size === 2 ? dist() : 0;
-  };
-  cv.addEventListener("pointerup", up); cv.addEventListener("pointercancel", up);
-  // 터치 화면: 「그림 옮기기」를 켰을 때만 손가락으로 옮김(꺼져 있으면 화면 스크롤). 켜지 않고 누르면 그 장을 크게 봄
-  cv.addEventListener("click", (e) => {
-    if (!coarse || moveMode || !hits.length) return;
-    const r = cv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+  const round1 = (n) => Math.round(n * 10) / 10;
+  let g = null, pinch = null, liveRaf = 0, commitT = 0, lastScroll = -1e9, downType = "", downOnBox = false, slSrc = false, znEdit = false;
+  function setAdj(a) {
+    if (!L || !src) return;
+    const r = SC.layout({ ...L.o, iw: src.w, ih: src.h, adj: a });
+    if (r.err) return;
+    r.o = L.o; L = r; adj = { zoom: L.adj.zoom, ox: L.adj.ox, oy: L.adj.oy };
+    if (!liveRaf) liveRaf = requestAnimationFrame(() => { liveRaf = 0; if (!L || view === "one") return; drawMain(true); placeBox(); readout(); });
+  }
+  const commit = () => { clearTimeout(commitT); commitT = 0; schedule(); };
+  const commitSoon = (ms = 200) => { clearTimeout(commitT); commitT = setTimeout(commit, ms); };
+  // 점선 상자·손잡이 자리: 그림 자리를 보이는 판 안으로 자르고, 손잡이(44px)는 미리보기 밖으로 나가지 않게
+  function placeBox() {
+    if (!L || !geo || view === "one" || stage.hidden) { hbox.hidden = true; return; }
+    const I = L.img, A = geo.area;
+    const x0 = Math.max(A.x, pxX(I.x, 0)), x1 = Math.min(A.x + A.w, pxX(I.x + I.w, 1)), y0 = Math.max(A.y, pxY(I.y, 0)), y1 = Math.min(A.y + A.h, pxY(I.y + I.h, 1));
+    if (!(x1 - x0 >= 1 && y1 - y0 >= 1)) { hbox.hidden = true; return; }
+    hbox.hidden = false;
+    hbox.style.transform = `translate(${x0}px,${y0}px)`; hbox.style.width = `${x1 - x0}px`; hbox.style.height = `${y1 - y0}px`;
+    const H = 22, cx = (x) => Math.max(H, Math.min(geo.W0 - H, x)), cy = (y) => Math.max(H, Math.min(geo.H0 - H, y));
+    for (const e of hdl) { const c = e.dataset.h; e.style.transform = `translate(${cx(c[1] === "e" ? x1 : x0) - x0 - H}px,${cy(c[0] === "s" ? y1 : y0) - y0 - H}px)`; }
+    hbox.classList.toggle("no-h", !canZoom());
+  }
+  // 「배율 132.5% · 완성 52.3 × 74.0cm · 가운데에서 오른쪽 12.0 · 아래 3.0mm」
+  const toSl = (pct) => Math.round((1000 * Math.log(pct / 20)) / Math.log(40));
+  const fromSl = (v) => 20 * Math.pow(40, v / 1000); // 슬라이더는 로그 눈금(20~800%, 한 칸 약 0.37%): 자주 쓰는 50~200%를 넓게
+  function readout() {
+    if (!L) return;
+    const z = round1(L.adj.zoom * 100), a = L.adj, pos = [];
+    if (Math.abs(a.ox) >= 0.05) pos.push(`${a.ox > 0 ? "오른쪽" : "왼쪽"} ${fmt1(Math.abs(a.ox))}`);
+    if (Math.abs(a.oy) >= 0.05) pos.push(`${a.oy > 0 ? "아래" : "위"} ${fmt1(Math.abs(a.oy))}`);
+    const cm = `${fmt1(L.view.w / 10)} × ${fmt1(L.view.h / 10)}cm`;
+    // 두 줄로 나눠 글자 수가 바뀌어도 높이가 그대로(조작 중에 미리보기가 위아래로 밀리지 않게)
+    const rl = $(".sp-read").children;
+    rl[0].textContent = `${canZoom() ? `배율 ${z.toFixed(1)}% · ` : ""}완성 ${cm}`;
+    rl[1].textContent = pos.length ? `가운데에서 ${pos.join(" · ")}mm` : "가운데";
+    $(".sp-cm").textContent = cm.replace("cm", " cm");
+    if (!slSrc) zr.value = String(toSl(z));
+    slSrc = false;
+    zr.setAttribute("aria-valuetext", `${z.toFixed(1)}%`);
+    if (!znEdit) zn.value = z.toFixed(1); // 숫자 칸은 사람이 고치는 중일 때만 그대로 둠
+  }
+  function hints() {
+    zoomUi.hidden = !canZoom();
+    $(".sp-move-hint").textContent = !canZoom() ? "완성 크기로 나눌 때는 크기가 정해져 있어 모서리 손잡이를 숨겼어요. 그림을 끌어 위치만 옮길 수 있어요."
+      : coarse ? "그림을 끌어 옮기고, 모서리 □를 끌거나 두 손가락으로 벌려 크기를 바꿔요. 그림 밖을 끌면 화면이 움직여요."
+      : "그림을 끌어 옮기고, 모서리 □를 끌거나 휠로 크기를 바꿔요(커서 자리 기준). 화살표 1mm · Shift+화살표 10mm.";
+  }
+  // 보이는 부분의 가운데를 고정하고 배율(%)을 정함(슬라이더·숫자 칸·−+)
+  function setPct(pct) {
+    if (!canZoom()) return;
+    const p = Math.max(SC.ZMIN * 100, Math.min(SC.ZMAX * 100, round1(pct))), I = L.img;
+    const vx = (Math.max(0, I.x) + Math.min(L.W, I.x + I.w)) / 2, vy = (Math.max(0, I.y) + Math.min(L.H, I.y + I.h)) / 2;
+    setAdj(SC.zoomAt(L, p / 100 / L.adj.zoom, vx, vy));
+  }
+  function openAt(clientX, clientY) {
+    if (!hits.length) return;
+    const r = cv.getBoundingClientRect(), x = clientX - r.left, y = clientY - r.top;
     const h = hits.find((q) => x >= q.x && x <= q.x + q.w && y >= q.y && y <= q.y + q.h);
     if (h) { cur = L.tiles.indexOf(h.t); setView("one"); names(); }
+  }
+  // 한 손가락·마우스·펜
+  wrap.addEventListener("pointerdown", (e) => {
+    downType = e.pointerType; downOnBox = !!e.target.closest(".sp-box");
+    if (!L || !geo || view === "one" || g || pinch || (e.pointerType === "mouse" && e.button !== 0)) return;
+    if (e.pointerType === "touch" && !downOnBox) return; // 그림 밖: 화면 스크롤(누르면 그 장 크게 보기는 click에서)
+    const h = e.target.closest("[data-h]");
+    e.preventDefault();
+    if (e.pointerType !== "touch") cv.focus({ preventScroll: true });
+    try { e.target.setPointerCapture(e.pointerId); } catch (er) {}
+    g = { id: e.pointerId, kind: h && canZoom() ? "resize" : "move", corner: h && h.dataset.h, x0: e.clientX, y0: e.clientY, t0: performance.now(), moved: false, L0: L, a0: { ...adj } };
+    if (g.kind === "resize") { const I = L.img, c = g.corner, p = toMm(e.clientX, e.clientY); g.off = { x: (c[1] === "e" ? I.x + I.w : I.x) - p.x, y: (c[0] === "s" ? I.y + I.h : I.y) - p.y }; }
+    hbox.classList.add("is-on");
   });
-  // 휠: 미리보기를 한 번 누르거나(포커스) 「그림 옮기기」를 켰을 때, 또는 Ctrl+휠일 때만 크기를 바꿈(페이지 스크롤을 막지 않게)
-  cv.addEventListener("wheel", (e) => { if (!L || !(e.ctrlKey || moveMode || document.activeElement === cv)) return; e.preventDefault(); zoomBy(Math.exp(-e.deltaY * 0.0015)); }, { passive: false });
+  wrap.addEventListener("pointermove", (e) => {
+    if (!g || e.pointerId !== g.id || pinch) return;
+    const dx = e.clientX - g.x0, dy = e.clientY - g.y0;
+    if (!g.moved && Math.hypot(dx, dy) > 3) g.moved = true;
+    if (g.kind === "resize") { const p = toMm(e.clientX, e.clientY); setAdj(SC.resizeCorner(g.L0, g.corner, p.x + g.off.x, p.y + g.off.y)); }
+    else setAdj({ zoom: g.a0.zoom, ox: g.a0.ox + dx / geo.s, oy: g.a0.oy + dy / geo.s }); // 한 장 안에서는 손가락 밑의 그림이 그대로 따라옴
+  });
+  const pend = (e) => {
+    if (!g || e.pointerId !== g.id) return;
+    const G = g; g = null; hbox.classList.remove("is-on");
+    if (!G.moved && G.kind === "move" && e.type === "pointerup" && performance.now() - G.t0 < 500) { adj = G.a0; update(); openAt(e.clientX, e.clientY); return; } // 누르기 = 그 장 크게
+    commit();
+  };
+  wrap.addEventListener("pointerup", pend); wrap.addEventListener("pointercancel", pend); wrap.addEventListener("lostpointercapture", pend);
+  cv.addEventListener("click", (e) => { if (downType === "touch" && !downOnBox && L) openAt(e.clientX, e.clientY); });
+  // 두 손가락(토글 없이 늘): 어디에서 시작해도 화면 확대·스크롤 대신 그림을 키우고 옮김. 한 손가락이 이미 화면을 스크롤하는 중이면(취소 불가) 건드리지 않음
+  const touchIn = (e) => [...e.touches].filter((t) => wrap.contains(t.target));
+  const byId = (list, id) => [...list].find((t) => t.identifier === id);
+  wrap.addEventListener("touchstart", (e) => {
+    if (!L || !geo || view === "one" || pinch) return;
+    const ts = touchIn(e);
+    if (ts.length < 2 || !e.cancelable) return;
+    e.preventDefault();
+    g = null;
+    const [a, b] = ts;
+    pinch = { ia: a.identifier, ib: b.identifier, d: Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY), mx: (a.clientX + b.clientX) / 2, my: (a.clientY + b.clientY) / 2 };
+    hbox.classList.add("is-on");
+  }, { passive: false });
+  wrap.addEventListener("touchmove", (e) => {
+    if (!pinch) return;
+    if (e.cancelable) e.preventDefault();
+    const a = byId(e.touches, pinch.ia), b = byId(e.touches, pinch.ib);
+    if (!a || !b) return;
+    const d = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY), mx = (a.clientX + b.clientX) / 2, my = (a.clientY + b.clientY) / 2;
+    let A = adj;
+    if (canZoom() && pinch.d > 0 && d > 0) { const p = toMm(pinch.mx, pinch.my); A = SC.zoomAt(L, d / pinch.d, p.x, p.y); }
+    A = { zoom: A.zoom, ox: A.ox + (mx - pinch.mx) / geo.s, oy: A.oy + (my - pinch.my) / geo.s };
+    pinch.d = d; pinch.mx = mx; pinch.my = my;
+    setAdj(A);
+  }, { passive: false });
+  const tend = (e) => {
+    if (!pinch || (byId(e.touches, pinch.ia) && byId(e.touches, pinch.ib))) return;
+    pinch = null; hbox.classList.remove("is-on"); commit();
+  };
+  wrap.addEventListener("touchend", tend); wrap.addEventListener("touchcancel", tend);
+  wrap.addEventListener("gesturestart", (e) => { if (L && view !== "one") e.preventDefault(); }); // 아이폰 사파리: 미리보기 위 두 손가락이 화면 확대로 새지 않게
+  // 휠·트랙패드: 미리보기 위에 커서가 있을 때만 커서 자리를 고정하고 확대·축소(Ctrl+휠 = 트랙패드 핀치는 더 섬세하게)
+  // 화면을 휠로 내리다가 미리보기가 커서 밑으로 들어온 경우(0.35초 안)에는 계속 화면을 내림
+  addEventListener("scroll", () => { lastScroll = performance.now(); }, { passive: true });
+  wrap.addEventListener("wheel", (e) => {
+    if (!L || !geo || view === "one" || !canZoom()) return;
+    if (!e.ctrlKey && performance.now() - lastScroll < 350) return;
+    e.preventDefault();
+    const dy = Math.max(-300, Math.min(300, e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? 400 : 1)));
+    const p = toMm(e.clientX, e.clientY);
+    setAdj(SC.zoomAt(L, Math.exp(-dy * (e.ctrlKey ? 0.01 : 0.001)), p.x, p.y));
+    commitSoon();
+  }, { passive: false });
+  // 키보드: 화살표 1mm, Shift+화살표 10mm, + − 1%, 0 처음 위치, Enter 한 장씩
   cv.addEventListener("keydown", (e) => {
     if (!L) return;
-    const st = e.shiftKey ? 10 : 2;
+    const st = e.shiftKey ? 10 : 1;
     const k = { ArrowLeft: [-st, 0], ArrowRight: [st, 0], ArrowUp: [0, -st], ArrowDown: [0, st] }[e.key];
-    if (k) { e.preventDefault(); nudge(k[0], k[1]); return; }
-    if (e.key === "+" || e.key === "=") { e.preventDefault(); zoomBy(1.1); }
-    else if (e.key === "-" || e.key === "_") { e.preventDefault(); zoomBy(1 / 1.1); }
+    if (k) { e.preventDefault(); setAdj({ zoom: adj.zoom, ox: adj.ox + k[0], oy: adj.oy + k[1] }); commitSoon(300); return; }
+    if (e.key === "+" || e.key === "=") { e.preventDefault(); if (canZoom()) { setPct(L.adj.zoom * 100 + 1); commitSoon(300); } }
+    else if (e.key === "-" || e.key === "_") { e.preventDefault(); if (canZoom()) { setPct(L.adj.zoom * 100 - 1); commitSoon(300); } }
     else if (e.key === "0") { e.preventDefault(); adj = { zoom: 1, ox: 0, oy: 0 }; update(); }
     else if (e.key === "Enter") { e.preventDefault(); setView("one"); }
   });
-  $("[data-move]").addEventListener("click", (e) => {
-    moveMode = !moveMode;
-    e.currentTarget.setAttribute("aria-pressed", String(moveMode));
-    cv.classList.toggle("is-move", moveMode);
-    hint(moveMode ? "그림을 손가락으로 끌어 옮기고, 두 손가락으로 벌리거나 오므려 크기를 바꿔요. 다 옮겼으면 다시 눌러 끄세요." : "");
+  // − + : 1%씩, 길게 누르면 계속(1.5초가 지나면 3%씩)
+  function hold(btn, d) {
+    let t1 = 0, t2 = 0, n = 0;
+    const step = () => setPct(round1(L.adj.zoom * 100) + d * (n > 22 ? 3 : 1));
+    const stop = () => { clearTimeout(t1); clearInterval(t2); if (n) { n = 0; commit(); } };
+    btn.addEventListener("pointerdown", (e) => {
+      if (!L || btn.disabled || (e.pointerType === "mouse" && e.button !== 0)) return;
+      e.preventDefault(); stop(); n = 1; step();
+      try { btn.setPointerCapture(e.pointerId); } catch (er) {}
+      t1 = setTimeout(() => { t2 = setInterval(() => { n++; step(); }, 60); }, 420);
+    });
+    ["pointerup", "pointercancel", "lostpointercapture"].forEach((t) => btn.addEventListener(t, stop));
+    btn.addEventListener("click", (e) => { if (e.detail === 0 && L) { setPct(round1(L.adj.zoom * 100) + d); commit(); } }); // 키보드 Enter·Space
+    btn.addEventListener("contextmenu", (e) => e.preventDefault());
+  }
+  hold($("[data-zout]"), -1); hold($("[data-zin]"), 1);
+  zr.addEventListener("input", () => { slSrc = true; setPct(fromSl(Number(zr.value))); });
+  zr.addEventListener("change", commit);
+  function applyZn() {
+    if (!znEdit) return;
+    znEdit = false;
+    const v = num(zn.value), okv = isFinite(v) && v > 0;
+    if (okv) setPct(v);
+    zn.value = round1(Math.max(20, Math.min(800, okv ? v : L.adj.zoom * 100))).toFixed(1);
+    commit();
+  }
+  zn.addEventListener("input", () => { znEdit = true; });
+  zn.addEventListener("change", applyZn);
+  zn.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") { e.preventDefault(); applyZn(); return; }
+    if (e.key === "ArrowUp" || e.key === "ArrowDown") { // 숫자 칸: 화살표 0.1%, Shift 1%
+      e.preventDefault();
+      const v = (isFinite(num(zn.value)) ? num(zn.value) : L.adj.zoom * 100) + (e.key === "ArrowUp" ? 1 : -1) * (e.shiftKey ? 1 : 0.1);
+      znEdit = false; setPct(v); zn.value = round1(Math.max(20, Math.min(800, v))).toFixed(1); commitSoon(300);
+    }
   });
-  $("[data-zin]").addEventListener("click", () => zoomBy(1.15));
-  $("[data-zout]").addEventListener("click", () => zoomBy(1 / 1.15));
   $("[data-center]").addEventListener("click", () => { adj = { zoom: 1, ox: 0, oy: 0 }; update(); });
 
   // ---------- 설정이 바뀌면 바로 다시 그리기 ----------
@@ -521,9 +673,9 @@
   box.querySelector(".sp-opts").addEventListener("change", schedule);
   f("guide").addEventListener("change", schedule);
   f("edge").addEventListener("change", schedule);
-  new MutationObserver(() => { if (src && L) { drawScale(); drawMain(); if (view === "one") drawOne(); } }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] }); // 다크·라이트 바꾸면 그림 색 다시
+  new MutationObserver(() => { if (src && L) { drawScale(); drawMain(); placeBox(); if (view === "one") drawOne(); } }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] }); // 다크·라이트 바꾸면 그림 색 다시
   let rz = 0;
-  addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { thumbKey = ""; if (src && L) { drawMain(); if (view === "one") drawOne(); drawOrder(); } }, 120); });
+  addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { thumbKey = ""; if (src && L) { drawMain(); placeBox(); if (view === "one") drawOne(); drawOrder(); } }, 120); });
 
   // ---------- 파일 이름 (P2-72 칸) ----------
   const fmtT = () => (val("tfmt") === "jpg" ? "jpg" : "png");

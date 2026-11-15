@@ -137,5 +137,31 @@
     return [r.w * a, r.h * b, r.w * c, r.h * d, r.x + r.w * e, r.y + r.h * f];
   }
 
-  root.SPLITCALC = { PAPERS, ORDER, PT, MAXN, MAXCOUNT, need, span, sheet, layout, pageRects, orientMatrix, label };
+  // ---------- P2-73b 손으로 맞추기: 그림 자리(판 mm) ↔ adj ----------
+  // 배율(zoom) 1 = 맞춤·채움 기준 크기. 그림 가로 mm = 기준 가로(L.img.w ÷ L.adj.zoom) × zoom. 배율은 20~800%
+  const ZMIN = 0.2, ZMAX = 8;
+  const clampZ = (z) => Math.max(ZMIN, Math.min(ZMAX, z));
+  // 그림 자리 { x, y, w } → adj. 세로는 그림 비율로 정해짐
+  function adjFromImg(L, img) {
+    const unit = L.img.w / L.adj.zoom, h = (img.w * L.img.h) / L.img.w;
+    return { zoom: img.w / unit, ox: img.x - (L.W - img.w) / 2, oy: img.y - (L.H - h) / 2 };
+  }
+  // 판의 한 점(px, py mm)을 그 자리에 둔 채 k배로 키우거나 줄임(두 손가락 가운데·휠 커서·슬라이더는 그림 가운데)
+  function zoomAt(L, k, px, py) {
+    const z = clampZ(L.adj.zoom * k), q = z / L.adj.zoom;
+    return adjFromImg(L, { x: px - (px - L.img.x) * q, y: py - (py - L.img.y) * q, w: L.img.w * q });
+  }
+  // 모서리 손잡이(nw·ne·sw·se)를 판의 (tx, ty mm)로 끔. 반대편 모서리는 그대로, 비율 유지(끈 점을 대각선에 투영)
+  // L0 = 끌기 시작할 때의 배치(시작 그림 자리 기준으로 계산해 손을 되돌리면 그대로 돌아옴)
+  function resizeCorner(L0, corner, tx, ty) {
+    const I = L0.img, sx = corner[1] === "e" ? 1 : -1, sy = corner[0] === "s" ? 1 : -1;
+    const ax = sx > 0 ? I.x : I.x + I.w, ay = sy > 0 ? I.y : I.y + I.h;
+    const vx = (tx - ax) * sx, vy = (ty - ay) * sy;
+    let k = (vx * I.w + vy * I.h) / (I.w * I.w + I.h * I.h);
+    k = clampZ(L0.adj.zoom * k) / L0.adj.zoom;
+    const w = I.w * k, h = I.h * k;
+    return adjFromImg(L0, { x: sx > 0 ? ax : ax - w, y: sy > 0 ? ay : ay - h, w });
+  }
+
+  root.SPLITCALC = { PAPERS, ORDER, PT, MAXN, MAXCOUNT, ZMIN, ZMAX, need, span, sheet, layout, pageRects, orientMatrix, label, adjFromImg, zoomAt, resizeCorner };
 })(typeof window !== "undefined" ? window : globalThis);

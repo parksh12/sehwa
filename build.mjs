@@ -1456,6 +1456,29 @@ ${tkTail("")}
   chk("13 확대 폭", s13.img.w, 840); chk("13 옮긴 x", s13.img.x, (420 - 840) / 2 + 50);
   chk("13 너무 옮김", lay({ paper: "a4", orient: "p", margin: 0, overlap: 0, mode: "grid", cols: 2, rows: 2, fit: "fit", iw: 1000, ih: 1000, adj: { zoom: 1, ox: 9999, oy: 0 } }).adj.ox, 210);
   chk("13 완성 크기 모드는 확대 무시", lay({ paper: "a4", orient: "p", margin: 0, overlap: 0, mode: "size", wCm: 30, iw: 1000, ih: 1000, adj: { zoom: 3, ox: 0, oy: 0 } }).img.w, 300);
+  // 14 P2-73b 손으로 맞추기: A4 세로 2×2 여백 0 맞춤, 1000×500px → 판 420×594, 기준 그림 420×210mm(가운데 y 192)
+  const b0 = { paper: "a4", orient: "p", margin: 0, overlap: 0, mode: "grid", cols: 2, rows: 2, fit: "fit", iw: 1000, ih: 500 };
+  const L14 = lay(b0);
+  chk("14 기준 그림 가로", L14.img.w, 420); chk("14 기준 그림 y", L14.img.y, 192);
+  //   그림 자리 → adj → 다시 배치하면 같은 자리: 가로 556.5mm(132.5%), x −50, y 10 → zoom 1.325, ox = −50 − (420 − 556.5)/2 = 18.25, oy = 10 − (594 − 278.25)/2 = −147.875
+  const a14 = SC.adjFromImg(L14, { x: -50, y: 10, w: 556.5 });
+  chk("14 adj 배율", a14.zoom, 1.325); chk("14 adj ox", a14.ox, 18.25); chk("14 adj oy", a14.oy, -147.875);
+  const L14b = lay({ ...b0, adj: a14 });
+  chk("14 되돌린 x", L14b.img.x, -50); chk("14 되돌린 y", L14b.img.y, 10); chk("14 되돌린 세로", L14b.img.h, 278.25);
+  //   한 점 고정 확대(두 손가락 가운데·휠 커서): 판 (300, 250)에서 1.5배 → 그 점의 그림 안 비율이 그대로
+  const L14z = lay({ ...b0, adj: SC.zoomAt(L14, 1.5, 300, 250) });
+  chk("14 고정점 확대 배율", L14z.adj.zoom, 1.5); chk("14 고정점 x 비율", (300 - L14z.img.x) / L14z.img.w, (300 - L14.img.x) / L14.img.w); chk("14 고정점 y 비율", (250 - L14z.img.y) / L14z.img.h, (250 - L14.img.y) / L14.img.h);
+  chk("14 배율 상한 800%", SC.zoomAt(L14, 100, 0, 0).zoom, 8); chk("14 배율 하한 20%", SC.zoomAt(L14, 0.001, 0, 0).zoom, 0.2);
+  //   모서리 손잡이: 오른쪽 아래(se)를 (420+42, 402+21)로 → 대각선 투영 1.1배, 왼쪽 위(0, 192) 고정
+  const L14se = lay({ ...b0, adj: SC.resizeCorner(L14, "se", 462, 423) });
+  chk("14 se 배율", L14se.adj.zoom, 1.1); chk("14 se 고정점 x", L14se.img.x, 0); chk("14 se 고정점 y", L14se.img.y, 192); chk("14 se 비율 유지", L14se.img.w / L14se.img.h, 2);
+  //   왼쪽 위(nw)를 안쪽 (210, 297)로 → 투영 k = ((420−210)·420 + (402−297)·210) ÷ (420² + 210²) = 0.5, 오른쪽 아래(420, 402) 고정
+  const L14nw = lay({ ...b0, adj: SC.resizeCorner(L14, "nw", 210, 297) });
+  chk("14 nw 배율", L14nw.adj.zoom, 0.5); chk("14 nw 고정점 오른쪽", L14nw.img.x + L14nw.img.w, 420); chk("14 nw 고정점 아래", L14nw.img.y + L14nw.img.h, 402);
+  //   화면에서 맞춘 자리 = PDF 자리: 가1 쪽의 그림 자리(pt) = 판 mm × 72/25.4, 나2 쪽은 인쇄 칸만큼 밀림
+  const R14 = SC.pageRects(L14b, L14b.tiles[0]), R14d = SC.pageRects(L14b, L14b.tiles[3]);
+  chk("14 PDF 가1 그림 x(pt)", R14.img.x, -50 * K); chk("14 PDF 가1 그림 가로(pt)", R14.img.w, 556.5 * K); chk("14 PDF 가1 그림 y(pt)", R14.img.y, (297 - 10 - 278.25) * K);
+  chk("14 PDF 나2 그림 x(pt)", R14d.img.x, (-50 - 210) * K);
   console.log(`✔ P2-73 이미지 분할 인쇄: 배열·쪽 크기·이음매 계산 대조 ${nChk}건 통과`);
 }
 const SP_OPT = (vals, sel, fmt = (v) => v) => vals.map((v) => `<option value="${v}"${v === sel ? " selected" : ""}>${fmt(v)}</option>`).join("");
@@ -1492,9 +1515,10 @@ ${tkTail("")}
       </div>
       <fieldset class="seg sp-views" aria-label="미리보기 방식"><label><input type="radio" name="view" value="paper" checked><span>종이로 보기</span></label><label><input type="radio" name="view" value="joined"><span>붙였을 때</span></label><label><input type="radio" name="view" value="one"><span>한 장씩</span></label></fieldset>
       <div class="sp-stage">
-        <canvas class="sp-canvas" tabindex="0" role="img" aria-label="미리보기" width="1" height="1"></canvas>
-        <div class="sp-tools"><button type="button" class="btn ghost" data-move aria-pressed="false">✋ 그림 옮기기</button><button type="button" class="btn ghost" data-zout aria-label="그림 작게">−</button><button type="button" class="btn ghost" data-zin aria-label="그림 크게">+</button><button type="button" class="btn ghost" data-center>처음 위치로</button></div>
-        <p class="hint sp-move-hint" aria-live="polite"></p>
+        <div class="sp-cvwrap"><canvas class="sp-canvas" tabindex="0" role="img" aria-label="미리보기" width="1" height="1"></canvas><div class="sp-box" aria-hidden="true" hidden><i data-h="nw"></i><i data-h="ne"></i><i data-h="sw"></i><i data-h="se"></i></div></div>
+        <p class="sp-read" aria-live="polite"><span></span> <span></span></p>
+        <div class="sp-zoom" role="group" aria-label="그림 크기 조절"><button type="button" class="btn ghost" data-zout aria-label="그림 1% 작게 (길게 누르면 계속)">−</button><input type="range" name="zr" class="sp-zr" min="0" max="1000" step="1" value="500" aria-label="그림 크기 (20~800%)"><button type="button" class="btn ghost" data-zin aria-label="그림 1% 크게 (길게 누르면 계속)">+</button><label class="sp-zn"><span class="sr">그림 크기 (%)</span><input name="zn" type="text" inputmode="decimal" autocomplete="off" value="100.0"><span aria-hidden="true">%</span></label></div>
+        <div class="sp-tools"><button type="button" class="btn ghost" data-center>처음 위치로</button><p class="hint sp-move-hint" aria-live="polite"></p></div>
       </div>
       <div class="sp-one" hidden>
         <div class="sp-one-top"><button type="button" class="btn ghost" data-prev>◀ 이전 장</button><b class="sp-one-name" aria-live="polite"></b><button type="button" class="btn ghost" data-next>다음 장 ▶</button></div>

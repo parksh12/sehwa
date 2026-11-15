@@ -2452,14 +2452,31 @@ html:not([data-theme="dark"]) :is(.sq-lg.is-lo,.dca-lg.is-koru,.rsb-lg.is-buy) i
 .sp-views{margin:0}
 .sp-stage,.sp-one{border:2px solid var(--ink);border-radius:12px;background:var(--soft);padding:6px;display:grid;gap:8px;min-width:0}
 .sp-stage[hidden],.sp-one[hidden],.sp-fit[hidden],.sp-pane[hidden],.sp-mcustom[hidden]{display:none}
-.sp-canvas{display:block;width:100%;touch-action:pan-y pinch-zoom;cursor:grab;border-radius:8px}
-.sp-canvas.is-move{touch-action:none;outline:3px solid var(--jeok);outline-offset:-3px}
+/* P2-73b 손으로 맞추기: 그림 위(점선 상자·손잡이)는 손가락이 그림을 잡고(touch-action:none), 그림 밖(종이 여백·틀)은 화면 스크롤(pan-y) */
+.sp-cvwrap{position:relative;min-width:0;overflow:hidden;border-radius:8px}
+.sp-canvas{display:block;width:100%;touch-action:pan-y;cursor:grab;border-radius:8px}
 .sp-canvas:focus-visible{outline:3px solid var(--hwang);outline-offset:-3px}
-.sp-tools{display:flex;flex-wrap:wrap;gap:8px}
-.sp-tools .btn{min-height:44px;padding:8px 14px}
-.sp-tools [data-zin],.sp-tools [data-zout]{min-width:48px;font-size:20px}
-.sp-tools .btn[aria-pressed="true"]{background:var(--jeok);color:#fff}
-.sp-move-hint{margin:0}.sp-move-hint:empty{display:none}
+.sp-box{position:absolute;left:0;top:0;box-sizing:border-box;border:2px dashed #141414;box-shadow:0 0 0 1.5px rgba(255,255,255,.9),inset 0 0 0 1.5px rgba(255,255,255,.9);touch-action:none;cursor:move;will-change:transform;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.sp-box[hidden]{display:none}
+.sp-box i{position:absolute;left:0;top:0;width:44px;height:44px;touch-action:none}
+.sp-box i::after{content:"";position:absolute;left:13px;top:13px;width:18px;height:18px;box-sizing:border-box;background:#fff;border:2.5px solid #141414;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,.45)}
+.sp-box [data-h="nw"],.sp-box [data-h="se"]{cursor:nwse-resize}
+.sp-box [data-h="ne"],.sp-box [data-h="sw"]{cursor:nesw-resize}
+.sp-box.no-h i{display:none}
+.sp-box.is-on{border-color:#e5372b}
+.sp-read{margin:0;font-size:15px;line-height:1.45;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.sp-read span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sp-read span+span{font-weight:700;color:var(--ink-2)}
+.sp-zoom{display:flex;align-items:center;gap:8px;min-width:0}
+.sp-zoom[hidden]{display:none}
+.sp-zoom .btn{min-height:44px;min-width:48px;padding:6px 10px;font-size:22px;line-height:1;flex:none;touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.sp-zr{flex:1 1 auto;min-width:0;width:auto;height:44px;padding:0;border:0;accent-color:var(--jeok);background:none}
+.sp-zn{display:flex;align-items:center;gap:4px;flex:none;font-weight:800}
+.sp-zn input{width:5.2em;padding:9px 8px;text-align:right;font-variant-numeric:tabular-nums}
+.sp-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.sp-tools .btn{min-height:44px;padding:8px 14px;flex:none}
+.sp-move-hint{margin:0;flex:1 1 220px;min-width:0}.sp-move-hint:empty{display:none}
+@media(max-width:420px){.sp-zoom{gap:6px}.sp-zn input{width:4.6em;padding:9px 6px}.sp-zoom .btn{min-width:44px}}
 .sp-one{padding:10px}
 .sp-one-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .sp-one-top .btn{min-height:44px;padding:8px 12px;flex:none}
