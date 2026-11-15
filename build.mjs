@@ -116,6 +116,7 @@ const ART = {
   instafont: sv(`<rect x="10" y="16" width="100" height="88" rx="12" fill="${W}" stroke="${K}" stroke-width="4"/><text x="58" y="78" font-size="52" font-weight="800" font-style="italic" text-anchor="middle" fill="${K}" font-family="Georgia,serif">Aa</text><path d="M24 92h68" stroke="${RED}" stroke-width="5" stroke-linecap="round"/><circle cx="96" cy="30" r="10" fill="${YEL}" stroke="${K}" stroke-width="3"/>`), // P2-68 인스타 폰트 변환기(글자 Aa + 밑줄, 그림)
   emoji: sv(`<circle cx="50" cy="56" r="38" fill="${YEL}" stroke="${K}" stroke-width="4"/><circle cx="37" cy="48" r="5" fill="${K}"/><circle cx="63" cy="48" r="5" fill="${K}"/><path d="M33 66c8 12 26 12 34 0" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M92 62l6 13 14 2-10 10 2 14-12-7-12 7 2-14-10-10 14-2z" fill="${RED}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/>`), // P2-57 웃는 얼굴 + 별(그림, 이모지 글꼴 아님)
   ostax: sv(`<path d="M24 10h72v92l-12-8-12 8-12-8-12 8-12-8-12 8z" fill="${W}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><circle cx="60" cy="38" r="17" fill="${YEL}" stroke="${K}" stroke-width="4"/><text x="60" y="45.5" font-size="21" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">$</text><text x="60" y="80" font-size="21" font-weight="900" text-anchor="middle" fill="${RED}" font-family="sans-serif">22%</text>`), // P2-53 해외주식 양도세(영수증 + 달러 + 22%)
+  splitprint: sv(`<rect x="12" y="12" width="96" height="96" rx="6" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M12 82 40 52l20 18 16-14 32 26v20a6 6 0 0 1-6 6H18a6 6 0 0 1-6-6z" fill="${GRN}" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><circle cx="82" cy="36" r="10" fill="${YEL}" stroke="${K}" stroke-width="3"/><path d="M60 6v108M6 60h108" stroke="${RED}" stroke-width="5" stroke-dasharray="8 6" stroke-linecap="round"/>`), // P2-73 큰 그림을 4장으로 나누는 점선
   aptmap: sv(`<rect x="10" y="12" width="100" height="96" rx="10" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M10 70 40 52l26 14 44-26" fill="none" stroke="#2346d8" stroke-width="8" stroke-linejoin="round"/><circle cx="66" cy="66" r="8" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M36 22h22v24H36z" fill="${YEL}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M41 29h4M49 29h4M41 37h4M49 37h4" stroke="${K}" stroke-width="3"/><path d="M84 96c0 0-14-16-14-26a14 14 0 0 1 28 0c0 10-14 26-14 26z" fill="${RED}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><circle cx="84" cy="70" r="5" fill="${W}" stroke="${K}" stroke-width="3"/>`), // P2-63b 지도 + 역(노선·역 점) + 아파트 + 위치 핀
 };
 function doc(x, y, w, h, fill) {
@@ -165,7 +166,7 @@ const LIFE_SLUG = { adventure: "adventurer", love: "warm-heart", stable: "steady
 const PLAY = { name: "펭귄 오락실", tagline: "RPG·생존 게임·순발력 게임, 잠깐 쉬어 가는 한 판", path: "/play/", desc: "펭귄 RPG, 지옥에서 살아남기, 헬조선에서 살아남기, Life Game, 지뢰찾기, 블록 쌓기, 반응속도 게임처럼 잠깐 쉬어 가는 게임을 모았어요." }; // P2-49 게임만
 const UCATS = {
   pdf: { name: "PDF·문서", desc: "PDF를 합치고 나누고, 이미지·워드(DOCX)·한글(HWP·HWPX) 문서를 열어 보고 PDF로 바꾸는 툴이에요." }, // P2-64 desc, P2-64d HWP
-  image: { name: "이미지", desc: "사진 용량을 줄이고, 아이폰 HEIC 사진을 JPG로 바꾸고, 여러 장을 한 장으로 이어 붙이거나 PDF로 묶고, QR코드를 만드는 이미지 툴이에요." }, // P2-46 desc, P2-47 HEIC, P2-48 QR
+  image: { name: "이미지", desc: "사진 용량을 줄이고, 아이폰 HEIC 사진을 JPG로 바꾸고, 여러 장을 한 장으로 이어 붙이거나 PDF로 묶고, 큰 그림을 A4 여러 장으로 나눠 인쇄하고, QR코드를 만드는 이미지 툴이에요." }, // P2-46 desc, P2-47 HEIC, P2-48 QR, P2-73 분할 인쇄
   text: { name: "글쓰기", desc: "자기소개서, 리포트, 블로그 글을 쓸 때 필요한 글쓰기 툴이에요. 글자수 세기, PDF에서 복사한 글의 줄바꿈·공백 정리, 읽기·발표 시간과 원고지 매수 계산, 이모지·특수문자 복사를 브라우저 안에서 바로 해요." }, // P2-57 desc
   calc: { name: "생활 계산", desc: "D-day, 연봉 실수령액, 퇴직금처럼 생활에서 자주 찾는 계산을 바로 해 주는 툴이에요." }, // P2-45 desc
   time: { name: "시간", desc: "타이머와 스톱워치처럼 시간을 재고 알려 주는 툴이에요." },
@@ -197,6 +198,7 @@ const UTILS = [
   { id: "imgmerge", cat: "image", path: "/image/merge/", title: "사진 이어붙이기", seo: "사진 이어붙이기 — 사진 합치기·캡처 합치기·긴 캡처 만들기", h1: "사진 이어붙이기 — 여러 장을 세로·가로·격자로 한 장에", desc: "사진과 휴대폰 캡처 여러 장을 세로·가로·격자로 한 장에 이어 붙여요. 캡처의 상태바·주소창·하단 바를 자동으로 잘라 내고, 연속 캡처는 겹친 부분을 빼서 긴 캡처로 만들어요. 사진은 서버로 전송하지 않습니다.", hook: "캡처 여러 장을 한 장으로, 툴바는 자동으로 잘라요.", meta: "세로·가로·격자 · JPG·PNG", kw: "사진 합치기 사진 이어붙이기 사진 붙이기 이미지 합치기 이미지 붙이기 이미지 이어붙이기 캡처 합치기 캡처 이어붙이기 스크린샷 합치기 긴 캡처 스크롤 캡처 긴 스크린샷 사진 연결 콜라주 격자 사진 세로로 붙이기 가로로 붙이기" }, // P2-46
   { id: "heic", cat: "image", path: "/image/heic-to-jpg/", title: "HEIC JPG 변환", seo: "HEIC JPG 변환 — 아이폰 사진 JPG로, 여러 장 한꺼번에", h1: "HEIC JPG 변환 — 아이폰 사진을 여러 장 한꺼번에 JPG로", desc: "아이폰 HEIC·HEIF 사진을 여러 장 한꺼번에 JPG로 바꿔요. 화질과 크기를 고르고, 하나씩 또는 zip으로 받아요. 위치 정보(GPS)는 기본으로 지워요. 사진은 서버로 전송하지 않습니다.", hook: "아이폰 사진(HEIC)을 JPG로, 여러 장 한꺼번에.", meta: "HEIC·HEIF → JPG · zip", kw: "heic jpg 변환 heic jpg heic 변환 heic to jpg heic 파일 열기 heic 열기 heif 변환 heif jpg 아이폰 사진 jpg 아이폰 사진 변환 아이폰 사진 안 열림 아이폰 사진 윈도우 아이폰 사진 컴퓨터 heic 뷰어 사진 확장자 변환 jpg 변환 위치 정보 지우기 gps 삭제" }, // P2-47
   { id: "qr", cat: "image", path: "/image/qr-code/", title: "QR코드 생성기", seo: "QR코드 생성기 — 무료 QR코드 만들기, 와이파이·링크·명함 QR", h1: "QR코드 생성기 — 링크·와이파이·명함 QR코드 무료로 만들기", desc: "링크, 글, 와이파이, 연락처(명함), 문자를 QR코드로 만들어요. 색과 여백을 바꾸고 가운데에 로고를 넣고, PNG·SVG로 저장해요. 와이파이 안내 카드는 A6로 바로 인쇄해요. 입력한 내용은 서버로 보내지 않습니다.", hook: "링크·와이파이·명함을 QR코드로, 로고도 넣어요.", meta: "PNG·SVG · 와이파이 카드", kw: "qr코드 만들기 qr코드 생성기 qr 코드 만들기 qr 생성 qr 생성기 qr코드 생성 qr 만들기 큐알코드 만들기 큐알 코드 큐알 만들기 무료 qr 무료 qr코드 와이파이 qr 와이파이 qr코드 wifi qr 와이파이 비밀번호 qr 링크 qr url qr 주소 qr 명함 qr 연락처 qr vcard 문자 qr 로고 qr qr코드 로고 qr 색 qr svg qr png qr 인쇄 qr code generator" }, // P2-48
+  { id: "splitprint", cat: "image", path: "/image/split-print/", title: "이미지 분할 인쇄", seo: "이미지 분할 인쇄 — 포스터 분할 인쇄, 큰 그림을 A4 여러 장으로 나눠 인쇄", h1: "이미지 분할 인쇄 — 큰 그림을 A4·A3 여러 장으로 나눠 포스터처럼", desc: "사진이나 그림 한 장을 A4·A3·B4·레터 용지 여러 장으로 나눠 인쇄할 수 있게 PDF로 만들어요. 가로·세로 장 수, 완성 크기(cm), 총 매수 중 편한 방법으로 정하고, 여백·풀칠 겹침·자르는 선·위치 표시를 고를 수 있어요. 이미지는 서버로 전송하지 않습니다.", hook: "큰 그림을 A4 여러 장으로 나눠 포스터처럼.", meta: "A4·A3·B4·레터 · PDF", kw: "분할 인쇄 분할인쇄 포스터 인쇄 포스터 분할 이미지 분할 사진 분할 큰 그림 인쇄 A4 여러장 인쇄 a4 나눠서 인쇄 크게 인쇄 대형 인쇄 현수막 인쇄 타일 인쇄 poster print 이어 붙이기 인쇄 여백 없이 인쇄" }, // P2-73
   { id: "stockquiz", cat: "invest", path: "/invest/soxl-tqqq-koru/", title: "SOXL·TQQQ·KORU 주가 예측", seo: "SOXL·TQQQ·KORU 주가 예측 — 날짜 가린 실제 차트, 오를까 내릴까", h1: "SOXL·TQQQ·KORU 주가 예측 — 날짜를 가린 실제 차트로 오를까 내릴까", desc: "SOXL·TQQQ·KORU의 상장 이후 실제 일봉 종가에서 날짜를 가린 1개월·3개월·1년 차트를 보여 드려요. 다음 거래일·일주일 뒤·한 달 뒤 종가가 오를지, 기준가 이상일지 맞히면 실제 결과와 날짜를 공개하고, 10문제 뒤 백테스팅 요약을 보여 줘요. 교육·재미용이며 투자 권유가 아니에요.", hook: "날짜를 가린 실제 차트. 내일 종가는 오를까 내릴까?", meta: "10문제 · 3분", kw: "soxl tqqq koru 주가 예측 주식 차트 맞히기 레버리지 etf 3배 반도체 나스닥 한국 백테스팅 투자 연습 오를까 내릴까 미국 주식" }, // P2-50
   { id: "dca", cat: "invest", path: "/invest/dca-backtest/", title: "SOXL·TQQQ·KORU 적립식 백테스트", seo: "SOXL·TQQQ·KORU 적립식 백테스트 — 매달 사면 지금 얼마? 적립식 투자 계산", h1: "SOXL·TQQQ·KORU 적립식 백테스트 — 매달 샀다면 지금 얼마일까", desc: "SOXL·TQQQ·KORU를 시작 연월부터 매달 첫 거래일 종가에 같은 금액씩 샀다면 지금 평가액, 총 투자금, 수익률, 연환산 수익률, 최대 낙폭(MDD)이 얼마인지 실제 과거 가격으로 계산해요. 같은 돈을 처음에 한 번에 넣은 거치식과 비교하고 연도별 표와 자산 곡선을 보여 줘요. 원·달러, 3종목 비교. 투자 권유가 아니에요.", hook: "매달 30만 원씩 TQQQ를 샀다면 지금 얼마?", meta: "실제 가격 · 3종목 비교", kw: "적립식 백테스트 적립식 투자 계산 적립식 계산기 적립식 투자 수익률 tqqq 적립식 soxl 적립식 koru 적립식 레버리지 etf 적립 매달 사면 매달 투자 매월 적립 dca 정액 적립 분할 매수 백테스트 백테스팅 거치식 비교 mdd 최대 낙폭 연환산 수익률 미국 주식 3배 나스닥 반도체 한국" }, // P2-52
   { id: "avgdown", cat: "invest", path: "/invest/average-down/", title: "물타기 계산기", seo: "물타기 계산기 — 평단가 계산, 평균단가·추가매수 수량 역계산", h1: "물타기 계산기 — 주식 평단가 계산과 목표 평단 역계산", desc: "지금 평단과 보유 수량에 추가 매수 가격·수량을 여러 줄 넣으면 새 평단(평균단가), 총 수량, 총 투자금과 현재가 기준 수익률을 계산해요. 「평단을 얼마로 낮추려면 몇 주를 사야 하나」 역계산도 돼요. 원화·달러, 소수점 수량을 지원해요. 투자 권유가 아니에요.", hook: "추가 매수하면 평단이 얼마? 목표 평단까지 몇 주?", meta: "원화·달러 · 역계산", kw: "물타기 계산기 물타기 평단가 계산기 평단가 계산 평균단가 계산 평균 단가 평단 낮추기 평단 계산 추가매수 계산 추가 매수 주식 평단 주식 평균단가 불타기 분할매수 소수점 주식 미국 주식 국내 주식 목표 평단 역계산" }, // P2-51
@@ -210,7 +212,7 @@ const UTILS = [
   { id: "instafont", cat: "text", path: "/text/insta-font/", title: "인스타 폰트 변환기", seo: "인스타 폰트 변환기 — 인스타그램 글씨체 바꾸기, 굵게·필기체·이중선 영문 특수문자", h1: "인스타 폰트 변환기 — 영문·숫자를 𝐁𝐨𝐥𝐝 𝓢𝓬𝓻𝓲𝓹𝓽 Ⓒⓘⓡⓒⓛⓔ로", desc: "영문과 숫자를 넣으면 굵게(𝐁𝐨𝐥𝐝), 기울임(𝘐𝘵𝘢𝘭𝘪𝘤), 필기체(𝓢𝓬𝓻𝓲𝓹𝓽), 고딕(𝔉𝔯𝔞𝔨𝔱𝔲𝔯), 이중선(𝔻𝕠𝕦𝕓𝕝𝕖), 동그라미(Ⓒⓘⓡⓒⓛⓔ), 타자기(𝚖𝚘𝚗𝚘), 취소선까지 24가지 모양으로 바꿔 하나씩 복사해요. 인스타그램 소개·닉네임, 카톡 프로필에 붙여 넣으면 그대로 보여요. 한글에는 괄호·기호 꾸밈을 붙일 수 있어요.", hook: "인스타 소개글 영문을 𝓢𝓬𝓻𝓲𝓹𝓽·𝐁𝐨𝐥𝐝로.", meta: "24가지 글씨 · 한글 꾸밈", kw: "인스타 폰트 인스타 폰트 변환기 인스타그램 폰트 인스타그램 폰트 변환기 인스타 글씨체 인스타 글꼴 인스타 소개 폰트 인스타 바이오 인스타 닉네임 특수문자 영어 폰트 변환 영어 특수문자 영어 필기체 필기체 변환 굵은 글씨 볼드체 이탤릭 고딕체 이중선 동그라미 영어 네모 영어 취소선 밑줄 텍스트 폰트 생성기 글씨체 변환기 fancy text font generator instagram fonts 카톡 프로필 꾸미기 감성 닉네임" }, // P2-68
   { id: "aptmap", cat: "house", path: "/apt-map/", title: "역세권 아파트 지도", seo: "역세권 아파트 지도 — 사회초년생 20평대 실거래가, 가격대별 2억대·3억대·4억대", h1: "사회초년생이 살 만한 역세권 아파트 지도", desc: "역에서 직선 1km 안, 300세대 이상, 전용 40~60㎡(20평대) 아파트를 국토교통부 실거래가 중위값으로 2억 미만부터 8억대까지 가격대별로 지도에 보여 줘요. 지역·노선·준공연도로 좁히고 「도보 10분 이내만」(직선 500m)으로 더 가까운 단지만 볼 수 있어요. 거래 완료 기록 기준이라 현재 호가와 다를 수 있고, 투자 권유가 아니에요.", hook: "20평대 역세권 아파트, 가격대별로 지도에서.", meta: "실거래 중위값 · 역 1km · 매달 갱신", kw: "아파트 지도 역세권 아파트 역세권 아파트 지도 역세권 20평대 20평대 아파트 24평 전용 59 전용 49 소형 아파트 싼 아파트 제일 싼 아파트 저렴한 아파트 2억 아파트 3억 아파트 4억 아파트 5억 아파트 2억대 3억대 4억대 아파트 실거래가 실거래가 조회 아파트 시세 아파트 가격 지하철역 근처 아파트 역 근처 아파트 도보 10분 사회초년생 내 집 마련 첫 집 신혼부부 아파트 서울 경기 인천 부산 대구 수도권 아파트 아파트 매매 국토부 실거래" }, // P2-63b
 ];
-const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "heic", "qr", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "docx2pdf", "hwpview", "dday", "stockquiz", "avgdown", "dca", "ostax", "rsibt", "compound", "possize", "linebreak", "readtime", "emoji", "instafont", "aptmap"]; // P2-68 instafont // P2-63b aptmap // P2-57 linebreak·readtime·emoji // P2-56 possize // P2-55 compound // P2-50 stockquiz(투자) // P2-51 avgdown // P2-52 dca // P2-53 ostax // P2-54 rsibt // P2-45 돈 계산기 4종, P2-46 imgmerge, P2-47 heic, P2-48 qr
+const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "heic", "qr", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "docx2pdf", "hwpview", "dday", "stockquiz", "avgdown", "dca", "ostax", "rsibt", "compound", "possize", "linebreak", "readtime", "emoji", "instafont", "aptmap", "splitprint"]; // P2-73 splitprint // P2-68 instafont // P2-63b aptmap // P2-57 linebreak·readtime·emoji // P2-56 possize // P2-55 compound // P2-50 stockquiz(투자) // P2-51 avgdown // P2-52 dca // P2-53 ostax // P2-54 rsibt // P2-45 돈 계산기 4종, P2-46 imgmerge, P2-47 heic, P2-48 qr
 const NEXT = {
   pdfmerge: ["pdfsplit", "img2pdf", "imgcompress"],
   pdfsplit: ["pdfmerge", "pdf2img", "img2pdf"],
@@ -229,6 +231,7 @@ const NEXT = {
   imgmerge: ["imgcompress", "img2pdf", "removebg"], // P2-46
   heic: ["imgcompress", "imgmerge", "img2pdf"], // P2-47
   qr: ["removebg", "imgcompress", "img2pdf"], // P2-48 로고 배경 지우기 → QR
+  splitprint: ["imgcompress", "img2pdf", "heic"], // P2-73 인쇄 전 용량·형식 정리 → 사진을 A4 PDF로 → 아이폰 사진 변환
   salary: ["juhyu", "severance", "unemp"], // P2-45
   juhyu: ["salary", "unemp", "severance"], // P2-45
   severance: ["unemp", "salary", "juhyu"], // P2-45
@@ -514,6 +517,7 @@ const cabCls = (i, n) => (i < nToolCabs ? cabCls0(i, nToolCabs) : "cab-full"); /
 // ★ 새 툴·게임을 만들면 여기에 { id, d: "출시일" }을 맨 위에 추가(대표님 지시: 새 콘텐츠는 메인에 잘 보이게).
 // 출시 30일 이내 항목 중 최신 4개가 홈 맨 위 「NEW」 띠에 나오고, 해당 행·타일에 NEW 표시가 붙음
 const NEW_ITEMS = [
+  { id: "splitprint", d: "2026-11-16" }, // P2-73
   { id: "instafont", d: "2026-11-15" }, // P2-68
   { id: "hwpview", d: "2026-11-15" }, // P2-64, P2-64d HWP 지원·한글 PDF 변환 통합
   { id: "docx2pdf", d: "2026-11-10" }, // P2-65
@@ -1167,7 +1171,7 @@ const nextHtml = (id, hidden) => `<nav class="tk-next" aria-label="다음 툴"${
 
 // 실용 툴 페이지 공통 본문: 제목 → [툴 상자: 넣기 → 처리 → 내려받기 → 다음 툴] → 광고(높이 확보) → 사용법·예시·한계 → FAQ → 추천
 // fileTool: 파일 툴이면 결과가 나온 뒤에 「다음 툴」을 보이고, 입력형 툴(글자수·D-day)은 처음부터 보임
-function utilPage(tool, toolHtml, { scripts = [], vendor = [], after = "", fileTool = true } = {}) {
+function utilPage(tool, toolHtml, { scripts = [], vendor = [], after = "", fileTool = true, csp = true } = {}) { // P2-73 csp: 툴별 CSP 문자열(기본은 공통 CSP)
   const g = toolText[tool.id];
   if (!g) throw new Error(`tools.${tool.id} 원고 없음`);
   const len = [...g.howto, g.example, g.limits, ...g.faq.map((f) => f.a)].reduce((n, x) => n + fill(x).trim().length, 0);
@@ -1194,12 +1198,13 @@ ${crumbHtml(items)}
     <h2>예시</h2>
     <p>${t(g.example)}</p>
     <h2>알아 두세요 (한계)</h2>
-    <p>${t(g.limits)}</p>
+    <p>${t(g.limits)}</p>${(g.sections || []).map((x) => `
+    <h2>${t(x.h)}</h2>${x.p ? `<p>${t(x.p)}</p>` : ""}${x.list ? `<ul>${x.list.map((y) => `<li>${t(y)}</li>`).join("")}</ul>` : ""}${x.steps ? `<ol>${x.steps.map((y) => `<li>${t(y)}</li>`).join("")}</ol>` : ""}`).join("")}
   </section>
   ${faqHtml(g.faq)}
   ${recoRows(NEXT[tool.id].filter((x) => utilById[x]).concat(UTIL_RANK.filter((x) => x !== tool.id && !NEXT[tool.id].includes(x))).slice(0, 4), "다른 툴도 써 보세요")}
 </article>`;
-  write(tool.path, layout({ title: tool.seo, desc: tool.desc, path: tool.path, body, csp: true, vendor, scripts: ["tool-kit.js", ...scripts], noindex: len < 300 || g.noindex === true, jsonld: [faqLd(g.faq), crumbs(items), { "@context": "https://schema.org", "@type": "WebApplication", name: tool.title, url: abs(tool.path), applicationCategory: "UtilitiesApplication", operatingSystem: "Any", offers: { "@type": "Offer", price: "0", priceCurrency: "KRW" } }] }));
+  write(tool.path, layout({ title: tool.seo, desc: tool.desc, path: tool.path, body, csp, vendor, scripts: ["tool-kit.js", ...scripts], noindex: len < 300 || g.noindex === true, jsonld: [faqLd(g.faq), crumbs(items), { "@context": "https://schema.org", "@type": "WebApplication", name: tool.title, url: abs(tool.path), applicationCategory: "UtilitiesApplication", operatingSystem: "Any", offers: { "@type": "Offer", price: "0", priceCurrency: "KRW" } }] }));
 }
 
 // PDF 합치기
@@ -1386,6 +1391,158 @@ ${tkTail("")}
   ${fnameField("im-fname", "사진이어붙이기", "jpg")}
   <div class="im-actions"><button type="button" class="btn big" data-save data-dl-for="im-fname">이미지 저장</button><button type="button" class="btn ghost" data-clear>모두 지우기</button></div>
 </div>`, { scripts: ["t-imgmerge.js"] });
+
+// P2-73 이미지 분할 인쇄(포스터 분할): 그림 넣기 → 용지·방향·배열(장 수|완성 크기|총 매수)·맞춤/채움·여백·겹침·표시 → 격자 미리보기 → PDF 내려받기·바로 인쇄
+// 계산식은 src/assets/split-calc.js 한 벌(화면 t-splitprint.js와 아래 대조가 같은 파일을 vm으로 씀). PDF에는 원본 그림을 한 번만 넣고 쪽마다 잘라 보여 줌(pdf-lib, 늦게 받기)
+// 빌드 때 손계산 대조(완성 크기 → 매수, 총 매수 → 배열, 자동 방향, 채움, 빈 장, 겹침 이음매, 쪽 크기 pt, 오류, EXIF 방향)를 돌리고 다르면 빌드를 멈춤
+{
+  const ctx = {};
+  vm.createContext(ctx);
+  vm.runInContext(fs.readFileSync(path.join(ROOT, "src", "assets", "split-calc.js"), "utf8"), ctx);
+  const SC = ctx.SPLITCALC;
+  const near = (a, b, tol = 1e-6) => Math.abs(a - b) <= tol * Math.max(1, Math.abs(b));
+  let nChk = 0;
+  const chk = (name, got, want) => { nChk++; if (!(got === want || (typeof got === "number" && typeof want === "number" && near(got, want)))) throw new Error(`P2-73 분할 인쇄 「${name}」 계산 불일치: ${got} ≠ ${want}`); };
+  const lay = (o) => { const r = SC.layout(o); if (r.err) throw new Error(`P2-73 계산 실패 ${r.err} ${JSON.stringify(o)}`); return r; };
+  // 1 완성 크기 → 매수: A4 자동, 여백 5mm, 겹침 10mm, 4000×3000px를 가로 100cm로 → 세로 75cm
+  //   세로 용지 인쇄 칸 200×287 → 가로 ⌈(1000−10)÷190⌉ = 6, 세로 ⌈(750−10)÷277⌉ = 3 → 18장
+  //   가로 용지 인쇄 칸 287×200 → 가로 ⌈990÷277⌉ = 4, 세로 ⌈740÷190⌉ = 4 → 16장 → 자동은 가로 용지 16장
+  const s1 = lay({ paper: "a4", orient: "auto", margin: 5, overlap: 10, mode: "size", wCm: 100, iw: 4000, ih: 3000 });
+  chk("1 방향", s1.orient, "l"); chk("1 가로 장", s1.cols, 4); chk("1 세로 장", s1.rows, 4); chk("1 매수", s1.sheets, 16); chk("1 판 가로", s1.W, 4 * 287 - 3 * 10); chk("1 판 세로", s1.H, 4 * 200 - 3 * 10);
+  chk("1 완성 가로", s1.view.w, 1000); chk("1 완성 세로", s1.view.h, 750); chk("1 다른 방향 매수", s1.alt.sheets, 18); chk("1 해상도", s1.dpi, 4000 / (1000 / 25.4));
+  // 2 완성 크기(세로 지정): A3 세로 고정, 여백 0, 겹침 0, 1000×2000px 세로 120cm → 가로 60cm. 297×420 → ⌈600÷297⌉ = 3, ⌈1200÷420⌉ = 3 → 9장
+  const s2 = lay({ paper: "a3", orient: "p", margin: 0, overlap: 0, mode: "size", hCm: 120, iw: 1000, ih: 2000 });
+  chk("2 가로 장", s2.cols, 3); chk("2 세로 장", s2.rows, 3); chk("2 매수", s2.sheets, 9); chk("2 완성 가로", s2.view.w, 600);
+  // 3 딱 맞는 길이: 여백 0, 겹침 0, A4 세로 2장 가로 = 420mm → 42cm는 2장, 42.1cm는 3장
+  chk("3 경계 42cm", lay({ paper: "a4", orient: "p", margin: 0, overlap: 0, mode: "size", wCm: 42, iw: 1000, ih: 100 }).cols, 2);
+  chk("3 경계 42.1cm", lay({ paper: "a4", orient: "p", margin: 0, overlap: 0, mode: "size", wCm: 42.1, iw: 1000, ih: 100 }).cols, 3);
+  // 4 총 매수 → 배열: 3장, A4 자동, 여백·겹침 0, 2000×1000px(2:1)
+  //   세로 용지 3×1 = 630×297 → 배율 min(0.315, 0.297) = 0.297 → 594×297mm (가장 큼) / 가로 용지 3×1 = 891×210 → 0.21 → 420×210mm
+  const s4 = lay({ paper: "a4", orient: "auto", margin: 0, overlap: 0, mode: "count", count: 3, fit: "fit", iw: 2000, ih: 1000 });
+  chk("4 방향", s4.orient, "p"); chk("4 가로 장", s4.cols, 3); chk("4 세로 장", s4.rows, 1); chk("4 완성 가로", s4.view.w, 594); chk("4 완성 세로", s4.view.h, 297);
+  // 5 총 매수 6장, 정사각형: 세로 용지 2×2(420×594 → 420)·3×2(630×594 → 594)·2×3(420×891 → 420) → 594mm가 가장 큼, 6장
+  const s5 = lay({ paper: "a4", orient: "auto", margin: 0, overlap: 0, mode: "count", count: 6, fit: "fit", iw: 1000, ih: 1000 });
+  chk("5 배열 6장 이내", s5.cols * s5.rows <= 6, true); chk("5 완성 가로", s5.view.w, 594); chk("5 매수", s5.sheets, 6);
+  // 6 배열 직접 3×2 맞춤: A4 세로, 여백 0, 3000×2000px → 판 630×594, 배율 min(0.21, 0.297) = 0.21 → 630×420mm, 위아래 87mm씩 비움, 약 120.95 DPI
+  const s6 = lay({ paper: "a4", orient: "p", margin: 0, overlap: 0, mode: "grid", cols: 3, rows: 2, fit: "fit", iw: 3000, ih: 2000 });
+  chk("6 그림 가로", s6.img.w, 630); chk("6 그림 세로", s6.img.h, 420); chk("6 위 여백", s6.img.y, 87); chk("6 해상도", s6.dpi, 3000 / (630 / 25.4)); chk("6 매수", s6.sheets, 6);
+  // 7 채움: A4 가로 2×1, 여백 0, 정사각형 1000px → 판 594×210, 배율 max(0.594, 0.21) → 594×594mm, 위로 192mm 넘침, 보이는 부분 594×210
+  const s7 = lay({ paper: "a4", orient: "l", margin: 0, overlap: 0, mode: "grid", cols: 2, rows: 1, fit: "fill", iw: 1000, ih: 1000 });
+  chk("7 그림 세로", s7.img.h, 594); chk("7 위 넘침", s7.img.y, -192); chk("7 완성 세로", s7.view.h, 210);
+  // 8 빈 장 빼기: A4 세로 5×1 맞춤에 세로로 긴 그림(1000×3000px) → 판 1050×297, 그림 99×297mm 가운데 → 가운데 1장만 그림, 4장 빈 장
+  const s8 = lay({ paper: "a4", orient: "p", margin: 0, overlap: 0, mode: "grid", cols: 5, rows: 1, fit: "fit", iw: 1000, ih: 3000 });
+  chk("8 매수", s8.sheets, 1); chk("8 전체", s8.total, 5);
+  // 9 겹침 이음매: A4 세로 여백 5, 겹침 10, 3×2 → 이웃한 장의 시작점 차이 = 인쇄 칸 − 겹침(가로 190, 세로 277), 판 = 3×200−2×10
+  const s9 = lay({ paper: "a4", orient: "p", margin: 5, overlap: 10, mode: "grid", cols: 3, rows: 2, fit: "fit", iw: 3000, ih: 2000 });
+  for (const t of s9.tiles) { chk(`9 ${t.label} 가로 시작`, t.x0, t.c * 190); chk(`9 ${t.label} 세로 시작`, t.y0, t.r * 277); }
+  chk("9 판 가로", s9.W, 580); chk("9 판 세로", s9.H, 564); chk("9 위치 표시", s9.tiles[5].label, "나3");
+  //   가1의 오른쪽 겹침(판 x 190~200)과 가2의 왼쪽(판 x 190~200)이 같은 그림 자리인지 PDF 좌표로 대조
+  const r1 = SC.pageRects(s9, s9.tiles[0]), r2 = SC.pageRects(s9, s9.tiles[1]), K = 72 / 25.4;
+  chk("9 이음매 그림 x 차이(pt)", r1.img.x - r2.img.x, 190 * K); chk("9 이음매 그림 y 같음", r1.img.y, r2.img.y);
+  chk("9 겹침 선 x(pt)", r1.seams[0].x1, (5 + 200 - 10) * K); chk("9 겹침 선 = 다음 장 인쇄 칸 시작 + 190mm", r1.seams[0].x1 - r2.clip.x, 190 * K);
+  // 10 쪽 크기 pt: A4 595.28×841.89, 레터 612×792, A3·A5·B4·B5(JIS) mm × 72 ÷ 25.4
+  const PG = { a4: [595.2755905511812, 841.8897637795276], letter: [612, 792], a3: [841.8897637795276, 1190.5511811023623], a5: [419.5275590551181, 595.2755905511812], b4: [728.503937007874, 1031.8110236220473], b5: [515.9055118110236, 728.503937007874] };
+  for (const [k, [w, h]] of Object.entries(PG)) { const L = lay({ paper: k, orient: "p", margin: 0, overlap: 0, mode: "grid", cols: 1, rows: 1, fit: "fit", iw: 100, ih: 100 }); const pr = SC.pageRects(L, L.tiles[0]); chk(`10 ${k} 쪽 가로`, pr.pageW, w); chk(`10 ${k} 쪽 세로`, pr.pageH, h); }
+  // 11 오류: 10장 넘는 크기, 겹침이 너무 큼, 여백이 너무 큼, 그림 없음
+  chk("11 10장 넘음", SC.layout({ paper: "a5", orient: "p", margin: 0, overlap: 0, mode: "size", wCm: 200, iw: 1000, ih: 1000 }).err, "tooMany");
+  chk("11 겹침 큼", SC.layout({ paper: "a4", orient: "p", margin: 0, overlap: 120, mode: "grid", cols: 2, rows: 2, iw: 10, ih: 10 }).err, "overlap");
+  chk("11 여백 큼", SC.layout({ paper: "a5", orient: "p", margin: 60, overlap: 0, mode: "grid", cols: 2, rows: 2, iw: 10, ih: 10 }).err, "margin");
+  chk("11 그림 없음", SC.layout({ paper: "a4", mode: "grid", cols: 1, rows: 1, iw: 0, ih: 10 }).err, "image");
+  // 12 EXIF 방향 6(시계 방향 90°): 저장 화소 왼쪽 위(u 0, v 1) → 보이는 그림 오른쪽 위
+  const M6 = SC.orientMatrix(6, { x: 10, y: 20, w: 300, h: 400 });
+  chk("12 방향6 x", M6[0] * 0 + M6[2] * 1 + M6[4], 310); chk("12 방향6 y", M6[1] * 0 + M6[3] * 1 + M6[5], 420);
+  // 13 미리보기에서 옮기기·키우기: 2배 확대 + 오른쪽 50mm → 그림 x = (판 − 2배 폭) ÷ 2 + 50, 판 밖으로 너무 옮기면 판 가운데 ± 절반에서 멈춤
+  const s13 = lay({ paper: "a4", orient: "p", margin: 0, overlap: 0, mode: "grid", cols: 2, rows: 2, fit: "fit", iw: 1000, ih: 1000, adj: { zoom: 2, ox: 50, oy: 0 } });
+  chk("13 확대 폭", s13.img.w, 840); chk("13 옮긴 x", s13.img.x, (420 - 840) / 2 + 50);
+  chk("13 너무 옮김", lay({ paper: "a4", orient: "p", margin: 0, overlap: 0, mode: "grid", cols: 2, rows: 2, fit: "fit", iw: 1000, ih: 1000, adj: { zoom: 1, ox: 9999, oy: 0 } }).adj.ox, 210);
+  chk("13 완성 크기 모드는 확대 무시", lay({ paper: "a4", orient: "p", margin: 0, overlap: 0, mode: "size", wCm: 30, iw: 1000, ih: 1000, adj: { zoom: 3, ox: 0, oy: 0 } }).img.w, 300);
+  console.log(`✔ P2-73 이미지 분할 인쇄: 배열·쪽 크기·이음매 계산 대조 ${nChk}건 통과`);
+}
+const SP_OPT = (vals, sel, fmt = (v) => v) => vals.map((v) => `<option value="${v}"${v === sel ? " selected" : ""}>${fmt(v)}</option>`).join("");
+const SP_PAPER = { a4: "A4 (210×297mm)", a3: "A3 (297×420mm)", a5: "A5 (148×210mm)", b4: "B4 JIS (257×364mm)", b5: "B5 JIS (182×257mm)", letter: "레터 (216×279mm)" };
+utilPage(utilById.splitprint, `${dropHtml({ accept: ".jpg,.jpeg,.png,.webp,.heic,.heif,image/jpeg,image/png,image/webp,image/heic,image/heif", label: "나눠 인쇄할 그림을 넣어 주세요", limit: "JPG·PNG·WEBP 1장 · 50MB까지 · Ctrl+V로 붙여 넣기 · HEIC는 사파리에서" })}
+${tkTail("")}
+<div class="sp" hidden>
+  <div class="sp-file"><p class="sp-fname" aria-live="polite"></p><button type="button" class="btn ghost" data-other>다른 그림</button></div>
+  <div class="sp-main">
+    <div class="sp-set">
+      <h2 class="sp-h"><span>1</span>용지와 매수</h2>
+      <div class="tk-opts sp-opts">
+        <div class="row2">
+          <label>용지<select name="paper">${Object.entries(SP_PAPER).map(([k, v]) => `<option value="${k}"${k === "a4" ? " selected" : ""}>${v}</option>`).join("")}</select></label>
+          <label>용지 방향<select name="orient"><option value="p" selected>세로</option><option value="l">가로</option><option value="auto">자동 (장 수 적은 쪽)</option></select></label>
+        </div>
+        <fieldset class="seg"><legend>나누는 방법</legend><label><input type="radio" name="mode" value="grid" checked><span>장 수 정하기</span></label><label><input type="radio" name="mode" value="size"><span>완성 크기</span></label><label><input type="radio" name="mode" value="count"><span>총 매수</span></label></fieldset>
+        <div class="row2 sp-pane" data-pane="grid"><label>가로 (열)<select name="cols">${SP_OPT([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 2, (v) => `${v}장`)}</select></label><label>세로 (행)<select name="rows">${SP_OPT([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 2, (v) => `${v}장`)}</select></label></div>
+        <div class="sp-pane" data-pane="size" hidden><div class="row2"><label>완성 가로 (cm)<input name="wcm" type="text" inputmode="decimal" autocomplete="off" placeholder="예: 60"></label><label>완성 세로 (cm)<input name="hcm" type="text" inputmode="decimal" autocomplete="off" placeholder="예: 40"></label></div><p class="hint">한쪽만 넣으면 다른 쪽은 그림 비율대로 맞추고, 그 크기를 덮는 가장 적은 장 수를 계산해요.</p></div>
+        <div class="sp-pane" data-pane="count" hidden><label>총 매수 (장, 100장까지)<input name="count" type="text" inputmode="numeric" autocomplete="off" value="4"></label><p class="hint">이 장 수 안에서 그림이 가장 크게 나오는 배열을 골라요.</p></div>
+        <fieldset class="seg sp-fit"><legend>그림 맞추기</legend><label><input type="radio" name="fit" value="fit" checked><span>전체 보이기</span></label><label><input type="radio" name="fit" value="fill"><span>꽉 채우기 (가장자리 잘림)</span></label></fieldset>
+        <h2 class="sp-h"><span>2</span>여백과 붙이기</h2>
+        <fieldset class="seg"><legend>여백 (종이의 흰 테두리)</legend><label><input type="radio" name="mg" value="0"><span>없음</span></label><label><input type="radio" name="mg" value="5" checked><span>5mm</span></label><label><input type="radio" name="mg" value="10"><span>10mm</span></label><label><input type="radio" name="mg" value="c"><span>직접</span></label></fieldset>
+        <label class="sp-mcustom" hidden>여백 (mm, 0~30)<input name="mmm" type="text" inputmode="decimal" autocomplete="off" value="5"></label>
+        <p class="hint sp-mnote">가정용 프린터는 대부분 용지 가장자리 3~5mm를 인쇄하지 못해요. 「여백 없음」은 「테두리 없는 인쇄」를 지원하는 프린터에서만 그대로 나오고, 다른 프린터는 가장자리가 빠지거나 크기가 줄어요.</p>
+        <label>겹침 (풀칠 여유, 빗금 띠)<select name="overlap">${SP_OPT([0, 3, 5, 10, 15, 20], 0, (v) => (v ? `${v}mm` : "없음 (맞대어 붙이기)"))}</select></label>
+        <div class="sp-checks"><label class="check"><input type="checkbox" name="labels" checked> 위치 표시 (가1·가2…)</label><label class="check"><input type="checkbox" name="marks" checked> 자르는 선·겹침 선</label></div>
+      </div>
+    </div>
+    <div class="sp-view">
+      <div class="sp-head">
+        <p class="sp-big" aria-live="polite"><span class="sp-k">완성 크기</span><b class="sp-cm"></b><span class="sp-line"></span></p>
+        <canvas class="sp-scale" role="img" aria-label="크기 비교" width="1" height="1"></canvas>
+      </div>
+      <fieldset class="seg sp-views" aria-label="미리보기 방식"><label><input type="radio" name="view" value="paper" checked><span>종이로 보기</span></label><label><input type="radio" name="view" value="joined"><span>붙였을 때</span></label><label><input type="radio" name="view" value="one"><span>한 장씩</span></label></fieldset>
+      <div class="sp-stage">
+        <canvas class="sp-canvas" tabindex="0" role="img" aria-label="미리보기" width="1" height="1"></canvas>
+        <div class="sp-tools"><button type="button" class="btn ghost" data-move aria-pressed="false">✋ 그림 옮기기</button><button type="button" class="btn ghost" data-zout aria-label="그림 작게">−</button><button type="button" class="btn ghost" data-zin aria-label="그림 크게">+</button><button type="button" class="btn ghost" data-center>처음 위치로</button></div>
+        <p class="hint sp-move-hint" aria-live="polite"></p>
+      </div>
+      <div class="sp-one" hidden>
+        <div class="sp-one-top"><button type="button" class="btn ghost" data-prev>◀ 이전 장</button><b class="sp-one-name" aria-live="polite"></b><button type="button" class="btn ghost" data-next>다음 장 ▶</button></div>
+        <div class="sp-one-body"><canvas class="sp-sheet" role="img" width="1" height="1"></canvas><div class="sp-mapbox"><canvas class="sp-map" role="img" width="1" height="1"></canvas><span class="hint">전체에서 이 장의 자리</span></div></div>
+        <ol class="sp-thumbs" aria-label="장 목록"></ol>
+        <div class="sp-tsave">${fnameField("sp-tname", "이미지-r1c1", "png")}<button type="button" class="btn" data-tile data-dl-for="sp-tname">이 장 이미지 저장</button></div>
+      </div>
+      <p class="sp-err tk-msg" role="alert" hidden></p>
+      <div class="sp-alerts" aria-live="polite"></div>
+      <label class="check sp-edge"><input type="checkbox" name="edge"> 프린터가 못 찍는 가장자리(약 4mm) 회색으로 보기</label>
+      <p class="sp-sum hint"></p>
+      <p class="hint sp-legend"><span class="sp-lg-h" aria-hidden="true"></span> 빗금 = 이웃 장과 겹쳐 찍히는 띠 · 점선 = 이음선·인쇄 칸 · 장을 누르면 크게 보여요.</p>
+    </div>
+  </div>
+  <section class="sp-final" aria-labelledby="sp-final-h">
+    <h2 class="sp-h" id="sp-final-h"><span>3</span>인쇄 전 확인</h2>
+    <div class="sp-final-grid">
+      <figure class="sp-dialog" aria-label="인쇄 창 설정 예시">
+        <div class="sp-dlg" aria-hidden="true">
+          <div class="sp-dlg-t">인쇄</div>
+          <div class="sp-dlg-r"><span>대상</span><i>우리 집 프린터</i></div>
+          <div class="sp-dlg-r"><span>용지 크기</span><i class="sp-dlg-paper">A4</i></div>
+          <div class="sp-dlg-r ok"><span>배율</span><i>실제 크기 (100%) ✓</i></div>
+          <div class="sp-dlg-r no"><span></span><i>페이지에 맞추기 ✕</i></div>
+        </div>
+        <figcaption><b>「실제 크기」(배율 100%)로 인쇄하세요.</b> 크롬·엣지는 인쇄 창의 「설정 더보기 → 배율」, 윈도우·아크로뱃 인쇄 창은 「크기 조정 → 실제 크기」예요. 「페이지에 맞추기」를 고르면 몇 % 줄어서 이음매가 어긋나요.</figcaption>
+      </figure>
+      <figure class="sp-order">
+        <canvas class="sp-order-cv" role="img" width="1" height="1"></canvas>
+        <figcaption><b>붙이는 순서 (조립도)</b><ol class="sp-order-list"></ol></figcaption>
+      </figure>
+    </div>
+    <label class="check"><input type="checkbox" name="guide"> 조립도를 PDF 첫 쪽에 넣기</label>
+    ${fnameField("sp-fname", "이미지-분할-A4-2x2", "pdf")}
+    <div class="sp-actions"><button type="button" class="btn big" data-save data-dl-for="sp-fname">PDF 내려받기</button><button type="button" class="btn ghost" data-print>바로 인쇄</button></div>
+    <details class="sp-tiles">
+      <summary>나눈 조각을 이미지 파일로 받기 (PNG·JPG, zip)</summary>
+      <div class="sp-tiles-in">
+        <fieldset class="seg"><legend>담을 내용</legend><label><input type="radio" name="tkind" value="piece" checked><span>조각만 (그림 부분)</span></label><label><input type="radio" name="tkind" value="print"><span>인쇄용 (종이 크기)</span></label></fieldset>
+        <p class="hint">「조각만」은 원본 화소를 그대로 잘라 담고(겹침 포함), 「인쇄용」은 종이 크기 그대로 여백·표시까지 담고 해상도(DPI)를 기록해요. 어느 쪽도 그림을 다시 늘리거나 줄이지 않아요.</p>
+        <fieldset class="seg"><legend>형식</legend><label><input type="radio" name="tfmt" value="png" checked><span>PNG (손실 없음)</span></label><label><input type="radio" name="tfmt" value="jpg"><span>JPG (용량 작음)</span></label></fieldset>
+        ${fnameField("sp-zname", "이미지-분할-2x2", "zip")}
+        <button type="button" class="btn" data-zip data-dl-for="sp-zname">조각 이미지 zip 내려받기</button>
+        <p class="hint">한 장만 받으려면 위 미리보기에서 「한 장씩」을 누르고 「이 장 이미지 저장」을 쓰세요.</p>
+      </div>
+    </details>
+  </section>
+</div>`, { scripts: ["split-calc.js", "t-splitprint.js"], csp: CSP.replace(`frame-src ${GDOM}`, `frame-src 'self' blob: ${GDOM}`) }); // P2-73 바로 인쇄: 만든 PDF(blob)를 숨은 틀에 열어 인쇄
 
 // P2-47 HEIC JPG 변환: 여러 장 넣기 → 화질·크기·사진 정보 고르기 → 한꺼번에 변환(진행률) → 하나씩 받기 + zip
 // 엔진(libheif, LGPL-3.0)은 브라우저가 HEIC를 직접 못 열 때만 첫 변환 순간에 작업자(t-heic-worker.js)가 받음. zip은 fflate(MIT) 무압축

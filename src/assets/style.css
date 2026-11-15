@@ -2430,3 +2430,83 @@ html:not([data-theme="dark"]) :is(.sq-lg.is-lo,.dca-lg.is-koru,.rsb-lg.is-buy) i
 .hl-share .fname-row .fname-in{background:#fff;color:#141414;border-color:#141414}
 .hl-share .fname-ext{background:#e8e2d0;color:#141414;border-color:#141414}
 .hl-share .fname-status{color:#ffc21a}
+
+/* ===================== P2-73 이미지 분할 인쇄 ===================== */
+.sp{display:grid;gap:14px}
+.sp-file{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.sp-fname{margin:0;font-size:14px;color:var(--ink-2);overflow-wrap:anywhere;min-width:0;flex:1 1 200px}
+.sp-main{display:grid;gap:16px;min-width:0}
+.sp-set,.sp-view{min-width:0;display:grid;gap:12px;align-content:start}
+@media(min-width:900px){.sp-main{grid-template-columns:280px minmax(0,1fr);align-items:start}.sp-view{position:sticky;top:12px}.sp-set .row2{grid-template-columns:1fr}.sp-views span{padding:7px 12px;font-size:14px}}
+.sp-h{font-size:17px;margin:2px 0 0;display:flex;align-items:center;gap:8px;font-family:inherit}
+.sp-h span{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--ink);color:var(--white);font-size:14px;flex:none}
+.sp-opts .sp-h{margin-top:6px}
+.sp .seg label{display:inline-block}
+.sp-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.sp-big{margin:0;display:grid;gap:0;min-width:0}
+.sp-k{font-size:13px;color:var(--ink-3);font-weight:700}
+.sp-cm{font-size:30px;line-height:1.2;font-weight:900;letter-spacing:-.01em;white-space:nowrap}
+.sp label.check{display:flex;align-items:center;gap:8px}
+.sp-line{font-weight:800;font-size:15px;color:var(--ink)}
+.sp-scale{flex:none;display:block}
+.sp-views{margin:0}
+.sp-stage,.sp-one{border:2px solid var(--ink);border-radius:12px;background:var(--soft);padding:6px;display:grid;gap:8px;min-width:0}
+.sp-stage[hidden],.sp-one[hidden],.sp-fit[hidden],.sp-pane[hidden],.sp-mcustom[hidden]{display:none}
+.sp-canvas{display:block;width:100%;touch-action:pan-y pinch-zoom;cursor:grab;border-radius:8px}
+.sp-canvas.is-move{touch-action:none;outline:3px solid var(--jeok);outline-offset:-3px}
+.sp-canvas:focus-visible{outline:3px solid var(--hwang);outline-offset:-3px}
+.sp-tools{display:flex;flex-wrap:wrap;gap:8px}
+.sp-tools .btn{min-height:44px;padding:8px 14px}
+.sp-tools [data-zin],.sp-tools [data-zout]{min-width:48px;font-size:20px}
+.sp-tools .btn[aria-pressed="true"]{background:var(--jeok);color:#fff}
+.sp-move-hint{margin:0}.sp-move-hint:empty{display:none}
+.sp-one{padding:10px}
+.sp-one-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.sp-one-top .btn{min-height:44px;padding:8px 12px;flex:none}
+.sp-one-name{text-align:center;font-size:15px;min-width:0}
+.sp-one-body{display:flex;gap:12px;align-items:flex-start;justify-content:center;min-width:0}
+.sp-sheet{display:block;max-width:100%}
+.sp-mapbox{display:grid;gap:4px;justify-items:center;flex:none}
+.sp-mapbox .hint{margin:0;font-size:12.5px}
+@media(max-width:599px){.sp-one-body{flex-direction:column;align-items:center}}
+.sp-thumbs{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(var(--cols,2),max-content);gap:6px;justify-content:center;max-height:280px;overflow:auto}
+.sp-thumbs button{appearance:none;border:2px solid transparent;border-radius:8px;background:none;padding:2px 3px;display:grid;justify-items:center;gap:1px;font:inherit;font-size:12.5px;font-weight:800;color:var(--ink);cursor:pointer;min-width:44px;min-height:44px}
+.sp-thumbs button[aria-current="true"]{border-color:var(--jeok);background:var(--white)}
+.sp-thumbs button:focus-visible{outline:3px solid var(--hwang);outline-offset:1px}
+.sp-thumbs button.blank span{color:var(--ink-3)}
+.sp-thumbs canvas{display:block}
+.sp-tsave{display:grid;gap:8px}
+.sp-err{margin:0}
+.sp-alerts:empty{display:none}
+.sp-al{margin:0 0 8px;border:2px solid var(--ink);border-radius:10px;padding:8px 12px;font-size:14px;background:var(--white);color:var(--ink)}
+.sp-al:last-child{margin-bottom:0}
+.sp-al.warn{background:#fff6d6;border-left:8px solid #ffc21a;color:#141414}
+.sp-al-btn{padding:6px 12px;font-size:14px;min-height:40px;margin-top:4px}
+.sp-edge{font-size:14px}
+.sp-sum,.sp-legend{margin:0}
+.sp-lg-h{display:inline-block;width:18px;height:12px;vertical-align:-1px;border:1px solid var(--ink);background:repeating-linear-gradient(-45deg,rgba(229,55,43,.8) 0 2px,#fff 2px 5px)}
+.sp-final{display:grid;gap:12px;border-top:2px dashed var(--ink);padding-top:14px;min-width:0}
+.sp-final-grid{display:grid;gap:14px;min-width:0}
+@media(min-width:760px){.sp-final-grid{grid-template-columns:1fr 1fr}}
+.sp-final figure{margin:0;border:2px solid var(--ink);border-radius:12px;padding:12px;background:var(--white);display:grid;gap:10px;align-content:start;min-width:0}
+.sp-final figcaption{font-size:14px;color:var(--ink-2)}
+.sp-final figcaption b{color:var(--ink)}
+.sp-dlg{border:2px solid #141414;border-radius:8px;background:#fff;color:#141414;font-size:13.5px;overflow:hidden;width:100%;max-width:340px;justify-self:center;box-shadow:3px 3px 0 rgba(0,0,0,.25)}
+.sp-dlg-t{background:#e9e8e3;padding:6px 10px;font-weight:800}
+.sp-dlg-r{display:grid;grid-template-columns:72px 1fr;gap:8px;padding:5px 10px;align-items:center}
+.sp-dlg-r span{font-weight:700;color:#3d3d3d}
+.sp-dlg-r i{font-style:normal;border:1.5px solid #8a8a8a;border-radius:6px;padding:3px 8px}
+.sp-dlg-r.ok i{border:2.5px solid #0f6136;background:#e6f4ec;font-weight:800;color:#0f6136}
+.sp-dlg-r.no i{color:#a3170c;text-decoration:line-through;border-style:dashed}
+.sp-order-cv{display:block;max-width:100%;margin:0 auto}
+.sp-order-list{margin:6px 0 0;padding-left:20px}
+.sp-actions{display:flex;flex-wrap:wrap;gap:10px}
+.sp-actions .btn.big{flex:1 1 220px;min-height:54px;font-size:18px}
+.sp-actions .btn.ghost{min-height:54px}
+.sp-tiles{border:2px solid var(--ink);border-radius:12px;padding:2px 14px;background:var(--white)}
+.sp-tiles summary{cursor:pointer;font-weight:800;padding:10px 0}
+.sp-tiles-in{display:grid;gap:10px;padding:4px 0 12px}
+.sp-tiles-in .hint{margin:0}
+.sp-tiles-in [data-zip]{justify-self:start}
+.sp-frame{position:fixed;right:0;bottom:0;width:2px;height:2px;border:0;opacity:0;pointer-events:none}
+@media(max-width:480px){.sp .seg span{padding:7px 12px;font-size:14px}.sp-cm{font-size:26px}.sp-one-top .btn{padding:8px 9px;font-size:14px}}
