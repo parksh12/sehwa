@@ -113,6 +113,7 @@ const ART = {
   rsibt: sv(`<rect x="8" y="10" width="104" height="100" rx="10" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M8 78h104" stroke="${K}" stroke-width="3"/><rect x="12" y="84" width="96" height="16" fill="${YEL}" opacity=".55"/><path d="M14 86h92M14 100h92" stroke="${K}" stroke-width="2" stroke-dasharray="4 4"/><path d="M16 46 32 58 46 36 62 60 78 30 94 44 104 26" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M62 64l-8 11h16z" fill="${GRN}" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M78 26l-8-11h16z" fill="${RED}" stroke="${K}" stroke-width="3" stroke-linejoin="round"/><path d="M16 96 34 88 50 102 66 86 84 98 104 90" fill="none" stroke="${K}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`), // P2-54 RSI 매매 백테스트(가격선 + 매수▲·매도▼ + RSI 30·70 띠)
   linebreak: sv(`${doc(10, 12, 62, 84, W)}<path d="M22 34h36M22 48h36M22 62h24M22 76h30" stroke="${K}" stroke-width="4" stroke-linecap="round"/><rect x="54" y="58" width="56" height="46" rx="9" fill="${GRN}" stroke="${K}" stroke-width="4"/><path d="M98 68v14H70" fill="none" stroke="${W}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M77 74l-8 8 8 8" fill="none" stroke="${W}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M62 98l42-36" stroke="${RED}" stroke-width="6" stroke-linecap="round"/>`), // P2-57 줄바꿈(↵)에 빨간 빗금
   readtime: sv(`${doc(10, 12, 58, 78, W)}<path d="M22 34h32M22 48h32M22 62h20" stroke="${K}" stroke-width="4" stroke-linecap="round"/><circle cx="80" cy="78" r="30" fill="${YEL}" stroke="${K}" stroke-width="4"/><path d="M80 60v18l12 8" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M74 42h12" stroke="${K}" stroke-width="5" stroke-linecap="round"/>`), // P2-57 글 + 시계
+  instafont: sv(`<rect x="10" y="16" width="100" height="88" rx="12" fill="${W}" stroke="${K}" stroke-width="4"/><text x="58" y="78" font-size="52" font-weight="800" font-style="italic" text-anchor="middle" fill="${K}" font-family="Georgia,serif">Aa</text><path d="M24 92h68" stroke="${RED}" stroke-width="5" stroke-linecap="round"/><circle cx="96" cy="30" r="10" fill="${YEL}" stroke="${K}" stroke-width="3"/>`), // P2-68 인스타 폰트 변환기(글자 Aa + 밑줄, 그림)
   emoji: sv(`<circle cx="50" cy="56" r="38" fill="${YEL}" stroke="${K}" stroke-width="4"/><circle cx="37" cy="48" r="5" fill="${K}"/><circle cx="63" cy="48" r="5" fill="${K}"/><path d="M33 66c8 12 26 12 34 0" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M92 62l6 13 14 2-10 10 2 14-12-7-12 7 2-14-10-10 14-2z" fill="${RED}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/>`), // P2-57 웃는 얼굴 + 별(그림, 이모지 글꼴 아님)
   ostax: sv(`<path d="M24 10h72v92l-12-8-12 8-12-8-12 8-12-8-12 8z" fill="${W}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><circle cx="60" cy="38" r="17" fill="${YEL}" stroke="${K}" stroke-width="4"/><text x="60" y="45.5" font-size="21" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">$</text><text x="60" y="80" font-size="21" font-weight="900" text-anchor="middle" fill="${RED}" font-family="sans-serif">22%</text>`), // P2-53 해외주식 양도세(영수증 + 달러 + 22%)
   aptmap: sv(`<rect x="10" y="12" width="100" height="96" rx="10" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M10 70 40 52l26 14 44-26" fill="none" stroke="#2346d8" stroke-width="8" stroke-linejoin="round"/><circle cx="66" cy="66" r="8" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M36 22h22v24H36z" fill="${YEL}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M41 29h4M49 29h4M41 37h4M49 37h4" stroke="${K}" stroke-width="3"/><path d="M84 96c0 0-14-16-14-26a14 14 0 0 1 28 0c0 10-14 26-14 26z" fill="${RED}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><circle cx="84" cy="70" r="5" fill="${W}" stroke="${K}" stroke-width="3"/>`), // P2-63b 지도 + 역(노선·역 점) + 아파트 + 위치 핀
@@ -205,10 +206,11 @@ const UTILS = [
   { id: "possize", cat: "invest", path: "/invest/stop-loss-position-size/", title: "손절·익절·포지션 계산기", seo: "손절·익절·포지션 계산기 — 손절가 계산, 몇 주 사야 하나, 손익비(R:R)·포지션 사이즈", h1: "손절·익절·포지션 계산기 — 손절가와 감당할 손실로 몇 주 살지, 손익비까지", desc: "진입가, 손절가(또는 손절 %), 익절가(또는 목표 %·R 배수), 계좌 금액과 감당할 손실(계좌의 % 또는 금액)을 넣으면 몇 주를 사야 하는지(포지션 사이즈), 포지션 금액과 계좌 대비 비중, 손절 시 손실, 익절 시 이익, 손익비(R:R), 본전 승률을 계산하고 가격 사다리 그림으로 보여 줘요. 롱·숏, 원·달러(환율), 소수 주식, 수수료를 지원해요. 투자 권유가 아니에요.", hook: "계좌 1%만 잃으려면 몇 주? 손익비는?", meta: "롱·숏 · R:R · 본전 승률", kw: "손절 계산기 손절가 계산기 손절가 계산 손절 몇 퍼센트 손절 기준 손절 라인 익절 계산 익절 계산기 익절가 목표가 계산 포지션 사이즈 계산기 포지션 사이즈 포지션 계산기 포지션 크기 몇 주 사야 몇 주 살까 매수 수량 계산 리스크 관리 위험 관리 자금 관리 1% 규칙 2% 규칙 손익비 손익비 계산 손익비 계산기 r:r rr 리스크 리워드 risk reward 본전 승률 손익분기 승률 기대값 롱 숏 공매도 레버리지 마진 소수 주식 미국 주식 수수료 트레이딩 단타 스윙" }, // P2-56
   { id: "linebreak", cat: "text", path: "/text/line-break-remover/", title: "줄바꿈 제거 · 공백 정리", seo: "줄바꿈 제거 · 공백 정리 — PDF 복사 줄바꿈 없애기, 엔터 제거, 공백 제거", h1: "줄바꿈 제거 · 공백 정리 — PDF에서 복사한 글의 깨진 줄바꿈까지", desc: "PDF에서 복사해 문장 중간마다 끊긴 줄바꿈을 문단은 살린 채 이어 붙여요. 연속 공백, 줄 앞뒤 공백, 빈 줄, 탭, 전각 공백·NBSP, 제로폭 같은 보이지 않는 문자를 정리하고, 줄바꿈(엔터)을 모두 지워 한 줄로도 만들어요. 입력한 글은 저장하지 않습니다.", hook: "PDF 복사 줄바꿈 복구, 엔터·공백 한 번에 정리.", meta: "전후 글자수 비교", kw: "줄바꿈 제거 줄바꿈 없애기 줄바꿈 삭제 줄 바꿈 엔터 제거 엔터 없애기 엔터 삭제 개행 제거 개행문자 줄넘김 한 줄로 만들기 한줄로 PDF 줄바꿈 PDF 복사 줄바꿈 PDF 붙여넣기 PDF 텍스트 정리 공백 제거 공백 없애기 띄어쓰기 제거 연속 공백 스페이스 제거 빈 줄 제거 빈줄 삭제 탭 제거 전각 공백 nbsp 제로폭 공백 보이지 않는 문자 특수 공백 하이픈 텍스트 정리 글 정리 문단 정리 line break remover remove line breaks whitespace" }, // P2-57
   { id: "readtime", cat: "text", path: "/text/reading-time/", title: "읽기 시간 계산기", seo: "읽기 시간 계산기 — 읽는 시간·발표 시간, 원고지 매수 계산", h1: "읽기 시간 계산기 — 읽는 시간, 발표 시간, 원고지 매수까지", desc: "글을 붙여 넣으면 예상 읽기 시간과 발표(말하기) 시간, 200자 원고지 매수(공백 포함·제외·칸 채우기), 문장 수와 평균 문장 길이, 60자 넘는 긴 문장, 자주 나온 낱말을 바로 알려 줘요. 기준 속도는 직접 바꿀 수 있어요. 입력한 글은 저장하지 않습니다.", hook: "읽는 시간·발표 시간·원고지 매수를 한 번에.", meta: "읽기·발표 · 원고지 · 긴 문장", kw: "읽기 시간 읽는 시간 읽는데 걸리는 시간 독서 시간 리딩 타임 reading time 발표 시간 발표 시간 계산 말하기 시간 스피치 시간 대본 시간 원고 시간 1분 스피치 3분 스피치 5분 발표 몇 자 원고지 원고지 매수 원고지 계산 200자 원고지 원고지 몇 장 매수 계산 문장 수 문장 길이 평균 문장 길이 긴 문장 가독성 가독성 검사 키워드 빈도 단어 빈도 빈출 단어 키워드 분석 블로그 글 분석 글 분석 단어 수 wpm 분당 글자" }, // P2-57
-  { id: "emoji", cat: "text", path: "/text/emoji-special-characters/", title: "이모지 · 특수문자 복사", seo: "이모지 · 특수문자 복사 — 하트 특수문자, 화살표, 별, 원문자 모음과 일괄 삽입", h1: "이모지 · 특수문자 복사 — 누르면 바로 복사, 목록 꾸미기까지", desc: "표정·사람·동물·음식·사물·기호 이모지와 하트·화살표·별(★※→)·괄호·원문자(①㉠) 같은 특수문자를 한글로 찾아 누르면 바로 복사해요. 글을 넣으면 줄마다 이모지·기호를 붙이고 1\uFE0F⃣ 2\uFE0F⃣ 번호도 자동으로 매겨요. 유니코드 표준 문자만 써요.", hook: "하트·화살표·별 특수문자, 누르면 바로 복사.", meta: "1,000여 개 · 일괄 삽입", kw: "이모지 이모지 복사 이모티콘 이모티콘 복사 특수문자 특수문자 복사 특수기호 기호 모음 특수문자 모음 특수문자표 하트 특수문자 하트 이모지 하트 기호 하트 복사 ♥ ♡ 별 특수문자 별 기호 ★ ☆ 화살표 특수문자 화살표 기호 → 당구장 표시 ※ 체크 표시 체크 이모지 ✔ ✅ 동그라미 숫자 원문자 원숫자 ① 괄호 숫자 낫표 겹낫표 「」 『』 꺾쇠 말머리 기호 글머리 기호 블로그 꾸미기 인스타 꾸미기 목록 꾸미기 번호 이모지 1\uFE0F⃣ 숫자 이모지 일괄 삽입 줄 앞에 이모지 구분선 emoji copy special characters symbols" }, // P2-57
+  { id: "emoji", cat: "text", path: "/text/emoji-special-characters/", title: "이모지 · 특수문자 복사", seo: "이모지 복사 · 특수문자 모음 — 하트 이모지, 주식·인스타 감성 특수문자, 텍스트 이모티콘", h1: "이모지 · 특수문자 복사 — 상황별 이모지, 특수문자 모음, 텍스트 이모티콘까지", desc: "웃는·우는·하트·불·로켓 이모지부터 주식·재테크, 블로그·쇼츠 제목, 인스타·카톡 감성, 업무 공지, 다이어리, 깃허브 README용 이모지, 별·하트 기호·화살표·동그라미 숫자(①)·로마 숫자(Ⅰ) 같은 특수문자, (╥﹏╥) 같은 텍스트 이모티콘까지 한글로 찾아 누르면 바로 복사돼요. 누른 이모지의 뜻도 보여 주고, 목록 번호 매기기와 블로그·공지 템플릿도 있어요.", hook: "상황별 이모지·특수문자, 누르면 바로 복사.", meta: "1,800여 개 · 뜻 풀이 · 템플릿", kw: "이모지 이모지 복사 이모티콘 이모티콘 복사 특수문자 특수문자 복사 특수기호 기호 모음 특수문자 모음 특수문자표 하트 특수문자 하트 이모지 하트 기호 하트 복사 ♥ ♡ 별 특수문자 별 기호 ★ ☆ 화살표 특수문자 화살표 기호 → 당구장 표시 ※ 체크 표시 체크 이모지 ✔ ✅ 동그라미 숫자 원문자 원숫자 ① 괄호 숫자 낫표 겹낫표 「」 『』 꺾쇠 말머리 기호 글머리 기호 블로그 꾸미기 인스타 꾸미기 목록 꾸미기 번호 이모지 1\uFE0F⃣ 숫자 이모지 일괄 삽입 줄 앞에 이모지 구분선 emoji copy special characters symbols 웃는 이모지 우는 이모지 웃는 얼굴 이모지 하트 이모지 종류 불 이모지 불 이모지 의미 로켓 이모지 로켓 이모지 의미 박수 이모지 엄지척 이모지 반짝이 이모지 주식 이모지 주식 상승 이모지 상승 차트 이모지 돈 이모지 돈 이모지 복사 재테크 이모지 공모주 이모지 과녁 이모지 트로피 이모지 확성기 이모지 공지 이모지 압정 이모지 업무 이모지 인스타 특수문자 인스타 감성 특수문자 인스타 스토리 이모지 카톡 상태메시지 이모지 카톡 이모지 블로그 제목 특수문자 네이버 블로그 꾸미기 쇼츠 제목 특수문자 유튜브 설명란 이모지 다이어리 이모지 감성 다이어리 깃허브 이모지 README 이모지 github emoji shortcode 텍스트 이모티콘 카오모지 kaomoji 오마이갓 이모티콘 디스코드 이모티콘 로마 숫자 특수문자 Ⅰ Ⅱ Ⅲ 십자가 특수문자 꽃 특수문자 깃발 이모지 구분선 특수문자 이모지 의미 이모지 뜻 윈도우 이모지 단축키 윈도우 마침표 맥 이모지 단축키 아이폰 이모지 갤럭시 이모지" }, // P2-57, P2-68 상황별 탭·특수문자·텍스트 이모티콘·의미
+  { id: "instafont", cat: "text", path: "/text/insta-font/", title: "인스타 폰트 변환기", seo: "인스타 폰트 변환기 — 인스타그램 글씨체 바꾸기, 굵게·필기체·이중선 영문 특수문자", h1: "인스타 폰트 변환기 — 영문·숫자를 𝐁𝐨𝐥𝐝 𝓢𝓬𝓻𝓲𝓹𝓽 Ⓒⓘⓡⓒⓛⓔ로", desc: "영문과 숫자를 넣으면 굵게(𝐁𝐨𝐥𝐝), 기울임(𝘐𝘵𝘢𝘭𝘪𝘤), 필기체(𝓢𝓬𝓻𝓲𝓹𝓽), 고딕(𝔉𝔯𝔞𝔨𝔱𝔲𝔯), 이중선(𝔻𝕠𝕦𝕓𝕝𝕖), 동그라미(Ⓒⓘⓡⓒⓛⓔ), 타자기(𝚖𝚘𝚗𝚘), 취소선까지 24가지 모양으로 바꿔 하나씩 복사해요. 인스타그램 소개·닉네임, 카톡 프로필에 붙여 넣으면 그대로 보여요. 한글에는 괄호·기호 꾸밈을 붙일 수 있어요.", hook: "인스타 소개글 영문을 𝓢𝓬𝓻𝓲𝓹𝓽·𝐁𝐨𝐥𝐝로.", meta: "24가지 글씨 · 한글 꾸밈", kw: "인스타 폰트 인스타 폰트 변환기 인스타그램 폰트 인스타그램 폰트 변환기 인스타 글씨체 인스타 글꼴 인스타 소개 폰트 인스타 바이오 인스타 닉네임 특수문자 영어 폰트 변환 영어 특수문자 영어 필기체 필기체 변환 굵은 글씨 볼드체 이탤릭 고딕체 이중선 동그라미 영어 네모 영어 취소선 밑줄 텍스트 폰트 생성기 글씨체 변환기 fancy text font generator instagram fonts 카톡 프로필 꾸미기 감성 닉네임" }, // P2-68
   { id: "aptmap", cat: "house", path: "/apt-map/", title: "역세권 아파트 지도", seo: "역세권 아파트 지도 — 사회초년생 20평대 실거래가, 가격대별 2억대·3억대·4억대", h1: "사회초년생이 살 만한 역세권 아파트 지도", desc: "역에서 직선 1km 안, 300세대 이상, 전용 40~60㎡(20평대) 아파트를 국토교통부 실거래가 중위값으로 2억 미만부터 8억대까지 가격대별로 지도에 보여 줘요. 지역·노선·준공연도로 좁히고 「도보 10분 이내만」(직선 500m)으로 더 가까운 단지만 볼 수 있어요. 거래 완료 기록 기준이라 현재 호가와 다를 수 있고, 투자 권유가 아니에요.", hook: "20평대 역세권 아파트, 가격대별로 지도에서.", meta: "실거래 중위값 · 역 1km · 매달 갱신", kw: "아파트 지도 역세권 아파트 역세권 아파트 지도 역세권 20평대 20평대 아파트 24평 전용 59 전용 49 소형 아파트 싼 아파트 제일 싼 아파트 저렴한 아파트 2억 아파트 3억 아파트 4억 아파트 5억 아파트 2억대 3억대 4억대 아파트 실거래가 실거래가 조회 아파트 시세 아파트 가격 지하철역 근처 아파트 역 근처 아파트 도보 10분 사회초년생 내 집 마련 첫 집 신혼부부 아파트 서울 경기 인천 부산 대구 수도권 아파트 아파트 매매 국토부 실거래" }, // P2-63b
 ];
-const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "heic", "qr", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "docx2pdf", "hwpview", "dday", "stockquiz", "avgdown", "dca", "ostax", "rsibt", "compound", "possize", "linebreak", "readtime", "emoji", "aptmap"]; // P2-63b aptmap // P2-57 linebreak·readtime·emoji // P2-56 possize // P2-55 compound // P2-50 stockquiz(투자) // P2-51 avgdown // P2-52 dca // P2-53 ostax // P2-54 rsibt // P2-45 돈 계산기 4종, P2-46 imgmerge, P2-47 heic, P2-48 qr
+const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "heic", "qr", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "docx2pdf", "hwpview", "dday", "stockquiz", "avgdown", "dca", "ostax", "rsibt", "compound", "possize", "linebreak", "readtime", "emoji", "instafont", "aptmap"]; // P2-68 instafont // P2-63b aptmap // P2-57 linebreak·readtime·emoji // P2-56 possize // P2-55 compound // P2-50 stockquiz(투자) // P2-51 avgdown // P2-52 dca // P2-53 ostax // P2-54 rsibt // P2-45 돈 계산기 4종, P2-46 imgmerge, P2-47 heic, P2-48 qr
 const NEXT = {
   pdfmerge: ["pdfsplit", "img2pdf", "imgcompress"],
   pdfsplit: ["pdfmerge", "pdf2img", "img2pdf"],
@@ -240,7 +242,8 @@ const NEXT = {
   possize: ["avgdown", "rsibt", "stockquiz"], // P2-56 손절 대신 물타기? 평단 비교 → 손절 넣은 RSI 백테스트 → 차트 연습
   linebreak: ["charcount", "readtime", "emoji"], // P2-57 정리한 글 → 글자수 → 읽기 시간 → 꾸미기
   readtime: ["charcount", "linebreak", "emoji"], // P2-57 글자수 ↔ 읽기 시간 ↔ 정리 ↔ 꾸미기
-  emoji: ["linebreak", "charcount", "readtime"], // P2-57 꾸미기 전 정리 → 글자수 → 읽기 시간
+  emoji: ["instafont", "linebreak", "charcount"], // P2-57, P2-68 이모지 → 영문 글씨 꾸미기 → 정리 → 글자수
+  instafont: ["emoji", "charcount", "linebreak"], // P2-68 글씨 꾸민 뒤 이모지 더하기 → 글자수(인스타 소개 150자)
   aptmap: ["salary", "pyeong", "compound"], // P2-63b 내 연봉 실수령액 → 평수 환산 → 모으는 기간(복리)
 };
 const utilById = Object.fromEntries(UTILS.map((x) => [x.id, x]));
@@ -509,6 +512,7 @@ const cabCls = (i, n) => (i < nToolCabs ? cabCls0(i, nToolCabs) : "cab-full"); /
 // ★ 새 툴·게임을 만들면 여기에 { id, d: "출시일" }을 맨 위에 추가(대표님 지시: 새 콘텐츠는 메인에 잘 보이게).
 // 출시 30일 이내 항목 중 최신 4개가 홈 맨 위 「NEW」 띠에 나오고, 해당 행·타일에 NEW 표시가 붙음
 const NEW_ITEMS = [
+  { id: "instafont", d: "2026-11-15" }, // P2-68
   { id: "hwpview", d: "2026-11-15" }, // P2-64, P2-64d HWP 지원·한글 PDF 변환 통합
   { id: "docx2pdf", d: "2026-11-10" }, // P2-65
   { id: "aptmap", d: "2026-11-10" }, // P2-63b
@@ -2256,34 +2260,42 @@ utilPage(utilById.charcount, `<label for="cc-text" class="sr">글자수를 셀 �
   });
 }
 
-// P2-57 이모지 · 특수문자 복사: 데이터·일괄 삽입은 src/assets/emoji-data.js 한 벌(화면 t-emoji.js와 아래 검사가 같은 파일을 vm으로 씀)
-// 흐름: 검색 또는 분류 탭 → 누르면 복사(모음 칸에도 담김, 최근 사용은 이 기기 localStorage) → 일괄 삽입(줄 앞·뒤 기호, 번호) → 복사 → 다음 툴
-// 빌드 때 ① 이모지 분류의 모든 문자가 유니코드 RGI 이모지인지 ② 모든 문자가 한 글자(grapheme)·배정된 코드포인트·사설 영역 아님·분류 안 중복 없음인지 ③ 일괄 삽입 사례를 확인하고 다르면 빌드를 멈춤
+// P2-57·P2-68 이모지 · 특수문자 복사: 데이터·검색·일괄 삽입은 src/assets/emoji-data.js(처음 받음) + emoji-more.js(탭을 열거나 찾을 때 늦게 받음) 두 벌(화면 t-emoji.js와 아래 검사가 같은 파일을 vm으로 씀)
+// 흐름: 검색 또는 탭(자주 찾는 → 상황별 → 특수문자·텍스트 이모티콘·프리셋 → 유니코드 분류) → 누르면 복사 + 뜻 칸(모음 칸에도 담김, 최근 사용은 이 기기 localStorage) → 일괄 삽입 → 다음 툴
+// 빌드 때 ① RGI 표시 분류의 모든 문자가 유니코드 RGI 이모지인지 ② 한 글자(조합·프리셋 분류 제외)·배정된 코드포인트·사설 영역 아님·분류 안 중복 없음 ③ 깃허브 코드 형식
+// ④ 일괄 삽입 사례 ⑤ 한국어 검색어 40개가 기대 문자를 앞 12개 안에 보여 주는지 ⑥ 뜻 풀이 100개 이상·모두 목록에 있는 문자인지 확인하고 다르면 빌드를 멈춤
 {
   const ctx = {};
   vm.createContext(ctx);
   const EMJ_FILE = path.join(ROOT, "src", "assets", "emoji-data.js");
+  const EMJ_MORE = path.join(ROOT, "src", "assets", "emoji-more.js");
   vm.runInContext(fs.readFileSync(EMJ_FILE, "utf8"), ctx);
+  vm.runInContext(fs.readFileSync(EMJ_MORE, "utf8"), ctx);
   const ED = ctx.EMOJIDATA;
+  if (!ED.MORE.loaded) throw new Error("P2-68 emoji-more.js가 붙지 않음");
   const cats = ED.items();
+  const tabsAll = ED.tabs();
   const gseg = new Intl.Segmenter("ko", { granularity: "grapheme" });
   let rgi = null;
-  try { rgi = new RegExp("^\\p{RGI_Emoji}$", "v"); } catch (e) { rgi = /^(?:\p{Extended_Pictographic}|[#*0-9]\uFE0F⃣)/u; } // Node 20 미만이면 느슨한 검사
+  try { rgi = new RegExp("^\\p{RGI_Emoji}$", "v"); } catch (e) { rgi = /^(?:\p{Extended_Pictographic}|[#*0-9]️⃣)/u; } // Node 20 미만이면 느슨한 검사
   let total = 0;
+  const allChars = new Set();
   for (const c of cats) {
     const seen = new Set();
     for (const it of c.list) {
       total++;
-      const tag = `P2-57 이모지 데이터 「${c.name}」 ${it.c} (${[...it.c].map((x) => "U+" + x.codePointAt(0).toString(16).toUpperCase()).join(" ")})`;
-      if ([...gseg.segment(it.c)].length !== 1) throw new Error(`${tag}: 한 글자가 아님`);
-      if (!/^\p{Assigned}+$/u.test(it.c) || /\p{Co}/u.test(it.c)) throw new Error(`${tag}: 유니코드 표준 문자가 아님`);
+      allChars.add(it.c.replace(/️/g, ""));
+      const tag = `P2-68 이모지 데이터 「${c.name}」 ${it.c} (${[...it.c].slice(0, 6).map((x) => "U+" + x.codePointAt(0).toString(16).toUpperCase()).join(" ")})`;
+      if (!c.multi && [...gseg.segment(it.c)].length !== 1) throw new Error(`${tag}: 한 글자가 아님`);
+      if (!/^[\p{Assigned}\n]+$/u.test(it.c) || /\p{Co}/u.test(it.c)) throw new Error(`${tag}: 유니코드 표준 문자가 아님`);
       if (c.emoji && !rgi.test(it.c)) throw new Error(`${tag}: RGI 이모지가 아님`);
+      if (c.gh && !/^:[a-z0-9_+\-]+:$/.test(it.code || "")) throw new Error(`${tag}: 깃허브 코드 형식이 아님`);
       if (seen.has(it.c)) throw new Error(`${tag}: 같은 분류 안 중복`);
       if (!it.n) throw new Error(`${tag}: 한글 이름 없음`);
       seen.add(it.c);
     }
   }
-  const emjBytes = fs.statSync(EMJ_FILE).size;
+  const emjBytes = fs.statSync(EMJ_FILE).size, moreBytes = fs.statSync(EMJ_MORE).size;
   const chk = (name, got, want) => { if (got !== want) throw new Error(`P2-57 일괄 삽입 「${name}」 불일치: ${JSON.stringify(got)} ≠ ${JSON.stringify(want)}`); };
   const K = (d) => d + String.fromCodePoint(0xfe0f, 0x20e3);
   const EM_CASES = [
@@ -2296,20 +2308,34 @@ utilPage(utilById.charcount, `<label for="cc-text" class="sr">글자수를 셀 �
   ];
   for (const [name, a, o, want] of EM_CASES) chk(name, ED.decorate(a, o), want);
   chk("원문자 21", ED.number("circle", 21), String.fromCodePoint(0x3251)); chk("원문자 50", ED.number("circle", 50), String.fromCodePoint(0x32bf)); chk("검은 원문자 11", ED.number("black", 11), String.fromCodePoint(0x24eb));
-  chk("검색 하트 첫 결과", ED.search("하트")[0].c, "❤\uFE0F"); chk("검색 체크", ED.search("체크").some((x) => x.c === "✅"), true); chk("검색 없음", ED.search("없는검색어").length, 0);
-  const TAB_ORDER = ["recent", ...cats.map((c) => c.id)];
-  const catLabel = (id) => (id === "recent" ? "최근" : cats.find((c) => c.id === id).name);
+  chk("검색 하트 첫 결과", ED.search("하트")[0].c, "❤️"); chk("검색 체크", ED.search("체크").some((x) => x.c === "✅"), true); chk("검색 없음", ED.search("없는검색어").length, 0);
+  // P2-68 검색 시험: 대표님 키워드(01.운영진/기획안/2026-11-15_이모지_검색키워드.md) 원문 그대로 넣어 기대 문자가 앞 12개 안에 나오는지
+  const EMJ_SEARCH = [["웃는 얼굴 이모지 복사", "😀"], ["우는 이모지 모음", "😭"], ["하트 이모지 종류", "❤️"], ["불 이모지 의미", "🔥"], ["웃겨서 죽는 이모지 텍스트", "😂"], ["박수 이모지 단축키", "👏"], ["엄지 척 이모지 복사", "👍"], ["생각하는 사람 이모지", "🤔"], ["화난 표정 이모티콘", "😡"], ["반짝이 이모지 특수문자", "✨"], ["눈물 흘리는 이모지", "😢"], ["윙크하는 이모티콘", "😉"], ["주식 상승 차트 이모지", "📈"], ["돈 이모지 복사", "💰"], ["로켓 이모지 의미", "🚀"], ["급등", "🚀"], ["전구 아이디어 이모지", "💡"], ["체크리스트 체크 이모지", "📋"], ["압정 핀 이모지", "📌"], ["과녁 목표 이모지", "🎯"], ["노트북 컴퓨터 이모지", "💻"], ["막대 그래프 특수문자", "📊"], ["공지 확성기 이모지", "📢"], ["신용카드 이모지", "💳"], ["트로피 1위 이모티콘", "🏆"], ["별표 특수문자 복사", "★"], ["하트 기호 종류별 복사", "♥"], ["화살표 특수문자 모음", "→"], ["괄호 특수문자 종류", "「"], ["동그라미 숫자 특수문자", "①"], ["로마 숫자 특수문자", "Ⅰ"], ["십자가 특수문자", "✝"], ["꽃 모양 특수문자", "✿"], ["깃발 기호 이모지", "🚩"], ["오 마이 갓", "щ(ʘ╻ʘ)щ"], ["공모주 주식 일정 이모지", "🗓️"], ["rocket", ":rocket:"], ["체크", "✅"], ["핀", "📌"], ["돈", "💰"]];
+  for (const [qq, want] of EMJ_SEARCH) { const r = ED.search(qq); const pos = r.findIndex((x) => x.c === want || x.code === want); if (pos < 0 || pos >= 12) throw new Error(`P2-68 이모지 검색 「${qq}」: ${want}가 앞 12개에 없음(${pos})`); }
+  const MEANS = Object.entries(ED.MORE.mean);
+  if (MEANS.length < 100) throw new Error(`P2-68 이모지 뜻 풀이 ${MEANS.length}개(<100)`);
+  for (const [c] of MEANS) if (!allChars.has(c)) throw new Error(`P2-68 이모지 뜻 풀이 ${c}: 목록에 없는 문자`);
+  const mainTabs = tabsAll.filter((t) => t.row === "main"), uniTabs = tabsAll.filter((t) => t.row === "uni");
+  const tabBtn = (t) => `<button type="button" class="chip emj-tab" data-cat="${t.id}" aria-pressed="${t.id === "frequent"}">${esc(t.name)}</button>`;
   const fmtKB = (n) => `${(n / 1024).toFixed(1)}KB`;
+  const emjUrl = (id) => `${u(utilById.emoji.path)}?tab=${id}`;
+  const meanRows = MEANS.map(([c, v]) => { const [nm, ...rest] = v.split(" — "); const full = cats.flatMap((x) => x.list).find((it) => it.c.replace(/️/g, "") === c); return `<tr><td class="emj-mtc">${esc(full ? full.c : c)}</td><th scope="row">${esc(nm)}</th><td>${esc(rest.join(" — "))}</td></tr>`; }).join("");
   utilPage(utilById.emoji, `<div class="emj">
-<label for="emj-q" class="lb-lab">이모지·특수문자 찾기 <small class="hint">한글로 찾아 보세요: 하트, 별, 화살표, 체크, 웃음</small></label>
-<input id="emj-q" type="search" class="emj-q" placeholder="예: 하트, 별, 화살표, 체크, 동그라미숫자" autocomplete="off">
-<div class="emj-tabs" role="group" aria-label="분류">${TAB_ORDER.map((id) => `<button type="button" class="chip emj-tab" data-cat="${id}" aria-pressed="${id === "face"}">${esc(catLabel(id))}</button>`).join("")}</div>
-<fieldset class="seg emj-pick"><legend>문자를 누르면</legend><label><input type="radio" name="pick" value="copy" checked><span>바로 복사</span></label><label><input type="radio" name="pick" value="front"><span>줄 앞 기호로</span></label><label><input type="radio" name="pick" value="back"><span>줄 뒤 기호로</span></label></fieldset>
-<p class="emj-info hint" aria-live="polite"></p>
+<label for="emj-q" class="lb-lab">이모지·특수문자 찾기 <small class="hint">한글로 찾아 보세요: 웃는, 하트, 돈, 로켓, 체크</small></label>
+<input id="emj-q" type="search" class="emj-q" placeholder="예: 웃는, 하트, 급등, 체크, 동그라미 숫자" autocomplete="off">
+<div class="emj-tabs-wrap">
+<div class="emj-tabs" role="group" aria-label="상황별 분류">${mainTabs.map(tabBtn).join("")}</div>
+<div class="emj-tabs emj-uni" role="group" aria-label="유니코드 분류"><span class="emj-tl">유니코드 분류</span>${uniTabs.map(tabBtn).join("")}</div>
+</div>
+<div class="emj-subs" role="group" aria-label="소분류" hidden></div>
+<fieldset class="seg emj-ghmode" hidden><legend>깃허브 탭에서 누르면</legend><label><input type="radio" name="ghmode" value="code" checked><span>:코드: 복사</span></label><label><input type="radio" name="ghmode" value="emoji"><span>이모지만</span></label><label><input type="radio" name="ghmode" value="both"><span>이모지 + \`코드\`</span></label></fieldset>
+<div class="emj-inforow"><p class="emj-info hint" aria-live="polite"></p><button type="button" class="chip emj-link" data-tab-link>이 탭 링크 복사</button></div>
 <div class="emj-grid"></div>
+<p class="emj-mean" aria-live="polite" hidden></p>
+<fieldset class="seg emj-pick"><legend>문자를 누르면</legend><label><input type="radio" name="pick" value="copy" checked><span>바로 복사</span></label><label><input type="radio" name="pick" value="front"><span>줄 앞 기호로</span></label><label><input type="radio" name="pick" value="back"><span>줄 뒤 기호로</span></label></fieldset>
 <div class="emj-bagrow"><label for="emj-bag" class="sr">모음 칸</label><input id="emj-bag" class="emj-bag" type="text" placeholder="누른 문자가 여기에 차례로 모여요" autocomplete="off"><button type="button" class="btn" data-bag-copy>모음 복사</button><button type="button" class="btn ghost" data-bag-clear>비우기</button></div>
 <h3 class="emj-h">일괄 삽입 · 목록 꾸미기</h3>
-<p class="hint">글을 넣으면 줄마다 앞이나 뒤에 기호를 붙이고, 1\uFE0F⃣ 2\uFE0F⃣ 3\uFE0F⃣ 같은 번호를 자동으로 매겨요. 블로그·인스타그램 목록, 공지사항 정리에 쓰세요.</p>
+<p class="hint">글을 넣으면 줄마다 앞이나 뒤에 기호를 붙이고, 1️⃣ 2️⃣ 3️⃣ 같은 번호를 자동으로 매겨요. 블로그·인스타그램 목록, 공지사항 정리에 쓰세요.</p>
 <label for="emj-src" class="sr">꾸밀 글</label>
 <textarea id="emj-src" class="cc-text emj-text" rows="6" placeholder="한 줄에 하나씩 적어 주세요.&#10;예: 아침 7시 기상&#10;물 한 잔 마시기" autocomplete="off" spellcheck="false"></textarea>
 <div class="emj-deco">
@@ -2318,20 +2344,72 @@ utilPage(utilById.charcount, `<label for="cc-text" class="sr">글자수를 셀 �
   <label><span>번호 매기기</span><select name="num"><option value="">번호 없음</option>${Object.entries(ED.NUMS).map(([k, v]) => `<option value="${k}">${esc(v.name)}</option>`).join("")}</select></label>
   <label><span>시작 번호</span><input name="start" type="number" inputmode="numeric" min="0" max="999" value="1"></label>
 </div>
-<div class="lb-presets" role="group" aria-label="줄 앞 기호 빠르게 고르기">${["✅", "✔\uFE0F", "▶", "•", "★", "👉", "💡", "📌", "🔹", "➤", "※", "❤\uFE0F"].map((x) => `<button type="button" class="chip emj-fq" data-front="${x}">${x}</button>`).join("")}<button type="button" class="chip" data-front="">기호 없음</button></div>
+<div class="lb-presets" role="group" aria-label="줄 앞 기호 빠르게 고르기">${["✅", "✔️", "▶", "•", "★", "👉", "💡", "📌", "🔹", "➤", "※", "❤️"].map((x) => `<button type="button" class="chip emj-fq" data-front="${x}">${x}</button>`).join("")}<button type="button" class="chip" data-front="">기호 없음</button></div>
 <div class="lb-checks"><label class="check"><input type="checkbox" name="skipBlank" checked> 빈 줄은 건너뛰기</label><label class="check"><input type="checkbox" name="space" checked> 기호와 글 사이 띄어쓰기</label></div>
 <label for="emj-out" class="lb-lab">꾸민 결과</label>
 <textarea id="emj-out" class="cc-text emj-text lb-out" rows="6" readonly></textarea>
 <div class="cc-tools"><button type="button" class="btn" data-deco-copy>결과 복사</button><button type="button" class="btn ghost" data-deco-example>예시 넣기</button><button type="button" class="btn ghost" data-deco-clear>글 지우기</button><button type="button" class="chip" data-recent-clear>최근 사용 지우기</button></div>
 <p class="safe">입력한 글은 서버로 보내지 않고 저장하지 않아요. 최근 사용한 문자 ${30}개만 이 기기의 브라우저에 저장돼요.</p>
-<p class="hint">이모지·특수문자 ${total.toLocaleString("ko-KR")}개 · 유니코드 표준 문자만 씀(이미지 없음) · 데이터 ${fmtKB(emjBytes)}. 같은 이모지도 기기와 앱마다 모양이 조금 달라 보일 수 있어요.</p>
+<p class="hint">이모지·특수문자·텍스트 이모티콘 ${total.toLocaleString("ko-KR")}개 · 유니코드 표준 문자만 씀(이미지 없음) · 처음 받는 데이터 ${fmtKB(emjBytes)}, 탭을 열면 ${fmtKB(moreBytes)} 더 받음. 같은 이모지도 기기와 앱마다 모양이 조금 달라 보일 수 있어요.</p>
 </div>`, {
     scripts: ["emoji-data.js", "t-emoji.js"], fileTool: false,
-    after: `<h2 class="dd-h">일괄 삽입 예시 (자동 확인)</h2>
+    after: `<h2 class="dd-h">탭 바로가기</h2>
+<p class="emj-jump">${mainTabs.filter((t) => t.id !== "recent").map((t) => `<a href="${t.id === "frequent" ? u(utilById.emoji.path) : emjUrl(t.id)}">${esc(t.name)}</a>`).join(" · ")}</p>
+<p class="hint">주소 끝에 <code>?tab=stock</code>(주식·재테크)이나 <code>?tab=special&amp;sub=circle</code>(동그라미 숫자)처럼 붙이면 그 탭이 바로 열려요. 탭을 고른 뒤 「이 탭 링크 복사」를 눌러 공유할 수도 있어요.</p>
+<h2 class="dd-h">자주 쓰는 이모지 뜻 ${MEANS.length}개</h2>
+<p>이모지를 누르면 아래 뜻이 도구 안 작은 칸에도 떠요. 뜻은 한국 온라인에서 흔히 쓰는 쓰임을 정리한 것이라 사람·상황에 따라 다르게 읽힐 수 있어요.</p>
+<details class="emj-md"><summary>이모지 뜻 ${MEANS.length}개 펼쳐 보기</summary>
+<div class="table-wrap"><table class="dd-table emj-mt"><thead><tr><th scope="col">이모지</th><th scope="col">이름</th><th scope="col">뜻·쓰임</th></tr></thead><tbody>${meanRows}</tbody></table></div>
+</details>
+<h2 class="dd-h">일괄 삽입 예시 (자동 확인)</h2>
 <div class="table-wrap"><table class="dd-table emj-ex"><thead><tr><th scope="col">경우</th><th scope="col">넣은 글</th><th scope="col">결과</th></tr></thead><tbody>${EM_CASES.slice(0, 5).map(([name, a, , want]) => `<tr><th scope="row">${esc(name)}</th><td><pre>${esc(a.split("\n").slice(0, 4).join("\n"))}${a.split("\n").length > 4 ? "\n…" : ""}</pre></td><td><pre>${esc(want.split("\n").slice(0, 4).join("\n"))}${want.split("\n").length > 4 ? "\n…" : ""}</pre></td></tr>`).join("")}</tbody></table></div>
-<p class="hint">사이트를 만들 때마다 위 예시와 모든 문자(${total.toLocaleString("ko-KR")}개)가 유니코드 표준 문자인지, 이모지 분류는 유니코드 RGI 이모지 목록에 있는지 자동으로 확인해요.</p>`,
+<p class="hint">사이트를 만들 때마다 위 예시와 모든 문자(${total.toLocaleString("ko-KR")}개)가 유니코드 표준 문자인지, 이모지 분류는 유니코드 RGI 이모지 목록에 있는지, 한국어 검색어 ${EMJ_SEARCH.length}개가 맞는 이모지를 찾는지 자동으로 확인해요.</p>`,
   });
-  console.log(`✔ P2-57 이모지 데이터: ${total}개 (분류 ${cats.length}개), emoji-data.js ${emjBytes.toLocaleString("en-US")}바이트`);
+  console.log(`✔ P2-68 이모지 데이터: ${total}개 (탭 ${tabsAll.length}개, 분류 ${cats.length}개, 뜻 ${MEANS.length}개, 검색 시험 ${EMJ_SEARCH.length}건), emoji-data.js ${emjBytes.toLocaleString("en-US")}바이트 + emoji-more.js ${moreBytes.toLocaleString("en-US")}바이트(늦게 받음)`);
+}
+// P2-68 인스타 폰트 변환기: 변환식은 src/assets/insta-font.js 한 벌(화면 t-instafont.js와 아래 검사가 같은 파일을 vm으로 씀)
+// 빌드 때 ① 모양마다 A–Z·a–z·0–9 변환 결과가 배정된 유니코드 문자인지(사설 영역 아님) ② 표의 빈자리(ℎ ℬ ℂ 등) 사례 ③ 한글은 그대로인지 ④ 결합 문자·꾸밈 사례를 확인
+{
+  const ctx = {};
+  vm.createContext(ctx);
+  const IF_FILE = path.join(ROOT, "src", "assets", "insta-font.js");
+  vm.runInContext(fs.readFileSync(IF_FILE, "utf8"), ctx);
+  const IF = ctx.INSTAFONT;
+  const ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  for (const st of IF.STYLES) {
+    const o = IF.convert(st.id, ABC);
+    if (!/^\p{Assigned}+$/u.test(o) || /\p{Co}/u.test(o)) throw new Error(`P2-68 인스타 폰트 「${st.name}」: 배정되지 않은 문자`);
+    if (!st.comb && [...o].length !== ABC.length) throw new Error(`P2-68 인스타 폰트 「${st.name}」: 글자 수가 달라짐`);
+    if (IF.convert(st.id, "") !== "") throw new Error(`P2-68 인스타 폰트 「${st.name}」: 빈 글`);
+    if (!st.comb && IF.convert(st.id, "가나 다") !== "가나 다") throw new Error(`P2-68 인스타 폰트 「${st.name}」: 한글이 바뀜`);
+  }
+  const IF_CASES = [
+    ["bold", "Bold 1", "𝐁𝐨𝐥𝐝 𝟏"], ["italic", "Italic h", "𝐼𝑡𝑎𝑙𝑖𝑐 ℎ"], ["script", "BEFHILMR ego", "ℬℰℱℋℐℒℳℛ ℯℊℴ"], ["script", "Script", "𝒮𝒸𝓇𝒾𝓅𝓉"], ["fraktur", "CHIRZ", "ℭℌℑℜℨ"],
+    ["double", "CHNPQRZ 2", "ℂℍℕℙℚℝℤ 𝟚"], ["mono", "mono 7", "𝚖𝚘𝚗𝚘 𝟽"], ["circle", "Circle 0 1 9", "Ⓒⓘⓡⓒⓛⓔ ⓪ ① ⑨"], ["circleblack", "ab0", "🅐🅑⓿"], ["square", "Ok", "🄾🄺"],
+    ["full", "Hi 5", "Ｈｉ ５"], ["smallcaps", "Hello", "ʜᴇʟʟᴏ"], ["paren", "Ab1", "⒜⒝⑴"], ["strike", "가 b", "가̶ b̶"], ["under", "ab", "a̲b̲"],
+  ];
+  for (const [id, a, want] of IF_CASES) { const got = IF.convert(id, a); if (got !== want) throw new Error(`P2-68 인스타 폰트 「${id}」 ${a}: ${got} ≠ ${want}`); }
+  if (IF.wrap("kbracket", " 오늘 ") !== "『 오늘 』" || IF.between("hearts", "사랑 해") !== "사♡랑 해" || IF.between("spaced", "ab c") !== "a b   c") throw new Error("P2-68 인스타 폰트 꾸밈 불일치");
+  const ifBytes = fs.statSync(IF_FILE).size;
+  const fmtKB = (n) => `${(n / 1024).toFixed(1)}KB`;
+  utilPage(utilById.instafont, `<div class="if">
+<label for="if-src" class="lb-lab">바꿀 글 <small class="hint">영문·숫자가 바뀌어요</small></label>
+<textarea id="if-src" class="cc-text if-src" rows="3" placeholder="예: Good Vibes Only (비워 두면 Penguin Tools 2026으로 보여 줘요)" autocomplete="off" spellcheck="false"></textarea>
+<div class="cc-tools"><button type="button" class="btn ghost" data-if-example>예시 넣기</button><button type="button" class="btn ghost" data-if-clear>지우기</button></div>
+<p class="if-note hint" hidden>한글은 유니코드에 이런 모양의 글자가 따로 없어서 그대로 남아요. 취소선·밑줄과 아래 「한글 꾸미기」는 한글에도 붙어요.</p>
+<h3 class="emj-h">글씨 모양 ${IF.STYLES.length}가지 <small class="hint">누르면 복사</small></h3>
+<div class="if-list"></div>
+<h3 class="emj-h">한글 꾸미기 · 괄호와 기호 <small class="hint">누르면 복사</small></h3>
+<div class="if-deco"></div>
+<p class="safe">입력한 글은 서버로 보내지 않고 저장하지 않아요.</p>
+<p class="hint">유니코드 표준 문자만 써요(Mathematical Alphanumeric Symbols 등) · 변환표 ${fmtKB(ifBytes)}. 휴대폰·앱에 따라 일부 모양이 네모(□)로 보일 수 있어요.</p>
+</div>`, {
+    scripts: ["insta-font.js", "t-instafont.js"], fileTool: false,
+    after: `<h2 class="dd-h">변환 예시 (자동 확인)</h2>
+<div class="table-wrap"><table class="dd-table if-ex"><thead><tr><th scope="col">모양</th><th scope="col">넣은 글</th><th scope="col">결과</th></tr></thead><tbody>${IF_CASES.slice(0, 12).map(([id, a, want]) => `<tr><th scope="row">${esc(IF.STYLES.find((x) => x.id === id).name)}</th><td>${esc(a)}</td><td>${esc(want)}</td></tr>`).join("")}</tbody></table></div>
+<p class="hint">사이트를 만들 때마다 ${IF.STYLES.length}가지 모양 모두 A–Z·a–z·0–9가 유니코드에 배정된 문자로 바뀌는지, 한글은 그대로인지 자동으로 확인해요. 이모지를 더하려면 <a href="${u(utilById.emoji.path)}">이모지 · 특수문자 복사</a>, 인스타 소개 글자 수는 <a href="${u(utilById.charcount.path)}">글자수 세기</a>에서 보세요.</p>`,
+  });
+  console.log(`✔ P2-68 인스타 폰트 변환기: 모양 ${IF.STYLES.length}가지, 꾸밈 ${IF.WRAPS.length + IF.BETWEEN.length}가지, 사례 ${IF_CASES.length}건, insta-font.js ${ifBytes.toLocaleString("en-US")}바이트`);
 }
 // 디데이 계산기
 utilPage(utilById.dday, `<form class="dd-form" autocomplete="off">

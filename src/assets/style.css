@@ -1724,10 +1724,53 @@ li.has-fav{position:relative}
 .emj-deco label{display:grid;gap:4px;font-size:13.5px;font-weight:800}
 .emj-deco input,.emj-deco select{width:100%;min-width:0}
 .emj-deco input[type=text]{font-size:18px}
-.emj-fq{font-size:17px;padding:2px 9px;cursor:pointer}
+.emj-fq{font-size:17px;padding:2px 9px;cursor:pointer;min-width:40px;justify-content:center} /* P2-68 최소 폭 40px */
 .emj-ex pre{margin:0;white-space:pre-wrap;font:inherit;font-size:14px;line-height:1.5}
 @media(max-width:480px){.emj-grid{grid-template-columns:repeat(auto-fill,minmax(42px,1fr));max-height:300px}.emj-b{height:42px;font-size:22px}}
 @media(max-width:480px){.emj-bag{flex-basis:110px}.emj-bagrow .btn{padding:8px 12px}}
+/* P2-68 이모지 탭 재구성(상황별 + 유니코드 분류 줄), 소분류, 텍스트 이모티콘·깃허브 코드·프리셋 카드, 뜻 칸 / 인스타 폰트 변환기 */
+.emj-tabs-wrap{display:grid;gap:8px}
+.emj-uni{align-items:center;padding-top:8px;border-top:1px dashed var(--line)}
+.emj-tl{font-size:12.5px;font-weight:800;color:var(--ink-3);margin-right:2px}
+.emj-subs{display:flex;flex-wrap:wrap;gap:6px;padding:8px;border-radius:12px;background:var(--soft)}
+.emj-subs[hidden],.emj-ghmode[hidden],.emj-mean[hidden],.if-note[hidden]{display:none!important}
+.emj-sub{font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.emj-sub[aria-pressed="true"]{background:var(--ink);color:var(--white)}
+.emj-inforow{display:flex;gap:8px;align-items:center;justify-content:space-between}
+.emj-inforow .emj-info{flex:1 1 auto;min-width:0}
+.emj-link{font:inherit;font-size:12.5px;font-weight:700;white-space:nowrap;cursor:pointer;flex:0 0 auto}
+.emj-gh{grid-column:1/-1;margin:6px 2px 0;font-size:13px;font-weight:800;color:var(--ink-2)}
+.emj-gh:first-child{margin-top:0}
+.emj-b.txt{grid-column:span 3;height:auto;min-height:46px;font-size:15px;line-height:1.3;padding:6px;white-space:normal;word-break:break-all;font-family:system-ui,"Segoe UI Symbol","Apple Symbols","Noto Sans Symbols 2","Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif}
+.emj-b.gh{grid-column:span 3;display:flex;align-items:center;gap:6px;padding:0 8px;min-width:0;text-align:left}
+.emj-b.gh .gh-e{font-size:22px;flex:0 0 auto;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+.emj-b.gh code{font-size:12.5px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:none;padding:0}
+.emj-grid.is-preset{grid-template-columns:repeat(auto-fill,minmax(240px,1fr));max-height:560px}
+.emj-p{display:grid;gap:6px;align-content:start;padding:10px 12px;border:2px solid var(--ink);border-radius:10px;background:var(--white);color:var(--ink)}
+.emj-p b{font-size:13.5px}
+.emj-p pre{margin:0;white-space:pre-wrap;word-break:break-word;font:inherit;font-size:15px;line-height:1.55;font-family:system-ui,"Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif}
+.emj-p .btn{justify-self:start;min-height:40px;padding:6px 16px}
+.emj-mean{margin:0;display:flex;gap:10px;align-items:center;padding:8px 12px;border:2px dashed var(--ink);border-radius:10px;background:var(--soft);font-size:14.5px;line-height:1.45}
+.emj-mc{font-size:26px;line-height:1;flex:0 0 auto;max-width:55%;overflow-wrap:anywhere;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",system-ui,sans-serif}
+.emj-jump{line-height:2.4}
+.emj-jump a{display:inline-block;padding:4px 2px}
+.emj-md summary{cursor:pointer;font-weight:800;padding:10px 0;min-height:40px}
+.emj-mt .emj-mtc{font-size:22px;text-align:center;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",system-ui,sans-serif}
+@media(max-width:480px){.emj-inforow{flex-wrap:wrap}.emj-ghmode span{padding:6px 10px;font-size:13px}}
+/* P2-68 다크에서 고른 탭에 손가락·마우스를 올리면 .chip:hover 다크 규칙과 겹쳐 글자가 사라지던 것 → 눌림 색 고정 */
+:where([data-theme="dark"]) .emj-tab[aria-pressed="true"]:hover,:where([data-theme="dark"]) .emj-sub[aria-pressed="true"]:hover{background:#f2f1ec;color:#1e1e1e}
+/* P2-68 휴대폰: 탭·소분류는 한 줄씩 옆으로 밀어 넘김(목록이 화면 위쪽에 오게) */
+@media(max-width:480px){.emj-tabs,.emj-subs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;overscroll-behavior-x:contain;-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent);padding-right:28px}.emj-tabs::-webkit-scrollbar,.emj-subs::-webkit-scrollbar{display:none}.emj-tabs>*,.emj-subs>*{flex:0 0 auto}.emj-subs{padding:6px 28px 6px 6px}.emj-uni{padding-top:6px}}
+.if{display:grid;gap:12px}
+.if-src{min-height:84px;font-size:16px}
+.if-list,.if-deco{display:grid;gap:6px}
+@media(min-width:760px){.if-list,.if-deco{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.if-row{appearance:none;font:inherit;text-align:left;cursor:pointer;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;align-items:center;min-height:52px;padding:8px 10px 8px 12px;border:2px solid var(--ink);border-radius:10px;background:var(--white);color:var(--ink)}
+.if-row:hover,.if-row:focus-visible{background:var(--soft);outline:3px solid var(--hwang);outline-offset:1px}
+.if-row:active{transform:scale(.99)}
+.if-name{font-size:12.5px;font-weight:800;color:var(--ink-3)}
+.if-out{grid-column:1;font-size:19px;line-height:1.4;overflow-wrap:anywhere;font-family:system-ui,"Segoe UI Symbol","Cambria Math","Apple Symbols","Noto Sans Math","STIX Two Math","Segoe UI Emoji",sans-serif}
+.if-copy{grid-column:2;grid-row:1/3;font-size:13px;font-weight:800;padding:8px 12px;border-radius:8px;background:var(--hwang);color:#141414;min-height:36px;display:flex;align-items:center}
 
 /* ===================== P2-58 무료 타로: 질문·스프레드 고르기 → 섞기(카드 더미) → 엎은 22장 중 고르기 → 자리(1·3장) 뒤집기 → 해석 카드 → 공유, 아래 22장 모아 보기 ===================== */
 .tr-setup .seg+.seg,.tr-setup .tr-free+.seg{margin-top:14px}
