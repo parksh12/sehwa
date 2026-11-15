@@ -32,6 +32,13 @@
     const oneLine = val("join") === "space" || val("join") === "remove";
     form.querySelector(".lb-blank").classList.toggle("off", oneLine);
   };
+  // P2-69 T10: 휴대폰에서는 결과 칸이 입력칸 아래 화면 밖에 있어 바뀐 것이 안 보였음 → 입력칸 위에 요약 한 줄(+ 결과로 가기·복사)을 붙여 둠(스크롤해도 머리글 아래에 고정)
+  const sum = document.createElement("div");
+  sum.className = "tx-sum"; sum.hidden = true;
+  sum.innerHTML = '<p class="tx-sum-t" aria-live="polite"></p><span class="tx-sum-b"><button type="button" class="chip" data-sum-go>결과 보기 ↓</button><button type="button" class="chip" data-sum-copy>복사</button></span>';
+  inp.before(sum);
+  sum.querySelector("[data-sum-go]").addEventListener("click", () => { out.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center" }); });
+  sum.querySelector("[data-sum-copy]").addEventListener("click", () => $("[data-copy]").click());
   const row = (k, a, b) => { const tr = $(`[data-st="${k}"]`); tr.children[1].textContent = fmt(a); tr.children[2].textContent = fmt(b); const d = b - a; tr.children[3].textContent = d === 0 ? "0" : (d > 0 ? "+" : "−") + fmt(Math.abs(d)); };
   const run = () => {
     sync();
@@ -40,6 +47,8 @@
     const a = TC.stats(inp.value), b = TC.stats(r);
     row("all", a.all, b.all); row("noSpace", a.noSpace, b.noSpace); row("lines", a.lines, b.lines); row("invisible", a.invisible, b.invisible);
     $("[data-empty]").hidden = !!inp.value;
+    sum.hidden = !inp.value;
+    if (inp.value) { const d = b.all - a.all; sum.firstChild.textContent = `정리한 글 ${fmt(b.all)}자 · ${fmt(b.lines)}줄 (${d === 0 ? "글자 수 그대로" : (d > 0 ? "+" : "−") + fmt(Math.abs(d)) + "자"}${a.invisible ? ` · 보이지 않는 문자 ${fmt(a.invisible - b.invisible)}개 지움` : ""})`; }
   };
   inp.addEventListener("input", run);
   form.addEventListener("change", run);

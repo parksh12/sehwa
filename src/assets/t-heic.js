@@ -311,7 +311,7 @@
       keepInfo: keepinfo.checked, keepGps: !nogps.checked,
     };
     PT.msg(box, ""); PT.hideResult(box); PT.busy(box, true, "변환 준비 중…");
-    const rows = [], zipFiles = {}, errs = [], used = new Set();
+    const rows = [], zipFiles = {}, errs = [], used = new Set(), outs = [];
     let before = 0, after = 0, capped = 0, wasm = 0, kept = 0;
     try {
       for (let i = 0; i < files.length; i++) {
@@ -329,7 +329,8 @@
           if (r.kept) kept++;
           zipFiles[name] = [new Uint8Array(await r.blob.arrayBuffer()), { level: 0 }]; // 무압축(STORE): JPG는 더 줄지 않음
           const href = PT.url(r.blob);
-          rows.push(`<li><img src="${href}" alt="" width="44" height="44" loading="lazy"><span class="fl-name">${PT.esc(name)}<small>${r.w0}×${r.h0}${r.w !== r.w0 ? ` → ${r.w}×${r.h}` : ""} · ${PT.size(f.size)} → ${PT.size(r.blob.size)}</small></span><a class="btn ghost" href="${href}" download="${PT.esc(name)}">받기</a></li>`);
+          rows.push(`<li><img src="${href}" alt="" width="44" height="44" loading="lazy"><span class="fl-name">${PT.esc(name)}<small>${r.w0}×${r.h0}${r.w !== r.w0 ? ` → ${r.w}×${r.h}` : ""} · ${PT.size(f.size)} → ${PT.size(r.blob.size)}</small></span>@@DL@@</li>`);
+          outs.push({ href, name, blob: r.blob, src: f.name });
         } catch (e) {
           errs.push(e.message || String(e));
           if (e.fatal) break;
@@ -341,7 +342,8 @@
       const metaLine = kept ? `${kept}장에 고른 사진 정보만 남겼어요${o.keepGps ? "(위치 포함)" : ""}.` : "사진 정보(위치·날짜 등)는 넣지 않았어요.";
       PT.showResult(box, `<p class="tk-done"><b>${rows.length}장을 JPG로 바꿨어요</b> (${PT.size(before)} → ${PT.size(after)})</p>
 <p class="hint hc-done-meta">${metaLine}${capped ? ` 아이폰·아이패드 브라우저의 한계 때문에 ${capped}장은 약 1,600만 화소로 줄여 저장했어요.` : ""}</p>
-<ul class="flist done hc-done">${rows.join("")}</ul>${zip ? `<div class="tk-dl">${PT.link(zip, "HEIC_JPG변환.zip", `zip으로 한 번에 내려받기 (${rows.length}장)`, "btn big")}</div>` : ""}`);
+<ul class="flist done hc-done">${rows.map((r, i) => { const k = r.lastIndexOf("@@DL@@"); return r.slice(0, k) + (zip ? `<a class="btn ghost" href="${outs[i].href}" download="${PT.esc(outs[i].name)}" data-dl>받기</a>` : "") + r.slice(k + 6); }).join("")}</ul>
+<div class="tk-dl">${zip ? PT.dl(zip, `${PT.base(outs[0].src)}-외${rows.length - 1}장-JPG`, "zip", `zip으로 한 번에 내려받기 (${rows.length}장)`) : PT.dl(outs[0].blob, outs[0].name.replace(/\.jpg$/, ""), "jpg", "JPG 내려받기")}</div>`); // P2-72 주 내려받기에 파일 이름 칸
       if (wasm && first) first.hidden = true;
     } finally { PT.busy(box, false); run.disabled = !list.files().length; }
   });

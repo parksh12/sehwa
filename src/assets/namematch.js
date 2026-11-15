@@ -13,6 +13,16 @@
   const ORDER = ["불", "흙", "공기", "물"];
   const parseMD = (s) => { if (!/^\d{4}$/.test(s || "")) return null; const m = +s.slice(0, 2), d = +s.slice(2); return NALGI.validDate(2000, m, d) ? [m, d] : null; };
 
+  // P2-69 T5: 접어 둔 「생일」 칸 값이 형식(숫자 4자리)에 안 맞으면 브라우저가 아무 안내 없이 제출을 막았음 → 칸을 펼치고 알려 줌
+  const opt = form.querySelector("details.opt");
+  [form.ad, form.bd].forEach((el) => el.addEventListener("input", () => el.setCustomValidity("")));
+  form.querySelector('[type="submit"]').addEventListener("click", () => {
+    const bad = [form.ad, form.bd].filter((el) => el.value && !/^\d{4}$/.test(el.value.trim()));
+    if (!bad.length) return;
+    bad.forEach((el) => el.setCustomValidity("월·일 숫자 4자리로 넣어 주세요. 예: 0315"));
+    if (opt && !opt.open) opt.open = true;
+    NALGI.toast("생일은 월·일 숫자 4자리(예: 0315)로 넣어 주세요");
+  });
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     const a = form.a.value.trim(), b = form.b.value.trim();

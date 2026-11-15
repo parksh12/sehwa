@@ -12,12 +12,23 @@
   const write = (a) => { try { localStorage.setItem(KEY, JSON.stringify(a)); } catch (e) { toast("이 브라우저에서는 즐겨찾기를 저장할 수 없어요"); } };
   let favs = read();
 
+  // P2-71 즐겨찾기 「오래 보관」 요청(대표님 11-16 B안): 브라우저가 저장 공간을 정리할 때 이 사이트 데이터를 지우지 않게 요청.
+  // 크롬·삼성 인터넷은 묻지 않고 조용히 판단, 사파리 17+도 지원. 파이어폭스는 허용 창을 띄우므로 별을 누를 때(사용자 동작)만 요청.
+  const persist = (onLoad) => {
+    try {
+      const st = navigator.storage;
+      if (!st || !st.persist || (onLoad && "mozInnerScreenX" in window)) return;
+      (st.persisted ? st.persisted() : Promise.resolve(false)).then((p) => p || st.persist()).catch(() => {});
+    } catch (e) {}
+  };
+  if (favs.length) persist(true);
+
   function toggle(id) {
     if (!IDX[id]) return;
     const i = favs.indexOf(id);
     if (i >= 0) { favs.splice(i, 1); toast(`「${IDX[id].t}」을(를) 즐겨찾기에서 뺐어요`); }
     else if (favs.length >= MAX) { toast(`즐겨찾기는 ${MAX}개까지예요. 하나를 빼고 다시 눌러 주세요`); return; }
-    else { favs.push(id); toast(`「${IDX[id].t}」을(를) 즐겨찾기에 담았어요`); }
+    else { favs.push(id); toast(`「${IDX[id].t}」을(를) 즐겨찾기에 담았어요`); persist(false); }
     write(favs); sync();
   }
 

@@ -17,10 +17,19 @@
   const out = (k, v) => { const el = $(`[data-out="${k}"]`); if (el) el.textContent = v; };
   const pages = (x) => `${fmt(x, 1)}매`;
   let last = null;
+  // P2-69 T10: 휴대폰에서는 결과(읽기 시간 등)가 입력칸 아래 화면 밖에 있음 → 입력칸 위에 요약 한 줄 고정(+ 결과로 가기·복사)
+  const sum = document.createElement("div");
+  sum.className = "tx-sum"; sum.hidden = true;
+  sum.innerHTML = '<p class="tx-sum-t" aria-live="polite"></p><span class="tx-sum-b"><button type="button" class="chip" data-sum-go>결과 보기 ↓</button><button type="button" class="chip" data-sum-copy>복사</button></span>';
+  ta.before(sum);
+  sum.querySelector("[data-sum-go]").addEventListener("click", () => { $(".rdt-stats").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center" }); });
+  sum.querySelector("[data-sum-copy]").addEventListener("click", () => $("[data-copy]").click());
   const EXAMPLE = "읽기 시간 계산기는 글을 붙여 넣으면 읽는 데 걸리는 시간과 소리 내어 말하는 데 걸리는 시간을 함께 알려 줘요. 블로그 글을 올리기 전이나 발표 원고를 준비할 때 쓰면 좋아요.\n\n발표 원고는 보통 1분에 300자 안팎으로 잡지만 사람마다 말하는 속도가 다르니, 한 번 소리 내어 읽어 보고 기준값을 내 속도에 맞게 바꿔 보세요. 원고지 매수는 200자 원고지를 기준으로 세 가지 방식으로 계산해요.\n\n문장이 너무 길면 읽는 사람이 앞 내용을 잊어버리기 쉬워서, 이 계산기는 60자가 넘는 문장을 따로 모아 보여 주고 어디서 끊으면 좋을지 생각해 볼 수 있게 도와줘요. 자주 나온 키워드도 함께 보여 주니 블로그 글의 핵심 단어가 잘 드러나는지 확인해 보세요.";
   const run = () => {
     const r = R.analyze(ta.value, opts());
     last = r;
+    sum.hidden = !r.chars;
+    if (r.chars) sum.firstChild.textContent = `읽기 ${R.fmtTime(r.readMin)} · 발표 ${R.fmtTime(r.speakMin)} · 원고지 ${pages(r.ms.withSpace)} · ${fmt(r.chars)}자`;
     out("read", R.fmtTime(r.readMin)); out("speak", R.fmtTime(r.speakMin)); out("ms", pages(r.ms.withSpace));
     out("chars", fmt(r.chars)); out("noSpace", fmt(r.noSpace)); out("ko", fmt(r.ko)); out("words", fmt(r.words));
     out("sentences", fmt(r.sentences)); out("paragraphs", fmt(r.paragraphs)); out("avg", `${fmt(r.avgSentence, 1)}자`); out("longN", `${fmt(r.long.length)}개`);

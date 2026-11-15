@@ -333,9 +333,10 @@
   }
   async function shareCard(n) {
     const c = await makeCard(n), url = c.toDataURL("image/png");
-    openOv(`<div class="hl-share"><img src="${url}" alt="공유 카드 미리보기" width="216" height="384"><div class="hl-btns"><a class="hl-btn" href="${url}" download="hell-chosun-${n === "end" ? "ending" : "death-" + pad(n)}.png" data-focus>이미지 저장</a><button type="button" class="hl-btn ghost" data-act="sys-share" hidden>공유하기</button><button type="button" class="hl-btn ghost" data-act="shareback">돌아가기</button></div><p class="hl-note">카드에는 이름 같은 개인정보가 들어가지 않아요.</p></div>`, "share");
+    const fn = `hell-chosun-${n === "end" ? "ending" : "death-" + pad(n)}`; // P2-72 「파일 이름」 칸(저장 창이 되는 PC는 창에서도 정함)
+    openOv(`<div class="hl-share fname-scope"><img src="${url}" alt="공유 카드 미리보기" width="216" height="384">${window.NALGI && NALGI.nameFieldHtml ? NALGI.nameFieldHtml({ def: fn, ext: "png", id: "hl-fname" }) : ""}<div class="hl-btns"><a class="hl-btn" href="${url}" download="${fn}.png" data-dl data-dl-for="hl-fname" data-dl-ext="png" data-focus>이미지 저장</a><button type="button" class="hl-btn ghost" data-act="sys-share" hidden>공유하기</button><button type="button" class="hl-btn ghost" data-act="shareback">돌아가기</button></div><p class="fname-status hl-note" aria-live="polite"></p><p class="hl-note">카드에는 이름 같은 개인정보가 들어가지 않아요.</p></div>`, "share");
     const sb = ov.querySelector('[data-act="sys-share"]');
-    c.toBlob((blob) => { if (!blob) return; const file = new File([blob], "hell-chosun.png", { type: "image/png" }); if (navigator.canShare && navigator.canShare({ files: [file] })) { sb.hidden = false; sb.onclick = () => navigator.share({ files: [file], title: "헬조선에서 살아남기", text: n === "end" ? "헬조선 80세 생존!" : "이게 말이 돼?" }).catch(() => {}); } }, "image/png");
+    c.toBlob((blob) => { if (!blob) return; if (window.NALGI && NALGI.bindBlob) NALGI.bindBlob(ov.querySelector("a[data-dl]"), blob); const file = new File([blob], "hell-chosun.png", { type: "image/png" }); if (navigator.canShare && navigator.canShare({ files: [file] })) { sb.hidden = false; sb.onclick = () => navigator.share({ files: [file], title: "헬조선에서 살아남기", text: n === "end" ? "헬조선 80세 생존!" : "이게 말이 돼?" }).catch(() => {}); } }, "image/png");
   }
 
   // ---------- 입력 ----------

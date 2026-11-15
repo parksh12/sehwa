@@ -230,7 +230,29 @@ body.done{background:#e5372b;color:#fff}body.done .s{color:#fff}</style>`;
     const bStart = tm.querySelector("[data-start]"), bPause = tm.querySelector("[data-pause]"), bReset = tm.querySelector("[data-reset]"), bStop = tm.querySelector("[data-silence]");
     let total = 0, left = 0, endAt = 0, running = false, tick = null;
     const fmt = (ms) => { const sec = Math.max(0, Math.ceil(ms / 1000)); const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60; return h ? `${h}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`; };
-    const inputMs = () => ((Math.max(0, +H.value || 0) * 3600) + (Math.max(0, +M.value || 0) * 60) + Math.max(0, +S.value || 0)) * 1000;
+    const MAX_SEC = 99 * 3600 + 59 * 60 + 59; // P2-69 T3: 정할 수 있는 최댓값 99:59:59 (아주 큰 값을 넣으면 표시가 깨지던 것)
+    const inputMs = () => Math.min(MAX_SEC, (Math.max(0, +H.value || 0) * 3600) + (Math.max(0, +M.value || 0) * 60) + Math.max(0, +S.value || 0)) * 1000;
+    // P2-69 C11: 범위 밖 값(음수·소수·99시간 초과·60분/60초 이상)은 칸을 고쳐 쓰고 무엇을 바꿨는지 칸 아래에 알려 줌
+    const tmErr = document.createElement("p"); tmErr.className = "hint tm-err"; tmErr.setAttribute("role", "status"); tmErr.hidden = true;
+    tm.querySelector(".tm-inputs").after(tmErr);
+    tm.querySelector("form").noValidate = true; // 브라우저 기본 말풍선 대신 아래 안내
+    function tidyInputs() {
+      const raw = [H, M, S].map((el) => el.value.trim());
+      const notes = [];
+      const nums = [H, M, S].map((el, i) => {
+        const v = Number(raw[i]);
+        if (raw[i] === "") return 0;
+        if (!isFinite(v) || v < 0) { notes.push("음수나 숫자가 아닌 값은 0으로 바꿨어요."); return 0; }
+        if (v % 1) notes.push("소수점 아래는 버렸어요.");
+        return Math.floor(v);
+      });
+      let sec = nums[0] * 3600 + nums[1] * 60 + nums[2];
+      if (sec > MAX_SEC) { sec = MAX_SEC; notes.push("타이머는 99시간 59분 59초까지 정할 수 있어서 최댓값으로 맞췄어요."); }
+      else if (nums[1] > 59 || nums[2] > 59) notes.push(`60분·60초가 넘는 값은 ${Math.floor(sec / 3600)}시간 ${Math.floor((sec % 3600) / 60)}분 ${sec % 60}초로 바꿔 적었어요.`);
+      if (notes.length) { H.value = Math.floor(sec / 3600); M.value = Math.floor((sec % 3600) / 60); S.value = sec % 60; }
+      tmErr.textContent = [...new Set(notes)].join(" "); tmErr.hidden = !notes.length;
+      return !!notes.length;
+    }
     const LABEL = { idle: "대기", run: "진행 중", pause: "일시정지", done: "끝!" };
     const pip = setupPip(tm, {
       text: () => (tm.dataset.state === "done" ? "끝!" : disp.textContent),
@@ -269,24 +291,27 @@ body.done{background:#e5372b;color:#fff}body.done .s{color:#fff}</style>`;
     function silence() { stopRing(); setMode("idle"); left = total = inputMs(); paint(); }
     // 화면이 꺼졌거나 다른 앱에 있다가 돌아오면 바로 다시 계산(그사이 끝났으면 지금 알림)
     document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") { if (wantLock) keepAwake(true); if (running) paint(); } });
-    bStart.addEventListener("click", () => { const st = tm.dataset.state; if (st === "run") return; if (st === "pause") start(); else start(inputMs()); });
+    bStart.addEventListener("click", () => { const st = tm.dataset.state; if (st === "run") return; if (st === "pause") start(); else { tidyInputs(); start(inputMs()); } });
     bPause.addEventListener("click", () => { if (tm.dataset.state === "run") pause(); });
     const fromInputs = () => { if (tm.dataset.state === "idle" || tm.dataset.state === "done") { stopRing(); setMode("idle"); left = total = inputMs(); paint(); } };
     tm.querySelectorAll(".tm-step").forEach((b) => b.addEventListener("click", () => {
       const unit = { h: 3600, m: 60, s: 1 }[b.dataset.step];
       const sec = Math.min(99 * 3600 + 59 * 60 + 59, Math.max(0, inputMs() / 1000 + unit * (+b.dataset.d))); // 자리 올림·내림 포함
       H.value = Math.floor(sec / 3600); M.value = Math.floor((sec % 3600) / 60); S.value = sec % 60;
-      tm.querySelectorAll("[data-quick]").forEach((c) => c.classList.remove("on")); fromInputs();
+      tm.querySelectorAll("[data-quick]").forEach((c) => c.classList.remove("on")); tmErr.hidden = true; fromInputs();
     }));
     [H, M, S].forEach((el) => el.addEventListener("focus", () => el.select()));
     bReset.addEventListener("click", reset);
     bStop.addEventListener("click", silence);
     tm.querySelector("[data-preview]")?.addEventListener("click", () => { unlockSound(); ring(tm, { loop: false }); toast("알림음을 들려 드려요. 안 들리면 기기 음량과 무음 모드를 확인해 주세요"); });
     tm.querySelectorAll("[data-quick]").forEach((b) => b.addEventListener("click", () => {
-      const min = +b.dataset.quick; H.value = Math.floor(min / 60); M.value = min % 60; S.value = 0; fromInputs(); tm.querySelectorAll("[data-quick]").forEach((c) => c.classList.toggle("on", c === b)); bStart.focus();
+      const min = +b.dataset.quick; H.value = Math.floor(min / 60); M.value = min % 60; S.value = 0; tmErr.hidden = true; fromInputs(); tm.querySelectorAll("[data-quick]").forEach((c) => c.classList.toggle("on", c === b)); bStart.focus();
     }));
     [H, M, S].forEach((el) => el.addEventListener("input", () => { tm.querySelectorAll("[data-quick]").forEach((c) => c.classList.remove("on")); fromInputs(); }));
+    [H, M, S].forEach((el) => el.addEventListener("change", () => { if (tm.dataset.state === "idle" || tm.dataset.state === "done") { tidyInputs(); fromInputs(); } }));
     tm.querySelector("form").addEventListener("submit", (e) => { e.preventDefault(); bStart.click(); });
+    // P2-69: 숫자 칸이 셋이고 제출 단추가 없어 Enter(키보드 「이동」)로는 제출되지 않았음 → Enter로 시작
+    [H, M, S].forEach((el) => el.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.isComposing) { e.preventDefault(); bStart.click(); } }));
     setupFullscreen(tm);
     setMode("idle"); left = total = inputMs(); paint();
   }

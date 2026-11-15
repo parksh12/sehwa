@@ -272,11 +272,13 @@
     const c = await makeCard(n);
     const url = c.toDataURL("image/png");
     const prevMode = G.mode;
-    openOv(`<div class="hl-share"><img src="${url}" alt="공유 카드 미리보기" width="216" height="384"><div class="hl-btns"><a class="hl-btn" href="${url}" download="hell31-${n === "clear" ? "clear" : "death-" + pad(n)}.png" data-focus>이미지 저장</a><button type="button" class="hl-btn ghost" data-act="sys-share" hidden>공유하기</button><button type="button" class="hl-btn ghost" data-act="shareback">돌아가기</button></div><p class="hl-note">카드에는 이름·기록 같은 개인정보가 들어가지 않아요.</p></div>`, "share");
+    const fn = `hell31-${n === "clear" ? "clear" : "death-" + pad(n)}`; // P2-72 「파일 이름」 칸(저장 창이 되는 PC는 창에서도 정함)
+    openOv(`<div class="hl-share fname-scope"><img src="${url}" alt="공유 카드 미리보기" width="216" height="384">${window.NALGI && NALGI.nameFieldHtml ? NALGI.nameFieldHtml({ def: fn, ext: "png", id: "hl-fname" }) : ""}<div class="hl-btns"><a class="hl-btn" href="${url}" download="${fn}.png" data-dl data-dl-for="hl-fname" data-dl-ext="png" data-focus>이미지 저장</a><button type="button" class="hl-btn ghost" data-act="sys-share" hidden>공유하기</button><button type="button" class="hl-btn ghost" data-act="shareback">돌아가기</button></div><p class="fname-status hl-note" aria-live="polite"></p><p class="hl-note">카드에는 이름·기록 같은 개인정보가 들어가지 않아요.</p></div>`, "share");
     G.shareBack = prevMode === "dead" ? (ov.dataset.from || "dead") : prevMode;
     const sb = ov.querySelector('[data-act="sys-share"]');
     c.toBlob((blob) => {
       if (!blob) return;
+      if (window.NALGI && NALGI.bindBlob) NALGI.bindBlob(ov.querySelector("a[data-dl]"), blob);
       const file = new File([blob], "hell31.png", { type: "image/png" });
       if (navigator.canShare && navigator.canShare({ files: [file] })) { sb.hidden = false; sb.onclick = () => navigator.share({ files: [file], title: "지옥에서 살아남기", text: n === "clear" ? "지옥 31단계 클리어!" : `#${pad(n)} ${STAGES[n - 1].death.name}… 이게 말이 돼?` }).catch(() => {}); }
     }, "image/png");

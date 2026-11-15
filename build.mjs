@@ -330,9 +330,11 @@ const extRowHtml = (f) =>
   `<li class="has-fav">${favBtn({ id: f.id, title: f.name }, "fav-row")}<a class="row ext" href="${f.url}" target="_blank" rel="noopener"><span class="row-art">${ART[f.id]}</span><span class="row-body"><b>${esc(f.name)} <em class="ext-tag">새 창 ↗</em><span class="sr"> (새 창, 외부 사이트)</span></b><small>${esc(f.hook)}</small></span><span class="row-go" aria-hidden="true">›</span></a></li>`;
 const recoRows = (ids, heading) => `<section class="reco"><h2>${heading}</h2><ul class="rows rows-flow">${ids.map((id) => rowHtml(anyById[id])).join("")}</ul></section>`;
 
+// P2-69 C12 「결과 복사」(결과 카드 글 + 주소) 추가. app.js NALGI.shareBar와 같은 모양
 const shareBar = (opts = {}) =>
   `<div class="share" data-share-title="${esc(opts.title || "")}" data-share-text="${esc(opts.text || "")}" data-share-path="${esc(opts.path || "")}">
   <button type="button" class="btn" data-act="share">공유하기</button>
+  <button type="button" class="btn ghost" data-act="text">결과 복사</button>
   <button type="button" class="btn ghost" data-act="copy">링크 복사</button>
   <button type="button" class="btn ghost" data-act="image">결과 이미지 저장</button>
 </div>`;
@@ -1204,7 +1206,7 @@ ${crumbHtml(items)}
 utilPage(utilById.pdfmerge, `${dropHtml({ accept: ".pdf,application/pdf", multiple: true, label: "합칠 PDF 파일을 넣어 주세요", limit: "PDF · 파일당 50MB · 30개 · 합계 200MB까지" })}
 <ul class="flist" hidden></ul>
 <p class="hint tk-hint-two" hidden>PDF를 하나 더 넣어 주세요. 두 개 이상이어야 합칠 수 있어요.</p>
-${tkTail("PDF 합치기")}`, { vendor: ["pdf-lib.min.js"], scripts: ["t-pdfmerge.js"] });
+${tkTail("PDF 합치기")}`, { scripts: ["t-pdfmerge.js"] }); // P2-69 pdf-lib는 페이지를 열 때 받지 않음(tool-kit.js PT.needPdf: 파일을 넣거나 처리할 때)
 
 // PDF 나누기
 utilPage(utilById.pdfsplit, `${dropHtml({ accept: ".pdf,application/pdf", label: "나눌 PDF 파일을 넣어 주세요", limit: "PDF 1개 · 100MB까지 · 한 쪽씩 나누기는 500쪽까지" })}
@@ -1215,7 +1217,7 @@ utilPage(utilById.pdfsplit, `${dropHtml({ accept: ".pdf,application/pdf", label:
   </fieldset>
   <label class="range-row">뽑을 페이지<input name="range" inputmode="text" autocomplete="off" placeholder="예: 1-3, 5"></label>
 </div>
-${tkTail("범위 추출하기")}`, { vendor: ["pdf-lib.min.js", "fflate.min.js"], scripts: ["t-pdfsplit.js"] });
+${tkTail("범위 추출하기")}`, { vendor: ["fflate.min.js"], scripts: ["t-pdfsplit.js"] }); // P2-69 pdf-lib 늦게 받기
 
 // JPG PDF 변환
 utilPage(utilById.img2pdf, `${dropHtml({ accept: ".jpg,.jpeg,.png,image/jpeg,image/png", multiple: true, label: "PDF로 만들 이미지를 넣어 주세요", limit: "JPG·PNG · 장당 20MB · 50장 · 합계 200MB까지" })}
@@ -1226,7 +1228,7 @@ utilPage(utilById.img2pdf, `${dropHtml({ accept: ".jpg,.jpeg,.png,image/jpeg,ima
   </fieldset>
   <label>A4 여백<select name="margin"><option value="0">없음</option><option value="24" selected>좁게</option><option value="48">보통</option></select></label>
 </div>
-${tkTail("PDF 만들기")}`, { vendor: ["pdf-lib.min.js"], scripts: ["t-img2pdf.js"] });
+${tkTail("PDF 만들기")}`, { scripts: ["t-img2pdf.js"] }); // P2-69 pdf-lib 늦게 받기
 
 // P2-65 옛 「워드 PDF 변환(간단)」(mammoth)은 폐지 → /pdf/word-to-pdf/는 /docx-to-pdf/로 이동(아래 moved)
 
@@ -1323,6 +1325,9 @@ utilPage(utilById.imgcompress, `${dropHtml({ accept: ".jpg,.jpeg,.png,.webp,imag
 </div>
 ${tkTail("용량 줄이기")}`, { vendor: ["fflate.min.js"], scripts: ["t-imgcompress.js"] });
 
+// P2-72 「파일 이름」 칸(확장자는 칸 밖에 고정). 화면에서 만드는 칸(app.js NALGI.nameFieldHtml)과 같은 모양
+const fnameField = (id, def, exts) => `<div class="fname"><label for="${id}">파일 이름</label><span class="fname-row"><input id="${id}" class="fname-in" type="text" value="${esc(def)}" data-def="${esc(def)}" maxlength="80" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" aria-describedby="${id}-x"><span class="fname-ext" id="${id}-x">${[].concat(exts).map((x) => "." + x).join(" / ")}</span></span></div>`;
+
 // 배경 지우기(누끼) — P2-26. 엔진(MediaPipe, Apache-2.0)은 사진을 넣을 때 작업자(t-removebg-worker.js)가 받음
 utilPage(utilById.removebg, `${dropHtml({ accept: ".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp", label: "배경을 지울 사진을 넣어 주세요", limit: "JPG·PNG·WEBP 1장 · 30MB까지 · 긴 변 2048px에 맞춰 처리" })}
 <p class="hint rb-first">처음 한 번은 배경 지우기 엔진(약 17MB)을 받아요. 페이지를 열 때가 아니라 사진을 넣을 때 받고, 다음부터는 브라우저에 저장된 파일을 써요.</p>
@@ -1339,7 +1344,8 @@ ${tkTail("")}
   <fieldset class="seg rb-bgs"><legend>배경</legend>
     <label><input type="radio" name="rb-bg" value="none" checked><span>투명</span></label><label><input type="radio" name="rb-bg" value="#ffffff"><span>흰색</span></label><label><input type="radio" name="rb-bg" value="#000000"><span>검정</span></label><label class="rb-custom"><input type="radio" name="rb-bg" value="custom"><span>직접 고르기</span><input type="color" name="rb-color" value="#ffc21a" aria-label="배경색 고르기"></label>
   </fieldset>
-  <div class="rb-actions"><button type="button" class="btn big" data-save>PNG 내려받기</button><button type="button" class="btn ghost" data-undo disabled>되돌리기</button><button type="button" class="btn ghost" data-again>처음 결과로</button><button type="button" class="btn ghost" data-new>다른 사진</button></div>
+  ${fnameField("rb-fname", "배경지운사진-nobg", "png")}
+  <div class="rb-actions"><button type="button" class="btn big" data-save data-dl-for="rb-fname">PNG 내려받기</button><button type="button" class="btn ghost" data-undo disabled>되돌리기</button><button type="button" class="btn ghost" data-again>처음 결과로</button><button type="button" class="btn ghost" data-new>다른 사진</button></div>
   <p class="rb-stat hint"></p>
 </div>`, { scripts: ["t-removebg.js"] });
 
@@ -1377,7 +1383,8 @@ ${tkTail("")}
   <div class="im-preview"><canvas class="im-canvas" role="img" aria-label="미리보기" width="1" height="1"></canvas></div>
   <p class="im-info hint" aria-live="polite"></p>
   <p class="tk-msg note im-note" hidden></p>
-  <div class="im-actions"><button type="button" class="btn big" data-save>이미지 저장</button><button type="button" class="btn ghost" data-clear>모두 지우기</button></div>
+  ${fnameField("im-fname", "사진이어붙이기", "jpg")}
+  <div class="im-actions"><button type="button" class="btn big" data-save data-dl-for="im-fname">이미지 저장</button><button type="button" class="btn ghost" data-clear>모두 지우기</button></div>
 </div>`, { scripts: ["t-imgmerge.js"] });
 
 // P2-47 HEIC JPG 변환: 여러 장 넣기 → 화질·크기·사진 정보 고르기 → 한꺼번에 변환(진행률) → 하나씩 받기 + zip
@@ -2049,9 +2056,10 @@ utilPage(utilById.qr, `<div class="qr">
       <p class="qr-info hint" aria-live="polite"></p>
       <p class="tk-msg qr-err" role="alert" hidden></p>
       <p class="tk-msg note qr-warn" hidden></p>
+      ${fnameField("qr-fname", "qr-링크", ["png", "svg"])}
       <div class="qr-actions">
         <label class="qr-size">PNG 크기<select name="pngsize"><option value="256">256px (메신저)</option><option value="512">512px</option><option value="1024" selected>1024px (보통)</option><option value="2048">2048px (인쇄)</option></select></label>
-        <button type="button" class="btn" data-png disabled>PNG 저장</button><button type="button" class="btn ghost" data-svg disabled>SVG 저장</button><button type="button" class="btn ghost" data-copy disabled>이미지 복사</button>
+        <button type="button" class="btn" data-png data-dl-for="qr-fname" disabled>PNG 저장</button><button type="button" class="btn ghost" data-svg disabled>SVG 저장</button><button type="button" class="btn ghost" data-copy disabled>이미지 복사</button>
       </div>
       <p class="hint">저장하기 전에 휴대폰 카메라로 화면의 QR을 한 번 찍어 보세요. SVG는 크기를 키워도 깨지지 않아 인쇄소·디자인 프로그램에 좋아요.</p>
     </div>

@@ -55,16 +55,80 @@
   };
 
   // 내려받기: Blob → 객체 URL. 만든 URL은 다음 작업 때 해제합니다.
+  // P2-72 파일 이름 직접 정하기: 이름 칸·저장 창·이름 정리는 app.js(NALGI) 공통 부품을 씀(모든 페이지에 실림)
+  const N = () => window.NALGI || {};
   const urls = [];
-  PT.url = (blob) => { const u = URL.createObjectURL(blob); urls.push(u); return u; };
-  PT.revokeAll = () => { while (urls.length) URL.revokeObjectURL(urls.pop()); };
-  PT.link = (blob, name, label, cls = "btn") => `<a class="${cls}" href="${PT.url(blob)}" download="${esc(name)}">${esc(label || name)}</a>`;
-  PT.save = (blob, name) => {
-    const a = document.createElement("a");
-    a.href = PT.url(blob); a.download = name;
-    document.body.appendChild(a); a.click(); a.remove();
+  PT.url = (blob) => { const u = URL.createObjectURL(blob); urls.push(u); N().dlBlobs && N().dlBlobs.set(u, blob); return u; };
+  PT.revokeAll = () => { while (urls.length) { const u = urls.pop(); URL.revokeObjectURL(u); N().dlBlobs && N().dlBlobs.delete(u); } };
+  // 작은 링크(쪽별·장별 받기): 칸 없이 기본 이름. 저장 창이 되는 PC에서는 창에서 이름을 정함
+  PT.link = (blob, name, label, cls = "btn") => `<a class="${cls}" href="${PT.url(blob)}" download="${esc(name)}" data-dl>${esc(label || name)}</a>`;
+  // 주 내려받기: 「파일 이름」 칸(기본 이름 미리 채움, 확장자는 칸 밖) + 단추 + 결과 안내. base는 확장자 없는 기본 이름
+  PT.nameField = (base, ext, id) => N().nameFieldHtml({ def: base, ext, id });
+  PT.dl = (blob, base, ext, label, cls = "btn big") => {
+    const field = PT.nameField(base, ext);
+    const id = N().nameFieldId(field);
+    const name = N().fileName("", base, ext);
+    return `${field}<a class="${cls}" href="${PT.url(blob)}" download="${esc(name)}" data-dl data-dl-for="${id}" data-dl-ext="${esc(ext)}">${esc(label || name)}</a><p class="fname-status hint" aria-live="polite"></p>`;
+  };
+  PT.nameFrom = (input, ext) => N().nameFrom(input, ext);
+  // 단추로 바로 저장: src는 Blob 또는 Blob을 만드는 함수. 저장 창이 되면 창을 먼저 열고 만든다. "picker"|"link"|"cancel"
+  PT.save = (src, name) => {
+    if (N().saveFile) return N().saveFile(src, name);
+    return Promise.resolve(typeof src === "function" ? src() : src).then((blob) => {
+      const a = document.createElement("a");
+      a.href = PT.url(blob); a.download = name;
+      document.body.appendChild(a); a.click(); a.remove();
+      return "link";
+    });
   };
   PT.readBuf = (file) => (file.arrayBuffer ? file.arrayBuffer() : new Response(file).arrayBuffer());
+
+  // P2-69 브라우저 캔버스 한계: iOS 사파리는 캔버스 한 장이 약 1,677만 화소(4096×4096)를 넘으면 그리지 못하고 빈 결과를 냄.
+  // 아이폰·아이패드면 미리 그 안으로 줄이고, 다른 브라우저도 저장(toBlob)이 실패하면 같은 한계로 한 번 더 시도한다.
+  PT.IOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  PT.SAFE_AREA = 16777216;
+  PT.fitArea = (w, h, max) => {
+    if (!max || w * h <= max) return { w, h, s: 1 };
+    const s = Math.sqrt((max * 0.98) / (w * h));
+    return { w: Math.max(1, Math.floor(w * s)), h: Math.max(1, Math.floor(h * s)), s };
+  };
+  // 그리기 함수 draw(ctx, w, h)를 받아 w×h 캔버스로 저장. 한계에 걸리면 줄여서 다시 저장. { blob, w, h, shrunk } 또는 null
+  PT.canvasBlob = async (w0, h0, draw, type, quality) => {
+    const tryOnce = async (w, h) => {
+      const c = document.createElement("canvas"); c.width = w; c.height = h;
+      const ctx = c.getContext("2d");
+      if (!ctx) return null;
+      draw(ctx, w, h);
+      const blob = await new Promise((r) => { try { c.toBlob(r, type, quality); } catch (e) { r(null); } });
+      c.width = c.height = 0; // 메모리 바로 돌려주기(iOS는 캔버스 메모리 합계에도 한계가 있음)
+      return blob;
+    };
+    let f = PT.fitArea(w0, h0, PT.IOS ? PT.SAFE_AREA : 0);
+    let blob = await tryOnce(f.w, f.h);
+    if (!blob && f.s === 1 && w0 * h0 > PT.SAFE_AREA) { f = PT.fitArea(w0, h0, PT.SAFE_AREA); blob = await tryOnce(f.w, f.h); }
+    return blob ? { blob, w: f.w, h: f.h, shrunk: f.s < 1 } : null;
+  };
+
+  // P2-69 PDF 엔진(pdf-lib, gzip 약 200KB)은 페이지를 열 때 받지 않고, 파일을 넣거나 처리할 때 받는다.
+  const libs = {};
+  PT.need = (file, globalName) => {
+    if (window[globalName]) return Promise.resolve(window[globalName]);
+    if (!libs[file]) {
+      const me = document.querySelector('script[src*="/tool-kit.js"]');
+      const ver = me ? new URL(me.src, location.href).searchParams.get("v") || "" : "";
+      const base = document.documentElement.dataset.base || "";
+      libs[file] = new Promise((resolve, reject) => {
+        const s = document.createElement("script");
+        s.src = `${base}/assets/vendor/${file}${ver ? "?v=" + ver : ""}`;
+        s.async = true;
+        s.onload = () => (window[globalName] ? resolve(window[globalName]) : reject(new Error("lib")));
+        s.onerror = () => { s.remove(); reject(new Error("lib")); };
+        document.head.appendChild(s);
+      }).catch(() => { delete libs[file]; throw new Error("PDF 처리 엔진을 받지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요."); });
+    }
+    return libs[file];
+  };
+  PT.needPdf = () => PT.need("pdf-lib.min.js", "PDFLib");
 
   // 파일 검사: 형식·크기·개수
   // opt: { exts:["pdf"], maxSize, maxCount, maxTotal, reject:{doc:"안내문"} }
@@ -139,6 +203,7 @@
     return `「${name}」은(는) 깨졌거나 올바른 PDF가 아니어서 열 수 없어요.`; // 읽는 도중 생긴 오류는 모두 손상으로 안내
   };
   PT.loadPdf = async (file) => {
+    await PT.needPdf();
     const bytes = await PT.readBuf(file);
     let doc, n;
     try { doc = await PDFLib.PDFDocument.load(bytes, { updateMetadata: false }); n = doc.getPageCount(); doc.getPages(); }

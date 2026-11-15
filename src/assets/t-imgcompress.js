@@ -29,14 +29,14 @@
       if (w0 * h0 > MAX_PIXELS) throw new Error(`「${file.name}」은(는) ${w0}×${h0}로 너무 커서 처리할 수 없어요(5천만 화소까지).`);
       const s = maxW && w0 > maxW ? maxW / w0 : 1;
       const w = Math.max(1, Math.round(w0 * s)), h = Math.max(1, Math.round(h0 * s));
-      const c = document.createElement("canvas"); c.width = w; c.height = h;
-      const ctx = c.getContext("2d");
-      if (type === "image/jpeg") { ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, w, h); }
-      ctx.imageSmoothingQuality = "high";
-      ctx.drawImage(img, 0, 0, w, h);
-      const blob = await new Promise((r) => c.toBlob(r, type, quality));
-      if (!blob) throw new Error(`「${file.name}」을(를) 저장하지 못했어요.`);
-      return { blob, w, h, w0, h0 };
+      // P2-69 캔버스 한계(iOS 약 1,677만 화소)를 넘으면 그 안으로 줄여서 저장(PT.canvasBlob)
+      const r = await PT.canvasBlob(w, h, (ctx, cw, ch) => {
+        if (type === "image/jpeg") { ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, cw, ch); }
+        ctx.imageSmoothingQuality = "high";
+        ctx.drawImage(img, 0, 0, cw, ch);
+      }, type, quality);
+      if (!r) throw new Error(`「${file.name}」을(를) 저장하지 못했어요. 휴대폰 메모리가 부족할 수 있어요. 「최대 너비」를 줄이거나 한 장씩 넣어 보세요.`);
+      return { blob: r.blob, w: r.w, h: r.h, w0, h0, capped: r.shrunk };
     } finally { URL.revokeObjectURL(url); }
   }
 
@@ -46,7 +46,7 @@
     const quality = Number(q.value) / 100, maxW = Number(box.querySelector('[name="maxw"]').value) || 0;
     const fmt = box.querySelector('[name="format"]').value, type = fmt === "webp" ? "image/webp" : "image/jpeg";
     PT.msg(box, ""); PT.hideResult(box); PT.busy(box, true, "용량을 줄이는 중…");
-    const rows = [], zipFiles = {}, errs = [];
+    const rows = [], zipFiles = {}, errs = [], outs = [];
     let before = 0, after = 0;
     try {
       const used = new Set();
@@ -63,16 +63,20 @@
           before += f.size; after += out.size;
           zipFiles[name] = [new Uint8Array(await out.arrayBuffer()), { level: 0 }];
           const pct = Math.round((1 - out.size / f.size) * 100);
-          rows.push(`<li><span class="fl-name">${PT.esc(f.name)}<small>${r.w0}×${r.h0} → ${keep ? "원본 유지" : `${r.w}×${r.h}`} · ${PT.size(f.size)} → ${PT.size(out.size)}</small></span><b class="pct">${keep ? "그대로" : `-${pct}%`}</b>${PT.link(out, name, "받기", "btn ghost")}</li>`);
+          rows.push(`<li><span class="fl-name">${PT.esc(f.name)}<small>${r.w0}×${r.h0} → ${keep ? "원본 유지" : `${r.w}×${r.h}`}${r.capped ? " (휴대폰 브라우저 한계로 줄임)" : ""} · ${PT.size(f.size)} → ${PT.size(out.size)}</small></span><b class="pct">${keep ? "그대로" : `-${pct}%`}</b>@@DL@@</li>`);
+          outs.push({ out, name, src: f.name });
         } catch (e) { errs.push(e.message || String(e)); }
       }
       if (errs.length) PT.msg(box, errs.join(" "));
       if (!rows.length) return;
       const pct = Math.round((1 - after / before) * 100);
       const zip = rows.length > 1 ? new Blob([fflate.zipSync(zipFiles)], { type: "application/zip" }) : null;
+      // P2-72 주 내려받기에 파일 이름 칸. 여러 장=zip(첫 파일 이름 기반), 한 장=그 이미지(장별 「받기」는 칸 없이 기본 이름)
+      const main = zip ? PT.dl(zip, `${PT.base(outs[0].src)}-외${rows.length - 1}장-용량줄임`, "zip", "zip으로 한 번에 내려받기")
+        : PT.dl(outs[0].out, outs[0].name.replace(/\.[^.]+$/, ""), PT.ext(outs[0].name), "이미지 내려받기");
       PT.showResult(box, `<p class="tk-done"><b>${PT.size(before)} → ${PT.size(after)}</b> (${pct > 0 ? `${pct}% 줄었어요` : "더 줄지 않았어요"})</p>
 ${pct <= 0 ? '<p class="hint">이미 충분히 압축된 이미지라 원본을 그대로 드려요. 품질이나 최대 너비를 더 낮춰 보세요.</p>' : ""}
-<ul class="flist done">${rows.join("")}</ul>${zip ? `<div class="tk-dl">${PT.link(zip, "용량줄인이미지.zip", "zip으로 한 번에 내려받기", "btn big")}</div>` : ""}`);
+<ul class="flist done">${rows.map((r, i) => { const k = r.lastIndexOf("@@DL@@"); return r.slice(0, k) + (zip ? PT.link(outs[i].out, outs[i].name, "받기", "btn ghost") : "") + r.slice(k + 6); }).join("")}</ul><div class="tk-dl">${main}</div>`);
     } finally { PT.busy(box, false); run.disabled = !list.files().length; }
   });
 })();

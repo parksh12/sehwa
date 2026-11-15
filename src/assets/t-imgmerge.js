@@ -309,8 +309,13 @@
     thumbs.innerHTML = items.map((it, i) => `<li class="im-th" data-id="${it.id}"><img src="${it.url}" alt="" width="84" height="112" draggable="false"><span class="im-no">${i + 1}</span><span class="im-btns"><button type="button" data-mv="-1" aria-label="${i + 1}번 앞으로" ${i === 0 ? "disabled" : ""}>◀</button><button type="button" data-mv="1" aria-label="${i + 1}번 뒤로" ${i === items.length - 1 ? "disabled" : ""}>▶</button><button type="button" data-rm aria-label="${i + 1}번 빼기">✕</button></span></li>`).join("");
   }
 
+  // P2-72 파일 이름 칸: 기본 이름은 첫 사진 이름 기반(사용자가 고친 뒤에는 그대로 둠), 확장자는 형식(JPG·PNG)을 따라감
+  const nameIn = $("#im-fname");
+  const ext = () => (val("fmt") === "png" ? "png" : "jpg");
+  const nameDefault = () => items.length ? `${PT.base(items[0].file.name)}${items.length > 1 ? `-외${items.length - 1}장` : ""}-이어붙임` : "사진이어붙이기";
   function changed(redetect) {
     ui.hidden = !items.length;
+    NALGI.setNameDefault(nameIn, nameDefault(), ext());
     if (!items.length) { box.querySelector(".tk-next").hidden = true; return; }
     if (redetect) {
       detect();
@@ -389,6 +394,7 @@
       trimUi();
     }
     if (el.name === "gap") $(".im-gap-out").textContent = `${el.value}px`;
+    if (el.name === "fmt") NALGI.setNameExt(nameIn, ext());
     if (el.name === "mode" || el.name === "long") { changed(false); return; }
     schedule();
   }));
@@ -396,12 +402,16 @@
   $("[data-clear]").addEventListener("click", () => { items.forEach((it) => URL.revokeObjectURL(it.url)); items = []; manual = null; trimTouched = false; PT.msg(box, ""); changed(true); });
 
   // ---------- 저장 ----------
+  // P2-72 칸의 이름으로 저장. 저장 창이 되는 PC는 창을 먼저 연 뒤(클릭 직후여야 열림) 이미지를 만든다
   $("[data-save]").addEventListener("click", async () => {
-    if (!items.length) return;
+    if (!items.length || box.classList.contains("is-busy")) return;
     const png = val("fmt") === "png", type = png ? "image/png" : "image/jpeg";
-    PT.msg(box, ""); PT.busy(box, true, "이미지를 만드는 중…"); await PT.tick();
+    const name = NALGI.nameFrom(nameIn, png ? "png" : "jpg", nameDefault());
+    PT.msg(box, "");
     const c = document.createElement("canvas");
-    try {
+    let info = null;
+    const make = async () => {
+      PT.busy(box, true, "이미지를 만드는 중…"); await PT.tick();
       const pl = plan();
       let s = pl.s, blob = null;
       for (let tries = 0; tries < 3 && !blob; tries++) {
@@ -410,8 +420,12 @@
         if (!blob) s *= 0.7; // 메모리가 모자란 기기: 더 줄여서 다시
       }
       if (!blob) throw new Error("이미지를 만들지 못했어요. 장수를 줄이거나 저장 크기를 「작게」로 바꿔 보세요.");
-      PT.save(blob, `사진이어붙이기_${items.length}장_${c.width}x${c.height}.${png ? "png" : "jpg"}`);
-      PT.msg(box, `${c.width.toLocaleString("ko-KR")} × ${c.height.toLocaleString("ko-KR")}px ${png ? "PNG" : "JPG"} (${PT.size(blob.size)})로 저장했어요.${s < pl.s ? " 기기 메모리가 부족해 조금 더 줄였어요." : ""}`, "note");
+      info = { w: c.width, h: c.height, size: blob.size, less: s < pl.s };
+      return blob;
+    };
+    try {
+      const r = await PT.save(make, name);
+      if (r !== "cancel" && info) PT.msg(box, `「${name}」 ${info.w.toLocaleString("ko-KR")} × ${info.h.toLocaleString("ko-KR")}px ${png ? "PNG" : "JPG"} (${PT.size(info.size)})로 저장했어요.${info.less ? " 기기 메모리가 부족해 조금 더 줄였어요." : ""}`, "note");
     } catch (e) { PT.msg(box, e.message || String(e)); }
     finally { c.width = c.height = 0; PT.busy(box, false); }
   });

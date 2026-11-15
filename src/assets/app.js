@@ -89,16 +89,20 @@
     return c;
   };
 
-  async function saveImage(info) {
-    const c = await NALGI.makeCard(info);
-    const blob = await new Promise((r) => c.toBlob(r, "image/png"));
-    const file = new File([blob], "result.png", { type: "image/png" });
-    if (navigator.canShare && navigator.canShare({ files: [file] }) && /Mobi|Android|iPhone/i.test(navigator.userAgent)) {
-      try { await navigator.share({ files: [file], title: info.title }); return; } catch (e) { if (e && e.name === "AbortError") return; }
+  // P2-72 파일 이름: 저장 창이 있으면 창에서, 없으면(휴대폰·사파리·파이어폭스) 단추 아래 이름 칸에서 정함. 기본 이름은 사이트-결과 제목
+  async function saveImage(info, btn) {
+    const name = await NALGI.askName(btn, `${SITE}-${info.title || "결과"}`, "png");
+    if (!name) return;
+    const make = async () => { const c = await NALGI.makeCard(info); return new Promise((r) => c.toBlob(r, "image/png")); };
+    if (!NALGI.canPick() && /Mobi|Android|iPhone/i.test(navigator.userAgent) && navigator.canShare && typeof File === "function") {
+      const blob = await make();
+      const file = new File([blob], name, { type: "image/png" });
+      if (navigator.canShare({ files: [file] })) {
+        try { await navigator.share({ files: [file], title: info.title }); return; } catch (e) { if (e && e.name === "AbortError") return; }
+      }
+      NALGI.saveByLink(blob, name); NALGI.toast("결과 이미지를 저장했어요"); return;
     }
-    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `${SITE}-결과.png`;
-    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
-    NALGI.toast("결과 이미지를 저장했어요");
+    if ((await NALGI.saveFile(make, name)) !== "cancel") NALGI.toast("결과 이미지를 저장했어요");
   }
 
   function cardInfoFor(bar) {
@@ -121,8 +125,13 @@
       else { (await copy(`${title}\n${url}`)) ? NALGI.toast("링크를 복사했어요. 친구에게 붙여 넣어 보세요!") : NALGI.toast("복사에 실패했어요"); }
     } else if (act === "copy") {
       (await copy(url)) ? NALGI.toast("링크를 복사했어요") : NALGI.toast("복사에 실패했어요");
+    } else if (act === "text") {
+      // P2-69 C12: 결과 글(제목·결과·한 줄 풀이 + 주소) 복사. 이름·생년월일 같은 입력값은 카드 정보에 없으므로 들어가지 않음
+      const i = cardInfoFor(bar);
+      const lines = [...new Set([i.title, i.main, i.sub].map((x) => String(x || "").trim()).filter(Boolean))];
+      (await copy(lines.join("\n") + "\n" + url)) ? NALGI.toast("결과를 복사했어요. 메신저에 붙여 넣어 보세요") : NALGI.toast("복사에 실패했어요");
     } else if (act === "image") {
-      btn.disabled = true; try { await saveImage(cardInfoFor(bar)); } finally { btn.disabled = false; }
+      btn.disabled = true; try { await saveImage(cardInfoFor(bar), btn); } finally { btn.disabled = false; }
     }
   });
 
@@ -130,10 +139,196 @@
     const esc = (s) => String(s || "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
     return `<div class="share" data-share-title="${esc(title)}" data-share-text="${esc(text)}" data-share-path="${esc(path || "")}">
 <button type="button" class="btn" data-act="share">공유하기</button>
+<button type="button" class="btn ghost" data-act="text">결과 복사</button>
 <button type="button" class="btn ghost" data-act="copy">링크 복사</button>
 <button type="button" class="btn ghost" data-act="image">결과 이미지 저장</button></div>`;
   };
   NALGI.esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+})();
+
+// P2-72 내려받기 파일 이름 직접 정하기 (모든 페이지 공통)
+// (1) 이름 칸: 확장자는 칸 밖에 고정, 금지 문자·앞뒤 공백·점 정리, 비우면 기본 이름, 길이 상한
+// (2) 저장 창: showSaveFilePicker가 있는 곳(크롬·엣지 데스크톱, https 최상위 창)에서만 「다른 이름으로 저장」 창을 연다.
+//     사용자가 취소하면 아무것도 하지 않고, 그 밖의 오류·미지원 환경은 기존 방식(a[download])으로 받는다.
+// 파일은 여전히 이 브라우저 안에서만 다룬다(서버로 보내지 않음).
+(function () {
+  const N = (window.NALGI = window.NALGI || {});
+  const BAD = /[\\/:*?"<>|\u0000-\u001f\u007f]/g;
+  const RESERVED = /^(con|prn|aux|nul|com[1-9]|lpt[1-9])(\..*)?$/i;
+  const MAX_CH = 80, MAX_BYTES = 200; // 한글 80자 = 240바이트라서 바이트 상한도 둠(파일 이름 한계 255바이트, 확장자 자리 남김)
+  const trimEdge = (s) => s.replace(/^[\s.]+|[\s.]+$/g, "");
+  const u8 = (cp) => (cp < 0x80 ? 1 : cp < 0x800 ? 2 : cp < 0x10000 ? 3 : 4);
+  // 확장자 없이 정리한 이름. 쓸 수 있는 글자가 없으면 ""
+  N.cleanName = (raw, ext) => {
+    let s = String(raw == null ? "" : raw);
+    if (s.normalize) s = s.normalize("NFC");
+    s = s.replace(BAD, "_").replace(/\s+/g, " ");
+    s = trimEdge(s);
+    const e = String(ext || "").replace(/[^a-z0-9]/gi, "");
+    if (e) s = trimEdge(s.replace(new RegExp("\\." + e + "$", "i"), "")); // 확장자를 칸에 직접 써도 한 번만 붙게
+    s = s.replace(/_{2,}/g, "_");
+    let out = "", n = 0, b = 0;
+    for (const ch of s) { const k = u8(ch.codePointAt(0)); if (n + 1 > MAX_CH || b + k > MAX_BYTES) break; out += ch; n++; b += k; }
+    s = trimEdge(out);
+    if (/^[_\s]*$/.test(s)) return "";
+    if (RESERVED.test(s)) s += "_";
+    return s;
+  };
+  // 칸 값 → 실제 파일 이름(확장자 포함). 비었거나 쓸 수 없으면 기본 이름
+  N.fileName = (raw, fallback, ext) => {
+    const e = String(ext || "").replace(/^\./, "").toLowerCase();
+    const s = N.cleanName(raw, e) || N.cleanName(fallback, e) || "file";
+    return e ? `${s}.${e}` : s;
+  };
+  N.extOf = (name) => (String(name || "").match(/\.([a-z0-9]+)$/i) || [, ""])[1].toLowerCase();
+
+  // 저장 창을 쓸 수 있는가: 함수가 있고, 안전한 연결(https·localhost)이고, iframe 안이 아님
+  N.canPick = () => {
+    try { return typeof window.showSaveFilePicker === "function" && window.isSecureContext === true && window.self === window.top; }
+    catch (e) { return false; }
+  };
+  const MIME = { pdf: "application/pdf", zip: "application/zip", png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", webp: "image/webp", svg: "image/svg+xml" };
+  const DESC = { pdf: "PDF 문서", zip: "ZIP 압축 파일", png: "PNG 이미지", jpg: "JPG 이미지", jpeg: "JPG 이미지", webp: "WEBP 이미지", svg: "SVG 이미지" };
+  N.pickerOptions = (name) => {
+    const ext = N.extOf(name), o = { suggestedName: name };
+    if (MIME[ext]) o.types = [{ description: DESC[ext], accept: { [MIME[ext]]: ["." + ext] } }];
+    return o;
+  };
+  // 기존 방식: 임시 링크를 눌러 내려받기
+  N.saveByLink = (blob, name) => {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 30000);
+  };
+  // src: Blob 또는 Blob을 돌려주는 함수(저장 창을 먼저 열고 그 뒤에 만들도록). 결과: "picker" | "link" | "cancel"
+  // 저장 창은 사용자의 클릭 직후에만 열리므로, 클릭 처리에서 await 없이 바로 부를 것
+  N.saveFile = async (src, name) => {
+    const get = typeof src === "function" ? src : () => src;
+    let made = null;
+    const make = async () => {
+      if (made) return made;
+      const b = await get();
+      if (!b) throw new Error("파일을 만들지 못했어요.");
+      return (made = b);
+    };
+    if (N.canPick()) {
+      let handle = null;
+      try {
+        handle = await window.showSaveFilePicker(N.pickerOptions(name));
+      } catch (e) {
+        if (e && e.name === "AbortError") return "cancel"; // 사용자가 창을 닫음: 아무것도 하지 않음
+        handle = null; // SecurityError(클릭 뒤 너무 늦음)·TypeError 등 → 기존 방식
+      }
+      if (handle) {
+        const blob = await make(); // 만들다 실패하면 오류를 그대로 부른 쪽에 넘김
+        try {
+          const w = await handle.createWritable();
+          await w.write(blob); await w.close();
+          return "picker";
+        } catch (e) { /* 쓰기 실패 → 기존 방식 */ }
+      }
+    }
+    N.saveByLink(await make(), name);
+    return "link";
+  };
+
+  // 이름 칸 HTML. def: 기본 이름, ext: "pdf" 또는 ["png","svg"]
+  let seq = 0;
+  N.nameFieldHtml = ({ def, ext, id, label = "파일 이름" }) => {
+    const esc = N.esc || ((s) => String(s));
+    const exts = [].concat(ext || []);
+    const i = id || `fname-${++seq}`;
+    const d = N.cleanName(def, exts[0]) || "file";
+    return `<div class="fname"><label for="${i}">${esc(label)}</label><span class="fname-row"><input id="${i}" class="fname-in" type="text" value="${esc(d)}" data-def="${esc(d)}" maxlength="${MAX_CH}" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" aria-describedby="${i}-x"><span class="fname-ext" id="${i}-x">${esc(exts.map((x) => "." + x).join(" / "))}</span></span></div>`;
+  };
+  N.nameFieldId = (html) => (String(html).match(/ id="([^"]+)" class="fname-in"/) || [])[1];
+  // 기본 이름 바꾸기(사용자가 칸을 고치지 않았을 때만 칸 값도 바꿈)
+  N.setNameDefault = (input, def, ext) => {
+    if (!input) return;
+    const d = N.cleanName(def, ext) || "file";
+    input.dataset.def = d;
+    if (!input.dataset.touched) input.value = d;
+  };
+  N.setNameExt = (input, ext) => {
+    const x = input && document.getElementById(input.id + "-x");
+    if (x) x.textContent = "." + ext;
+  };
+  N.nameFrom = (input, ext, fallback) => N.fileName(input ? input.value : "", fallback || (input && input.dataset.def), ext);
+  const isField = (t) => t && t.classList && t.classList.contains("fname-in");
+  document.addEventListener("input", (e) => {
+    const t = e.target;
+    if (isField(t)) { if (t.value.trim()) t.dataset.touched = "1"; else delete t.dataset.touched; }
+  });
+  // 칸에서 Enter = 같은 칸에 묶인 첫 내려받기 단추 누르기
+  document.addEventListener("keydown", (e) => {
+    const t = e.target;
+    if (e.key !== "Enter" || e.isComposing || !isField(t) || t.closest(".fname-pop")) return;
+    const b = document.querySelector(`[data-dl-for="${t.id}"]`);
+    if (b) { e.preventDefault(); b.click(); }
+  });
+  // 칸을 떠날 때 정리한 값으로 보여 주기. 비우면 기본 이름으로 되돌림
+  document.addEventListener("focusout", (e) => {
+    const t = e.target;
+    if (!isField(t)) return;
+    const c = N.cleanName(t.value);
+    if (!c) { t.value = t.dataset.def || ""; delete t.dataset.touched; }
+    else if (c !== t.value) t.value = c;
+  });
+
+  // 내려받기 링크 <a download data-dl ...>: 누르는 순간 칸 값으로 이름을 정하고, 저장 창이 되면 창을 연다.
+  //   data-dl-for="칸 id"(없으면 download 속성 이름 그대로), Blob은 N.dlBlobs(주소→Blob) 또는 N.bindBlob(링크, Blob)
+  N.dlBlobs = new Map();
+  const elBlobs = new WeakMap();
+  N.bindBlob = (a, blob) => { if (a && blob) elBlobs.set(a, blob); };
+  N.dlStatus = (el, r, name) => {
+    if (r === "cancel" || !el) return;
+    const scope = el.closest(".tk-dl, .fname-scope");
+    const st = scope && scope.querySelector(".fname-status");
+    if (st) st.textContent = r === "picker" ? `「${name}」(으)로 저장했어요.` : `「${name}」(으)로 내려받았어요.`;
+  };
+  document.addEventListener("click", (e) => {
+    const a = e.target && e.target.closest && e.target.closest("a[data-dl]");
+    if (!a || e.defaultPrevented || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+    const inp = a.dataset.dlFor ? document.getElementById(a.dataset.dlFor) : null;
+    const cur = a.getAttribute("download") || "";
+    const ext = a.dataset.dlExt || N.extOf(cur);
+    const name = inp ? N.nameFrom(inp, ext) : cur;
+    a.setAttribute("download", name); // 기본 동작(a[download])이 이 이름을 씀
+    const blob = elBlobs.get(a) || N.dlBlobs.get(a.href);
+    if (!N.canPick() || !blob) { N.dlStatus(a, "link", name); return; }
+    e.preventDefault();
+    N.saveFile(blob, name).then((r) => N.dlStatus(a, r, name), () => {});
+  });
+
+  // 따로 만든 결과 이미지 저장(재미 콘텐츠 등): 저장 창이 없으면 단추 아래에 이름 칸을 띄워 이름을 받는다.
+  // 저장 창이 있으면 창에서 이름을 정하므로 바로 기본 이름을 돌려준다. 취소하면 null
+  N.askName = (afterEl, def, ext) => {
+    if (N.canPick()) return Promise.resolve(N.fileName("", def, ext));
+    document.querySelectorAll(".fname-pop").forEach((p) => p._cancel && p._cancel());
+    return new Promise((resolve) => {
+      const pop = document.createElement("div");
+      pop.className = "fname-pop";
+      pop.setAttribute("role", "group");
+      pop.setAttribute("aria-label", "저장할 파일 이름");
+      pop.innerHTML = `${N.nameFieldHtml({ def, ext })}<span class="fname-btns"><button type="button" class="btn" data-ok>저장</button><button type="button" class="btn ghost" data-no>취소</button></span>`;
+      const inp = pop.querySelector(".fname-in");
+      const end = (v) => { pop.remove(); resolve(v); if (!v) try { afterEl.focus({ preventScroll: true }); } catch (e) {} };
+      pop._cancel = () => { pop.remove(); resolve(null); };
+      pop.querySelector("[data-ok]").addEventListener("click", () => end(N.nameFrom(inp, ext)));
+      pop.querySelector("[data-no]").addEventListener("click", () => end(null));
+      pop.addEventListener("keydown", (e) => {
+        if (e.isComposing) return;
+        if (e.key === "Enter" && e.target === inp) { e.preventDefault(); pop.querySelector("[data-ok]").click(); }
+        else if (e.key === "Escape") { e.preventDefault(); end(null); }
+      });
+      const host = afterEl.closest(".share, .hl-btns, .dr-share, .tr-share") || afterEl;
+      host.insertAdjacentElement("afterend", pop);
+      inp.focus({ preventScroll: true });
+      inp.select();
+      pop.scrollIntoView({ block: "nearest" });
+    });
+  };
 })();
 
 // 공통 계산: 띠(입춘 2월 4일 기준), 별자리

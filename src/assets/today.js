@@ -57,10 +57,13 @@ async function makeImage() {
   x.font = `500 26px ${B}`; x.fillStyle = "#767676"; x.textAlign = "right"; x.fillText("재미로 보는 운세예요 · 띠별 자세한 풀이는 사이트에서", W - 64, H - 58);
   return c;
 }
-document.querySelector('[data-act="threads"]')?.addEventListener("click", async () => {
-  const c = await makeImage();
-  const blob = await new Promise((r) => c.toBlob(r, "image/png"));
-  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `${NALGI.site}-오늘의운세-${kstDate()}.png`;
-  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
-  NALGI.toast("오늘의 운세 이미지를 저장했어요");
+// P2-72 파일 이름: 저장 창이 되는 PC는 창에서, 그 밖(휴대폰·사파리·파이어폭스)은 단추 아래 「파일 이름」 칸에서 정함
+document.querySelector('[data-act="threads"]')?.addEventListener("click", async (e) => {
+  const btn = e.currentTarget;
+  const name = await NALGI.askName(btn, `${NALGI.site}-오늘의운세-${kstDate()}`, "png");
+  if (!name) return;
+  try {
+    const r = await NALGI.saveFile(async () => { const c = await makeImage(); return new Promise((res) => c.toBlob(res, "image/png")); }, name);
+    if (r !== "cancel") NALGI.toast("오늘의 운세 이미지를 저장했어요");
+  } catch (err) { NALGI.toast("이미지를 만들지 못했어요"); }
 });

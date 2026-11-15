@@ -218,14 +218,22 @@
     if (line) out.push(line);
     return out;
   }
-  async function saveImage() {
+  // P2-72 파일 이름: 저장 창이 되는 PC는 창에서, 그 밖(휴대폰·사파리·파이어폭스)은 단추 아래 「파일 이름」 칸에서 정함
+  async function saveImage(btn) {
     if (state.picks.length < state.spread || state.flipped.size < state.spread) { el.note.textContent = "카드를 모두 뒤집은 뒤에 저장해 주세요."; return; }
+    const name = await NALGI.askName(btn, `타로-${chosen().map((c) => c.n + (c.r ? "r" : "")).join("-")}`, "png");
+    if (!name) return;
+    const picking = NALGI.canPick();
+    let pickBlob = null;
+    const blobLater = new Promise((res) => { pickBlob = res; });
+    const picked = picking ? NALGI.saveFile(() => blobLater, name) : null; // 저장 창은 클릭 직후에 열고, 이미지는 다 그린 뒤 넘김
+    if (picked) picked.catch(() => {});
     try { await document.fonts.ready; } catch (e) {}
     const cards = chosen(), q = QBY[state.q], pos = posOf();
     const W = 1080, P = 64, F = '"Pretendard Variable", system-ui, sans-serif';
     const n = cards.length, cw = n === 1 ? 330 : 280, ch = Math.round(cw * 5 / 3), gap = 44;
     let imgs;
-    try { imgs = await Promise.all(cards.map((c) => loadImg(A.card(c.n, { w: cw * 2 })))); } catch (e) { el.note.textContent = "이미지를 만들지 못했어요."; return; }
+    try { imgs = await Promise.all(cards.map((c) => loadImg(A.card(c.n, { w: cw * 2 })))); } catch (e) { if (pickBlob) pickBlob(null); el.note.textContent = "이미지를 만들지 못했어요."; return; }
     const g0 = document.createElement("canvas").getContext("2d");
     // 글 배치(높이 계산과 그리기에 같이 씀)
     const blocks = [];
@@ -267,16 +275,21 @@
     g.fillStyle = "#767676"; g.font = `700 24px ${F}`;
     g.fillText(`${document.documentElement.dataset.site || document.querySelector(".logo")?.textContent.trim() || ""} · 재미로 보는 콘텐츠예요`, P, H - 56);
     const blob = await new Promise((r) => cv.toBlob(r, "image/png"));
+    if (picking) {
+      pickBlob(blob);
+      let r = "fail";
+      try { r = await picked; } catch (e) {}
+      if (r === "fail") el.note.textContent = "이미지를 만들지 못했어요.";
+      else if (r !== "cancel") el.note.textContent = `결과 이미지를 「${name}」(으)로 저장했어요.`;
+      return;
+    }
     if (!blob) { el.note.textContent = "이미지를 만들지 못했어요."; return; }
-    const name = `타로-${cards.map((c) => c.n + (c.r ? "r" : "")).join("-")}.png`;
     const file = typeof File === "function" ? new File([blob], name, { type: "image/png" }) : null;
     if (file && navigator.canShare && navigator.canShare({ files: [file] }) && /Mobi|Android|iPhone/i.test(navigator.userAgent)) {
       try { await navigator.share({ files: [file], title: "무료 타로 결과" }); el.note.textContent = "결과 이미지를 공유했어요."; return; } catch (e) { if (e && e.name === "AbortError") return; }
     }
-    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name;
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
-    el.note.textContent = "결과 이미지를 저장했어요.";
+    NALGI.saveByLink(blob, name);
+    el.note.textContent = `결과 이미지를 「${name}」(으)로 저장했어요.`;
   }
 
   // ---- 이벤트 ----
@@ -290,7 +303,7 @@
     else if (t.dataset.slot != null) flip(+t.dataset.slot);
     else if (t === el.flipAll) { for (let k = 0; k < state.spread; k++) flip(k); }
     else if (t.dataset.tr === "link") copyLink();
-    else if (t.dataset.tr === "image") { t.disabled = true; saveImage().finally(() => { t.disabled = false; }); }
+    else if (t.dataset.tr === "image") { t.disabled = true; saveImage(t).finally(() => { t.disabled = false; }); }
     else if (t.dataset.tr === "again") startShuffle();
     else if (t.dataset.tr === "restart") restart();
   });

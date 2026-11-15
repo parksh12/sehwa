@@ -213,6 +213,7 @@
     $(".qr-cwarn").hidden = !cw.length; $(".qr-cwarn").textContent = cw.join(" ");
     warn.hidden = !notes.length; warn.textContent = notes.join(" ");
     box.querySelectorAll("[data-png],[data-svg],[data-copy]").forEach((b) => (b.disabled = !cur));
+    if (cur) NALGI.setNameDefault($("#qr-fname"), fname(), "png"); // P2-72 기본 이름은 내용에 맞춰(사용자가 고친 뒤에는 그대로)
     if (t === "wifi") renderCard();
   }
   function showEmpty(text) {
@@ -243,16 +244,19 @@
   const fname = () => {
     const t = val("type");
     const base = t === "wifi" ? "wifi-" + f("ssid").value : t === "vcard" ? "명함-" + (f("vlast").value + f("vfirst").value || f("vorg").value) : t === "sms" ? "문자" : t === "text" ? "글" : (cur.payload.replace(/^[a-z]+:\/\//i, "").split(/[/?#]/)[0] || "링크");
-    return "qr-" + PT.base(base).slice(0, 40);
+    return "qr-" + (NALGI.cleanName(base) || "링크").slice(0, 40); // P2-72 PT.base는 「.com」을 확장자로 보고 지웠음
   };
+  // P2-72 「파일 이름」 칸의 이름으로 저장(확장자는 단추에 따라 .png/.svg). 저장 창이 되는 PC는 창을 먼저 연다
+  const saveName = (ext) => NALGI.nameFrom($("#qr-fname"), ext, fname());
   $("[data-png]").addEventListener("click", async () => {
     if (!cur) return;
-    try { PT.save(await pngBlob(Number(f("pngsize").value)), fname() + ".png"); }
+    const size = Number(f("pngsize").value);
+    try { await PT.save(() => pngBlob(size), saveName("png")); }
     catch (e) { err.textContent = "PNG를 만들지 못했어요. 크기를 줄여서 다시 해 주세요."; err.hidden = false; }
   });
   $("[data-svg]").addEventListener("click", () => {
     if (!cur) return;
-    PT.save(new Blob(['<?xml version="1.0" encoding="UTF-8"?>\n' + svgText(cur.q, opts())], { type: "image/svg+xml" }), fname() + ".svg");
+    PT.save(new Blob(['<?xml version="1.0" encoding="UTF-8"?>\n' + svgText(cur.q, opts())], { type: "image/svg+xml" }), saveName("svg"));
   });
   $("[data-copy]").addEventListener("click", async () => {
     if (!cur) return;

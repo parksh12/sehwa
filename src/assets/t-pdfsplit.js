@@ -1,10 +1,11 @@
-// PDF 나누기 (페이지 범위 추출 / 한 쪽씩 나누기 → zip 또는 개별). 의존: vendor/pdf-lib.min.js, vendor/fflate.min.js, tool-kit.js
+// PDF 나누기 (페이지 범위 추출 / 한 쪽씩 나누기 → zip 또는 개별). 의존: vendor/pdf-lib.min.js(P2-69: 파일을 넣을 때 받음), vendor/fflate.min.js, tool-kit.js
 (function () {
   const box = document.querySelector('[data-tool="pdfsplit"]');
-  if (!box || !window.PDFLib) return;
+  if (!box) return;
   const OPT = { exts: ["pdf"], maxSize: 100 * PT.MB, maxCount: 1 };
   const MAX_EACH = 500;
   const run = box.querySelector("[data-run]");
+  ["pointerdown", "dragenter", "focusin"].forEach((t) => box.querySelector(".drop").addEventListener(t, () => PT.needPdf().catch(() => {}), { once: true })); // P2-69 파일을 고르는 동안 PDF 엔진을 미리 받음
   const opts = box.querySelector(".tk-opts");
   const info = box.querySelector(".tk-info");
   const range = box.querySelector('[name="range"]');
@@ -70,7 +71,7 @@
       if (mode() === "range") {
         const doc = await pick(idx);
         const blob = await PT.pdfBlob(doc);
-        PT.showResult(box, `<p class="tk-done"><b>${idx.length}쪽을 뽑았어요.</b> ${PT.size(blob.size)}</p><div class="tk-dl">${PT.link(blob, `${base}-추출.pdf`, "PDF 내려받기", "btn big")}</div>`);
+        PT.showResult(box, `<p class="tk-done"><b>${idx.length}쪽을 뽑았어요.</b> ${PT.size(blob.size)}</p><div class="tk-dl">${PT.dl(blob, `${base}-추출`, "pdf", "PDF 내려받기")}</div>`);
       } else {
         const pad = String(total).length < 2 ? 2 : String(total).length;
         const files = {}, links = [];
@@ -83,7 +84,7 @@
         }
         PT.step(box, "zip으로 묶는 중…", 1); await PT.tick();
         const zip = new Blob([fflate.zipSync(files)], { type: "application/zip" });
-        PT.showResult(box, `<p class="tk-done"><b>${total}개 파일로 나눴어요.</b> zip ${PT.size(zip.size)}</p><div class="tk-dl">${PT.link(zip, `${base}-쪽별.zip`, "zip으로 한 번에 내려받기", "btn big")}</div><details class="tk-each"><summary>페이지별로 하나씩 내려받기</summary><ul class="chips">${links.join("")}</ul></details>`);
+        PT.showResult(box, `<p class="tk-done"><b>${total}개 파일로 나눴어요.</b> zip ${PT.size(zip.size)}</p><div class="tk-dl">${PT.dl(zip, `${base}-쪽별`, "zip", "zip으로 한 번에 내려받기")}</div><details class="tk-each"><summary>페이지별로 하나씩 내려받기</summary><ul class="chips">${links.join("")}</ul></details>`);
       }
     } catch (e) {
       PT.msg(box, e.message || String(e));

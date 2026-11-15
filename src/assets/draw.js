@@ -397,7 +397,7 @@
       if (act === "all") openLadder(derived().names.map((_, i) => i));
       if (act === "flipall") derived().names.forEach((_, i) => flip(i));
       if (act === "link") copyLink();
-      if (act === "image") saveImage();
+      if (act === "image") saveImage(a);
       return;
     }
     const n = e.target.closest(".dr-name"); if (n) return openLadder([+n.dataset.i]);
@@ -428,10 +428,15 @@
   }
 
   // ---- 결과 이미지 저장 (canvas → PNG) ----
-  async function saveImage() {
+  // P2-72 파일 이름: 저장 창이 되는 PC는 창에서, 그 밖(휴대폰·사파리·파이어폭스)은 단추 아래 「파일 이름」 칸에서 정함
+  async function saveImage(btn) {
     const m = state.mode, d = derived();
     const pairs = m === "wheel" ? (wheelDone ? [[0, "결과", wheelDone.label]] : []) : pairsOf(m);
     if (!pairs.length) { linkNote.textContent = m === "wheel" ? "돌림판을 먼저 돌려 주세요." : "결과를 한 명 이상 연 뒤에 저장해 주세요."; return; }
+    const name = await NALGI.askName(btn, `${MODE_NAME[m]}-결과-${seedText(state.seed)}`, "png");
+    if (!name) return;
+    let saved;
+    try { saved = await NALGI.saveFile(async () => {
     try { await document.fonts.ready; } catch (e) {}
     const W = 1080, P = 60, F = '"Pretendard Variable", system-ui, sans-serif';
     let vis = 0;
@@ -488,13 +493,9 @@
     }
     g.textAlign = "left"; g.fillStyle = "#767676"; g.font = `700 24px ${F}`;
     g.fillText("같은 추첨 번호·참가자·항목으로 공정성 링크를 열면 같은 결과가 나와요.", P, H - 50);
-    cv.toBlob((blob) => {
-      if (!blob) { linkNote.textContent = "이미지를 만들지 못했어요."; return; }
-      const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `${MODE_NAME[m]}-결과-${seedText(state.seed)}.png`;
-      document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
-      linkNote.textContent = "결과 이미지를 저장했어요.";
-    }, "image/png");
+    return new Promise((r) => cv.toBlob(r, "image/png"));
+    }, name); } catch (e) { linkNote.textContent = "이미지를 만들지 못했어요."; return; }
+    if (saved !== "cancel") linkNote.textContent = `결과 이미지를 「${name}」(으)로 저장했어요.`;
   }
 
   // ---- 시작 ----

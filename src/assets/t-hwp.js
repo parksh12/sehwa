@@ -258,17 +258,24 @@
     app.hidden = true; empty.hidden = false; hint.hidden = true;
   }
 
+  // P2-69 T15: 안드로이드 파일 선택 창은 accept의 확장자를 MIME으로 바꿔 거르는데, 한글·워드 파일이 「알 수 없는 형식」(octet-stream)·zip으로
+  // 잡히면 흐리게 보여 고를 수 없음(미확인) → 안드로이드에서만 두 형식을 더함. 고른 뒤 확장자·내용은 PT.check·해석기가 다시 확인
+  if (/Android/i.test(navigator.userAgent)) [...box.querySelectorAll('input[type="file"]'), file2].forEach((el) => { if (el && el.accept && !/octet-stream/.test(el.accept)) el.accept += ",application/octet-stream,application/zip"; });
+  const COARSE = matchMedia("(pointer:coarse)").matches;
   async function openFiles(files) {
     if (box.classList.contains("is-busy")) return;
     const { ok, errs } = PT.check(files, OPT);
     PT.hideResult(box);
     if (!ok.length) { PT.msg(box, errs.join(" ")); help.hidden = !errs.length; return; } // 열린 문서는 그대로 둠
     clear();
-    PT.busy(box, true, "문서를 여는 중…");
+    // P2-69 T14: 해석은 이 화면(메인 스레드)에서 하므로 큰 문서는 휴대폰에서 오래 걸릴 수 있음 → 미리 알림(20MB 넘을 때, 터치 기기)
+    const bigMB = ok.reduce((n, f) => n + f.size, 0) / PT.MB;
+    const slow = COARSE && bigMB > 20;
+    PT.busy(box, true, slow ? `문서를 여는 중… 큰 문서(${Math.round(bigMB)}MB)라 휴대폰에서는 시간이 걸릴 수 있어요` : "문서를 여는 중…");
     try {
       for (let i = 0; i < ok.length; i++) {
         const f = ok[i];
-        PT.step(box, `문서를 여는 중… (${i + 1}/${ok.length}) ${f.name}`, i / ok.length);
+        PT.step(box, `문서를 여는 중… (${i + 1}/${ok.length}) ${f.name}${slow ? " · 큰 문서라 시간이 걸릴 수 있어요" : ""}`, i / ok.length);
         await PT.tick();
         try {
           const doc = await HwpDoc.open(await PT.readBuf(f), f.name);

@@ -5,7 +5,8 @@
   if (!box) return;
   const VENDOR = new URL("vendor/pdfjs/", document.currentScript.src).href;
   const OPT = { exts: ["pdf"], maxSize: 100 * PT.MB, maxCount: 1 };
-  const MAX_PAGES = 300, MAX_PIXELS = 40e6;
+  const MAX_PAGES = 300, MAX_PIXELS = PT.IOS ? PT.SAFE_AREA * 0.98 : 40e6; // P2-69: iOS 사파리 캔버스 한계(약 1,677만 화소) 안으로
+  const COARSE = matchMedia("(pointer:coarse)").matches; // P2-69 T13: 휴대폰에서 큰 PDF·많은 쪽은 미리 알림
   const run = box.querySelector("[data-run]");
   const opts = box.querySelector(".tk-opts"), info = box.querySelector(".tk-info"), range = box.querySelector('[name="range"]');
   let lib = null, pdf = null, file = null, task = null;
@@ -37,7 +38,7 @@
     PT.hideResult(box);
     PT.msg(box, (files.length > 1 ? "한 번에 PDF 하나만 바꿀 수 있어요. 첫 번째 파일만 열었어요. " : "") + errs.join(" "), files.length > 1 && !errs.length ? "note" : "error");
     if (!ok.length) return;
-    PT.busy(box, true, "PDF를 여는 중…");
+    PT.busy(box, true, COARSE && ok[0].size > 30 * PT.MB ? `PDF를 여는 중… 큰 파일(${Math.round(ok[0].size / PT.MB)}MB)이라 휴대폰에서는 시간이 걸릴 수 있어요` : "PDF를 여는 중…");
     try {
       if (task) { try { await task.destroy(); } catch (e) {} task = null; pdf = null; } // 앞 파일 정리(worker 메모리)
       const L = await loadLib();
@@ -53,6 +54,7 @@
       info.innerHTML = `<b>${PT.esc(file.name)}</b> · ${PT.size(file.size)} · 전체 <b>${pdf.numPages}쪽</b>`;
       range.placeholder = `비워 두면 전체 (1-${pdf.numPages})`;
       opts.hidden = false;
+      if (COARSE && pdf.numPages > 50) PT.msg(box, `${pdf.numPages}쪽짜리 PDF예요. 휴대폰은 메모리가 적어 한 번에 많은 쪽을 바꾸면 멈출 수 있어요. 범위를 50쪽 안팎으로 나눠 바꾸는 것을 권해요.`, "note");
     } catch (e) {
       pdf = file = null; opts.hidden = true;
       PT.msg(box, e.message || String(e));
@@ -91,13 +93,13 @@
         zipFiles[name] = [new Uint8Array(await blob.arrayBuffer()), { level: 0 }];
         total += blob.size;
         const url = PT.url(blob);
-        rows.push(`<li><img src="${url}" alt="${n}쪽 미리보기" width="44" height="44" loading="lazy"><span class="fl-name">${n}쪽<small>${Math.round(vp.width)}×${Math.round(vp.height)} · ${PT.size(blob.size)}</small></span><a class="btn ghost" href="${url}" download="${PT.esc(name)}">받기</a></li>`);
+        rows.push(`<li><img src="${url}" alt="${n}쪽 미리보기" width="44" height="44" loading="lazy"><span class="fl-name">${n}쪽<small>${Math.round(vp.width)}×${Math.round(vp.height)} · ${PT.size(blob.size)}</small></span><a class="btn ghost" href="${url}" download="${PT.esc(name)}" data-dl>받기</a></li>`);
       }
       PT.step(box, "zip으로 묶는 중…", 1); await PT.tick();
       const zip = new Blob([fflate.zipSync(zipFiles)], { type: "application/zip" });
       PT.showResult(box, `<p class="tk-done"><b>${pages.length}쪽을 ${fmt.toUpperCase()} 이미지로 바꿨어요.</b> 합계 ${PT.size(total)}</p>
-${shrunk ? `<p class="hint">너무 큰 쪽 ${shrunk}개는 4천만 화소를 넘지 않게 해상도를 낮췄어요.</p>` : ""}
-<div class="tk-dl">${PT.link(zip, `${base}-이미지.zip`, "zip으로 한 번에 내려받기", "btn big")}</div>
+${shrunk ? `<p class="hint">너무 큰 쪽 ${shrunk}개는 ${PT.IOS ? "아이폰·아이패드 브라우저 한계(약 1,600만 화소)" : "4천만 화소"}를 넘지 않게 해상도를 낮췄어요.</p>` : ""}
+<div class="tk-dl">${PT.dl(zip, `${base}-이미지`, "zip", "zip으로 한 번에 내려받기")}</div>
 <details class="tk-each" open><summary>쪽별로 하나씩 내려받기</summary><ul class="flist done">${rows.join("")}</ul></details>`);
     } catch (e) {
       PT.msg(box, e.message || String(e));

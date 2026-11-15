@@ -198,6 +198,7 @@
     catch (e) { PT.busy(box, false); PT.msg(box, e.message); return; }
     PT.busy(box, false);
     st = { name: file.name, W: img.W, H: img.H, rgba: img.rgba, model: new Uint8Array(img.W * img.H).fill(255), edit: new Int8Array(img.W * img.H), points: [] };
+    if (nameIn) { delete nameIn.dataset.touched; syncName(); } // P2-72 새 사진이면 기본 이름도 새로
     undo.length = 0; $("[data-undo]").disabled = true;
     for (const c of [cvB, cvA]) { c.width = img.W; c.height = img.H; }
     cvB.getContext("2d").drawImage(img.canvas, 0, 0);
@@ -298,8 +299,12 @@
   brushIn.addEventListener("input", () => { bOut.textContent = brushIn.value; });
   let softT = 0;
   softIn.addEventListener("input", () => { sOut.textContent = softIn.value; clearTimeout(softT); softT = setTimeout(() => st && refresh(), 60); });
-  box.querySelectorAll('[name="rb-bg"]').forEach((r) => r.addEventListener("change", () => st && render()));
-  colorIn.addEventListener("input", () => { const c = box.querySelector('[name="rb-bg"][value="custom"]'); c.checked = true; st && render(); });
+  // P2-72 파일 이름 칸: 기본 이름은 원래 사진 이름-nobg/bg(사용자가 고친 뒤에는 그대로 둠)
+  const nameIn = $("#rb-fname");
+  const nameDefault = () => `${PT.base(st ? st.name : "배경지운사진")}-${bgColor() ? "bg" : "nobg"}`;
+  const syncName = () => NALGI.setNameDefault(nameIn, nameDefault(), "png");
+  box.querySelectorAll('[name="rb-bg"]').forEach((r) => r.addEventListener("change", () => { syncName(); st && render(); }));
+  colorIn.addEventListener("input", () => { const c = box.querySelector('[name="rb-bg"][value="custom"]'); c.checked = true; syncName(); st && render(); });
 
   const busy = () => box.classList.contains("is-busy");
   $("[data-undo]").addEventListener("click", () => {
@@ -321,14 +326,14 @@
     const d = box.querySelector(".drop"); d.hidden = false;
     d.querySelector("input").click();
   });
+  // P2-72 칸의 이름으로 저장. 저장 창이 되는 PC는 클릭 직후 창을 먼저 열고 PNG를 만든다
   $("[data-save]").addEventListener("click", () => {
     if (!st || busy()) return;
     const btn = $("[data-save]");
     btn.disabled = true;
-    cvA.toBlob((blob) => {
-      btn.disabled = false;
-      if (!blob) { PT.msg(box, "PNG로 저장하지 못했어요. 사진 크기를 줄여 다시 해 주세요."); return; }
-      PT.save(blob, `${PT.base(st.name)}-${bgColor() ? "bg" : "nobg"}.png`);
-    }, "image/png");
+    const make = () => new Promise((res, rej) => cvA.toBlob((blob) => (blob ? res(blob) : rej(new Error("PNG로 저장하지 못했어요. 사진 크기를 줄여 다시 해 주세요."))), "image/png"));
+    PT.save(make, NALGI.nameFrom(nameIn, "png", nameDefault()))
+      .catch((e) => PT.msg(box, e.message || String(e)))
+      .finally(() => { btn.disabled = false; });
   });
 })();

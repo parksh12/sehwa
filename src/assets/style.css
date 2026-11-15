@@ -2384,3 +2384,49 @@ html:not([data-theme="dark"]) :is(.sq-lg.is-lo,.dca-lg.is-koru,.rsb-lg.is-buy) i
   .am-chip,.am-info-btn,.am-list-head select{min-height:40px}
   .am-walk{min-height:40px}
 }
+
+/* === P2-69 툴 최적화 3단계: 이미지·PDF·운세·재미·글쓰기·시간 + 신규 툴 (P2-66 점검표) ===
+   1) 운세(C8): 띠별 운세의 붉은 글자(오늘 기운 좋은 띠 한자, 별점, ○○년생)는 라이트에서도 글자용 적(--jeok-t, 다크는 원래 --jeok-t).
+      타로 정·역 표시는 흰 글자 4.5:1이 되게 짙은 녹·적(다크와 같은 값)
+   2) 글쓰기(T10): 입력칸 위 요약 한 줄(.tx-sum)은 스크롤해도 머리글 바로 아래에 붙어 있음
+   3) 타이머(C11·T3): 범위 밖 값 안내(.tm-err)
+   4) 터치 기기만: 타이머 늘리기·줄이기(T4), 띠 바로가기(T6), 사주 윤달(T7), QR 슬라이더·색 고르기(T8), 작은 .btn(사다리 새로 섞기·QR 작은 단추),
+      신규 툴 점검에서 나온 문서 뷰어 쪽 번호 칸·이모지 소분류 칩 40px */
+.today-top b,.stars,.today-years b{color:var(--jeok-t)}
+.tr-grid em.up{background:#17804a}.tr-grid em.rv{background:#d42e22}
+.tx-sum{position:sticky;top:calc(var(--hdr-h,72px) + 6px);z-index:5;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 10px;margin:0 0 8px;padding:6px 8px 6px 12px;background:var(--hwang);color:#141414;border:2px solid var(--ink);border-radius:10px;box-shadow:3px 3px 0 var(--heuk)}
+.tx-sum[hidden]{display:none}
+.tx-sum-t{margin:0;font-weight:800;font-size:14px;line-height:1.35;flex:1 1 180px;min-width:0}
+.tx-sum-b{display:flex;gap:6px;flex:none}
+.tx-sum .chip{background:#fff;color:#141414;border-color:#141414}
+.tm-err{margin:6px 0 0;color:var(--jeok-t);font-weight:700}
+@media screen{:where([data-theme="dark"]) .tx-sum{background:var(--t-yel);color:var(--ink)}:where([data-theme="dark"]) .tx-sum .chip{background:var(--white);color:var(--ink);border-color:var(--ink)}}
+@media print{.tx-sum{display:none!important}}
+@media (pointer:coarse){
+  .tm-step{min-height:40px}
+  .today-top a{min-height:40px;box-sizing:border-box}
+  .sj-form .sj-leap{min-width:40px;justify-content:center}
+  main .tool-box input[type=range]{height:40px}
+  .qr-color input[type=color]{height:40px}
+  main :is(.tool-box,.share) .btn{min-height:40px} /* 게임 화면은 건드리지 않음 */
+  .hv-pn{min-width:40px;height:40px;box-sizing:border-box} /* 신규 툴 점검: 문서 뷰어 쪽 번호 칸 28×36 → 40×40 */
+  .emj-sub{min-width:40px} /* 신규 툴 점검: 이모지 소분류 「꽃」「별」 39px */
+}
+
+/* P2-72 내려받기 「파일 이름」 칸: 칸(16px·높이 44px) + 칸 밖 고정 확장자. 저장 창이 없는 곳에서 띄우는 칸(.fname-pop)도 같은 모양 */
+.fname{display:grid;gap:6px;min-width:0;text-align:left}
+.fname label{font-size:14px;font-weight:800;color:var(--ink)}
+.fname-row{display:flex;align-items:stretch;min-width:0}
+.fname-row .fname-in{flex:1 1 auto;width:auto;min-width:0;min-height:44px;font-size:16px;padding:10px 12px;border-radius:10px 0 0 10px}
+.fname-ext{flex:none;display:flex;align-items:center;padding:0 12px;border:2px solid var(--ink);border-left:0;border-radius:0 10px 10px 0;background:var(--soft);color:var(--ink);font-size:15px;font-weight:800;white-space:nowrap}
+.fname-status{margin:0}
+.fname-status:empty{display:none}
+.fname-pop{display:grid;gap:10px;margin:10px 0;padding:12px;border:var(--bd);border-radius:12px;background:var(--white);max-width:520px}
+.fname-btns{display:flex;flex-wrap:wrap;gap:8px}
+.fname-btns .btn{flex:1 1 120px;min-height:44px}
+.im-actions,.rb-actions,.qr-actions{margin-top:2px}
+.hl-share .fname{margin-top:12px}
+.hl-share .fname label{color:#fff}
+.hl-share .fname-row .fname-in{background:#fff;color:#141414;border-color:#141414}
+.hl-share .fname-ext{background:#e8e2d0;color:#141414;border-color:#141414}
+.hl-share .fname-status{color:#ffc21a}
