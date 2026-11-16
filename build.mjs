@@ -8,6 +8,7 @@ import cfg from "./config.mjs";
 const BUILD_V = Date.now().toString(36); // 자원 주소 버전(배포마다 바뀜) → 캐시된 옛 CSS·JS가 새 HTML과 섞이지 않음
 import questions from "./content/questions.mjs";
 import { renderDay, kstDate } from "./src/assets/daily.mjs";
+import { EXAMCAT_PAGE } from "./content/examcat.mjs"; // P2-74 게임 이름은 src/assets/examcat-data.js NAME 한 곳
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const DIST = path.join(ROOT, "dist");
@@ -62,6 +63,7 @@ const TOOLS = [
   { id: "hell", cat: "arcade", path: "/arcade/hell-31/", icon: "", title: "지옥에서 살아남기", h1: "지옥에서 살아남기 — Hell Survival 31", desc: "A와 B 중 하나는 살고 하나는 죽는 31단계 병맛 선택 게임. 슬랩스틱 사망 31종을 모으는 사망 도감과 「가장 억울한 죽음」 공유 카드까지, 3~5분이면 한 판.", hook: "A/B 중 하나는 즉사. 상식대로 고르면 대개 죽는 31단계.", meta: "31단계 · 3~5분" }, // P2-27
   { id: "hellchosun", cat: "story", path: "/story/hell-chosun/", icon: "", title: "헬조선에서 살아남기", h1: "헬조선에서 살아남기 — 0세부터 80세까지 40단계", desc: "자산·체력·멘탈·눈치를 지키며 0세부터 80세까지 40단계를 버티는 병맛 인생 생존 게임. 사망 도감 44장, 엔딩 4종, 다음 생 유산 보너스.", hook: "자산·체력·멘탈·눈치 중 하나라도 바닥나면 끝. 80세까지 버티기.", meta: "40단계 · 15~30분" }, // P2-28
   { id: "draw", cat: "fun", path: "/fun/ladder/", icon: "", title: "사다리타기 · 돌림판 · 제비뽑기", seo: "사다리타기 · 돌림판 · 제비뽑기 — 무료 온라인 뽑기", h1: "사다리타기 · 돌림판 · 제비뽑기 — 커피 내기, 점심 메뉴 정하기", desc: "참가자와 결과 항목을 넣고 사다리타기, 돌림판, 제비뽑기 중 하나로 정해요. 같은 결과가 그대로 재생되는 공정성 링크와 결과 이미지 저장을 지원해요.", hook: "커피 내기·점심 메뉴·청소 당번. 공정성 링크로 같은 결과 재생.", meta: "사다리 · 돌림판 · 제비", kw: "사다리타기 사다리 게임 돌림판 룰렛 돌리기 제비뽑기 랜덤 뽑기 추첨 커피 내기 점심 메뉴 정하기 청소 당번 발표 순서 복불복" }, // P2-44
+  { id: EXAMCAT_PAGE.id, cat: "arcade", path: EXAMCAT_PAGE.path, icon: "", title: EXAMCAT_PAGE.title, seo: EXAMCAT_PAGE.seo, h1: EXAMCAT_PAGE.h1, desc: EXAMCAT_PAGE.desc, hook: EXAMCAT_PAGE.hook, meta: EXAMCAT_PAGE.meta, kw: "AI 부정행위 게임 AI 치팅 게임 커닝 게임 시험 게임 감독관 피하기 눈치 게임 고양이 게임 풍자 게임 무료 브라우저 게임" }, // P2-74 원고·검사는 content/examcat.mjs
 ];
 // 카드 그림(인라인 SVG). 이모지 대신 사이트 고유 그림을 씁니다.
 const K = "#141414", W = "#fff", RED = "#e5372b", YEL = "#ffc21a", GRN = "#1e9e5a";
@@ -78,6 +80,7 @@ const ART = {
   reaction: sv(`<rect x="51" y="10" width="18" height="10" rx="3" fill="${YEL}"/><rect x="57" y="18" width="6" height="10" fill="${W}"/><circle cx="60" cy="68" r="38" fill="${W}"/><path d="M60 68V38a30 30 0 0 1 21.2 8.8z" fill="${GRN}"/><circle cx="60" cy="68" r="30" fill="none" stroke="${K}" stroke-width="3" stroke-dasharray="2 13.7"/><path d="M60 68 78 50" stroke="${RED}" stroke-width="6" stroke-linecap="round"/><circle cx="60" cy="68" r="5" fill="${K}"/>`),
   life: sv(`<path d="M34 16h52M34 104h52" stroke="${K}" stroke-width="6" stroke-linecap="round"/><path d="M40 18h40c0 22-18 30-18 42s18 20 18 42H40c0-22 18-30 18-42S40 40 40 18z" fill="${W}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M47 30h26q-6 14-13 21-7-7-13-21z" fill="${YEL}"/><path d="M60 54v40" stroke="${YEL}" stroke-width="3"/><path d="M45 101q15-20 30 0z" fill="${RED}"/>`),
   hell: sv(`<path d="M60 8c8 18 30 26 30 52a30 30 0 0 1-60 0c0-14 8-20 12-30 4 8 8 10 10 10-2-12 2-22 8-32z" fill="${RED}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M42 64a18 18 0 0 1 36 0v10l-6 4v8H48v-8l-6-4z" fill="${W}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><circle cx="52" cy="66" r="5" fill="${K}"/><circle cx="68" cy="66" r="5" fill="${K}"/><path d="M60 72l-3 5h6z" fill="${K}"/><path d="M54 86v-6M60 86v-6M66 86v-6" stroke="${K}" stroke-width="3"/><rect x="74" y="88" width="38" height="24" rx="5" fill="${YEL}" stroke="${K}" stroke-width="4"/><text x="93" y="107" font-size="18" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">31</text>`), // P2-27
+  examcat: sv(`<path d="M30 44 26 14l22 16M90 44l4-30-22 16" fill="#f5a85c" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><ellipse cx="60" cy="58" rx="38" ry="32" fill="#f5a85c" stroke="${K}" stroke-width="4"/><path d="M24 44h72" stroke="${W}" stroke-width="9"/><path d="M24 44h72" stroke="${K}" stroke-width="1" opacity=".2"/><circle cx="46" cy="60" r="5" fill="${K}"/><path d="M68 60h10" stroke="${K}" stroke-width="4" stroke-linecap="round"/><path d="M56 70h8l-4 4z" fill="${RED}"/><rect x="74" y="74" width="30" height="40" rx="6" fill="#222837" stroke="${K}" stroke-width="3"/><rect x="79" y="80" width="20" height="26" rx="3" fill="#9ff0ff"/><text x="89" y="98" font-size="12" font-weight="900" text-anchor="middle" fill="#163049" font-family="sans-serif">AI</text><path d="M10 100 34 80" stroke="${RED}" stroke-width="5" stroke-linecap="round" stroke-dasharray="6 5"/>`), // P2-74 윙크하는 고양이 수험생 + AI 폰 + 감독관 시선(점선)
   hellchosun: sv(`<rect x="14" y="70" width="92" height="36" rx="4" fill="${W}" stroke="${K}" stroke-width="4"/><path d="M14 70l46-40 46 40" fill="${RED}" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><rect x="30" y="80" width="18" height="16" fill="${YEL}" stroke="${K}" stroke-width="3"/><rect x="72" y="80" width="18" height="26" fill="${K}"/><path d="M20 26h22M31 16v20" stroke="${K}" stroke-width="5" stroke-linecap="round"/><text x="90" y="36" font-size="18" font-weight="800" text-anchor="middle" fill="${K}" font-family="sans-serif">80</text>`), // P2-28
   // 실용 툴 그림: 접힌 귀퉁이가 있는 문서(doc) 조합
   pdfmerge: sv(`${doc(14, 14, 40, 52, W)}${doc(30, 26, 40, 52, YEL)}<path d="M74 60h14" stroke="${K}" stroke-width="5" stroke-linecap="round"/><path d="M84 52l9 8-9 8" fill="none" stroke="${K}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>${doc(66, 52, 40, 54, RED)}<text x="86" y="90" font-size="15" font-weight="800" text-anchor="middle" fill="${W}" font-family="sans-serif">PDF</text>`),
@@ -517,6 +520,7 @@ const cabCls = (i, n) => (i < nToolCabs ? cabCls0(i, nToolCabs) : "cab-full"); /
 // ★ 새 툴·게임을 만들면 여기에 { id, d: "출시일" }을 맨 위에 추가(대표님 지시: 새 콘텐츠는 메인에 잘 보이게).
 // 출시 30일 이내 항목 중 최신 4개가 홈 맨 위 「NEW」 띠에 나오고, 해당 행·타일에 NEW 표시가 붙음
 const NEW_ITEMS = [
+  { id: "examcat", d: "2026-11-16" }, // P2-74
   { id: "splitprint", d: "2026-11-16" }, // P2-73
   { id: "instafont", d: "2026-11-15" }, // P2-68
   { id: "hwpview", d: "2026-11-15" }, // P2-64, P2-64d HWP 지원·한글 PDF 변환 통합
@@ -551,9 +555,9 @@ const NEW_ITEMS = [
   { id: "timer", d: "2026-11-02" },
 ];
 // P2-61 「오래 즐기는 게임」 띠(LONG_GAMES) 폐지(대표님 지시: 게임도 툴과 같은 서랍 형식). 「잠깐 쉬어 가기」 카드의 플레이 시간 표시만 남김
-const PLAY_TIME = { rpg: "약 1시간 · 자동 저장", hellchosun: "한 판 15~30분", life: "한 판 5~10분" };
+const PLAY_TIME = { examcat: "한 판 5분 이내", rpg: "약 1시간 · 자동 저장", hellchosun: "한 판 15~30분", life: "한 판 5~10분" };
 // P2-61 홈 「모든 툴」의 툴 카테고리 다음 서랍: 펭귄 오락실(게임 7종) → 랜덤채팅(랜덤7942 단독, 새 창)
-const HOME_GAMES = ["rpg", "hell", "hellchosun", "life", "stack", "reaction", "mines"];
+const HOME_GAMES = ["examcat", "rpg", "hell", "hellchosun", "life", "stack", "reaction", "mines"]; // P2-74 새 게임 맨 앞
 const NEW_DAYS = 30;
 const newList = (() => {
   const now = Date.parse(kstDate());
@@ -622,7 +626,7 @@ ${adSlotFixed("home")}`;
 // 펭귄 오락실 허브 — 같은 서랍 시스템으로 「오늘 / 테스트 / 게임」 3구역. 기존 주소는 그대로
 // P2-49 오락실 = 게임만. 운세·사주·테스트·사다리는 툴 「운세·재미」(/fun/)로 옮기고 허브에는 안내 한 줄만 남김
 const ZONES = [
-  { tone: "story", name: "게임", sub: "한 판이면 끝나는 짧은 게임", ids: ["rpg", "hell", "mines", "hellchosun", "life", "stack", "reaction"] }, // P2-60 지뢰찾기는 특집 카드 2개 바로 다음(작은 타일 첫 칸)
+  { tone: "story", name: "게임", sub: "한 판이면 끝나는 짧은 게임", ids: ["rpg", "hell", "examcat", "mines", "hellchosun", "life", "stack", "reaction"] }, // P2-60 지뢰찾기는 특집 카드 2개 바로 다음(작은 타일 첫 칸)
 ]; // P2-61 「같이」(랜덤7942) 구역 삭제: 랜덤7942는 오락실에서 떼어 홈 「랜덤채팅」 단독 서랍으로(대표님 지시)
 {
   const items = [["홈", "/"], [PLAY.name, PLAY.path]];
@@ -2859,6 +2863,8 @@ for (const k of INFO) {
 (await import("./content/hell.mjs")).default({ cfg, write, layout, crumbHtml, crumbs, faqHtml, faqLd, adSlot, esc, t, u, abs, textLen, warnings, root: ROOT });
 // P2-28 헬조선에서 살아남기 (본문·데이터 검사는 content/hell-chosun.mjs, 게임은 src/assets/hell-chosun-*.js + P2-27 엔진)
 (await import("./content/hell-chosun.mjs")).default({ cfg, write, layout, crumbHtml, crumbs, faqHtml, faqLd, adSlot, esc, t, u, abs, textLen, warnings, root: ROOT });
+// P2-74 커닝냥이(이름은 src/assets/examcat-data.js NAME). 본문·데이터·금지어 검사는 content/examcat.mjs, 게임은 src/assets/examcat-*.js
+(await import("./content/examcat.mjs")).default({ cfg, write, layout, crumbHtml, crumbs, faqHtml, faqLd, adSlot, esc, t, u, abs, textLen, warnings, root: ROOT, reco: recoHtml(["hell", "mines", "stack"]), fav: favBtn(toolById.examcat, "fav-title") });
 
 // 404
 write("/404.html", layout({ title: "페이지를 찾을 수 없어요", desc: "요청하신 페이지를 찾을 수 없어요.", path: "/404.html", noindex: true, body: `<section class="hero"><h1>앗, 길을 잃었어요</h1><p class="lead">주소가 바뀌었거나 없는 페이지예요. 대신 많이 쓰는 툴로 가 보세요.</p></section>${recoHtml(["pdfmerge", "img2pdf", "charcount", "today"], "많이 쓰는 툴")}` }));
