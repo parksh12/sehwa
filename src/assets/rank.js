@@ -20,6 +20,8 @@
     hell: { name: "지옥에서 살아남기", dir: "desc", week: false, ok: (s) => (s >= 1 && s <= 31) || (s >= 900000 && s <= 1000000), fmt: (s) => (s >= 900000 ? `클리어 · 사망 ${1000000 - s}회` : `STAGE ${s}`) },
     chosun: { name: "헬조선에서 살아남기", dir: "desc", week: false, ok: (s) => s >= 0 && s <= 8100000000, fmt: (s) => `${Math.floor(s / 1e8)}세 · 자산 ${fmtWon((s % 1e8) - 5e7)}` },
     rpg: { name: "펭귄 RPG", dir: "asc", week: false, ok: (s) => s >= 900 && s <= 360000, fmt: (s) => `${Math.floor(s / 3600)}시간 ${Math.floor((s % 3600) / 60)}분 ${s % 60}초`, low: "15분보다 짧은 기록은 순위에 올리지 않아요." },
+    // P2-74c 커닝냥이(이름은 examcat-data.js NAME): 점수 높을수록 좋음. 상한 43500 = 3분 내내 누름 18000 + 정답 45개×500 + 완주 3000(Firebase 규칙과 같음)
+    examcat: { get name() { return (window.EXCAT && window.EXCAT.NAME) || "오락실 게임"; }, dir: "desc", week: true, ok: (s) => s >= 1 && s <= 43500, fmt: (s) => `${s.toLocaleString("ko-KR")}점` },
   };
   // 점수 만들기(게임 코드에서 씀): 하나의 숫자로 순위를 매기도록 묶음
   const SCORE = {

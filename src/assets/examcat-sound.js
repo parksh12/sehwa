@@ -1,4 +1,4 @@
-// P2-74 커닝냥이(이름은 examcat-data.js NAME) — 효과음. 음원 파일 없이 WebAudio로 그 자리에서 합성(지옥에서 살아남기 hell-sound.js와 같은 원칙).
+// P2-74c 커닝냥이(이름은 examcat-data.js NAME) — 효과음. 음원 파일 없이 WebAudio로 그 자리에서 합성(지옥에서 살아남기 hell-sound.js와 같은 원칙).
 // hell-sound.js는 그 게임의 배경 음악 4곡을 미리 합성해 무거우므로, 짧은 효과음만 쓰는 이 게임은 가벼운 실시간 합성기를 따로 둠.
 // 첫 터치(「시험 시작」)에서 AudioContext를 깨움. 탭을 숨기면 소리도 멈춤.
 (function () {
@@ -31,15 +31,11 @@
     hmm: (t) => { tone("sine", N(67), t, 0.12, 0.18); tone("sine", N(72), t + 0.12, 0.16, 0.18); }, // 돌아보기 예고
     busted: (t) => { tone("square", N(88), t, 0.09, 0.14); tone("square", N(88), t + 0.12, 0.09, 0.14); tone("sawtooth", N(76), t + 0.24, 0.3, 0.12, N(64)); }, // 호루라기
     solve: (t) => { tone("triangle", N(79), t, 0.1, 0.2); tone("triangle", N(84), t + 0.08, 0.2, 0.2); },
-    me: (t) => { [72, 76, 79, 84].forEach((n, i) => tone("triangle", N(n), t + i * 0.06, 0.16, 0.18)); },
-    wrong: (t) => tone("sawtooth", N(52), t, 0.3, 0.12, N(45)),
     step: (t, v = 1) => { tone("sine", 90, t, 0.09, 0.35 * v, 60); noise(t, 0.05, 0.12 * v, 500); },
     alarm: (t) => { for (let i = 0; i < 4; i++) { tone("square", i % 2 ? N(81) : N(76), t + i * 0.22, 0.2, 0.1); } },
-    stage: (t) => { [67, 72, 76, 79, 84].forEach((n, i) => tone("square", N(n), t + i * 0.09, i === 4 ? 0.4 : 0.1, 0.08)); },
     caught: (t) => { [67, 66, 65, 64].forEach((n, i) => tone("sawtooth", N(n - 12), t + i * 0.28, i === 3 ? 0.7 : 0.26, 0.1, i === 3 ? N(n - 14) : 0)); },
     end: (t) => { [72, 76, 79, 76, 79, 84].forEach((n, i) => tone("triangle", N(n), t + i * 0.12, i === 5 ? 0.6 : 0.12, 0.18)); },
     send: (t) => { [76, 79, 83, 86].forEach((n, i) => tone("sine", N(n), t + i * 0.05, 0.06, 0.08)); },
-    buzz: (t) => { tone("square", 140, t, 0.12, 0.09); tone("square", 120, t + 0.1, 0.14, 0.09); },
     snap: (t) => { noise(t, 0.06, 0.35, 4000); tone("square", 2400, t, 0.04, 0.06); },
     ready: (t) => { tone("sine", N(84), t, 0.08, 0.12); tone("sine", N(91), t + 0.07, 0.12, 0.12); },
     tick: (t) => tone("square", 1800, t, 0.03, 0.05),

@@ -555,7 +555,7 @@ const NEW_ITEMS = [
   { id: "timer", d: "2026-11-02" },
 ];
 // P2-61 「오래 즐기는 게임」 띠(LONG_GAMES) 폐지(대표님 지시: 게임도 툴과 같은 서랍 형식). 「잠깐 쉬어 가기」 카드의 플레이 시간 표시만 남김
-const PLAY_TIME = { examcat: "한 판 5분 이내", rpg: "약 1시간 · 자동 저장", hellchosun: "한 판 15~30분", life: "한 판 5~10분" };
+const PLAY_TIME = { examcat: "한 판 3분", rpg: "약 1시간 · 자동 저장", hellchosun: "한 판 15~30분", life: "한 판 5~10분" };
 // P2-61 홈 「모든 툴」의 툴 카테고리 다음 서랍: 펭귄 오락실(게임 7종) → 랜덤채팅(랜덤7942 단독, 새 창)
 const HOME_GAMES = ["examcat", "rpg", "hell", "hellchosun", "life", "stack", "reaction", "mines"]; // P2-74 새 게임 맨 앞
 const NEW_DAYS = 30;

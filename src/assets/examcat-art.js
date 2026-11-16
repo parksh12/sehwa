@@ -1,4 +1,4 @@
-// P2-74 커닝냥이(이름은 examcat-data.js NAME) — 벡터 일러스트 그리기. 이미지 파일 없이 캔버스 도형(곡선·면·그라데이션)으로만 그림. 도트(픽셀) 아님.
+// P2-74c 커닝냥이(이름은 examcat-data.js NAME) — 벡터 일러스트 그리기. 이미지 파일 없이 캔버스 도형(곡선·면·그라데이션)으로만 그림. 도트(픽셀) 아님.
 // 좌표는 논리 크기 360×320 기준. 게임(examcat.js)이 캔버스 배율을 맞춰 부름.
 (function () {
   const S = (window.EXCAT = window.EXCAT || {});
@@ -106,7 +106,7 @@
   // ---------- 고양이 수험생(뒷모습) ----------
   const FUR = "#f5a85c", FUR2 = "#e58a3a", PINK = "#f6b8c2";
   function cat(x, o) {
-    const { t = 0, pose = "write", tool = "phone", exposed = false, using = false, busted = 0, sweat = 0, snap = 0, wait = 0, say = "" } = o;
+    const { t = 0, pose = "write", tool = "phone", exposed = false, using = false, busted = 0, sweat = 0, snap = 0, say = "" } = o;
     const cx = CAT.x, cy = CAT.y;
     const lean = pose === "ai" ? 1 : 0;
     const shake = busted > 0 ? Math.sin(t * 60) * 2.2 * busted : 0;
@@ -180,13 +180,6 @@
       x.strokeStyle = "rgba(255,255,255,.95)"; x.lineWidth = 2;
       x.beginPath(); x.arc(fx, fy, 7 + snap * 5, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * snap); x.strokeStyle = "#ffc21a"; x.lineWidth = 3; x.stroke();
       if (snap > 0.92) { x.save(); x.globalAlpha = 0.9; x.fillStyle = "#fff"; x.beginPath(); for (let j = 0; j < 8; j++) { const a = (j * Math.PI) / 4, r2 = j % 2 ? 5 : 16; x.lineTo(fx + Math.cos(a) * r2, fy + Math.sin(a) * r2); } x.closePath(); x.fill(); x.restore(); txt(x, "찰칵", fx - 26, fy - 8, 10, "#2a2633", { weight: 900 }); }
-    }
-    // AI가 답 만드는 중(플레이어만 보는 표시): 모래시계 고리
-    if (wait > 0) {
-      const wx = cx + 62, wy = cy - 50;
-      rr(x, wx - 30, wy - 12, 60, 24, 12); fillStroke(x, "#fff", 1.6, "#6b4ce6");
-      x.beginPath(); x.arc(wx - 18, wy, 6, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * (1 - wait)); x.strokeStyle = "#6b4ce6"; x.lineWidth = 3; x.stroke();
-      txt(x, "AI 생성", wx + 6, wy + 0.5, 9.5, "#4a2fc0", { weight: 900 });
     }
     // 이어폰 자막(정답 듣기·전송 연출, 플레이어만 보임)
     if (say) {
@@ -422,25 +415,19 @@
   }
 
   // 엔딩 장면(그림 영역 w×h, 가운데 정렬)
-  const ENDING_BG = { out: ["#ffe0dc", "#ffb4aa"], probe: ["#fff0d6", "#ffc58a"], self: ["#e8f1ff", "#c2d8ff"], retry: ["#eef2f8", "#cfd9e8"], true: ["#fff5c8", "#ffd86b"], hollow: ["#e6e9f2", "#c3c9da"], pass: ["#e5f6ea", "#bfe5c9"], honest: ["#e8f1ff", "#c2d8ff"], nerve: ["#f1e8ff", "#d3c2f5"] };
+  const ENDING_BG = { out: ["#ffe0dc", "#ffb4aa"], end: ["#fff5c8", "#ffd86b"] };
   function ending(x, e, t, w = W, h = H) {
-    const bg = ENDING_BG[e.kind === "out" ? "out" : e.kind === "probe" ? "probe" : e.id] || ENDING_BG.pass;
+    const bg = ENDING_BG[e.kind] || ENDING_BG.out;
     let g = x.createLinearGradient(0, 0, 0, h); g.addColorStop(0, bg[0]); g.addColorStop(1, bg[1]); x.fillStyle = g; x.fillRect(0, 0, w, h);
     const cx = w / 2, cy = h * 0.52;
     // 소품
     x.save();
     if (e.scene === "phone") { penguin(x, { x: cx + 96, y: cy + 70, s: 1.1, face: "side", dir: -1, role: "ta", t }); x.save(); x.translate(cx + 66, cy - 6); x.rotate(-0.3); rr(x, -10, -16, 20, 32, 4); fillStroke(x, "#222837", 2); rr(x, -7, -12, 14, 23, 2); x.fillStyle = "#4a6c86"; x.fill(); x.restore(); bubble(x, cx + 110, cy - 30, "!", t); }
-    else if (e.scene === "paper") { penguin(x, { x: cx + 100, y: cy + 74, s: 1.15, face: "front", role: "boss", paper: "read", t }); x.fillStyle = OL; ell(x, cx + 92, cy - 9, 2.6, 2.6); x.fill(); ell(x, cx + 104, cy - 9, 2.6, 2.6); x.fill(); }
     else if (e.scene === "cctv") { rr(x, cx + 50, cy - 70, 90, 66, 8); fillStroke(x, "#2b3040", 2.5); rr(x, cx + 56, cy - 64, 78, 54, 4); x.fillStyle = "#506080"; x.fill(); txt(x, "REC ●", cx + 100, cy - 56, 9, "#ff6b60", { weight: 900 }); ell(x, cx + 95, cy - 30, 14, 12); x.fillStyle = FUR; x.fill(); cctv(x, cx - 110, cy - 90, deg(40), t, true); }
     else if (e.scene === "alarm") { for (let i = 0; i < 2; i++) { const X = i ? cx + 110 : cx - 110; ell(x, X, cy - 70, 18, 18); fillStroke(x, Math.sin(t * 12 + i * 3) > 0 ? "#ff3b30" : "#ffc21a", 2.5); rr(x, X - 22, cy - 56, 44, 10, 3); fillStroke(x, "#8a90a2", 2); } }
-    else if (e.scene === "probe") { penguin(x, { x: cx + 100, y: cy + 74, s: 1.1, face: "front", role: "boss", t }); const mx = cx + 70, my = cy - 4; x.strokeStyle = "#8a5a33"; x.lineWidth = 5; x.beginPath(); x.moveTo(mx - 8, my + 14); x.lineTo(mx - 18, my + 30); x.stroke(); ell(x, mx, my, 15, 15); fillStroke(x, "rgba(190,230,255,.75)", 3); rr(x, cx - 170, cy - 100, 76, 34, 8); fillStroke(x, "#fff", 2); txt(x, "100점?!", cx - 132, cy - 83, 14, "#e5372b", { weight: 900 }); bubble(x, cx + 120, cy - 40, "?", t); }
-    else if (e.scene === "trophy") { const X = cx + 104, Y = cy + 10; x.beginPath(); x.moveTo(X - 22, Y - 30); x.lineTo(X + 22, Y - 30); x.quadraticCurveTo(X + 20, Y + 4, X, Y + 8); x.quadraticCurveTo(X - 20, Y + 4, X - 22, Y - 30); x.closePath(); fillStroke(x, "#ffc21a", 2.5); rr(x, X - 4, Y + 8, 8, 14, 2); fillStroke(x, "#ffc21a", 2); rr(x, X - 16, Y + 20, 32, 8, 3); fillStroke(x, "#b98a55", 2); txt(x, "100", X, Y - 14, 13, OL, { weight: 900 }); }
     else if (e.scene === "battery") { const X = cx + 100, Y = cy - 10; rr(x, X - 18, Y - 30, 36, 60, 6); fillStroke(x, "#222837", 2.5); rr(x, X - 13, Y - 25, 26, 50, 3); x.fillStyle = "#38404f"; x.fill(); rr(x, X - 10, Y - 6, 20, 26, 3); fillStroke(x, null, 2, "#ff6b60"); x.fillStyle = "#ff6b60"; x.fillRect(X - 8, Y + 15, 16, 3); txt(x, "0%", X, Y - 14, 10, "#ff6b60", { weight: 900 }); }
-    else if (e.scene === "paper2") { paper(x, cx + 100, cy + 10, 2.2, 0.15); txt(x, "합격", cx + 100, cy + 10, 16, "#e5372b", { weight: 900 }); }
-    else if (e.scene === "books") { ["#2346d8", "#e5372b", "#1e9e5a"].forEach((c, i) => { rr(x, cx + 76, cy + 26 - i * 16, 60 - i * 6, 14, 3); fillStroke(x, c, 2); }); }
-    else if (e.scene === "eyes") { [[-110, -60], [110, -64], [-120, 30], [116, 36]].forEach(([dx, dy], i) => { ell(x, cx + dx, cy + dy, 13, 9); fillStroke(x, "#fff", 2); ell(x, cx + dx + Math.sin(t * 2 + i) * 4, cy + dy, 4, 4); x.fillStyle = OL; x.fill(); }); }
     x.restore();
-    catFace(x, cx - (["phone", "paper", "cctv", "probe", "trophy", "battery", "paper2", "books"].includes(e.scene) ? 30 : 0), cy, Math.min(w, h) * 0.26, e.face, t);
+    catFace(x, cx - 30, cy, Math.min(w, h) * 0.26, e.face, t);
   }
 
   S.art = { W, H, CAT, ROW1, ROW1_Y, ROW2_Y, scene, cone, catFace, penguin, title, ending, rr, txt, ell, fillStroke, deg, OL };
