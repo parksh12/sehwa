@@ -106,7 +106,7 @@
   // ---------- 고양이 수험생(뒷모습) ----------
   const FUR = "#f5a85c", FUR2 = "#e58a3a", PINK = "#f6b8c2";
   function cat(x, o) {
-    const { t = 0, pose = "write", tool = "phone", exposed = false, using = false, busted = 0, sweat = 0, snap = 0, wait = 0 } = o;
+    const { t = 0, pose = "write", tool = "phone", exposed = false, using = false, busted = 0, sweat = 0, snap = 0, wait = 0, say = "" } = o;
     const cx = CAT.x, cy = CAT.y;
     const lean = pose === "ai" ? 1 : 0;
     const shake = busted > 0 ? Math.sin(t * 60) * 2.2 * busted : 0;
@@ -188,8 +188,16 @@
       x.beginPath(); x.arc(wx - 18, wy, 6, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * (1 - wait)); x.strokeStyle = "#6b4ce6"; x.lineWidth = 3; x.stroke();
       txt(x, "AI 생성", wx + 6, wy + 0.5, 9.5, "#4a2fc0", { weight: 900 });
     }
+    // 이어폰 자막(정답 듣기·전송 연출, 플레이어만 보임)
+    if (say) {
+      x.font = `900 11px ${S.FONT || "sans-serif"}`;
+      const tw = x.measureText(say).width + 18, bx = Math.min(W - tw - 4, cx + 26), by = cy - 92;
+      rr(x, bx, by, tw, 22, 11); fillStroke(x, "#fff6c8", 1.8, "#6b4ce6");
+      x.beginPath(); x.moveTo(bx + 10, by + 22); x.lineTo(cx + 18, cy - 46); x.lineTo(bx + 22, by + 22); x.closePath(); x.fillStyle = "#fff6c8"; x.fill();
+      txt(x, say, bx + tw / 2, by + 11.5, 11, "#3b2a8f", { weight: 900 });
+    }
     // AI 말풍선(쓰는 중)
-    if (using) {
+    if (using && !say) {
       const bx = cx - 62, by = cy - 52;
       rr(x, bx - 22, by - 11, 44, 22, 10); fillStroke(x, "#efe6ff", 1.6, "#6b4ce6");
       x.beginPath(); x.moveTo(bx + 10, by + 10); x.lineTo(bx + 20, by + 20); x.lineTo(bx + 16, by + 8); x.closePath(); x.fillStyle = "#efe6ff"; x.fill();
@@ -302,13 +310,13 @@
     x.restore();
   }
   function detector(x, v, alarm, t) {
-    const X = 6, Y = 60, w = 62, h = 38;
+    const X = 6, Y = 58, w = 62, h = 30;
     rr(x, X, Y, w, h, 6); fillStroke(x, alarm && Math.sin(t * 20) > 0 ? "#ffd0cc" : "#fff", 2);
-    txt(x, "전파 탐지기", X + w / 2, Y + 10, 9, OL, { weight: 900 });
-    rr(x, X + 6, Y + 20, w - 12, 10, 4); fillStroke(x, "#eceff5", 1.5);
+    txt(x, "전파 탐지기", X + w / 2, Y + 8, 9, OL, { weight: 900 });
+    rr(x, X + 6, Y + 15, w - 12, 10, 4); fillStroke(x, "#eceff5", 1.5);
     const f = Math.max(0, Math.min(1, v / 100));
-    if (f > 0) { rr(x, X + 7, Y + 21, (w - 14) * f, 8, 3); x.fillStyle = f > 0.7 ? (Math.sin(t * 16) > 0 ? "#e5372b" : "#ff7a6e") : f > 0.45 ? "#ffb020" : "#1e9e5a"; x.fill(); }
-    x.strokeStyle = OL; x.lineWidth = 1.2; x.beginPath(); x.moveTo(X + 6 + (w - 12) * 0.7, Y + 18); x.lineTo(X + 6 + (w - 12) * 0.7, Y + 32); x.stroke();
+    if (f > 0) { rr(x, X + 7, Y + 16, (w - 14) * f, 8, 3); x.fillStyle = f > 0.7 ? (Math.sin(t * 16) > 0 ? "#e5372b" : "#ff7a6e") : f > 0.45 ? "#ffb020" : "#1e9e5a"; x.fill(); }
+    x.strokeStyle = OL; x.lineWidth = 1.2; x.beginPath(); x.moveTo(X + 6 + (w - 12) * 0.45, Y + 13); x.lineTo(X + 6 + (w - 12) * 0.45, Y + 27); x.stroke();
     if (alarm) { const a = Math.sin(t * 14) > 0; ell(x, X + w - 6, Y + 4, 6, 6); fillStroke(x, a ? "#ff3b30" : "#ffc21a", 1.5); }
   }
   function steps(x, info, t) {
@@ -335,7 +343,7 @@
     if (st.detector) detector(x, st.detector.v, st.detector.alarm, t);
     const items = [];
     (st.watchers || []).forEach((w) => items.push({ y: w.y, f: () => penguin(x, w) }));
-    if (st.sleepy) [[30, 128], [62, 126]].forEach(([sx, sy], i) => items.push({ y: sy, f: () => { penguin(x, { x: sx, y: sy, s: 0.62, face: "front", sleep: true, role: "ta", t }); txt(x, "Zz", sx + 12, sy - 48 - Math.sin(t * 2 + i) * 3, 10, "#4a2fc0", { weight: 900 }); } }));
+    if (st.sleepy) [[30, 138], [62, 136]].forEach(([sx, sy], i) => items.push({ y: sy, f: () => { penguin(x, { x: sx, y: sy, s: 0.62, face: "front", sleep: true, role: "ta", t }); txt(x, "Zz", sx + 12, sy - 48 - Math.sin(t * 2 + i) * 3, 10, "#4a2fc0", { weight: 900 }); } }));
     const kinds = st.students || ["rabbit", "dog", "bear", "duck", "fox"];
     ROW1.forEach((sx, i) => items.push({ y: ROW1_Y + 10, f: () => { desk(x, sx, ROW1_Y - 22, 70, 0.8); paper(x, sx - 18, ROW1_Y - 12, 0.6, -0.1); student(x, sx, ROW1_Y, 0.85, kinds[i], t, i); } }));
     [60, 300].forEach((sx, i) => items.push({ y: ROW2_Y + 10, f: () => { desk(x, sx, ROW2_Y - 32, 86, 1); student(x, sx, ROW2_Y + 4, 1.1, kinds[3 + i], t, 3 + i); } }));

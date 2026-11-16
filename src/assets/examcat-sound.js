@@ -38,6 +38,8 @@
     stage: (t) => { [67, 72, 76, 79, 84].forEach((n, i) => tone("square", N(n), t + i * 0.09, i === 4 ? 0.4 : 0.1, 0.08)); },
     caught: (t) => { [67, 66, 65, 64].forEach((n, i) => tone("sawtooth", N(n - 12), t + i * 0.28, i === 3 ? 0.7 : 0.26, 0.1, i === 3 ? N(n - 14) : 0)); },
     end: (t) => { [72, 76, 79, 76, 79, 84].forEach((n, i) => tone("triangle", N(n), t + i * 0.12, i === 5 ? 0.6 : 0.12, 0.18)); },
+    send: (t) => { [76, 79, 83, 86].forEach((n, i) => tone("sine", N(n), t + i * 0.05, 0.06, 0.08)); },
+    buzz: (t) => { tone("square", 140, t, 0.12, 0.09); tone("square", 120, t + 0.1, 0.14, 0.09); },
     snap: (t) => { noise(t, 0.06, 0.35, 4000); tone("square", 2400, t, 0.04, 0.06); },
     ready: (t) => { tone("sine", N(84), t, 0.08, 0.12); tone("sine", N(91), t + 0.07, 0.12, 0.12); },
     tick: (t) => tone("square", 1800, t, 0.03, 0.05),
