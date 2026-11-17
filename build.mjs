@@ -21,6 +21,9 @@ const pages = await load("pages");
 const toolText = await load("tools");
 const PAY = await load("pay-rates-2026"); // P2-45 직장인 돈 계산기 요율(한 파일)
 const OST = await load("tax-overseas-2026"); // P2-53 해외주식 양도소득세 요율·규칙(한 파일)
+const HUBS = await load("hubs"); // P2-75 분류 허브 고유 안내(목록 앞)
+const TOOL_TESTS = await load("tool-tests"); // P2-75 툴 페이지 「이 툴을 시험한 방법」 한 줄
+const UPDATES = await load("updates"); // P2-75 /updates/ 업데이트 기록
 
 // ---------- 유틸 ----------
 const esc = (s = "") => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -390,12 +393,35 @@ function cleanLd(list) {
 const THEME_HEAD = `<script>(function(){var d=document.documentElement,t=null;try{t=localStorage.getItem("pt_theme")}catch(e){}if(t!=="dark"&&t!=="light")t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";d.setAttribute("data-theme",t)})()</script>`; // P2-62
 const THEME_BTN = `<button type="button" class="theme-btn" data-theme-toggle aria-label="다크 모드로 바꾸기" title="다크/라이트 전환"><span class="tt-to-dark">다크</span><span class="tt-to-light">라이트</span></button>`; // P2-62
 
+// ---------- P2-75 툴 페이지 「마지막 업데이트 · 이 툴을 시험한 방법」 ----------
+// 날짜는 seo-lastmod.json(내용이 실제로 바뀐 날)을 씀. 페이지를 쓸 때는 자리표시(LM_ISO·LM_KO)만 넣고,
+// 빌드 끝에서 lastmod를 계산한 뒤 dist 파일의 자리표시를 날짜로 바꿈 → 지문은 날짜와 무관하게 안정적
+const LM_ISO = "@@PT_LASTMOD_ISO@@", LM_KO = "@@PT_LASTMOD_KO@@";
+const koDate = (d) => { const [y, m, dd] = d.split("-").map(Number); return `${y}년 ${m}월 ${dd}일`; };
+const toolTestMissing = [];
+function toolMetaHtml(p) {
+  const x = UTILS.find((y) => y.path === p) || TOOLS.find((y) => y.path === p);
+  if (!x) return "";
+  const test = TOOL_TESTS[x.id];
+  if (!test && utilById[x.id]) toolTestMissing.push(p);
+  return `<div class="tool-meta"><p class="tm-upd"><span>마지막 업데이트 <time datetime="${LM_ISO}">${LM_KO}</time></span><a href="${u("/updates/")}">업데이트 기록</a></p>${test ? `<p class="tm-test"><b>이 툴을 시험한 방법</b> ${t(test)}</p>` : ""}</div>`;
+}
+// 본문의 첫 page-head 머리 바로 뒤에 넣음(없으면 경로 표시 뒤, 그것도 없으면 맨 앞)
+function insertAfterHead(body, html) {
+  const m = /<header class="page-head[^"]*"[^>]*>[\s\S]*?<\/header>/.exec(body);
+  if (m) return body.slice(0, m.index + m[0].length) + html + body.slice(m.index + m[0].length);
+  const c = body.indexOf("</nav>");
+  return c >= 0 ? body.slice(0, c + 6) + html + body.slice(c + 6) : html + body;
+}
+
 function layout({ title: title0, desc: desc0, path: p, body, scripts = [], jsonld = [], noindex = false, ogType = "website", fullTitle = false, wide = false, csp = false, vendor = [] }) {
   const title = fullTitle ? title0 : seoTitle(p, title0);
   const desc = SEO_DESC[p] ? SEO_DESC[p]() : desc0;
   // 제목이 길면(사이트 이름 포함 40자 초과) 「| 펭귄 툴즈」를 빼서 검색어가 잘리지 않게 함. 사이트 이름은 WebSite 구조화 데이터로 따로 알림
   const pageTitle = fullTitle || `${title} | ${cfg.siteName}`.length > 40 ? title : `${title} | ${cfg.siteName}`;
   if (!noindex) sitemap.push(p);
+  const tmeta = toolMetaHtml(p); // P2-75 툴 페이지 머리 아래 「마지막 업데이트 · 시험한 방법」
+  if (tmeta) body = insertAfterHead(body, tmeta);
   const ld = [...siteLd(), ...cleanLd(jsonld)];
   return `<!doctype html>
 <html lang="ko" data-base="${esc(cfg.basePath)}" data-site="${esc(cfg.siteName)}">
@@ -450,7 +476,7 @@ ${body}
   <div class="wrap">
     <p class="notice">${esc(DISCLAIMER)}</p>
     <nav class="foot-links" aria-label="사이트 정보">
-      <a href="${u("/about/")}">소개</a><a href="${u("/editorial/")}">작성·검수 기준</a><a href="${u("/privacy/")}"><strong>개인정보처리방침</strong></a><a href="${u("/terms/")}">이용약관</a><a href="${u("/disclaimer/")}">면책고지</a><a href="${u("/licenses/")}">오픈소스 고지</a><a href="${u("/contact/")}">문의</a>
+      <a href="${u("/about/")}">소개</a><a href="${u("/guide/")}">가이드</a><a href="${u("/updates/")}">업데이트 기록</a><a href="${u("/editorial/")}">작성·검수 기준</a><a href="${u("/privacy/")}"><strong>개인정보처리방침</strong></a><a href="${u("/terms/")}">이용약관</a><a href="${u("/disclaimer/")}">면책고지</a><a href="${u("/licenses/")}">오픈소스 고지</a><a href="${u("/contact/")}">문의</a>
     </nav>
     <p class="family">세화산업의 다른 서비스: <a href="${FAMILY.url}" target="_blank" rel="noopener">${esc(FAMILY.name)} · 익명 브레인스토밍 ↗<span class="sr"> (새 창, 외부 사이트)</span></a></p>
     <p class="copy">© ${new Date().getFullYear()} ${esc(cfg.operator)} · ${esc(cfg.siteName)}</p>
@@ -501,6 +527,10 @@ ${dataJson ? `<script type="application/json" id="page-data">${JSON.stringify(da
     layout({ title: tool.seo || tool.title, desc: tool.desc, path: tool.path, body, scripts, jsonld: [faqLd(g.faq), crumbs(items)] })
   );
 }
+
+// P2-75 가이드 원고(content/guides/*.md|*.mjs) — 홈 가이드 띠·RSS에서도 쓰므로 먼저 읽음. 페이지는 빌드 끝 쪽에서 만듦
+const GUIDE_MOD = await import("./content/guide-build.mjs");
+const { list: GUIDES, skipped: GUIDES_SKIPPED } = await GUIDE_MOD.loadGuides(path.join(ROOT, "content", "guides"));
 
 // ---------- 빌드 시작 ----------
 fs.rmSync(DIST, { recursive: true, force: true });
@@ -587,13 +617,14 @@ const SEARCH_INDEX = [
   { t: FAMILY.name, p: FAMILY.url, c: `${CHAT.name} · 새 창`, k: `랜덤7942 랜덤 채팅 익명 채팅 브레인스토밍 random7942 ${FAMILY.hook}`, x: 1 }, // 외부 사이트(대표님 지시)
 ];
 const byUtilRank = UTIL_RANK.map((id) => utilById[id]);
+const HOME_CORE = ["pdfmerge", "img2pdf", "pdf2img", "hwpview", "imgcompress", "heic", "charcount", "salary"]; // P2-75 홈 맨 위 실용 툴(검색 수요가 큰 문서·이미지·글쓰기·계산 대표)
 {
   const body = `
 <section class="hero hero-tools">
   <div class="hero-text">
     <p class="hero-kicker">펭귄 공구함 · 툴 ${TOOL_RANK.length}개</p>
     <h1>자주 쓰는 툴, <br>설치 없이 바로</h1>
-    <p class="lead">PDF·이미지·글쓰기·생활 계산·운세·투자 툴을 서랍별로 정리해 두었어요. 가입 없이 쓰고, 파일은 서버로 전송하지 않습니다.</p>
+    <p class="lead">PDF 합치기, 한글·워드 파일 열기, 사진 용량 줄이기, 글자수 세기, 연봉 실수령액처럼 일하고 공부할 때 쓰는 툴을 모았어요. 가입 없이 쓰고, 파일은 서버로 전송하지 않습니다.</p>
   </div>
   <form class="search" role="search" action="${u("/")}">
     <label for="tool-q">어떤 툴을 찾으세요?</label>
@@ -606,6 +637,9 @@ const byUtilRank = UTIL_RANK.map((id) => utilById[id]);
 <script type="application/json" id="tool-index">${JSON.stringify(SEARCH_INDEX).replace(/</g, String.fromCharCode(92) + "u003c")}</script>
 
 <!-- P2-61 홈 순서: 검색·즐겨찾기 → NEW 띠 → 모든 툴 서랍(툴 카테고리 → 펭귄 오락실 → 랜덤채팅) → 소개. 게임·랜덤7942도 툴과 같은 서랍 형식 -->
+<!-- P2-75 검색 바로 아래에 실용 툴(가장 많이 쓰는 8개)과 가이드 진입로를 먼저 둠. NEW 띠·오락실·운세는 그 아래 그대로 -->
+<section class="core-tools" aria-labelledby="core-h"><h2 id="core-h">가장 많이 쓰는 실용 툴</h2><ul class="rows rows-flow core-rows">${HOME_CORE.map((id) => rowHtml(utilById[id])).join("")}</ul></section>
+<section class="guide-band" aria-labelledby="gb-h"><div class="gb-text"><h2 id="gb-h">툴 사용 가이드</h2><p>툴을 직접 돌려 본 숫자와 화면으로, 자주 막히는 곳과 푸는 법을 정리해요.</p></div><ul class="gb-list">${GUIDES.slice(0, 3).map((g) => `<li><a href="${u(g.path)}"><b>${esc(fill(g.title))}</b><small>${esc(koDate(g.updated))}</small></a></li>`).join("")}</ul><p class="gb-more"><a href="${u("/guide/")}">가이드 전체 보기 ›</a><a href="${u("/updates/")}">업데이트 기록 ›</a></p></section>
 ${newList.length ? `<section class="new-band" aria-labelledby="new-h"><h2 id="new-h"><span class="new-tag">NEW</span> 새로 나왔어요</h2><ul class="new-grid">${newList.slice(0, 4).map((x) => newCard(x.id)).join("")}</ul></section>` : ""}
 <section class="toolbox" aria-labelledby="toolbox-h">
   <div class="toolbox-head"><h2 id="toolbox-h">모든 툴 <small>툴 ${TOOL_RANK.length}개 · 게임 ${HOME_GAMES.length}개 · 서랍별</small></h2><nav class="cab-jump" aria-label="서랍 바로 가기">${homeCabs().map(({ k, name, n }) => `<a class="chip" href="#cab-${k}"><i class="dot t-${k}" aria-hidden="true"></i>${esc(name)} <small>${n}</small></a>`).join("")}</nav></div>
@@ -740,7 +774,7 @@ TTI_KEYS.forEach((k) => {
   <div class="chips">${TTI_KEYS.filter((x) => x !== k).map((x) => `<a class="chip" href="${u(FUN_PATH.tti(x))}">${TTI_EMOJI[x]} ${esc(tti[x].name)}</a>`).join("")}</div>
   ${recoHtml(["birthday", "today", "personality"])}
 </article>`;
-  write(p, layout({ title: `${d.name} 성격과 특징`, desc: `${d.name} 성격: ${fill(d.summary)} ${d.name} 출생연도와 오늘의 운세까지 함께 확인해 보세요.`, path: p, body, ogType: "article", noindex: len < 300, jsonld: [crumbs(items)] }));
+  write(p, layout({ title: `${d.name} 성격과 특징`, desc: `${d.name} 성격: ${fill(d.summary)} ${d.name} 출생연도와 오늘의 운세까지 함께 확인해 보세요.`, path: p, body, ogType: "article", noindex: true /* P2-75 틀로 찍은 해설 12쪽: 색인 제외(페이지·링크는 그대로, follow) */, jsonld: [crumbs(items)] }));
 });
 
 // 별자리 페이지
@@ -764,7 +798,7 @@ ZODIAC_KEYS.forEach((k, i) => {
   <div class="chips">${ZODIAC_KEYS.filter((x) => x !== k).map((x) => `<a class="chip" href="${u(FUN_PATH.zodiac(x))}">${zodiac[x].symbol} ${esc(zodiac[x].name)}</a>`).join("")}</div>
   ${recoHtml(["birthday", "namematch", "personality"])}
 </article>`;
-  write(p, layout({ title: `${d.name} 성격과 특징 (${d.dates})`, desc: `${d.name}(${d.dates}) 성격: ${fill(d.summary)}`, path: p, body, ogType: "article", noindex: len < 300, jsonld: [crumbs(items)] }));
+  write(p, layout({ title: `${d.name} 성격과 특징 (${d.dates})`, desc: `${d.name}(${d.dates}) 성격: ${fill(d.summary)}`, path: p, body, ogType: "article", noindex: true /* P2-75 별자리 12쪽 색인 제외 */, jsonld: [crumbs(items)] }));
 });
 
 // ③ 16유형 테스트 + 16 결과 페이지
@@ -807,7 +841,7 @@ ZODIAC_KEYS.forEach((k, i) => {
   ${recoHtml(["birthday", "namematch", "reaction"])}
   <p class="legal">이 테스트는 칼 융의 심리 유형론에서 출발한 대중적인 4축 모델을 참고해 ${esc(cfg.siteName)}가 자체 제작한 간이 테스트입니다. 공식 성격유형 검사가 아니며, 해당 검사의 상표 권리자 및 국내 판권사와 관련이 없습니다.</p>
 </article>`;
-    write(p, layout({ title: `${d.name}(${k}) 성격 특징·장단점`, desc: `16유형 ${k} ${d.name}: ${fill(d.summary)} 일·관계·스트레스 상황에서의 모습과 성장 팁을 정리했어요.`, path: p, body, scripts: ["personality-result.js"], ogType: "article", noindex: len < 800, jsonld: [crumbs(items)] }));
+    write(p, layout({ title: `${d.name}(${k}) 성격 특징·장단점`, desc: `16유형 ${k} ${d.name}: ${fill(d.summary)} 일·관계·스트레스 상황에서의 모습과 성장 팁을 정리했어요.`, path: p, body, scripts: ["personality-result.js"], ogType: "article", noindex: true /* P2-75 16유형 해설 16쪽 색인 제외 */, jsonld: [crumbs(items)] }));
   });
 }
 
@@ -1112,7 +1146,7 @@ function checkLife() {
   <h2>Life Game의 다섯 가지 인생 성향</h2><ul>${LIFE_KEYS.map((x) => `<li><a href="${u(`/story/life/${LIFE_SLUG[x]}/`)}">${t(guides.lifeTypes[x].name)}</a> — ${t(guides.lifeTypes[x].summary)}</li>`).join("")}</ul></section>
   ${recoHtml(["today", "reaction", "personality"])}
 </article>`;
-    write(p, layout({ title: `Life Game 엔딩: ${fill(d.name)}`, desc: `Life Game 결과 ${fill(d.name)}: ${fill(d.summary)}. “${fill(d.epitaph)}”`, path: p, body, ogType: "article", noindex: len < 300, jsonld: [crumbs(items)] }));
+    write(p, layout({ title: `Life Game 엔딩: ${fill(d.name)}`, desc: `Life Game 결과 ${fill(d.name)}: ${fill(d.summary)}. “${fill(d.epitaph)}”`, path: p, body, ogType: "article", noindex: true /* P2-75 Life Game 엔딩 5쪽 색인 제외 */, jsonld: [crumbs(items)] }));
   });
 }
 
@@ -1134,6 +1168,23 @@ function checkLife() {
 // P2-50 투자 툴 안내 문구(시작·결과 화면·카테고리 페이지 공통)
 const STOCK_WARN = "교육·재미용이에요. 투자 권유가 아니에요. SOXL·TQQQ·KORU는 하루 수익률의 3배를 따라가는 레버리지 ETF라 위험이 매우 크고, 오래 들고 있으면 기초 지수보다 손실이 커질 수 있어요.";
 // ---------- 펭귄 툴즈 실용 툴 ----------
+// P2-75 분류 허브 고유 안내(content/hubs.mjs): 하는 일 → 상황별 고르기 → 자주 겪는 문제. 목록(서랍) 앞에 둠. 800자 미만이면 경고
+const HUB_LEN = {};
+function hubGuideHtml(k) {
+  const h = HUBS[k];
+  if (!h) { if (k !== "fun") warnings.push(`/${k}/ 허브 안내 원고 없음 (content/hubs.mjs)`); return ""; }
+  for (const [, id] of h.pick || []) if (!anyById[id]) throw new Error(`hubs.${k}: 없는 툴 id ${id}`);
+  const len = [h.lead, ...(h.pick || []).flatMap(([a, , c]) => [a, c]), ...(h.sections || []).flatMap((x) => [x.h, x.p || "", ...(x.list || [])])].reduce((n, x) => n + fill(x).trim().length, 0);
+  HUB_LEN[k] = len;
+  if (len < 800) warnings.push(`/${k}/ 허브 안내 ${len}자 (<800)`);
+  return `<section class="prose hub-guide" aria-label="${esc(UCATS[k].name)} 툴 고르는 법">
+<p class="hub-lead">${t(h.lead)}</p>
+<p class="hub-jump"><a href="#hub-list">툴 목록 바로 보기 ↓</a></p>
+<h2>상황별로 이렇게 골라 보세요</h2>
+<ul class="hub-pick">${(h.pick || []).map(([sit, id, note]) => `<li><span class="hp-s">${t(sit)}</span><a class="hp-t" href="${u(anyById[id].path)}">${esc(anyById[id].title)} ›</a><small>${t(note)}</small></li>`).join("")}</ul>
+${(h.sections || []).map((x) => `<h2>${t(x.h)}</h2>${x.p ? `<p>${t(x.p)}</p>` : ""}${x.list ? `<ul>${x.list.map((y) => `<li>${t(y)}</li>`).join("")}</ul>` : ""}`).join("\n")}
+</section>`;
+}
 // 실용 툴 카테고리 페이지 (/pdf/ /image/ /text/ /calc/)
 for (const [k, c] of Object.entries(UCATS)) {
   const list = utilsIn(k); // P2-49 운세·재미 포함
@@ -1143,7 +1194,8 @@ for (const [k, c] of Object.entries(UCATS)) {
   const fun = k === "fun"; // P2-49 운세·재미: 파일 안내 대신 입력값 안내 + 띠·별자리·16유형·띠별 운세 바로가기
   const body = `${crumbHtml(items)}
 <header class="page-head"><span class="eyebrow">펭귄 공구함</span><h1>${esc(c.name)} 툴</h1><p class="lead">${esc(c.desc)} ${esc(house ? "고른 필터는 주소에만 남고, 내 위치는 이 기기 안에서 지도를 옮길 때만 써요." : fun ? "입력한 생년월일과 이름은 브라우저 안에서만 계산하고 저장하지 않아요." : inv ? "넣은 숫자와 고른 답은 브라우저 안에서만 계산하고 저장하지 않아요." /* P2-51 계산기 추가로 문구 일반화 */ : SAFE)}</p>${fun ? '<p class="fun-badge">운세와 테스트는 재미로 보는 콘텐츠예요</p>' : ""}${inv ? `<p class="sq-warn">${esc(STOCK_WARN)}</p>` : ""}</header>
-<div class="drawers drawers-1 open">${drawerHtml({ tone: k, name: `${c.name} 서랍`, tools: utilsIn(k) })}</div>
+${hubGuideHtml(k)}
+<div class="drawers drawers-1 open" id="hub-list">${drawerHtml({ tone: k, name: `${c.name} 서랍`, tools: utilsIn(k) })}</div>
 ${fun ? FUN_EXTRA() : ""}
 <section class="reco"><h2>다른 서랍</h2><div class="drawers drawers-mini">${Object.entries(UCATS).filter(([kk]) => kk !== k).map(([kk, cc]) => drawerHtml({ tone: kk, name: cc.name, href: `/${kk}/`, tools: utilsIn(kk), tag: "h3" })).join("")}</div></section>`;
   write(`/${k}/`, layout({ title: c.seo || `${c.name} 툴 — 무료` /* P2-49 seo */, desc: `${c.name} 툴 모음: ${list.map((x) => x.title).join(", ")}. ${c.desc}`, path: `/${k}/`, body, jsonld: [crumbs(items)] }));
@@ -1203,7 +1255,7 @@ ${crumbHtml(items)}
     <p>${t(g.example)}</p>
     <h2>알아 두세요 (한계)</h2>
     <p>${t(g.limits)}</p>${(g.sections || []).map((x) => `
-    <h2>${t(x.h)}</h2>${x.p ? `<p>${t(x.p)}</p>` : ""}${x.list ? `<ul>${x.list.map((y) => `<li>${t(y)}</li>`).join("")}</ul>` : ""}${x.steps ? `<ol>${x.steps.map((y) => `<li>${t(y)}</li>`).join("")}</ol>` : ""}`).join("")}
+    <h2>${t(x.h)}</h2>${x.p ? `<p>${t(x.p)}</p>` : ""}${x.img ? `<figure class="g-fig"><img src="${u(x.img.src)}" alt="${t(x.img.alt)}" width="${x.img.w}" height="${x.img.h}" loading="lazy" decoding="async">${x.img.cap ? `<figcaption>${t(x.img.cap)}</figcaption>` : ""}</figure>` : ""}${x.list ? `<ul>${x.list.map((y) => `<li>${t(y)}</li>`).join("")}</ul>` : ""}${x.steps ? `<ol>${x.steps.map((y) => `<li>${t(y)}</li>`).join("")}</ol>` : ""}`).join("")}
   </section>
   ${faqHtml(g.faq)}
   ${recoRows(NEXT[tool.id].filter((x) => utilById[x]).concat(UTIL_RANK.filter((x) => x !== tool.id && !NEXT[tool.id].includes(x))).slice(0, 4), "다른 툴도 써 보세요")}
@@ -2836,7 +2888,8 @@ for (const k of INFO) {
   const d = pages[k];
   const p = `/${k}/`;
   const extra = k === "contact" ? `<p class="contact-mail">📮 <a href="mailto:${esc(cfg.contactEmail)}">${esc(cfg.contactEmail)}</a></p>` : "";
-  const body = `${crumbHtml([["홈", "/"], [d.title, p]])}<article class="prose doc"><h1>${t(d.title)}</h1>${extra}${blocks(d.body.filter((b) => !b.when || (b.when === "ga") === !!cfg.gaId), "h2")}</article>`; // when: "ga" 항목은 GA_ID가 있을 때만, "noGa"는 없을 때만
+  const aboutTail = k === "about" ? `<h2>더 알아보기</h2><ul class="about-links"><li><a href="${u("/updates/")}">업데이트 기록</a> — 날짜별로 새로 만든 툴, 고친 문제, 의견을 반영한 내용</li><li><a href="${u("/editorial/")}">작성·검수 기준</a> — 툴 설명과 해설을 쓰고 확인하는 규칙</li><li><a href="${u("/guide/")}">툴 사용 가이드</a> — 툴을 직접 돌려 보고 쓴 글</li><li><a href="${u("/contact/")}">문의</a> — 오류 제보와 의견: <a href="mailto:${esc(cfg.contactEmail)}">${esc(cfg.contactEmail)}</a></li></ul>` : ""; // P2-75
+  const body = `${crumbHtml([["홈", "/"], [d.title, p]])}<article class="prose doc"><h1>${t(d.title)}</h1>${extra}${blocks(d.body.filter((b) => !b.when || (b.when === "ga") === !!cfg.gaId), "h2")}${aboutTail}</article>`; // when: "ga" 항목은 GA_ID가 있을 때만, "noGa"는 없을 때만
   write(p, layout({ title: fill(d.title), desc: `${cfg.siteName} ${fill(d.title)}`, path: p, body }));
 }
 // 작성·검수 기준
@@ -2865,6 +2918,27 @@ for (const k of INFO) {
 (await import("./content/hell-chosun.mjs")).default({ cfg, write, layout, crumbHtml, crumbs, faqHtml, faqLd, adSlot, esc, t, u, abs, textLen, warnings, root: ROOT });
 // P2-74 커닝냥이(이름은 src/assets/examcat-data.js NAME). 본문·데이터·금지어 검사는 content/examcat.mjs, 게임은 src/assets/examcat-*.js
 (await import("./content/examcat.mjs")).default({ cfg, write, layout, crumbHtml, crumbs, faqHtml, faqLd, adSlot, esc, t, u, abs, textLen, warnings, root: ROOT, reco: recoHtml(["hell", "mines", "stack"]), fav: favBtn(toolById.examcat, "fav-title") });
+
+// P2-75 가이드 구역(/guide/ + 글 페이지). 원고: content/guides/*.md|*.mjs, 그림: src/assets/guide/
+const GUIDE_REPORT = GUIDE_MOD.buildGuides({ list: GUIDES, root: ROOT, cfg, write, layout, crumbHtml, crumbs, faqHtml, faqLd, recoRows, anyById, esc, fill, u, abs, warnings, orgId: ORG_ID, adSlot });
+
+// P2-75 업데이트 기록(/updates/). 원고: content/updates.mjs(배포할 때 맨 위에 한 덩어리 추가)
+{
+  const p = "/updates/";
+  const KIND = { new: "새로 나옴", better: "개선", fix: "고침", voice: "의견 반영", info: "안내" };
+  for (let i = 1; i < UPDATES.length; i++) if (!(UPDATES[i - 1].d > UPDATES[i].d)) throw new Error(`updates.mjs 날짜 순서(최신이 위): ${UPDATES[i - 1].d} → ${UPDATES[i].d}`);
+  for (const g of UPDATES) for (const x of g.items) if (!KIND[x.kind]) throw new Error(`updates.mjs ${g.d}: kind 「${x.kind}」 없음`);
+  const items = [["홈", "/"], ["업데이트 기록", p]];
+  const nVoice = UPDATES.reduce((n, g) => n + g.items.filter((x) => x.kind === "voice").length, 0);
+  const body = `${crumbHtml(items)}
+<article class="updates">
+  <header class="page-head"><span class="eyebrow">운영 기록</span><h1>업데이트 기록</h1><p class="lead">${esc(cfg.siteName)}에서 새로 만든 툴, 고친 문제, 써 본 분들의 의견을 반영한 내용을 날짜별로 적어요. 가장 최근 기록이 맨 위에 있어요.</p>
+  <p class="upd-stat">기록 ${UPDATES.length}일 · 항목 ${UPDATES.reduce((n, g) => n + g.items.length, 0)}개 · 의견 반영 ${nVoice}건 · 마지막 기록 <time datetime="${UPDATES[0].d}">${koDate(UPDATES[0].d)}</time></p></header>
+  ${UPDATES.map((g) => `<section class="upd-day" aria-labelledby="d-${g.d}"><h2 id="d-${g.d}"><time datetime="${g.d}">${koDate(g.d)}</time></h2><ul>${g.items.map((x) => `<li class="upd-${x.kind}"><span class="upd-kind">${KIND[x.kind]}</span><span class="upd-t">${t(x.t)}${x.go ? ` <a href="${u(x.go)}">바로 가기 ›</a>` : ""}</span></li>`).join("")}</ul></section>`).join("\n  ")}
+  <section class="prose"><h2>오류를 발견하셨나요?</h2><p>툴이 이상하게 동작하거나 설명이 틀렸다면 <a href="${u("/contact/")}">문의</a>로 알려 주세요. 확인해서 고친 내용은 이 페이지에 남겨요. 툴과 해설을 만드는 기준은 <a href="${u("/editorial/")}">작성·검수 기준</a>에 적어 두었어요.</p></section>
+</article>`;
+  write(p, layout({ title: "업데이트 기록 — 새 툴·개선·의견 반영 내역", desc: `${cfg.siteName} 업데이트 기록: 새로 만든 툴, 고친 문제, 써 본 분들의 의견을 반영한 내용을 날짜별로 정리했어요. 마지막 기록 ${koDate(UPDATES[0].d)}.`, path: p, body, jsonld: [crumbs(items)] }));
+}
 
 // 404
 write("/404.html", layout({ title: "페이지를 찾을 수 없어요", desc: "요청하신 페이지를 찾을 수 없어요.", path: "/404.html", noindex: true, body: `<section class="hero"><h1>앗, 길을 잃었어요</h1><p class="lead">주소가 바뀌었거나 없는 페이지예요. 대신 많이 쓰는 툴로 가 보세요.</p></section>${recoHtml(["pdfmerge", "img2pdf", "charcount", "today"], "많이 쓰는 툴")}` }));
@@ -2901,15 +2975,27 @@ for (const p of sitemap) {
   lastmod[p] = prev && prev[0] === fp ? prev[1] : today;
   lastmodDb[p] = [fp, lastmod[p]];
 }
+// P2-75 툴 페이지 「마지막 업데이트」 자리표시 → 날짜(색인 페이지는 sitemap lastmod, 그 밖에는 기록된 날 또는 오늘)
+let nToolMeta = 0;
+for (const [p, html] of pageHtml) {
+  if (!html.includes(LM_ISO)) continue;
+  const d = lastmod[p] || lastmodDb[p]?.[1] || today;
+  fs.writeFileSync(path.join(DIST, p.endsWith("/") ? p + "index.html" : p), html.split(LM_ISO).join(d).split(LM_KO).join(koDate(d)));
+  nToolMeta++;
+}
 if (!process.env.CI) fs.writeFileSync(LASTMOD_FILE, "{\n" + sitemap.map((p) => `${JSON.stringify(p)}: ${JSON.stringify(lastmodDb[p])}`).join(",\n") + "\n}\n");
 fs.writeFileSync(path.join(DIST, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemap.map((p) => `  <url><loc>${abs(p)}</loc><lastmod>${lastmod[p]}</lastmod></url>`).join("\n")}\n</urlset>\n`);
 fs.writeFileSync(path.join(DIST, "30bca7c192cf6710fc3afdf9ab9c522d.txt"), "30bca7c192cf6710fc3afdf9ab9c522d"); // IndexNow 키(네이버·빙 색인 요청용, 공개 파일)
 fs.writeFileSync(path.join(DIST, "robots.txt"), `User-agent: *\nAllow: /\n\nSitemap: ${abs("/sitemap.xml")}\n`);
-const rssItems = [...UTILS.map((x) => [x.title, x.path, x.desc]), ...TOOLS.map((x) => [x.title, x.path, x.desc]), ...TYPE_KEYS.map((k) => [`${personality[k].name}(${k}) 성격 특징`, FUN_PATH.type(k), fill(personality[k].summary)])];
+const rssItems = [...UTILS.map((x) => [x.title, x.path, x.desc]), ...TOOLS.map((x) => [x.title, x.path, x.desc]), /* P2-75 16유형 해설(noindex)은 RSS에서 뺌 */ ...GUIDES.map((g) => [g.title, g.path, g.desc]), [`${cfg.siteName} 업데이트 기록`, "/updates/", UPDATES[0].items.map((x) => x.t).join(" ").slice(0, 200)]].filter(([, p]) => sitemap.includes(p)); // P2-75 색인 페이지만
 fs.writeFileSync(path.join(DIST, "rss.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"><channel><title>${esc(cfg.siteName)}</title><link>${abs("/")}</link><description>${esc(cfg.tagline)}</description><language>ko</language>\n${rssItems.map(([ti, p, d]) => `<item><title>${esc(ti)}</title><link>${abs(p)}</link><guid>${abs(p)}</guid><description>${esc(d)}</description><pubDate>${new Date(`${lastmod[p] || today}T00:00:00+09:00`).toUTCString()}</pubDate></item>`).join("\n")}\n</channel></rss>\n`);
 // 자체 도메인(basePath "")이면 CNAME도 만들어 둠. GitHub Actions로 배포할 때는 이 파일이 쓰이지 않고 저장소 Settings → Pages의 Custom domain 값이 기준(문서 확인)
 { const host = new URL(cfg.siteUrl).hostname; if (cfg.basePath === "" && !host.endsWith(".github.io")) fs.writeFileSync(path.join(DIST, "CNAME"), host + "\n"); }
 if (cfg.adsenseClient) fs.writeFileSync(path.join(DIST, "ads.txt"), `google.com, ${cfg.adsenseClient.replace("ca-", "")}, DIRECT, f08c47fec0942fa0\n`);
 
+// P2-75 점검: 업데이트 기록의 바로 가기 주소가 실제 페이지인지, 툴 시험 방법이 빠진 툴
+for (const g of UPDATES) for (const x of g.items) if (x.go && !pageHtml.has(x.go)) warnings.push(`updates.mjs ${g.d}: 없는 주소 ${x.go}`);
+if (toolTestMissing.length) warnings.push(`「이 툴을 시험한 방법」 없음(content/tool-tests.mjs): ${toolTestMissing.join(", ")}`);
+console.log(`✔ P2-75: 허브 안내 ${Object.entries(HUB_LEN).map(([k, n]) => `${k} ${n}자`).join(", ")} · 툴 머리 표시 ${nToolMeta}쪽 · 가이드 ${GUIDE_REPORT.length}편(${GUIDE_REPORT.map((r) => `${r.path} ${r.len}자${r.noindex ? " noindex" : ""}`).join(", ")})${GUIDES_SKIPPED.length ? ` · 초안이라 건너뜀 ${GUIDES_SKIPPED.join(", ")}` : ""} · 업데이트 기록 ${UPDATES.length}일`);
 console.log(`✔ 빌드 완료: ${sitemap.length}개 색인 페이지 → dist/  (SITE_URL=${cfg.siteUrl})`);
 if (warnings.length) console.log("⚠ 확인 필요:\n  " + warnings.join("\n  "));

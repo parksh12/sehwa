@@ -2533,3 +2533,82 @@ html:not([data-theme="dark"]) :is(.sq-lg.is-lo,.dca-lg.is-koru,.rsb-lg.is-buy) i
 .sp-tiles-in [data-zip]{justify-self:start}
 .sp-frame{position:fixed;right:0;bottom:0;width:2px;height:2px;border:0;opacity:0;pointer-events:none}
 @media(max-width:480px){.sp .seg span{padding:7px 12px;font-size:14px}.sp-cm{font-size:26px}.sp-one-top .btn{padding:8px 9px;font-size:14px}}
+
+/* ===== P2-75 구조·신뢰: 툴 머리 「마지막 업데이트·시험 방법」, 허브 안내, 홈 실용 툴·가이드 띠, 가이드, 업데이트 기록 ===== */
+.tool-meta{margin:-6px 0 16px;padding:10px 14px;border:2px dashed var(--ink-3);border-radius:12px;font-size:14px;line-height:1.6;color:var(--ink-2)}
+.tool-meta p{margin:0}
+.tool-meta .tm-upd{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;font-weight:700;color:var(--ink)}
+.tool-meta .tm-upd a{font-weight:700;font-size:13.5px}
+.tool-meta .tm-test{margin-top:4px}
+.tool-meta .tm-test b{color:var(--ink);margin-right:4px}
+.hub-guide{margin:4px 0 26px}
+.hub-guide .hub-lead{font-size:16.5px}
+.hub-jump{margin:4px 0 0;font-size:14px;font-weight:700}
+.hub-guide h2{font-size:20px;margin:26px 0 10px}
+.hub-pick{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.hub-pick li{display:grid;grid-template-columns:1fr;gap:2px;padding:10px 14px;border:2px solid var(--ink);border-radius:12px;background:var(--white)}
+.hub-pick .hp-s{font-weight:700;color:var(--ink)}
+.hub-pick .hp-t{font-weight:800;text-decoration:none;justify-self:start}
+.hub-pick .hp-t:hover{text-decoration:underline}
+.hub-pick small{font-size:13.5px;color:var(--ink-2)}
+@media(min-width:700px){.hub-pick li{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);column-gap:16px}.hub-pick small{grid-column:2}.hub-pick .hp-t{grid-column:2;grid-row:1}.hub-pick .hp-s{grid-row:1 / span 2}}
+#hub-list{scroll-margin-top:calc(var(--hdr-h,64px) + 10px)}
+.core-tools{margin:6px 0 22px}
+.core-tools h2,.guide-band h2{margin:0 0 10px;font-family:var(--display);font-weight:400;font-size:clamp(22px,2.6vw,28px)}
+@media(min-width:1000px){.wide .core-rows{grid-template-columns:repeat(4,minmax(0,1fr))}.wide .core-rows li:nth-child(odd){border-right:0}.wide .core-rows li:not(:nth-child(4n)){border-right:2px solid var(--soft)}}
+.guide-band{margin:0 0 26px;padding:14px 16px;border:var(--bd);border-radius:14px;background:var(--white);display:grid;gap:8px}
+.guide-band .gb-text p{margin:0;color:var(--ink-2);font-size:15px}
+.gb-list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.gb-list a{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 10px;padding:8px 12px;border:2px solid var(--ink);border-radius:10px;text-decoration:none;color:var(--ink)}
+.gb-list a:hover{background:var(--hwang);color:#141414}
+.gb-list small{color:var(--ink-3);font-weight:700}
+.gb-more{margin:0;display:flex;flex-wrap:wrap;gap:6px 18px;font-weight:800;font-size:15px}
+@media(min-width:900px){.guide-band{grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);align-items:start}.gb-more{grid-column:1 / -1}}
+/* 가이드 글 */
+.g-meta{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:14px;color:var(--ink-3);font-weight:700;margin:8px 0 0}
+.g-tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:12px 0 0;font-size:14px}
+.g-tools b{margin-right:2px}
+.g-summary{border:var(--bd);border-radius:14px;background:var(--white);padding:4px 16px;margin:6px 0 16px}
+.g-summary ul{margin:10px 0;padding-left:1.2em}
+.g-summary li{font-weight:700;margin:4px 0}
+.g-toc{border:2px solid var(--ink);border-radius:12px;padding:10px 16px;margin:0 0 18px;font-size:15px}
+.g-toc ol{margin:6px 0 0;padding-left:1.4em}
+.g-toc li{margin:3px 0}
+.g-body h2{scroll-margin-top:calc(var(--hdr-h,64px) + 10px);margin-top:30px}
+.g-body h3{margin-top:20px}
+.g-steps li{margin:6px 0}
+.g-tip{border-left:6px solid var(--hwang);background:var(--soft);padding:10px 14px;border-radius:0 10px 10px 0}
+.g-table{overflow-x:auto;margin:14px 0;-webkit-overflow-scrolling:touch}
+.g-table table{border-collapse:collapse;min-width:100%;font-size:14.5px;overflow-wrap:normal;word-break:keep-all}
+.g-table th,.g-table td{border:1.5px solid var(--ink);padding:6px 10px;text-align:left;vertical-align:top}
+.g-table th{background:var(--soft);font-weight:800}
+.g-table caption{caption-side:bottom;text-align:left;font-size:13px;color:var(--ink-3);padding-top:6px}
+.g-fig{margin:18px 0}
+.g-fig img{display:block;height:auto;border:2px solid var(--ink);border-radius:10px;margin:0 auto;max-height:80vh;width:auto}
+.g-fig figcaption{font-size:13.5px;color:var(--ink-3);margin-top:6px;text-align:center}
+.g-pending{display:inline-block;border:2px dashed var(--jeok);color:var(--jeok-t);border-radius:8px;padding:2px 8px;font-weight:700;font-size:14px}
+.g-fig-empty .g-pending{display:block;padding:28px 12px;text-align:center}
+.g-sources{margin-top:26px;font-size:14.5px}
+.g-sources ul{padding-left:1.2em}
+.g-more ul{padding-left:1.2em}
+.g-list{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:10px}
+.g-card{display:grid;gap:4px;padding:14px 16px;border:var(--bd);border-radius:14px;box-shadow:var(--drop);background:var(--white);text-decoration:none;color:var(--ink)}
+.g-card:hover{background:var(--hwang);color:#141414}
+.g-card b{font-size:18px}
+.g-card span{color:var(--ink-2);font-size:15px}
+.g-card:hover span,.g-card:hover small{color:#3d3d3d}
+.g-card small{color:var(--ink-3);font-weight:700}
+/* 업데이트 기록 */
+.upd-stat{font-size:14px;font-weight:700;color:var(--ink-3);margin:6px 0 0}
+.upd-day{margin:22px 0 0}
+.upd-day h2{font-size:19px;margin:0 0 8px;padding-bottom:4px;border-bottom:2px solid var(--ink)}
+.upd-day ul{list-style:none;margin:0;padding:0}
+.upd-day li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:start;padding:8px 0;border-bottom:1px solid var(--soft)}
+.upd-kind{font-size:12.5px;font-weight:800;border:2px solid var(--ink);border-radius:6px;padding:0 6px;white-space:nowrap;margin-top:2px;background:var(--white)}
+.upd-new .upd-kind{background:var(--hwang);color:#141414}
+.upd-voice .upd-kind{background:var(--nok);color:#fff;border-color:var(--nok)}
+.upd-fix .upd-kind{border-color:var(--jeok);color:var(--jeok-t)}
+.upd-t a{font-weight:700;white-space:nowrap}
+.about-links li{margin:4px 0}
+@media print{.tool-meta,.guide-band,.hub-jump{display:none!important}}
+@media(pointer:coarse){.tool-meta .tm-upd a,.hub-jump a,.gb-more a{display:inline-block;padding:9px 0;margin:-9px 0}.g-toc a{display:inline-block;padding:8px 0;margin:-8px 0}}
