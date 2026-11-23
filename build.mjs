@@ -12,6 +12,13 @@ import { EXAMCAT_PAGE } from "./content/examcat.mjs"; // P2-74 게임 이름은 
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const DIST = path.join(ROOT, "dist");
+// ---------- P2-77 펭귄 오락실 하위 도메인 분리 ----------
+// 페이지는 지금처럼 한 번에 만들고(주소 = 경로), 빌드 끝에서 경로로 나눔: 오락실·운세·투자 → dist-play(play.penguintools.kr), 나머지(툴) → dist.
+// 본 사이트에 남는 옛 주소는 새 주소로 바로 가는 얇은 이동 쪽(noindex·광고 없음)이 됨. cfg.playUrl이 비면 나누지 않음(한 사이트, 전환 전 배포용)
+const DIST_PLAY = path.join(ROOT, "dist-play");
+const SPLIT = !!cfg.playUrl;
+const PLAY_PREFIXES = ["/play/", "/arcade/", "/story/", "/brain/", "/fun/", "/invest/", "/me/", "/love/", "/luck/"];
+const isPlayPath = (p) => PLAY_PREFIXES.some((x) => p.startsWith(x));
 const load = async (n) => (await import(`./content/${n}.mjs`)).default;
 const personality = await load("personality");
 const tti = await load("tti");
@@ -180,7 +187,14 @@ const UCATS = {
   invest: { name: "투자", seo: "투자 툴 — 손절·익절·포지션 계산기, 복리 계산기·배당 계산기, RSI 백테스트, 해외주식 양도세 계산기, 적립식 백테스트, 물타기 계산기, SOXL·TQQQ·KORU 주가 예측", desc: "손절가·익절가와 감당할 손실로 몇 주를 사야 하는지와 손익비를 계산하는 손절·익절·포지션 계산기, 적립식 복리로 몇 년 뒤 얼마가 되는지, 월 배당 100만 원을 받으려면 얼마가 필요한지 계산하는 복리·배당 계산기, 미국주식 양도소득세 계산, SOXL·TQQQ·KORU를 매달 샀다면 지금 얼마인지 보는 적립식 백테스트, RSI 30에 사고 70에 팔았다면 얼마인지 보는 RSI 매매 백테스트, 물타기 평단가 계산처럼 주식 투자에서 자주 하는 계산과, 레버리지 ETF의 실제 과거 차트로 오를까 내릴까를 맞혀 보는 투자 툴이에요. 투자 권유가 아니에요." }, // P2-50 새 툴 카테고리(앞으로 주식투자 툴을 여기에 모음) // P2-51 seo·desc에 물타기 계산기 // P2-52 적립식 백테스트 // P2-53 해외주식 양도세 // P2-54 RSI 백테스트 // P2-55 복리·배당 계산기 // P2-56 손절·익절·포지션 계산기
   house: { name: "내 집 마련", seo: "내 집 마련 — 역세권 아파트 지도, 20평대 실거래 가격대별", desc: "국토교통부 실거래가로 역세권 20평대(전용 40~60㎡) 아파트를 가격대별로 지도에서 보는 툴이에요. 사회초년생이 첫 집을 알아볼 때 어느 동네에서 얼마쯤인지 한눈에 볼 수 있어요. 투자 권유가 아니에요." }, // P2-63b 새 서랍(홈에서는 툴 서랍 맨 뒤, 오락실 앞)
 };
-const NAV = [...Object.entries(UCATS).map(([k, c]) => [c.name, `/${k}/`]), [PLAY.name, PLAY.path]];
+// P2-77 메뉴: 본 사이트는 툴 분류만(+ 가이드), 오락실은 게임·운세·투자만
+const MAIN_CATS = Object.keys(UCATS).filter((k) => !isPlayPath(`/${k}/`)); // pdf·image·text·calc·time·house
+const PLAY_CATS = Object.keys(UCATS).filter((k) => isPlayPath(`/${k}/`)); // fun·invest
+const NAV = [...MAIN_CATS.map((k) => [UCATS[k].name, `/${k}/`]), ["가이드", "/guide/"]];
+const PLAY_NAV = [["게임", PLAY.path], ...PLAY_CATS.map((k) => [UCATS[k].name, `/${k}/`])];
+const PLAY_HOME = SPLIT ? "/" : PLAY.path; // 오락실 첫 화면(분리 전에는 /play/)
+const TOOLS_HOME = SPLIT ? cfg.siteUrl + "/" : "/"; // 오락실에서 펭귄 툴즈로
+const GO_PLAY = SPLIT ? "/go-play/" : PLAY.path; // 본 사이트 → 오락실 바로가기(분리 후에는 기기 기록을 옮겨 주는 이동 쪽을 거침)
 // seo: <title> 앞부분(검색어 그대로) / also: 다른 카테고리 페이지에도 함께 노출 / beta: 베타 표시 / kw: 홈 검색용 동의어
 const UTILS = [
   { id: "pdfmerge", cat: "pdf", path: "/pdf/merge/", title: "PDF 합치기", seo: "PDF 합치기 — 무료", h1: "PDF 합치기 — 여러 PDF를 순서대로 한 파일로", desc: "여러 개의 PDF를 원하는 순서대로 한 파일로 합쳐요. 파일은 서버로 전송하지 않고 브라우저 안에서 처리합니다.", hook: "PDF 여러 개를 순서 정해서 한 파일로.", meta: "PDF 30개까지", kw: "pdf 병합 합치기 묶기 merge 하나로" },
@@ -229,8 +243,8 @@ const NEXT = {
   charcount: ["readtime", "linebreak", "emoji"], // P2-57 글쓰기 툴끼리 잇기
   dday: ["age", "timer", "charcount"],
   timer: ["stopwatch", "dday", "charcount"],
-  stopwatch: ["timer", "dday", "reaction"],
-  age: ["dday", "pyeong", "today"],
+  stopwatch: ["timer", "dday", "charcount"], // P2-77 반응속도 게임(오락실) → 툴
+  age: ["dday", "pyeong", "salary"], // P2-77 띠별 운세(오락실) → 툴
   pyeong: ["age", "dday", "charcount"],
   pdf2img: ["imgcompress", "img2pdf", "pdfsplit"],
   removebg: ["imgcompress", "img2pdf", "pdf2img"], // P2-26
@@ -253,7 +267,7 @@ const NEXT = {
   readtime: ["charcount", "linebreak", "emoji"], // P2-57 글자수 ↔ 읽기 시간 ↔ 정리 ↔ 꾸미기
   emoji: ["instafont", "linebreak", "charcount"], // P2-57, P2-68 이모지 → 영문 글씨 꾸미기 → 정리 → 글자수
   instafont: ["emoji", "charcount", "linebreak"], // P2-68 글씨 꾸민 뒤 이모지 더하기 → 글자수(인스타 소개 150자)
-  aptmap: ["salary", "pyeong", "compound"], // P2-63b 내 연봉 실수령액 → 평수 환산 → 모으는 기간(복리)
+  aptmap: ["salary", "pyeong", "severance"], // P2-63b 내 연봉 실수령액 → 평수 환산 // P2-77 복리 계산기(오락실 투자) → 퇴직금
 };
 const utilById = Object.fromEntries(UTILS.map((x) => [x.id, x]));
 const anyById = { ...toolById, ...utilById };
@@ -262,7 +276,8 @@ const catName = (k) => (UCATS[k] || CATS[k]).name;
 
 // ---------- 공통 조각 ----------
 // P2-49 운세·재미 툴 / 오락실 게임으로 문구 분리
-const DISCLAIMER = "툴로 만든 결과물은 원본과 함께 확인한 뒤 사용해 주세요. 운세·재미 툴의 테스트와 운세, 펭귄 오락실의 게임 결과는 재미로 보는 콘텐츠이며, 의학·심리·재정·법률적 판단의 근거가 될 수 없어요. 투자 툴은 과거 가격으로 하는 교육·재미용이며 투자 권유가 아니에요."; // P2-50 투자 툴 문구
+const DISCLAIMER = "툴로 만든 결과물은 원본과 함께 확인한 뒤 사용해 주세요. 계산기 결과는 넣은 값과 공개된 기준으로 낸 참고용 추정치이며, 실제 금액은 회사·기관의 계산과 다를 수 있어요."; // P2-77 본 사이트(툴) 문구
+const DISCLAIMER_PLAY = "운세·재미의 테스트와 운세, 게임 결과는 재미로 보는 콘텐츠이며, 의학·심리·재정·법률적 판단의 근거가 될 수 없어요. 투자 툴은 과거 가격으로 하는 교육·재미용이며 투자 권유가 아니에요."; // P2-50 투자 툴 문구 // P2-77 오락실 문구
 const SAFE = "파일은 서버로 전송하지 않습니다. 지금 쓰는 브라우저 안에서 처리해요.";
 // 툴 페이지 CSP: 스크립트는 자체 파일 + 애드센스·GA 도메인만. 파일 데이터를 보낼 수 있는 connect-src도 자체·Google 광고/통계로 한정
 const GDOM = "https://*.google.com https://*.google.co.kr https://*.googlesyndication.com https://*.doubleclick.net https://*.googleadservices.com https://*.adtrafficquality.google https://*.gstatic.com https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com";
@@ -304,11 +319,12 @@ const faqLd = (faq = []) => ({
 });
 
 // 기존 콘텐츠(오락실) 경로면 「홈 › 펭귄 오락실 › …」로 위치를 보여 줌
-const withPlay = (items) => (items.length > 1 && Object.keys(CATS).some((k) => items[1][1] === `/${k}/`) ? [items[0], [PLAY.name, PLAY.path], ...items.slice(1)] : items);
-const crumbs = (items0) => { const items = withPlay(items0); return {
+const withPlay = (items) => (items.length > 1 && Object.keys(CATS).some((k) => items[1][1] === `/${k}/`) ? [items[0], [SPLIT ? "게임" : PLAY.name, PLAY.path], ...items.slice(1)] : items); // P2-77 분리 후에는 「홈」이 오락실 첫 화면이라 「게임」
+// P2-77 오락실 쪽 경로 목록이면 「홈」(/)은 오락실 첫 화면 주소
+const crumbs = (items0) => { const items = withPlay(items0); const onPlay = SPLIT && isPlayPath(items[items.length - 1][1]); return {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  itemListElement: items.map((it, i) => ({ "@type": "ListItem", position: i + 1, name: it[0], item: abs(it[1]) })),
+  itemListElement: items.map((it, i) => ({ "@type": "ListItem", position: i + 1, name: it[0], item: onPlay && it[1] === "/" ? cfg.playUrl + "/" : abs(it[1]) })),
 }; };
 const crumbHtml = (items0, items = withPlay(items0)) =>
   `<nav class="crumbs" aria-label="현재 위치">${items.map((it, i) => (i < items.length - 1 ? `<a href="${u(it[1])}">${esc(it[0])}</a>` : `<span>${esc(it[0])}</span>`)).join(" › ")}</nav>`;
@@ -333,6 +349,7 @@ const drawerHtml = ({ tone, name, href = "", sub = "", tools, ext = [], extra = 
 const utilsIn = (k) => TOOL_RANK.map((id) => anyById[id]).filter((x) => x.cat === k || (x.also || []).includes(k)); // P2-49 운세·재미 포함
 // 세화산업의 다른 서비스(외부 사이트, 새 창). iframe·코드 가져오기 없이 링크만 검
 const FAMILY = { id: "family", name: "랜덤7942", url: "https://www.random7942.com/", hook: "가입 없이 낯선 사람과 아이디어 나누기 · 익명 브레인스토밍" };
+const PLAY_FAMILY = false; // P2-77 랜덤7942 링크를 오락실 쪽에 둘지(COO 확인 후 true). 본 사이트에는 두지 않음(대표님 결정)
 const CHAT = { name: "랜덤채팅" }; // P2-61 랜덤7942 단독 서랍 이름(「세화 패밀리」보다 하는 일이 바로 보임). 홈 서랍·검색·즐겨찾기 분류명
 // P2-61 외부 행도 툴 행과 같은 형식(즐겨찾기 별 + 아이콘 + 이름 + 한 줄 설명 + ›). 새 창은 「새 창 ↗」 표시와 sr 문구로 알림
 const extRowHtml = (f) =>
@@ -351,7 +368,7 @@ const shareBar = (opts = {}) =>
 // ---------- P2-35 기술 SEO: 검색 결과 제목·설명 보정 + 사이트 전체 구조화 데이터 ----------
 // 짧거나 검색어가 빠진 제목·설명만 여기서 보정(원고는 그대로). 주소 기준이라 호출부를 고치지 않아도 됨
 const SEO_DESC = {
-  "/about/": () => `${cfg.siteName} 소개: PDF·이미지·글쓰기·생활 계산 툴과 펭귄 오락실을 어떤 원칙(브라우저 안에서 처리, 한계까지 적는 설명)으로 운영하는지, 운영자 ${cfg.operator} 안내.`,
+  "/about/": () => `${cfg.siteName} 소개: PDF·이미지·글쓰기·생활 계산 툴을 어떤 원칙(브라우저 안에서 처리, 한계까지 적는 설명)으로 운영하는지, 운영자 ${cfg.operator} 안내.`,
   "/privacy/": () => `${cfg.siteName} 개인정보처리방침: 툴에 넣은 파일과 입력값을 서버로 보내지 않는 원칙, Google AdSense 광고 쿠키${cfg.gaId ? "와 Google Analytics 방문 통계" : ""}, 국외 이전, 문의처 안내.`,
   "/terms/": () => `${cfg.siteName} 이용약관: 서비스 내용, 서비스 변경·중단, 이용자의 의무, 저작권, 책임의 제한, 준거법과 분쟁 해결 안내.`,
   "/disclaimer/": () => `${cfg.siteName} 면책고지: 툴 결과물은 원본과 함께 확인해 주세요. 운세·재미 툴의 운세·테스트는 재미로 보는 콘텐츠이며 의학·법률·재정·심리 진단을 대신하지 않아요.`,
@@ -373,9 +390,11 @@ function seoTitle(p, title) {
 }
 // 사이트 전체 Organization·WebSite. 실제 주소 검색 기능이 없어서 SearchAction은 넣지 않음(홈 검색은 화면 안에서만 동작)
 const ORG_ID = () => abs("/#organization");
-const siteLd = () => [
+const siteLd = (play = false) => [
   { "@context": "https://schema.org", "@type": "Organization", "@id": ORG_ID(), name: cfg.operator, url: abs("/"), email: cfg.contactEmail },
-  { "@context": "https://schema.org", "@type": "WebSite", "@id": abs("/#website"), name: cfg.siteName, url: abs("/"), inLanguage: "ko", publisher: { "@id": ORG_ID() } },
+  play // P2-77 오락실 쪽은 오락실 WebSite(운영자는 같음)
+    ? { "@context": "https://schema.org", "@type": "WebSite", "@id": cfg.playUrl + "/#website", name: cfg.playName, url: cfg.playUrl + "/", inLanguage: "ko", publisher: { "@id": ORG_ID() } }
+    : { "@context": "https://schema.org", "@type": "WebSite", "@id": abs("/#website"), name: cfg.siteName, url: abs("/"), inLanguage: "ko", publisher: { "@id": ORG_ID() } },
 ];
 // 페이지별 구조화 데이터 정리: Google 소프트웨어 앱 리치 결과는 평점(aggregateRating)이나 리뷰(review)가 필수 → 실제 평점이 없는 WebApplication은
 // 서치 콘솔에 「잘못된 항목」으로 잡히므로 빼고(평점을 지어내지 않음), 운영자 Organization에는 주소(@id·url)를 채움
@@ -414,15 +433,21 @@ function insertAfterHead(body, html) {
   return c >= 0 ? body.slice(0, c + 6) + html + body.slice(c + 6) : html + body;
 }
 
-function layout({ title: title0, desc: desc0, path: p, body, scripts = [], jsonld = [], noindex = false, ogType = "website", fullTitle = false, wide = false, csp = false, vendor = [] }) {
+// P2-77 play: 오락실 쪽 화면(메뉴·푸터·로고)인지. 경로로 정하고, 오락실 첫 화면처럼 경로가 겹치는 쪽은 site로 지정
+function layout({ title: title0, desc: desc0, path: p, body, scripts = [], jsonld = [], noindex = false, ogType = "website", fullTitle = false, wide = false, csp = false, vendor = [], site = "" }) {
+  const play = site ? site.startsWith("play") : isPlayPath(p);
+  const own = play && SPLIT; // 오락실이 자기 주소(play.)로 따로 서 있는지
+  const siteNm = own ? cfg.playName : cfg.siteName;
   const title = fullTitle ? title0 : seoTitle(p, title0);
   const desc = SEO_DESC[p] ? SEO_DESC[p]() : desc0;
   // 제목이 길면(사이트 이름 포함 40자 초과) 「| 펭귄 툴즈」를 빼서 검색어가 잘리지 않게 함. 사이트 이름은 WebSite 구조화 데이터로 따로 알림
-  const pageTitle = fullTitle || `${title} | ${cfg.siteName}`.length > 40 ? title : `${title} | ${cfg.siteName}`;
-  if (!noindex) sitemap.push(p);
+  const pageTitle = fullTitle || `${title} | ${siteNm}`.length > 40 ? title : `${title} | ${siteNm}`;
+  if (!noindex && site !== "play-home") sitemap.push(p);
   const tmeta = toolMetaHtml(p); // P2-75 툴 페이지 머리 아래 「마지막 업데이트 · 시험한 방법」
   if (tmeta) body = insertAfterHead(body, tmeta);
-  const ld = [...siteLd(), ...cleanLd(jsonld)];
+  const ld = [...siteLd(own), ...cleanLd(jsonld)];
+  const nav = play ? PLAY_NAV : NAV;
+  const canon = site === "play-home" ? cfg.playUrl + "/" : abs(p);
   return `<!doctype html>
 <html lang="ko" data-base="${esc(cfg.basePath)}" data-site="${esc(cfg.siteName)}">
 <head>
@@ -432,28 +457,28 @@ ${csp ? `<meta http-equiv="Content-Security-Policy" content="${typeof csp === "s
 ${THEME_HEAD}
 <title>${esc(pageTitle)}</title>
 <meta name="description" content="${esc(desc)}">
-<link rel="canonical" href="${abs(p)}">
+<link rel="canonical" href="${canon}">
 ${noindex ? '<meta name="robots" content="noindex,follow">' : ""}
 <meta property="og:type" content="${ogType}">
-<meta property="og:site_name" content="${esc(cfg.siteName)}">
+<meta property="og:site_name" content="${esc(siteNm)}">
 <meta property="og:title" content="${esc(pageTitle)}">
 <meta property="og:description" content="${esc(desc)}">
-<meta property="og:url" content="${abs(p)}">
+<meta property="og:url" content="${canon}">
 <meta property="og:image" content="${abs("/assets/og.png")}">
-<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="${esc(cfg.siteName)} — 자주 쓰는 툴, 설치 없이 바로. PDF 합치기, JPG→PDF, 용량 줄이기, 글자수 세기, 타이머">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="${own ? `${esc(cfg.playName)} — 게임·운세·투자 연습, ${esc(cfg.siteName)}가 만든 놀이 공간` : `${esc(cfg.siteName)} — 자주 쓰는 툴, 설치 없이 바로. PDF 합치기, JPG→PDF, 용량 줄이기, 글자수 세기, 타이머`}">
 <meta property="og:locale" content="ko_KR">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#ffffff">
 ${cfg.googleVerification ? `<meta name="google-site-verification" content="${esc(cfg.googleVerification)}">` : ""}
 ${cfg.naverVerification ? `<meta name="naver-site-verification" content="${esc(cfg.naverVerification)}">` : ""}
 <link rel="icon" href="${u("/assets/favicon.svg")}" type="image/svg+xml">
-<link rel="alternate" type="application/rss+xml" title="${esc(cfg.siteName)}" href="${abs("/rss.xml")}">
+${own ? "" : `<link rel="alternate" type="application/rss+xml" title="${esc(cfg.siteName)}" href="${abs("/rss.xml")}">`}
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap">
 <link rel="stylesheet" href="${u("/assets/style.css")}?v=${BUILD_V}">
-${cfg.adsenseClient ? `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${esc(cfg.adsenseClient)}" crossorigin="anonymous"></script>` : ""}
+${cfg.adsenseClient && !noindex /* P2-77 noindex 쪽에는 광고 스크립트를 넣지 않음 */ ? `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${esc(cfg.adsenseClient)}" crossorigin="anonymous"></script>` : ""}
 ${cfg.gaId ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${esc(cfg.gaId)}"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());if(!/^(localhost|127\.)/.test(location.hostname))gtag('config','${esc(cfg.gaId)}');</script>` : ""}
 <script type="application/ld+json">${JSON.stringify(ld.length === 1 ? ld[0] : ld).replace(/</g, "\\u003c")}</script>
 </head>
@@ -461,11 +486,11 @@ ${cfg.gaId ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${e
 <a class="skip" href="#main">본문으로 건너뛰기</a>
 <header class="site-header">
   <div class="wrap header-inner">
-    <a class="logo" href="${u("/")}">${LOGO(34)}${esc(cfg.siteName)}</a>
+    <a class="logo" href="${u(play ? PLAY_HOME : "/")}">${LOGO(34)}${esc(play ? cfg.playName : cfg.siteName)}</a>
     <button type="button" class="fav-menu" data-fav-menu aria-haspopup="dialog" aria-expanded="false" aria-controls="fav-pop" aria-label="내 즐겨찾기">${STAR_SVG}<span class="fav-count" hidden>0</span></button>
     ${THEME_BTN}
     <nav class="nav" aria-label="카테고리">
-      ${NAV.map(([n, h]) => `<a href="${u(h)}"${p.startsWith(h) || (h === PLAY.path && Object.keys(CATS).some((k) => p.startsWith(`/${k}/`))) ? ' aria-current="true"' : ""}>${esc(n)}</a>`).join("")}
+      ${nav.map(([n, h]) => `<a href="${u(h)}"${p.startsWith(h) || (h === PLAY.path && Object.keys(CATS).some((k) => p.startsWith(`/${k}/`))) ? ' aria-current="true"' : ""}>${esc(n)}</a>`).join("")}${play ? `<a class="nav-out" href="${TOOLS_HOME}">${esc(cfg.siteName)} ›</a>` : ""}
     </nav>
   </div>
 </header>
@@ -474,12 +499,13 @@ ${body}
 </main>
 <footer class="site-footer">
   <div class="wrap">
-    <p class="notice">${esc(DISCLAIMER)}</p>
+    <p class="notice">${esc(play ? DISCLAIMER_PLAY : DISCLAIMER)}</p>
+    ${play ? `<nav class="foot-links foot-cats" aria-label="오락실 분류">${PLAY_NAV.map(([n, h]) => `<a href="${u(h)}">${esc(n)}</a>`).join("")}<a href="${TOOLS_HOME}">${esc(cfg.siteName)} — PDF·이미지·계산 툴 ›</a></nav>` : `<nav class="foot-links foot-cats" aria-label="툴 분류">${MAIN_CATS.map((k) => `<a href="${u(`/${k}/`)}">${esc(UCATS[k].name)}</a>`).join("")}</nav>` /* P2-77 푸터도 툴 분류만 */}
     <nav class="foot-links" aria-label="사이트 정보">
       <a href="${u("/about/")}">소개</a><a href="${u("/guide/")}">가이드</a><a href="${u("/updates/")}">업데이트 기록</a><a href="${u("/editorial/")}">작성·검수 기준</a><a href="${u("/privacy/")}"><strong>개인정보처리방침</strong></a><a href="${u("/terms/")}">이용약관</a><a href="${u("/disclaimer/")}">면책고지</a><a href="${u("/licenses/")}">오픈소스 고지</a><a href="${u("/contact/")}">문의</a>
     </nav>
-    <p class="family">세화산업의 다른 서비스: <a href="${FAMILY.url}" target="_blank" rel="noopener">${esc(FAMILY.name)} · 익명 브레인스토밍 ↗<span class="sr"> (새 창, 외부 사이트)</span></a></p>
-    <p class="copy">© ${new Date().getFullYear()} ${esc(cfg.operator)} · ${esc(cfg.siteName)}</p>
+    ${play && PLAY_FAMILY ? `<p class="family">세화산업의 다른 서비스: <a href="${FAMILY.url}" target="_blank" rel="noopener">${esc(FAMILY.name)} · 익명 브레인스토밍 ↗<span class="sr"> (새 창, 외부 사이트)</span></a></p>` : "" /* P2-77 랜덤채팅 링크: 본 사이트에서 제거(대표님 결정), 오락실 쪽은 COO 확인 전까지 끔(PLAY_FAMILY) */}
+    <p class="copy">© ${new Date().getFullYear()} ${esc(cfg.operator)} · ${esc(play ? cfg.playName : cfg.siteName)}</p>
   </div>
 </footer>
 <script src="${u("/assets/app.js")}?v=${BUILD_V}" defer></script>
@@ -534,6 +560,7 @@ const { list: GUIDES, skipped: GUIDES_SKIPPED } = await GUIDE_MOD.loadGuides(pat
 
 // ---------- 빌드 시작 ----------
 fs.rmSync(DIST, { recursive: true, force: true });
+fs.rmSync(DIST_PLAY, { recursive: true, force: true }); // P2-77 분리하지 않는 빌드에서 옛 결과물이 남지 않게
 fs.mkdirSync(DIST, { recursive: true });
 fs.cpSync(path.join(ROOT, "src", "assets"), path.join(DIST, "assets"), { recursive: true });
 
@@ -541,10 +568,10 @@ fs.cpSync(path.join(ROOT, "src", "assets"), path.join(DIST, "assets"), { recursi
 const homeIn = (k) => TOOL_RANK.map((id) => anyById[id]).filter((x) => ((x.also || [])[0] || x.cat) === k); // P2-49 운세·재미 포함
 // 서랍 순서: 툴이 많은 서랍부터(같으면 UCATS 순서). 위 3개는 윗줄, 나머지는 아랫줄
 const HOME_TAIL_CATS = ["house"]; // P2-63b 「내 집 마련」은 툴 수와 상관없이 툴 서랍 맨 뒤(오락실·랜덤채팅 앞), 한 줄 전체 서랍
-const homeOrder = () => Object.entries(UCATS).filter(([k]) => !HOME_TAIL_CATS.includes(k)).map((e, i) => [e, homeIn(e[0]).length, i]).sort((a, b) => b[1] - a[1] || a[2] - b[2]).map((x) => x[0]);
+const homeOrder = () => Object.entries(UCATS).filter(([k]) => !HOME_TAIL_CATS.includes(k) && MAIN_CATS.includes(k)).map((e, i) => [e, homeIn(e[0]).length, i]).sort((a, b) => b[1] - a[1] || a[2] - b[2]).map((x) => x[0]);
 // P2-49 데스크톱 줄 배치: 윗줄 3개(넓이 1/3). 아랫줄이 2개면 반씩, 그 밖에는 1/3씩
 const cabCls0 = (i, n) => (n > 6 && i === n - 1 && (n - 3) % 3 === 1 ? "cab-full" : i < 3 || n - 3 !== 2 ? "cab-big" : "cab-wide"); // P2-50 서랍 7개면 마지막에 혼자 남는 서랍은 한 줄 전체
-const nToolCabs = Object.keys(UCATS).length - HOME_TAIL_CATS.length; // P2-63b 내 집 마련 서랍은 배치 계산에서 빼고 한 줄 전체
+const nToolCabs = MAIN_CATS.length - HOME_TAIL_CATS.length; // P2-77 본 사이트 분류만 // P2-63b 내 집 마련 서랍은 배치 계산에서 빼고 한 줄 전체
 const cabCls = (i, n) => (i < nToolCabs ? cabCls0(i, nToolCabs) : "cab-full"); // P2-61 툴 카테고리 배치는 그대로, 뒤에 붙는 오락실·랜덤채팅 서랍은 한 줄 전체(데스크톱 3열 행)
 // P2-61 홈 NEW 띠: 맨 위(검색·즐겨찾기 바로 아래)
 // ★ 새 툴·게임을 만들면 여기에 { id, d: "출시일" }을 맨 위에 추가(대표님 지시: 새 콘텐츠는 메인에 잘 보이게).
@@ -603,48 +630,49 @@ const funTile = (id) => {
   const x = toolById[id];
   return `<li class="has-fav">${favBtn(x, "fav-tile")}<a class="fun-tile t-${x.cat}" href="${u(x.path)}"><span class="fun-art">${ART[x.id]}</span><b>${esc(x.title)}</b><span>${esc(x.hook)}</span></a></li>`;
 };
-// 홈 — 「펭귄 공구함」: 검색 → NEW 띠 → 카테고리 서랍마다 툴 행(게임·랜덤채팅도 같은 서랍, P2-61). 툴이 늘면 행만 늘어남
-// P2-61 홈 서랍 목록: 툴 카테고리(툴 많은 순) → 펭귄 오락실(게임 7종) → 랜덤채팅(랜덤7942 단독, 새 창). 모두 drawerHtml 한 부품
-const homeCabs = () => [
-  ...[...homeOrder(), ...HOME_TAIL_CATS.map((k) => [k, UCATS[k]])].map(([k, c]) => ({ k, name: c.name, n: homeIn(k).length, html: drawerHtml({ tone: k, name: c.name, href: `/${k}/`, tools: homeIn(k), tag: "h3" }) })), // P2-63b 내 집 마련은 툴 서랍 맨 뒤
-  { k: "play", name: PLAY.name, n: HOME_GAMES.length, html: drawerHtml({ tone: "play", name: PLAY.name, href: PLAY.path, tools: HOME_GAMES.map((id) => toolById[id]), tag: "h3" }) },
-  { k: "chat", name: CHAT.name, n: 1, html: drawerHtml({ tone: "chat", name: CHAT.name, tools: [], ext: [FAMILY], tag: "h3" }) },
-];
+// ---------- P2-77 홈: 「툴 전용 사이트」로 전면 개편 ----------
+// 본 사이트 홈 = 검색 + 인기 툴 → 분류별 툴 격자(툴 분류만) → NEW(툴만) → 가이드 → 소개 → 펭귄 오락실 바로가기 한 줄.
+// 게임·운세·투자·랜덤채팅 서랍은 본 사이트 홈에서 뺌. 「장편 게임 큰 카드·NEW 띠」 노출 규칙은 오락실 첫 화면(playHome)으로 옮김
+const MAIN_UTILS = UTIL_RANK.map((id) => utilById[id]).filter((x) => !isPlayPath(x.path)); // 본 사이트 툴(투자 제외)
 const playCat = (x) => (CATS[x.cat] ? `${PLAY.name} · ${CATS[x.cat].name}` : catName(x.cat)); // P2-49 게임은 「오락실 · 분류」, 운세·재미는 툴 분류 이름
-const SEARCH_INDEX = [
-  ...UTILS.map((x) => ({ t: x.title, p: u(x.path), c: catName(x.cat), k: `${x.kw} ${x.hook}`, b: x.beta ? 1 : 0 })),
-  ...TOOLS.map((x) => ({ t: x.title, p: u(x.path), c: playCat(x), k: x.kw ? `${x.kw} ${x.hook}` : x.hook })), // P2-44 kw 있으면 검색어 추가, P2-49 분류 이름
-  { t: FAMILY.name, p: FAMILY.url, c: `${CHAT.name} · 새 창`, k: `랜덤7942 랜덤 채팅 익명 채팅 브레인스토밍 random7942 ${FAMILY.hook}`, x: 1 }, // 외부 사이트(대표님 지시)
-];
+const SEARCH_INDEX = MAIN_UTILS.map((x) => ({ t: x.title, p: u(x.path), c: catName(x.cat), k: `${x.kw} ${x.hook}`, b: x.beta ? 1 : 0 })); // P2-77 툴만(오락실·랜덤채팅 제외)
+const PLAY_ITEMS = [...HOME_GAMES.map((id) => toolById[id]), ...FUN_RANK.map((id) => toolById[id]), ...UTIL_RANK.map((id) => utilById[id]).filter((x) => isPlayPath(x.path))];
+const PLAY_SEARCH = PLAY_ITEMS.map((x) => ({ t: x.title, p: u(x.path), c: playCat(x), k: x.kw ? `${x.kw} ${x.hook}` : x.hook }));
 const byUtilRank = UTIL_RANK.map((id) => utilById[id]);
 const HOME_CORE = ["pdfmerge", "img2pdf", "pdf2img", "hwpview", "imgcompress", "heic", "charcount", "salary"]; // P2-75 홈 맨 위 실용 툴(검색 수요가 큰 문서·이미지·글쓰기·계산 대표)
-{
-  const body = `
-<section class="hero hero-tools">
-  <div class="hero-text">
-    <p class="hero-kicker">펭귄 공구함 · 툴 ${TOOL_RANK.length}개</p>
-    <h1>자주 쓰는 툴, <br>설치 없이 바로</h1>
-    <p class="lead">PDF 합치기, 한글·워드 파일 열기, 사진 용량 줄이기, 글자수 세기, 연봉 실수령액처럼 일하고 공부할 때 쓰는 툴을 모았어요. 가입 없이 쓰고, 파일은 서버로 전송하지 않습니다.</p>
-  </div>
-  <form class="search" role="search" action="${u("/")}">
-    <label for="tool-q">어떤 툴을 찾으세요?</label>
-    <div class="search-row"><input id="tool-q" type="search" placeholder="예: pdf 합치기, 글자수, 만 나이" autocomplete="off" aria-controls="tool-hits" aria-describedby="tool-hits-n"><span class="search-ico" aria-hidden="true"></span></div>
+const POP_NAME = { hwpview: "한글 파일 열기", salary: "연봉 실수령액" }; // P2-77 홈 인기 툴 칩의 짧은 이름
+const HOME_CAT_ORDER = ["pdf", "image", "text", "calc", "time", "house"]; // P2-77 홈 격자 순서(문서 → 이미지 → 글쓰기 → 계산 → 시간 → 내 집 마련)
+const searchForm = (ph, label) => `<form class="search" role="search" action="${u("/")}">
+    <label for="tool-q">${label}</label>
+    <div class="search-row"><input id="tool-q" type="search" placeholder="${ph}" autocomplete="off" aria-controls="tool-hits" aria-describedby="tool-hits-n"><span class="search-ico" aria-hidden="true"></span></div>
     <p class="hint" id="tool-hits-n" aria-live="polite"></p>
     <ul class="hits" id="tool-hits" hidden></ul>
     <div class="fav-bar" id="fav-bar" aria-label="내 즐겨찾기"><span class="fav-bar-h">${STAR_SVG}내 즐겨찾기</span><div class="fav-bar-list"><span class="fav-empty">☆를 눌러 자주 쓰는 툴을 모아 두세요</span></div></div>
-  </form>
+  </form>`;
+// 분류 카드(격자 한 칸): 색 띠 머리 + 툴 이름 줄(그림 + 이름 + 한 줄 설명). 툴이 늘면 줄만 늘어남
+const tcatHtml = (k, tools) => `<section class="tcat t-${k}" id="cat-${k}" aria-labelledby="tc-${k}"><header class="tcat-h"><h3 id="tc-${k}"><a href="${u(`/${k}/`)}">${esc(UCATS[k].name)}</a></h3><small>${tools.length}개</small><a class="tcat-more" href="${u(`/${k}/`)}" aria-label="${esc(UCATS[k].name)} 툴 모두 보기">모두 ›</a></header><ul class="tlist">${tools.map((x) => `<li><a href="${u(x.path)}"><span class="ti">${ART[x.id]}</span><span class="tn"><b>${esc(x.title)}${x.beta ? ' <em class="beta">베타</em>' : ""}${HOME_NEW_IDS().includes(x.id) ? ' <span class="new-tag">NEW</span>' : ""}</b><small>${esc(x.hook)}</small></span></a></li>`).join("")}</ul></section>`;
+const HOME_NEW_IDS = () => newList.filter((x) => !isPlayPath(anyById[x.id].path)).slice(0, 4).map((x) => x.id); // P2-77 격자의 NEW 표시는 홈 NEW 띠에 나온 최신 4개만(표시가 너무 많으면 눈에 안 띔)
+{
+  const cats = HOME_CAT_ORDER.filter((k) => UCATS[k] && !isPlayPath(`/${k}/`));
+  const newTools = newList.filter((x) => !isPlayPath(anyById[x.id].path));
+  const body = `
+<section class="hero hero-tools hero-main">
+  <div class="hero-text">
+    <p class="hero-kicker">문서 · 이미지 · 글쓰기 · 계산 · 시간 툴 ${MAIN_UTILS.length}개</p>
+    <h1>PDF·이미지·글자수·계산기, <br>필요한 툴을 설치 없이 바로</h1>
+    <p class="lead">PDF 합치기, 한글·워드 파일 열기, 사진 용량 줄이기, 글자수 세기, 연봉 실수령액 계산처럼 일하고 공부할 때 쓰는 툴만 모았어요. 가입 없이 쓰고, 파일은 서버로 전송하지 않습니다.</p>
+  </div>
+  ${searchForm("예: pdf 합치기, 글자수, 만 나이", "어떤 툴을 찾으세요?")}
+  <p class="pop-tools"><b>많이 쓰는 툴</b>${HOME_CORE.map((id) => `<a class="chip" href="${u(utilById[id].path)}">${esc(POP_NAME[id] || utilById[id].title)}</a>`).join("")}</p>
 </section>
 <script type="application/json" id="tool-index">${JSON.stringify(SEARCH_INDEX).replace(/</g, String.fromCharCode(92) + "u003c")}</script>
 
-<!-- P2-61 홈 순서: 검색·즐겨찾기 → NEW 띠 → 모든 툴 서랍(툴 카테고리 → 펭귄 오락실 → 랜덤채팅) → 소개. 게임·랜덤7942도 툴과 같은 서랍 형식 -->
-<!-- P2-75 검색 바로 아래에 실용 툴(가장 많이 쓰는 8개)과 가이드 진입로를 먼저 둠. NEW 띠·오락실·운세는 그 아래 그대로 -->
-<section class="core-tools" aria-labelledby="core-h"><h2 id="core-h">가장 많이 쓰는 실용 툴</h2><ul class="rows rows-flow core-rows">${HOME_CORE.map((id) => rowHtml(utilById[id])).join("")}</ul></section>
-<section class="guide-band" aria-labelledby="gb-h"><div class="gb-text"><h2 id="gb-h">툴 사용 가이드</h2><p>툴을 직접 돌려 본 숫자와 화면으로, 자주 막히는 곳과 푸는 법을 정리해요.</p></div><ul class="gb-list">${GUIDES.slice(0, 3).map((g) => `<li><a href="${u(g.path)}"><b>${esc(fill(g.title))}</b><small>${esc(koDate(g.updated))}</small></a></li>`).join("")}</ul><p class="gb-more"><a href="${u("/guide/")}">가이드 전체 보기 ›</a><a href="${u("/updates/")}">업데이트 기록 ›</a></p></section>
-${newList.length ? `<section class="new-band" aria-labelledby="new-h"><h2 id="new-h"><span class="new-tag">NEW</span> 새로 나왔어요</h2><ul class="new-grid">${newList.slice(0, 4).map((x) => newCard(x.id)).join("")}</ul></section>` : ""}
-<section class="toolbox" aria-labelledby="toolbox-h">
-  <div class="toolbox-head"><h2 id="toolbox-h">모든 툴 <small>툴 ${TOOL_RANK.length}개 · 게임 ${HOME_GAMES.length}개 · 서랍별</small></h2><nav class="cab-jump" aria-label="서랍 바로 가기">${homeCabs().map(({ k, name, n }) => `<a class="chip" href="#cab-${k}"><i class="dot t-${k}" aria-hidden="true"></i>${esc(name)} <small>${n}</small></a>`).join("")}</nav></div>
-  <div class="cabinet">${homeCabs().map(({ k, html }, i, all) => `<div class="cab ${cabCls(i, all.length)}" id="cab-${k}">${html}</div>`).join("")}</div>
+<section class="tools-all" aria-labelledby="ta-h">
+  <div class="toolbox-head"><h2 id="ta-h">분류별 툴 <small>${cats.length}개 분류 · 툴 ${MAIN_UTILS.length}개</small></h2><nav class="cab-jump" aria-label="분류 바로 가기">${cats.map((k) => `<a class="chip" href="#cat-${k}"><i class="dot t-${k}" aria-hidden="true"></i>${esc(UCATS[k].name)} <small>${utilsIn(k).length}</small></a>`).join("")}</nav></div>
+  <div class="tgrid">${cats.map((k) => tcatHtml(k, utilsIn(k))).join("")}</div>
 </section>
+${newTools.length ? `<section class="new-band" aria-labelledby="new-h"><h2 id="new-h"><span class="new-tag">NEW</span> 새로 나온 툴</h2><ul class="new-grid">${newTools.slice(0, 4).map((x) => newCard(x.id)).join("")}</ul></section>` : ""}
+<section class="guide-band" aria-labelledby="gb-h"><div class="gb-text"><h2 id="gb-h">툴 사용 가이드</h2><p>툴을 직접 돌려 본 숫자와 화면으로, 자주 막히는 곳과 푸는 법을 정리해요.</p></div><ul class="gb-list">${GUIDES.slice(0, 3).map((g) => `<li><a href="${u(g.path)}"><b>${esc(fill(g.title))}</b><small>${esc(koDate(g.updated))}</small></a></li>`).join("")}</ul><p class="gb-more"><a href="${u("/guide/")}">가이드 전체 보기 ›</a><a href="${u("/updates/")}">업데이트 기록 ›</a></p></section>
 
 <section class="home-block home-about">
   <div class="about-head">
@@ -653,9 +681,42 @@ ${newList.length ? `<section class="new-band" aria-labelledby="new-h"><h2 id="ne
   </div>
   <div class="about-body">${fill(pages.home.intro).split(/\n+/).map((p) => `<p>${esc(p)}</p>`).join("")}</div>
 </section>
+<p class="play-line">쉬어 가고 싶을 때는 <a href="${u(GO_PLAY)}">${esc(cfg.playName)} 바로가기 ›</a></p>
 ${adSlotFixed("home")}`;
-  write("/", layout({ title: `${cfg.siteName} — ${cfg.tagline}`, fullTitle: true, wide: true, scripts: ["home.js"], desc: "PDF 합치기·나누기, JPG PDF 변환, PDF JPG 변환, 이미지 용량 줄이기, 글자수 세기, 만 나이·평수·디데이 계산기까지. 자주 쓰는 툴을 설치·가입 없이 브라우저에서 바로 써 보세요.", path: "/", body }));
+  write("/", layout({ title: `${cfg.siteName} — ${cfg.tagline}`, fullTitle: true, wide: true, scripts: ["home.js"], desc: "PDF 합치기·나누기, JPG PDF 변환, 한글(HWP) 파일 열기, 이미지 용량 줄이기, HEIC JPG 변환, 글자수 세기, 연봉 실수령액·만 나이·디데이 계산기까지. 자주 쓰는 툴을 설치·가입 없이 브라우저에서 바로 써 보세요.", path: "/", body }));
 }
+
+// P2-77 펭귄 오락실 첫 화면(play.penguintools.kr/). 분리할 때만 만듦(분리 전에는 /play/가 오락실 첫 화면)
+// 홈 노출 규칙(대표님): 장편 게임은 맨 위 큰 카드, 새 게임·콘텐츠는 NEW 띠
+const LONG_GAMES = ["rpg", "hellchosun"]; // 맨 위 큰 카드(플레이 시간이 긴 게임)
+const playHomeHtml = () => {
+  const newPlay = newList.filter((x) => isPlayPath(anyById[x.id].path));
+  const featCard = (id) => { const x = toolById[id]; return `<li class="has-fav">${favBtn(x, "fav-tile")}<a class="arc-feat t-${x.cat}" href="${u(x.path)}"><span class="fun-art">${ART[x.id]}</span><span class="ff-body"><em>${esc(PLAY_TIME[id] || x.meta || "게임")}</em><b>${esc(x.title)}</b><span>${esc(x.hook)}</span></span><span class="ff-go">플레이 ›</span></a></li>`; };
+  const cabs = [
+    { k: "play", name: "게임", href: PLAY.path, tools: HOME_GAMES.filter((id) => !LONG_GAMES.includes(id)).map((id) => toolById[id]) },
+    ...PLAY_CATS.map((k) => ({ k, name: UCATS[k].name, href: `/${k}/`, tools: utilsIn(k) })),
+  ];
+  return `
+<section class="hero hero-tools hero-play">
+  <div class="hero-text">
+    <p class="hero-kicker">게임 · 운세·재미 · 투자 연습</p>
+    <h1>${esc(cfg.playName)}</h1>
+    <p class="lead">펭귄 RPG, 헬조선에서 살아남기 같은 게임과 띠별 운세·타로·성격 테스트, 투자 연습 툴을 모았어요. 가입 없이 바로 하고, 입력한 생년월일·이름은 브라우저 안에서만 계산해요. 운세와 테스트는 재미로 보는 콘텐츠이고, 투자 툴은 투자 권유가 아니에요.</p>
+    <div class="hero-actions"><button class="btn" type="button" data-act="draw">아무 게임이나 한 판</button></div>
+    <ul hidden data-draw-pool>${HOME_GAMES.map((id) => `<li><a href="${u(toolById[id].path)}">${esc(toolById[id].title)}</a></li>`).join("")}</ul>
+  </div>
+  ${searchForm("예: 타로, 지뢰찾기, 물타기", "무엇을 할까요?")}
+</section>
+<script type="application/json" id="tool-index">${JSON.stringify(PLAY_SEARCH).replace(/</g, String.fromCharCode(92) + "u003c")}</script>
+<section class="arcade" aria-labelledby="long-h"><div class="arc-sec"><h2 class="arc-h" id="long-h"><span class="dot t-story"></span>오래 즐기는 게임 <small>자동 저장되는 긴 게임</small></h2><ul class="arc-feats">${LONG_GAMES.map(featCard).join("")}</ul></div></section>
+${newPlay.length ? `<section class="new-band" aria-labelledby="new-h"><h2 id="new-h"><span class="new-tag">NEW</span> 새로 나왔어요</h2><ul class="new-grid">${newPlay.slice(0, 4).map((x) => newCard(x.id)).join("")}</ul></section>` : ""}
+<section class="toolbox" aria-labelledby="toolbox-h">
+  <div class="toolbox-head"><h2 id="toolbox-h">모두 보기 <small>${cabs.map((c) => `${c.name} ${c.tools.length}`).join(" · ")}</small></h2></div>
+  <div class="cabinet">${cabs.map((c, i) => `<div class="cab cab-big" id="cab-${c.k}">${drawerHtml({ tone: c.k, name: c.name, href: c.href, tools: c.tools, tag: "h3" })}</div>`).join("")}</div>
+</section>
+<p class="play-line">PDF·이미지·글자수·계산 툴은 <a href="${TOOLS_HOME}">${esc(cfg.siteName)} ›</a></p>
+${adSlot("play-home")}`;
+};
 
 // 펭귄 오락실 허브 — 같은 서랍 시스템으로 「오늘 / 테스트 / 게임」 3구역. 기존 주소는 그대로
 // P2-49 오락실 = 게임만. 운세·사주·테스트·사다리는 툴 「운세·재미」(/fun/)로 옮기고 허브에는 안내 한 줄만 남김
@@ -686,12 +747,13 @@ ${(() => {
   <div class="arc-sec"><h2 class="arc-h"><span class="dot t-story"></span>게임 <small>한 판이면 끝나는 짧은 게임부터 1시간 RPG까지</small></h2>
     <ul class="arc-feats">${feat.map(featCard).join("")}</ul>
     <ul class="fun-grid arc-grid">${mini.map(tile).join("")}</ul>${extra["게임"]}</div>
-  <p class="arc-moved"><span class="dot t-fun" aria-hidden="true"></span>오늘의 운세·사주·성격 테스트·이름 궁합·사다리타기는 툴로 옮겼어요. <a href="${u("/fun/")}">운세·재미 툴 보기 ›</a></p>
+  <p class="arc-moved"><span class="dot t-fun" aria-hidden="true"></span>오늘의 운세·사주·성격 테스트·이름 궁합·사다리타기는 「운세·재미」에 있어요. <a href="${u("/fun/")}">운세·재미 보기 ›</a></p>
 </section>`; // P2-61 랜덤7942 「같이」 배너 삭제
 })()}
+<section class="prose"><h2>이렇게 즐겨 보세요</h2><p>시간이 넉넉하면 자동 저장되는 펭귄 RPG(약 1시간)나 헬조선에서 살아남기(한 판 15~30분)를 이어서 해 보세요. 잠깐 쉬는 시간에는 한 판 3분인 커닝냥이, 반응속도 게임, 블록 쌓기, 지뢰찾기가 알맞아요. 게임 기록과 저장은 이 기기의 브라우저에만 남고, 순위표에 이름을 올릴 때만 닉네임과 점수가 저장돼요.</p></section>
 ${recoRows(["charcount", "dday", "pdfmerge"], "쉬었다면, 일하러 갈 때 쓰는 툴")}
 ${adSlot("play")}`;
-  write(PLAY.path, layout({ title: `${PLAY.name} — 무료 RPG·생존 게임·짧은 게임`, wide: true, scripts: ["home.js"], desc: `${PLAY.desc} 가입 없이 브라우저에서 바로 한 판.`, path: PLAY.path, body, jsonld: [crumbs(items)] }));
+  write(PLAY.path, layout({ title: `${PLAY.name} — 무료 RPG·생존 게임·짧은 게임`, wide: true, scripts: ["home.js"], desc: `${PLAY.desc} 가입 없이 브라우저에서 바로 한 판.`, path: PLAY.path, body, noindex: SPLIT /* P2-77 분리 후에는 오락실 첫 화면(/)이 같은 역할 → 색인 제외 */, jsonld: [crumbs(items)] }));
 }
 
 // 카테고리 페이지
@@ -712,7 +774,7 @@ for (const [k, c] of Object.entries(CATS)) {
 <div class="drawers drawers-1">${drawerHtml({ tone: k, name: c.name, tools: list })}</div>
 ${CAT_EXTRA[k]()}
 ${recoRows(GAMES.filter((x) => x.cat !== k).map((x) => x.id), "오락실의 다른 게임")}`;
-  write(`/${k}/`, layout({ title: c.name, desc: `${c.name} — ${c.desc} ${list.map((x) => x.title).join(", ")}`, path: `/${k}/`, body, jsonld: [crumbs(items)] }));
+  write(`/${k}/`, layout({ title: c.name, desc: `${c.name} — ${c.desc} ${list.map((x) => x.title).join(", ")}`, path: `/${k}/`, body, noindex: true /* P2-77 게임 목록만 있는 얇은 분류 쪽(1,000자 미만): 색인 제외, 링크는 따라감 */, jsonld: [crumbs(items)] }));
 }
 
 // ① 생일로 보는 나
@@ -1151,12 +1213,14 @@ function checkLife() {
 }
 
 // 옛 주소(/brain/…, 폐지된 반응 스타일 결과 페이지) → 새 주소로 이동 (색인 제외)
+const MOVED_ALL = [];
 {
   const moved = [["/brain/", "/arcade/"], ["/brain/reaction/", "/arcade/reaction/"], ...REACTION_KEYS.flatMap((k) => [[`/brain/reaction/${REACTION_SLUG[k]}/`, "/arcade/reaction/"], [`/arcade/reaction/${REACTION_SLUG[k]}/`, "/arcade/reaction/"]])];
   moved.push(...FUN_MOVED); // P2-49 운세·재미 이동
   moved.push(["/pdf/word-to-pdf/", "/docx-to-pdf/"]); // P2-65 옛 워드 PDF 변환(간단) → 워드 PDF 변환(DOCX)
   moved.push(["/hwp-to-pdf/", "/hwp-viewer/"]); // P2-64d 한글 PDF 변환 → 한글 파일 뷰어·PDF 변환(통합)
   if (moved.some(([f]) => pageHtml.has(f))) throw new Error("P2-49 리디렉트가 실제 페이지를 덮어씀");
+  MOVED_ALL.push(...moved); // P2-77 분리할 때 본 사이트 이동 쪽이 최종 주소로 바로 가게
   for (const [from, to] of moved) {
     const file = path.join(DIST, from, "index.html");
     fs.mkdirSync(path.dirname(file), { recursive: true });
@@ -1197,7 +1261,7 @@ for (const [k, c] of Object.entries(UCATS)) {
 ${hubGuideHtml(k)}
 <div class="drawers drawers-1 open" id="hub-list">${drawerHtml({ tone: k, name: `${c.name} 서랍`, tools: utilsIn(k) })}</div>
 ${fun ? FUN_EXTRA() : ""}
-<section class="reco"><h2>다른 서랍</h2><div class="drawers drawers-mini">${Object.entries(UCATS).filter(([kk]) => kk !== k).map(([kk, cc]) => drawerHtml({ tone: kk, name: cc.name, href: `/${kk}/`, tools: utilsIn(kk), tag: "h3" })).join("")}</div></section>`;
+<section class="reco"><h2>다른 서랍</h2><div class="drawers drawers-mini">${Object.entries(UCATS).filter(([kk]) => kk !== k && isPlayPath(`/${kk}/`) === isPlayPath(`/${k}/`)).map(([kk, cc]) => drawerHtml({ tone: kk, name: cc.name, href: `/${kk}/`, tools: utilsIn(kk), tag: "h3" })).join("")}${isPlayPath(`/${k}/`) ? drawerHtml({ tone: "play", name: "게임", href: PLAY.path, tools: HOME_GAMES.map((id) => toolById[id]), tag: "h3" }) : ""}</div></section>`; // P2-77 같은 사이트 서랍만(오락실 쪽은 게임 서랍 추가)
   write(`/${k}/`, layout({ title: c.seo || `${c.name} 툴 — 무료` /* P2-49 seo */, desc: `${c.name} 툴 모음: ${list.map((x) => x.title).join(", ")}. ${c.desc}`, path: `/${k}/`, body, jsonld: [crumbs(items)] }));
 }
 
@@ -1223,7 +1287,13 @@ const restCard = (id) => {
   const lt = PLAY_TIME[g.id]; // P2-61
   return `<a class="rest-card t-${g.cat}" href="${u(g.path)}"><span class="fun-art">${ART[g.id]}</span><span class="ff-body"><em>잠깐 쉬어 가기${lt ? ` · ${esc(lt)}` : ""}</em><b>${esc(g.title)}</b><span>${esc(g.hook)}</span></span><span class="ff-go">한 판 ›</span></a>`;
 };
-const nextHtml = (id, hidden) => `<nav class="tk-next" aria-label="다음 툴"${hidden ? " hidden" : ""}><b>다음으로 많이 쓰는 툴</b>${NEXT[id].map((x) => `<a class="chip" href="${u(anyById[x].path)}">${esc(anyById[x].title)}</a>`).join("")}</nav>${restCard(id)}`; // 쉬어 가기 카드는 결과 전에도 항상 보임(대표님 지시)
+// P2-77 「잠깐 쉬어 가기」 게임 카드는 오락실 쪽(투자 툴)에만. 본 사이트 툴 페이지에는 오락 링크를 두지 않음
+const sameSide = (a, b) => isPlayPath(a) === isPlayPath(b);
+const nextHtml = (id, hidden) => `<nav class="tk-next" aria-label="다음 툴"${hidden ? " hidden" : ""}><b>다음으로 많이 쓰는 툴</b>${NEXT[id].filter((x) => sameSide(anyById[x].path, anyById[id].path)).map((x) => `<a class="chip" href="${u(anyById[x].path)}">${esc(anyById[x].title)}</a>`).join("")}</nav>${isPlayPath(anyById[id].path) ? restCard(id) : ""}`; // 쉬어 가기 카드는 결과 전에도 항상 보임(대표님 지시)
+// P2-77 툴 하단 추천: 같은 분류 툴 먼저 → 다음 툴 → 나머지(같은 사이트 툴만) 4개 + 이 툴을 쓴 가이드
+const recoIds = (tool) => [...new Set([...utilsIn(tool.cat).map((x) => x.id), ...NEXT[tool.id], ...UTIL_RANK])].filter((x) => x !== tool.id && utilById[x] && sameSide(utilById[x].path, tool.path)).slice(0, 4);
+const relGuides = (id) => GUIDES.filter((g) => (g.tools || []).includes(id));
+const relGuideHtml = (id) => { const gs = relGuides(id); return gs.length ? `<section class="reco rel-guides"><h2>이 툴을 쓴 가이드</h2><ul class="gb-list">${gs.map((g) => `<li><a href="${u(g.path)}"><b>${esc(fill(g.title))}</b><small>${esc(koDate(g.updated))}</small></a></li>`).join("")}</ul></section>` : ""; };
 
 // 실용 툴 페이지 공통 본문: 제목 → [툴 상자: 넣기 → 처리 → 내려받기 → 다음 툴] → 광고(높이 확보) → 사용법·예시·한계 → FAQ → 추천
 // fileTool: 파일 툴이면 결과가 나온 뒤에 「다음 툴」을 보이고, 입력형 툴(글자수·D-day)은 처음부터 보임
@@ -1258,7 +1328,8 @@ ${crumbHtml(items)}
     <h2>${t(x.h)}</h2>${x.p ? `<p>${t(x.p)}</p>` : ""}${x.img ? `<figure class="g-fig"><img src="${u(x.img.src)}" alt="${t(x.img.alt)}" width="${x.img.w}" height="${x.img.h}" loading="lazy" decoding="async">${x.img.cap ? `<figcaption>${t(x.img.cap)}</figcaption>` : ""}</figure>` : ""}${x.list ? `<ul>${x.list.map((y) => `<li>${t(y)}</li>`).join("")}</ul>` : ""}${x.steps ? `<ol>${x.steps.map((y) => `<li>${t(y)}</li>`).join("")}</ol>` : ""}`).join("")}
   </section>
   ${faqHtml(g.faq)}
-  ${recoRows(NEXT[tool.id].filter((x) => utilById[x]).concat(UTIL_RANK.filter((x) => x !== tool.id && !NEXT[tool.id].includes(x))).slice(0, 4), "다른 툴도 써 보세요")}
+  ${recoRows(recoIds(tool), "이어서 쓰기 좋은 툴")}
+  ${relGuideHtml(tool.id)}
 </article>`;
   write(tool.path, layout({ title: tool.seo, desc: tool.desc, path: tool.path, body, csp, vendor, scripts: ["tool-kit.js", ...scripts], noindex: len < 300 || g.noindex === true, jsonld: [faqLd(g.faq), crumbs(items), { "@context": "https://schema.org", "@type": "WebApplication", name: tool.title, url: abs(tool.path), applicationCategory: "UtilitiesApplication", operatingSystem: "Any", offers: { "@type": "Offer", price: "0", priceCurrency: "KRW" } }] }));
 }
@@ -2876,7 +2947,7 @@ utilPage(utilById.stopwatch, `<button type="button" class="tm-fs-close" data-fs-
 {
   const tool = utilById.aptmap, g = toolText.aptmap;
   if (!g) throw new Error("tools.aptmap 원고 없음");
-  const next = NEXT.aptmap.filter((x) => utilById[x]).concat(UTIL_RANK.filter((x) => x !== "aptmap" && !NEXT.aptmap.includes(x))).slice(0, 4);
+  const next = recoIds(tool); // P2-77 같은 분류 → 다음 툴 → 나머지(본 사이트 툴만)
   const r = await (await import("./content/aptmap.mjs")).default({ root: ROOT, dist: DIST, write, layout, crumbHtml, crumbs, faqHtml, faqLd, adSlotFixed, recoRows, favBtn, esc, t, u, abs, warnings, tool, guide: g, csp: CSP, buildV: BUILD_V, next });
   console.log(`  아파트 지도: 단지 ${r.n}곳, 데이터 ${Math.round(r.raw / 1024)}KB (gzip ${Math.round(r.gz / 1024)}KB), 화면 계산 대조 ${r.checks}건 통과, 카카오 JS 키 ${r.key ? "있음" : "없음"}`);
   console.log(`  아파트 지도 시·도 요약(P2-63c): ${r.regions.length}쪽(${r.regions.map((x) => `${x.name} ${x.n}${x.noindex ? "(noindex)" : ""}`).join(", ")}), 원본 대조 ${r.regionChecks}건 통과${r.regionsEmpty?.length ? `, 단지 0곳이라 안 만든 시·도: ${r.regionsEmpty.join("·")}` : ""}`); // P2-63c
@@ -2934,14 +3005,14 @@ const GUIDE_REPORT = GUIDE_MOD.buildGuides({ list: GUIDES, root: ROOT, cfg, writ
 <article class="updates">
   <header class="page-head"><span class="eyebrow">운영 기록</span><h1>업데이트 기록</h1><p class="lead">${esc(cfg.siteName)}에서 새로 만든 툴, 고친 문제, 써 본 분들의 의견을 반영한 내용을 날짜별로 적어요. 가장 최근 기록이 맨 위에 있어요.</p>
   <p class="upd-stat">기록 ${UPDATES.length}일 · 항목 ${UPDATES.reduce((n, g) => n + g.items.length, 0)}개 · 의견 반영 ${nVoice}건 · 마지막 기록 <time datetime="${UPDATES[0].d}">${koDate(UPDATES[0].d)}</time></p></header>
-  ${UPDATES.map((g) => `<section class="upd-day" aria-labelledby="d-${g.d}"><h2 id="d-${g.d}"><time datetime="${g.d}">${koDate(g.d)}</time></h2><ul>${g.items.map((x) => `<li class="upd-${x.kind}"><span class="upd-kind">${KIND[x.kind]}</span><span class="upd-t">${t(x.t)}${x.go ? ` <a href="${u(x.go)}">바로 가기 ›</a>` : ""}</span></li>`).join("")}</ul></section>`).join("\n  ")}
+  ${UPDATES.map((g) => `<section class="upd-day" aria-labelledby="d-${g.d}"><h2 id="d-${g.d}"><time datetime="${g.d}">${koDate(g.d)}</time></h2><ul>${g.items.map((x) => `<li class="upd-${x.kind}"><span class="upd-kind">${KIND[x.kind]}</span><span class="upd-t">${t(x.t)}${x.go && !(SPLIT && isPlayPath(x.go)) /* P2-77 오락실로 옮긴 항목은 바로 가기 없이 기록만 */ ? ` <a href="${u(x.go)}">바로 가기 ›</a>` : ""}</span></li>`).join("")}</ul></section>`).join("\n  ")}
   <section class="prose"><h2>오류를 발견하셨나요?</h2><p>툴이 이상하게 동작하거나 설명이 틀렸다면 <a href="${u("/contact/")}">문의</a>로 알려 주세요. 확인해서 고친 내용은 이 페이지에 남겨요. 툴과 해설을 만드는 기준은 <a href="${u("/editorial/")}">작성·검수 기준</a>에 적어 두었어요.</p></section>
 </article>`;
   write(p, layout({ title: "업데이트 기록 — 새 툴·개선·의견 반영 내역", desc: `${cfg.siteName} 업데이트 기록: 새로 만든 툴, 고친 문제, 써 본 분들의 의견을 반영한 내용을 날짜별로 정리했어요. 마지막 기록 ${koDate(UPDATES[0].d)}.`, path: p, body, jsonld: [crumbs(items)] }));
 }
 
 // 404
-write("/404.html", layout({ title: "페이지를 찾을 수 없어요", desc: "요청하신 페이지를 찾을 수 없어요.", path: "/404.html", noindex: true, body: `<section class="hero"><h1>앗, 길을 잃었어요</h1><p class="lead">주소가 바뀌었거나 없는 페이지예요. 대신 많이 쓰는 툴로 가 보세요.</p></section>${recoHtml(["pdfmerge", "img2pdf", "charcount", "today"], "많이 쓰는 툴")}` }));
+write("/404.html", layout({ title: "페이지를 찾을 수 없어요", desc: "요청하신 페이지를 찾을 수 없어요.", path: "/404.html", noindex: true, body: `<section class="hero"><h1>앗, 길을 잃었어요</h1><p class="lead">주소가 바뀌었거나 없는 페이지예요. 대신 많이 쓰는 툴로 가 보세요.</p></section>${recoHtml(["pdfmerge", "img2pdf", "charcount", "heic"], "많이 쓰는 툴") /* P2-77 띠별 운세 → HEIC */}` }));
 
 // P2-25 즐겨찾기 색인: favs.js가 쓰는 { id: { t, p, c } } (외부 링크·준비 중 항목 제외)
 {
@@ -2950,7 +3021,7 @@ write("/404.html", layout({ title: "페이지를 찾을 수 없어요", desc: "�
   TOOLS.forEach((x) => { favIdx[x.id] = { t: x.title, p: u(x.path), c: playCat(x) }; }); // P2-49 id는 그대로, 주소·분류만 새로
   favIdx.hwp2pdf = { ...favIdx.hwpview, a: "hwpview" }; // P2-64d 옛 「한글 PDF 변환」 즐겨찾기 → 통합 페이지
   favIdx.word2pdf = { ...favIdx.docx2pdf, a: "docx2pdf" }; // P2-65 옛 「워드 PDF 변환(간단)」을 즐겨찾기에 담아 둔 사용자 → 새 워드 PDF 변환으로(UTILS 뒤에 넣어 현재 페이지 판별은 docx2pdf가 먼저)
-  favIdx.family = { t: FAMILY.name, p: FAMILY.url, c: `${CHAT.name} · 새 창`, x: 1 }; // 외부 사이트 // P2-61 분류명 = 새 서랍 이름
+  if (PLAY_FAMILY) favIdx.family = { t: FAMILY.name, p: FAMILY.url, c: `${CHAT.name} · 새 창`, x: 1 }; // 외부 사이트 // P2-61 분류명 = 새 서랍 이름 // P2-77 랜덤채팅 링크 내림(대표님 결정)
   fs.writeFileSync(path.join(DIST, "assets", "fav-index.js"), `window.FAV_INDEX=${JSON.stringify(favIdx).replace(/</g, String.fromCharCode(92) + "u003c")};\n`);
 }
 
@@ -2983,11 +3054,94 @@ for (const [p, html] of pageHtml) {
   fs.writeFileSync(path.join(DIST, p.endsWith("/") ? p + "index.html" : p), html.split(LM_ISO).join(d).split(LM_KO).join(koDate(d)));
   nToolMeta++;
 }
-if (!process.env.CI) fs.writeFileSync(LASTMOD_FILE, "{\n" + sitemap.map((p) => `${JSON.stringify(p)}: ${JSON.stringify(lastmodDb[p])}`).join(",\n") + "\n}\n");
-fs.writeFileSync(path.join(DIST, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemap.map((p) => `  <url><loc>${abs(p)}</loc><lastmod>${lastmod[p]}</lastmod></url>`).join("\n")}\n</urlset>\n`);
+// P2-77 오락실 첫 화면(분리할 때만): 경로 「/」가 본 사이트 홈과 겹쳐서 sitemap·lastmod 키를 「play:/」로 따로 둠
+const PLAY_HOME_KEY = "play:/";
+const playHomeOut = SPLIT ? layout({ title: `${cfg.playName} — 무료 게임·띠별 운세·타로·투자 연습`, fullTitle: true, wide: true, scripts: ["home.js"], desc: `${cfg.playName}: 펭귄 RPG, 헬조선에서 살아남기, 지뢰찾기 같은 게임과 오늘의 띠별 운세, 무료 타로·사주, 16유형 성격 테스트, 투자 연습 툴을 가입 없이 바로. 재미로 보는 콘텐츠이며 투자 권유가 아니에요.`, path: "/", site: "play-home", body: playHomeHtml() }) : "";
+if (SPLIT) {
+  const fp = fingerprint(playHomeOut), prev = lastmodDb[PLAY_HOME_KEY];
+  lastmod[PLAY_HOME_KEY] = prev && prev[0] === fp ? prev[1] : today;
+  lastmodDb[PLAY_HOME_KEY] = [fp, lastmod[PLAY_HOME_KEY]];
+}
+if (!process.env.CI) fs.writeFileSync(LASTMOD_FILE, "{\n" + [...sitemap, ...(SPLIT ? [PLAY_HOME_KEY] : [])].map((p) => `${JSON.stringify(p)}: ${JSON.stringify(lastmodDb[p])}`).join(",\n") + "\n}\n");
+
+// ---------- P2-77 두 결과물로 나누기: dist(펭귄 툴즈) + dist-play(펭귄 오락실) ----------
+const mainMap = sitemap.filter((p) => !SPLIT || !isPlayPath(p));
+const playMap = SPLIT ? sitemap.filter(isPlayPath) : [];
+const MIG_RE = "^(penguin-rpg-|hell31-|hellchosun-|nalgi-|examcat-|sehwa-mines|pt_theme$)"; // 게임 저장·최고 기록·순위 닉네임·즐겨찾기·화면 모드(src/assets/app.js와 같은 목록)
+// 본 사이트 옛 주소 → 오락실 새 주소. 이 기기의 게임 기록을 주소 # 뒤에 한 번만 실어 보냄(app.js가 오락실 쪽에 없는 값만 넣음). 광고·통계 스크립트 없음
+const stubHtml = (to) => `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${esc(cfg.playName)}로 옮겼어요</title><meta name="robots" content="noindex,follow"><link rel="canonical" href="${to}"><script>(function(){var to=${JSON.stringify(to)},q=location.search,h=location.hash;try{if(!h&&!localStorage.getItem("pt-mig-done")){var o={},n=0,re=new RegExp(${JSON.stringify(MIG_RE)});for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(re.test(k)){o[k]=localStorage.getItem(k);n++}}var s=n?encodeURIComponent(JSON.stringify(o)):"";if(s&&s.length<60000)h="#pt-mig="+s;localStorage.setItem("pt-mig-done","1")}}catch(e){}location.replace(to+q+h)})()</script><meta http-equiv="refresh" content="0;url=${to}"></head><body><p>이 페이지는 <a href="${to}">${esc(cfg.playName)}(${esc(new URL(cfg.playUrl).host)})</a>로 옮겼어요.</p></body></html>`;
+const reEsc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const RE_ABS = new RegExp(reEsc(cfg.siteUrl) + "(/[^\"'\\s<>\\\\)]*)", "g");
+// 한 사이트 안에서 쓰던 주소를 나눈 뒤에 맞게: 다른 쪽으로 가는 링크는 절대 주소로, 절대 주소(canonical·구조화 데이터)는 오락실 경로면 play 주소로
+function rewriteFor(html, side) {
+  const fix = (p) => {
+    if (side === "play") return isPlayPath(p) || p === "/" || /^\/(assets\/|\?|#)/.test(p) ? p : cfg.siteUrl + p;
+    return isPlayPath(p) ? cfg.playUrl + p : p;
+  };
+  return html
+    .replace(RE_ABS, (m, p) => (isPlayPath(p) ? cfg.playUrl + p : m))
+    .replace(/(\s(?:href|src|action)=")(\/(?!\/)[^"]*)"/g, (m, a, p) => `${a}${fix(p)}"`)
+    .replace(/("p":")(\/(?!\/)[^"]*)"/g, (m, a, p) => `${a}${fix(p)}"`); // 검색·즐겨찾기 색인(JSON)
+}
+const walk = (dir) => fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(dir, e.name)) : [path.join(dir, e.name)]));
+const relOf = (root, f) => "/" + path.relative(root, f).split(path.sep).join("/");
+const SPLIT_REPORT = { moved: 0, stubs: 0, mainRewritten: 0 };
+if (SPLIT) {
+  if (cfg.basePath) throw new Error("P2-77 오락실 분리는 자체 도메인(SITE_URL에 경로 없음)에서만 됩니다");
+  fs.rmSync(DIST_PLAY, { recursive: true, force: true });
+  fs.mkdirSync(DIST_PLAY, { recursive: true });
+  fs.cpSync(path.join(DIST, "assets"), path.join(DIST_PLAY, "assets"), { recursive: true });
+  const movedTo = new Map(MOVED_ALL);
+  const stubFor = []; // 본 사이트에 남길 이동 쪽
+  for (const pre of PLAY_PREFIXES) {
+    const dir = path.join(DIST, pre);
+    if (!fs.existsSync(dir)) continue;
+    for (const f of walk(dir)) {
+      const rel = relOf(DIST, f), out = path.join(DIST_PLAY, rel);
+      fs.mkdirSync(path.dirname(out), { recursive: true });
+      if (f.endsWith(".html")) fs.writeFileSync(out, rewriteFor(fs.readFileSync(f, "utf8"), "play"));
+      else fs.copyFileSync(f, out);
+      SPLIT_REPORT.moved++;
+      if (f.endsWith("index.html")) stubFor.push(rel.replace(/index\.html$/, ""));
+    }
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+  for (const p of stubFor) {
+    const to = cfg.playUrl + (movedTo.get(p) || p); // 옛 옛 주소(/me/… 등)는 한 번에 최종 주소로
+    const file = path.join(DIST, p, "index.html");
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, stubHtml(to));
+    SPLIT_REPORT.stubs++;
+  }
+  // 본 사이트 → 오락실 바로가기(홈 한 줄). 기기 기록을 옮겨 주는 이동 쪽
+  fs.mkdirSync(path.join(DIST, "go-play"), { recursive: true });
+  fs.writeFileSync(path.join(DIST, "go-play", "index.html"), stubHtml(cfg.playUrl + "/"));
+  // 본 사이트 쪽 HTML·색인: 오락실 링크를 play 주소로
+  for (const f of walk(DIST)) {
+    if (!f.endsWith(".html") || f.includes(`${path.sep}go-play${path.sep}`) || stubFor.some((p) => f === path.join(DIST, p, "index.html"))) continue;
+    const h0 = fs.readFileSync(f, "utf8"), h1 = rewriteFor(h0, "main");
+    if (h1 !== h0) { fs.writeFileSync(f, h1); SPLIT_REPORT.mainRewritten++; }
+  }
+  // 본 사이트 404: 오락실 경로면 play 주소로(이동 쪽이 없는 주소 대비)
+  {
+    const f = path.join(DIST, "404.html");
+    fs.writeFileSync(f, fs.readFileSync(f, "utf8").replace("</head>", `<script>(function(){var p=location.pathname;if(${JSON.stringify(PLAY_PREFIXES)}.some(function(x){return p.indexOf(x)===0}))location.replace(${JSON.stringify(cfg.playUrl)}+p+location.search+location.hash)})()</script>\n</head>`));
+  }
+  // 즐겨찾기 색인: 사이트마다 다른 쪽 주소는 절대 주소로
+  for (const [root, side] of [[DIST, "main"], [DIST_PLAY, "play"]]) { const f = path.join(root, "assets", "fav-index.js"); fs.writeFileSync(f, rewriteFor(fs.readFileSync(path.join(DIST, "assets", "fav-index.js"), "utf8"), side)); }
+  // 오락실 첫 화면·404·사이트맵·robots·ads.txt·CNAME
+  fs.writeFileSync(path.join(DIST_PLAY, "index.html"), rewriteFor(playHomeOut, "play"));
+  fs.writeFileSync(path.join(DIST_PLAY, "404.html"), rewriteFor(layout({ title: "페이지를 찾을 수 없어요", desc: "요청하신 페이지를 찾을 수 없어요.", path: "/404.html", site: "play", noindex: true, body: `<script>(function(){var p=location.pathname;if(p!=="/"&&!${JSON.stringify(PLAY_PREFIXES)}.some(function(x){return p.indexOf(x)===0}))location.replace(${JSON.stringify(cfg.siteUrl)}+p+location.search+location.hash)})()</script><section class="hero"><h1>앗, 길을 잃었어요</h1><p class="lead">주소가 바뀌었거나 없는 페이지예요. ${esc(cfg.playName)} 첫 화면에서 다시 골라 보세요.</p><p><a class="btn" href="/">${esc(cfg.playName)} 첫 화면</a></p></section>` }), "play").replace(`<link rel="canonical" href="${abs("/404.html")}">`, ""));
+  const ploc = (p) => (p === PLAY_HOME_KEY ? cfg.playUrl + "/" : cfg.playUrl + p);
+  fs.writeFileSync(path.join(DIST_PLAY, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[PLAY_HOME_KEY, ...playMap].map((p) => `  <url><loc>${ploc(p)}</loc><lastmod>${lastmod[p]}</lastmod></url>`).join("\n")}\n</urlset>\n`);
+  fs.writeFileSync(path.join(DIST_PLAY, "robots.txt"), `User-agent: *\nAllow: /\n\nSitemap: ${cfg.playUrl}/sitemap.xml\n`);
+  if (cfg.adsenseClient) fs.writeFileSync(path.join(DIST_PLAY, "ads.txt"), `google.com, ${cfg.adsenseClient.replace("ca-", "")}, DIRECT, f08c47fec0942fa0\n`);
+  fs.writeFileSync(path.join(DIST_PLAY, "CNAME"), new URL(cfg.playUrl).hostname + "\n");
+}
+fs.writeFileSync(path.join(DIST, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${mainMap.map((p) => `  <url><loc>${abs(p)}</loc><lastmod>${lastmod[p]}</lastmod></url>`).join("\n")}\n</urlset>\n`);
 fs.writeFileSync(path.join(DIST, "30bca7c192cf6710fc3afdf9ab9c522d.txt"), "30bca7c192cf6710fc3afdf9ab9c522d"); // IndexNow 키(네이버·빙 색인 요청용, 공개 파일)
 fs.writeFileSync(path.join(DIST, "robots.txt"), `User-agent: *\nAllow: /\n\nSitemap: ${abs("/sitemap.xml")}\n`);
-const rssItems = [...UTILS.map((x) => [x.title, x.path, x.desc]), ...TOOLS.map((x) => [x.title, x.path, x.desc]), /* P2-75 16유형 해설(noindex)은 RSS에서 뺌 */ ...GUIDES.map((g) => [g.title, g.path, g.desc]), [`${cfg.siteName} 업데이트 기록`, "/updates/", UPDATES[0].items.map((x) => x.t).join(" ").slice(0, 200)]].filter(([, p]) => sitemap.includes(p)); // P2-75 색인 페이지만
+const rssItems = [...UTILS.map((x) => [x.title, x.path, x.desc]), ...TOOLS.map((x) => [x.title, x.path, x.desc]), /* P2-75 16유형 해설(noindex)은 RSS에서 뺌 */ ...GUIDES.map((g) => [g.title, g.path, g.desc]), [`${cfg.siteName} 업데이트 기록`, "/updates/", UPDATES[0].items.map((x) => x.t).join(" ").slice(0, 200)]].filter(([, p]) => mainMap.includes(p)); // P2-75 색인 페이지만 // P2-77 본 사이트 쪽만
 fs.writeFileSync(path.join(DIST, "rss.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"><channel><title>${esc(cfg.siteName)}</title><link>${abs("/")}</link><description>${esc(cfg.tagline)}</description><language>ko</language>\n${rssItems.map(([ti, p, d]) => `<item><title>${esc(ti)}</title><link>${abs(p)}</link><guid>${abs(p)}</guid><description>${esc(d)}</description><pubDate>${new Date(`${lastmod[p] || today}T00:00:00+09:00`).toUTCString()}</pubDate></item>`).join("\n")}\n</channel></rss>\n`);
 // 자체 도메인(basePath "")이면 CNAME도 만들어 둠. GitHub Actions로 배포할 때는 이 파일이 쓰이지 않고 저장소 Settings → Pages의 Custom domain 값이 기준(문서 확인)
 { const host = new URL(cfg.siteUrl).hostname; if (cfg.basePath === "" && !host.endsWith(".github.io")) fs.writeFileSync(path.join(DIST, "CNAME"), host + "\n"); }
@@ -2997,5 +3151,26 @@ if (cfg.adsenseClient) fs.writeFileSync(path.join(DIST, "ads.txt"), `google.com,
 for (const g of UPDATES) for (const x of g.items) if (x.go && !pageHtml.has(x.go)) warnings.push(`updates.mjs ${g.d}: 없는 주소 ${x.go}`);
 if (toolTestMissing.length) warnings.push(`「이 툴을 시험한 방법」 없음(content/tool-tests.mjs): ${toolTestMissing.join(", ")}`);
 console.log(`✔ P2-75: 허브 안내 ${Object.entries(HUB_LEN).map(([k, n]) => `${k} ${n}자`).join(", ")} · 툴 머리 표시 ${nToolMeta}쪽 · 가이드 ${GUIDE_REPORT.length}편(${GUIDE_REPORT.map((r) => `${r.path} ${r.len}자${r.noindex ? " noindex" : ""}`).join(", ")})${GUIDES_SKIPPED.length ? ` · 초안이라 건너뜀 ${GUIDES_SKIPPED.join(", ")}` : ""} · 업데이트 기록 ${UPDATES.length}일`);
-console.log(`✔ 빌드 완료: ${sitemap.length}개 색인 페이지 → dist/  (SITE_URL=${cfg.siteUrl})`);
+// P2-77 점검(재신청 체크리스트): ① 색인 쪽 본문 1,000자 이상(공백 포함, <main> 안 보이는 글자) ② noindex 쪽에 광고 스크립트 0 ③ 본 사이트 색인 쪽에 오락실·랜덤채팅 링크(바로가기 한 줄 제외)
+const MIN_TEXT = 1000;
+const mainText = (html) => { const m = /<main[^>]*>([\s\S]*?)<\/main>/.exec(html); return (m ? m[1] : "").replace(/<(script|style|svg|template)\b[\s\S]*?<\/\1>/g, " ").replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/&[a-z#0-9]+;/g, "x").replace(/\s+/g, " ").trim(); };
+const AUDIT = { short: [], adOnNoindex: 0, noindexPages: 0, indexPages: 0, playLinks: [] };
+for (const [root, side] of [[DIST, "main"], ...(SPLIT ? [[DIST_PLAY, "play"]] : [])]) {
+  for (const f of walk(root)) {
+    if (!f.endsWith(".html")) continue;
+    const html = fs.readFileSync(f, "utf8"), rel = relOf(root, f).replace(/index\.html$/, "");
+    const noidx = /<meta name="robots" content="noindex/.test(html);
+    if (noidx) { AUDIT.noindexPages++; if (html.includes("adsbygoogle.js")) AUDIT.adOnNoindex++; continue; }
+    AUDIT.indexPages++;
+    const n = mainText(html).length;
+    if (n < MIN_TEXT) AUDIT.short.push(`${side === "play" ? "play" : ""}${rel} ${n}자`);
+    if (side === "main" && SPLIT) { const bad = (html.match(/href="https:\/\/(play\.penguintools\.kr|www\.random7942\.com)[^"]*"/g) || []).length; if (bad) AUDIT.playLinks.push(`${rel} ${bad}`); }
+  }
+}
+if (AUDIT.short.length) warnings.push(`색인 쪽 본문 ${MIN_TEXT}자 미만: ${AUDIT.short.join(", ")}`);
+if (AUDIT.adOnNoindex) warnings.push(`noindex 쪽에 광고 스크립트 ${AUDIT.adOnNoindex}쪽`);
+if (AUDIT.playLinks.length) warnings.push(`본 사이트 색인 쪽에 오락실·랜덤채팅 링크: ${AUDIT.playLinks.join(", ")}`);
+console.log(`✔ P2-77 점검: 색인 ${AUDIT.indexPages}쪽(1,000자 미만 ${AUDIT.short.length}) · noindex ${AUDIT.noindexPages}쪽(광고 스크립트 ${AUDIT.adOnNoindex}) · 본 사이트 오락 링크 ${AUDIT.playLinks.length}쪽`);
+if (SPLIT) console.log(`✔ P2-77 분리: 오락실 파일 ${SPLIT_REPORT.moved}개 → dist-play/ (색인 ${playMap.length + 1}쪽, ${cfg.playUrl}) · 본 사이트 이동 쪽 ${SPLIT_REPORT.stubs}개 + /go-play/ · 링크 고친 본 사이트 쪽 ${SPLIT_REPORT.mainRewritten}개`);
+console.log(`✔ 빌드 완료: ${mainMap.length}개 색인 페이지 → dist/  (SITE_URL=${cfg.siteUrl})`);
 if (warnings.length) console.log("⚠ 확인 필요:\n  " + warnings.join("\n  "));

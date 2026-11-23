@@ -37,6 +37,9 @@ jobs:
           NAVER_VERIFICATION: ${{ vars.NAVER_VERIFICATION }}
           # P2-63b 카카오맵 JS 키 덮어쓰기용(선택). 비어 있으면 content/aptmap.mjs의 공개 키 상수를 씀(등록 불필요)
           KAKAO_JS_KEY: ${{ vars.KAKAO_JS_KEY }}
+          # P2-77 펭귄 오락실 분리 스위치. 비어 있으면 분리하지 않음(지금처럼 한 사이트). play.penguintools.kr이 열린 뒤 저장소 변수 PLAY_URL=https://play.penguintools.kr 을 넣으면
+          # 본 사이트(dist)에서 오락실 쪽이 빠지고 옛 주소는 이동 쪽이 됨. 오락실 결과물(dist-play)은 parksh12/penguin-play 저장소가 따로 빌드·배포. 절차: 산출물/P2-77_대표님작업.md
+          PLAY_URL: ${{ vars.PLAY_URL || 'off' }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

@@ -1,11 +1,18 @@
 // 사이트 전역 설정 — 이름·주소·광고 코드는 여기서만 바꾸면 전체에 반영됩니다.
 // SITE_URL 환경변수로 덮어쓸 수 있습니다(예: 도메인 구매 후 SITE_URL=https://example.com).
-const siteUrl = (process.env.SITE_URL || "https://parksh12.github.io/sehwa").replace(/\/$/, "");
+// P2-77 기본값을 실제 주소로: 로컬 빌드(dist/robots.txt·sitemap·canonical)가 옛 주소(parksh12.github.io/sehwa)를 쓰던 원인
+const siteUrl = (process.env.SITE_URL || "https://penguintools.kr").replace(/\/$/, "");
+// P2-77 펭귄 오락실(게임·운세·투자) 하위 도메인. 값이 있으면 build.mjs가 dist(툴) + dist-play(오락실) 두 결과물을 만들고, 본 사이트의 옛 주소는 이동 쪽이 됨.
+// "off"나 빈 문자열이면 분리하지 않음(한 사이트). sehwa 배포는 저장소 변수 PLAY_URL이 비어 있는 동안 분리하지 않음 → play 사이트가 열린 뒤 변수를 넣어 전환
+const playEnv = process.env.PLAY_URL ?? "https://play.penguintools.kr"; // 로컬 기본: 분리(두 결과물)
+const playUrl = (playEnv === "off" ? "" : playEnv).replace(/\/$/, "");
 
 export default {
   siteName: process.env.SITE_NAME || "펭귄 툴즈",
   tagline: "PDF·이미지·글자수·D-day, 자주 쓰는 툴 모음",
   siteUrl,
+  playUrl, // P2-77
+  playName: "펭귄 오락실", // P2-77 play 사이트 이름
   basePath: new URL(siteUrl).pathname.replace(/\/$/, ""), // GitHub Pages 프로젝트 주소면 "/sehwa", 자체 도메인이면 ""
   operator: "세화산업",
   contactEmail: process.env.CONTACT_EMAIL || "aqaaq1@naver.com", // 대표님 지정 공개 문의 이메일(2026-11-02)

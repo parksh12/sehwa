@@ -1,3 +1,15 @@
+// P2-77 펭귄 툴즈(옛 주소)에서 펭귄 오락실로 넘어올 때 이동 쪽이 주소 # 뒤에 실어 준 이 기기의 게임 기록을 받음.
+// 다른 주소(origin)라 저장소가 따로라서. 이 기기 오락실 쪽에 아직 없는 값만 넣고(덮어쓰지 않음), 주소에서 # 뒤를 지움. 서버로는 아무것도 보내지 않음
+(function () {
+  const h = location.hash;
+  if (h.indexOf("#pt-mig=") !== 0) return;
+  const ok = /^(penguin-rpg-|hell31-|hellchosun-|nalgi-|examcat-|sehwa-mines|pt_theme$)/; // build.mjs MIG_RE와 같은 목록
+  try {
+    const o = JSON.parse(decodeURIComponent(h.slice(8)));
+    for (const k of Object.keys(o)) if (ok.test(k) && typeof o[k] === "string" && localStorage.getItem(k) === null) localStorage.setItem(k, o[k]);
+  } catch (e) {}
+  try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+})();
 // P2-62 다크/라이트 모드(랜덤7942 app.js와 같은 규칙). 첫 적용은 <head> 인라인 스크립트가 하고, 여기서는 버튼·시스템 변경만 처리
 (function () {
   const THEME_KEY = "pt_theme"; // "dark" | "light" | 없음(시스템 설정 따름)
