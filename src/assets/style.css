@@ -2647,3 +2647,40 @@ html:not([data-theme="dark"]) :is(.sq-lg.is-lo,.dca-lg.is-koru,.rsb-lg.is-buy) i
 .rel-guides .gb-list{margin-top:6px}
 .hero-main .pop-tools{grid-column:1/-1;margin:2px 0 0}
 @media(max-width:620px){.hero-main .pop-tools{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}.hero-main .pop-tools>*{flex:none}}
+/* P2-77b 본 사이트 → 펭귄 오락실: 머리글 노란 알약(툴 메뉴와 색·모양 구분). PC는 메뉴 오른쪽, 휴대폰은 메뉴 줄 맨 앞(가로 스크롤 밖) */
+.nav-play{order:1;flex:none;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;text-decoration:none;font-weight:800;font-size:14.5px;line-height:1.2;color:#141414;background:var(--hwang);border:2px solid #141414;border-radius:999px;padding:6px 13px;box-shadow:2px 2px 0 #141414;transition:transform .08s,box-shadow .08s}
+.nav-play:hover,.nav-play:focus-visible{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--jeok)}
+.nav-play:focus-visible{outline:3px solid var(--cheong);outline-offset:2px}
+.nav-play .np-ico{font-size:16px;line-height:1}
+.nav-play .np-out{font-size:12px}
+@media(max-width:1060px) and (min-width:621px){.nav-play .np-full{display:none}}
+@media(max-width:620px){.header-inner:has(.nav-play)::after{content:"";order:2;flex-basis:100%;height:0}.header-inner .nav-play{order:3;font-size:13px;padding:4px 10px;margin:0 0 2px}.header-inner .nav-play .np-full{display:none}.header-inner:has(.nav-play) .nav{order:4;width:auto;flex:1 1 0;min-width:0;margin:0 -6px 0 -4px}}
+/* P2-77b 본 사이트 홈 오락실 배너 카드(오락실의 검은 띠 디자인 그대로, 링크는 버튼 1개) */
+.play-banner{display:grid;gap:14px 24px;align-items:center;margin:26px 0}
+.play-banner .arc-h{margin-bottom:8px}
+.play-banner .pb-text p{margin:0;color:#e6e6e1;font-size:15px;line-height:1.6}
+.pb-icons{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:10px}
+.pb-icons li{width:52px;height:52px;display:grid;place-items:center;background:#fff;border:2px solid var(--tone,#fff);border-radius:12px;padding:6px;box-sizing:border-box}
+.pb-icons svg{width:100%;height:100%}
+.play-banner .pb-go{justify-self:start;background:var(--hwang);color:#141414;border-color:#fff;box-shadow:3px 3px 0 var(--jeok);font-size:16px;padding:12px 20px}
+@media(min-width:880px){.play-banner{grid-template-columns:1.2fr auto auto;padding:24px 28px}.play-banner .pb-go{justify-self:end}}
+/* P2-77b 오락실 첫 화면 「오래 즐기는 게임」 큰 카드 3장(P2-37) */
+@media(min-width:1000px){.arc-feats-3{grid-template-columns:repeat(3,minmax(0,1fr))}.arc-feats-3 .arc-feat{flex-wrap:wrap;align-content:flex-start;padding:16px}.arc-feats-3 .arc-feat .fun-art{width:60px;height:60px}.arc-feats-3 .ff-body{flex:1 1 150px}.arc-feats-3 .ff-go{margin-left:auto}}
+/* P2-77b 대표님 지시 「툴마다 경계」: 분류 카드(홈·허브) 툴 줄 사이 구분선 + 오락실 첫 화면 서랍 줄도 같은 선 */
+.tlist{--tl-rule:#d6d4ca}
+.tlist li+li{border-top:1.5px solid var(--tl-rule)}
+.tlist a{border-radius:6px}
+.toolbox .rows li+li{border-top:1.5px solid #d6d4ca}
+[data-theme="dark"] .tlist{--tl-rule:#45453f}
+[data-theme="dark"] .toolbox .rows li+li{border-top-color:#45453f}
+/* P2-77b 분류 허브 = 홈 분류 카드 디자인: 이 분류 카드 + 상황별 카드(PC는 나란히) → 고유 안내 글 → 다른 분류 카드 격자 */
+.hub-cards{display:grid;gap:18px;margin:6px 0 28px}
+@media(min-width:1000px){.hub-cards:has(.tcat-pick){grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);align-items:start}}
+@media(min-width:700px){.hub-cards:not(:has(.tcat-pick)) .tlist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:10px}.hub-cards:not(:has(.tcat-pick)) .tlist li:nth-child(2){border-top:0}}
+.tcat-h h2{margin:0;font-size:19px;font-weight:800}
+.tlist-pick .tn b{font-size:14.5px;line-height:1.4}
+.tlist-pick .tn small{white-space:normal;overflow:visible;font-size:13px;line-height:1.45;margin-top:2px}
+.tlist-pick .pk-t{font-weight:800;color:var(--link,var(--cheong))}
+.tlist-pick a{padding:8px}
+.hub-guide{max-width:780px}
+.hub-others .tgrid{margin-top:12px}
