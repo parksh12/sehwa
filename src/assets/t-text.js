@@ -73,7 +73,7 @@
         html += `<div class="dd-big">${dlabel(diff)}</div><p><b>${label(ta)}</b>부터 <b>${label(tb)}</b>까지 ${diff >= 0 ? "" : "거꾸로 "}<b>${fmt(Math.abs(diff))}일</b>${one.checked ? ` (시작일을 1일로 세면 <b>${fmt(days)}일째</b>)` : ""}</p>`;
         lastText = `${label(tb)}: ${dlabel(diff)} (${label(ta)} 기준 ${fmt(Math.abs(diff))}일${one.checked ? `, 1일부터 세면 ${fmt(days)}일째` : ""})`;
       } else {
-        html += `<p class="hint">목표일을 넣으면 D-day가 나와요. 아래는 기준일을 시작일로 본 기념일이에요.</p>`;
+        html += `<p class="hint">목표일을 넣으면 D-day가 나와요. 아래는 기준일을 시작일로 본 100일·주년 날짜예요.</p>`;
         lastText = "";
       }
       if (!isNaN(now) && now !== ta) {
@@ -86,7 +86,7 @@
       [100, 200, 300, 365, 500, 1000, 1500, 2000, 3000, 5000, 10000].forEach((n) => { if (n !== 365) rows.push([`${fmt(n)}일`, ta + (n - plus) * DAY]); });
       [1, 2, 3, 5, 10, 20].forEach((y) => rows.push([`${y}주년`, addYears(ta, y)]));
       rows.sort((x, y) => x[1] - y[1]);
-      annBox.innerHTML = `<table class="dd-table"><thead><tr><th scope="col">기념일</th><th scope="col">날짜</th><th scope="col">오늘 기준</th></tr></thead><tbody>${rows.map(([n, t]) => `<tr${!isNaN(now) && t === now ? ' class="on"' : ""}><th scope="row">${n}</th><td>${label(t)}</td><td>${isNaN(now) ? "" : dlabel(Math.round((t - now) / DAY))}</td></tr>`).join("")}</tbody></table><p class="hint">${one.checked ? "시작일을 1일째로 셌어요(연애·육아 기념일 방식)." : "시작일 다음 날을 1일로 셌어요. 시작일을 1일째로 세려면 위의 「시작일을 1일로 세기」를 켜세요."} 주년은 같은 월·일 기준이에요.</p>`;
+      annBox.innerHTML = `<table class="dd-table"><thead><tr><th scope="col">날짜 이름</th><th scope="col">날짜</th><th scope="col">오늘 기준</th></tr></thead><tbody>${rows.map(([n, t]) => `<tr${!isNaN(now) && t === now ? ' class="on"' : ""}><th scope="row">${n}</th><td>${label(t)}</td><td>${isNaN(now) ? "" : dlabel(Math.round((t - now) / DAY))}</td></tr>`).join("")}</tbody></table><p class="hint">${one.checked ? "시작일을 1일째로 셌어요(연애·육아 기념일 방식)." : "시작일 다음 날을 1일로 셌어요. 시작일을 1일째로 세려면 위의 「시작일을 1일로 세기」를 켜세요."} 주년은 같은 월·일 기준이에요.</p>`;
     };
     dd.querySelector("form").addEventListener("submit", (e) => e.preventDefault()); // 엔터로 페이지가 다시 열리며 날짜가 주소에 붙지 않게
     [a, b, one].forEach((el) => el.addEventListener("input", calc));

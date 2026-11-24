@@ -1,4 +1,4 @@
-# 펭귄 툴즈 — 자주 쓰는 PDF·이미지·글쓰기·생활 계산 툴
+# 펭귄 툴즈 — 직장인을 위한 문서·사진·계산 툴 모음
 
 세화산업 첫 웹사이트. 외부 패키지 없는 정적 사이트 생성기(Node 18+)로 만듭니다.
 툴 라이브러리(pdf-lib, mammoth, fflate)는 npm 공식 배포본을 `src/assets/vendor/`에 직접 두고 해당 툴 페이지에서만 불러옵니다(CDN 안 씀). 버전·라이선스는 `src/assets/vendor/LICENSES.txt`.

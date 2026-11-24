@@ -595,7 +595,7 @@ details.opt summary{cursor:pointer;color:var(--cheong);font-weight:700;font-size
 .home-about{margin-bottom:8px}
 
 /* ===================== P2-16 타이머·스톱워치 / P2-17 다른 서비스 링크 ===================== */
-.t-time,.c-time{--tone:var(--heuk)}
+.t-time,.c-time{--tone:#e06c00} /* P2-78 추가 J 「날짜·시간」 주황(빨강 #e5372b·노랑 #ffc21a와 구분, 흰 바탕 대비 3.4:1·검정 바탕 6.1:1) */
 .tm-face{text-align:center;border:var(--bd);border-radius:16px;background:var(--soft);padding:14px 10px 16px}
 .tm-state{display:inline-block;font-size:13px;font-weight:800;color:var(--ink-2);background:var(--white);border:2px solid var(--ink);border-radius:99px;padding:1px 10px}
 .clock{font-family:"Pretendard Variable",Pretendard,system-ui,sans-serif;font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:-.02em;font-size:clamp(56px,19vw,150px);line-height:1.05;margin:6px 0 2px;color:var(--ink)}
@@ -1944,6 +1944,9 @@ li.has-fav{position:relative}
 .tt-to-light,[data-theme="dark"] .tt-to-dark{display:none}
 [data-theme="dark"] .tt-to-light{display:inline}
 @media(max-width:620px){.theme-btn{order:1;min-width:36px;height:36px;padding:0 7px}}
+/* P2-78 추가 I ① 모드 단추 폭 고정: 「다크」↔「라이트」 글자 폭이 달라도 헤더 요소가 움직이지 않게 */
+.theme-btn{width:62px;min-width:0;padding:0}
+@media(max-width:620px){.theme-btn{width:54px;min-width:0;padding:0}}
 @media print{.theme-btn{display:none!important}}
 
 @media screen{
@@ -2654,6 +2657,9 @@ html:not([data-theme="dark"]) :is(.sq-lg.is-lo,.dca-lg.is-koru,.rsb-lg.is-buy) i
 .nav-play:focus-visible{outline:3px solid var(--cheong);outline-offset:2px}
 .nav-play .np-ico{font-size:16px;line-height:1}
 .nav-play .np-out{font-size:12px}
+/* P2-78 추가 I ② 오락실 헤더의 「펭귄 툴즈 ↗」 = 본 사이트 오락실 단추와 같은 자리·모양(색만 파랑 계열) */
+.nav-play.nav-tools{background:#dfe7ff;color:#141414}
+:where([data-theme="dark"]) .nav-play.nav-tools{background:#c9d6ff;color:#141414}
 @media(max-width:1060px) and (min-width:621px){.nav-play .np-full{display:none}}
 @media(max-width:620px){.header-inner:has(.nav-play)::after{content:"";order:2;flex-basis:100%;height:0}.header-inner .nav-play{order:3;font-size:13px;padding:4px 10px;margin:0 0 2px}.header-inner .nav-play .np-full{display:none}.header-inner:has(.nav-play) .nav{order:4;width:auto;flex:1 1 0;min-width:0;margin:0 -6px 0 -4px}}
 /* P2-77b 본 사이트 홈 오락실 배너 카드(오락실의 검은 띠 디자인 그대로, 링크는 버튼 1개) */
