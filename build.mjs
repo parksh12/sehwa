@@ -707,7 +707,7 @@ ${newTools.length ? `<section class="new-band" aria-labelledby="new-h"><h2 id="n
 <section class="home-block home-about">
   <div class="about-head">
     <h2 class="home-h">${esc(cfg.siteName)}는 이런 곳이에요</h2>
-    <ul class="about-points"><li><b>설치·가입 없음</b>주소만 열면 바로 써요</li><li><b>브라우저 처리</b>파일은 서버로 전송하지 않습니다</li><li><b>쓰는 법 공개</b>툴마다 사용법과 한계를 적어 둬요</li></ul>
+    <ul class="about-points"><li><b>설치·가입 없이</b>주소만 열면 끝</li><li><b>파일은 내 기기에만</b>서버로 안 보내요</li><li><b>안 되는 것도 적어 둠</b>툴마다 한계 표시</li></ul>
   </div>
   <div class="about-body">${fill(pages.home.intro).split(/\n+/).map((p) => `<p>${esc(p)}</p>`).join("")}</div>
 </section>
