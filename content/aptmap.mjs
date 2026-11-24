@@ -135,7 +135,7 @@ export default async function buildAptmap(h) {
   const upd = data ? `${uy}년 ${+um}월 ${+ud}일 갱신` : "";
   const NOTICE = `국토교통부 실거래가 공개 자료 기준(${thr}${upd ? `, ${upd}` : ""}). 거래가 끝난 기록이라 현재 호가와 다를 수 있어요. 투자 권유가 아니에요.`;
   const SOURCES = "출처: 국토교통부 실거래가, K-apt(공동주택관리정보시스템), 국가철도공단 역사정보, 카카오맵";
-  const items = [["홈", "/"], ["내 집 마련", "/house/"], [tool.title, tool.path]];
+  const items = [["홈", "/"], [h.cat.name, h.cat.path], [tool.title, tool.path]]; // P2-78 상황별 묶음(날짜·시간·생활)
   const g = guide;
   const chips = core.BANDS.map((b) => `<button type="button" class="am-chip am-${b.k}" data-band="${b.k}" aria-pressed="true"><i aria-hidden="true">${esc(b.m)}</i>${esc(b.n)}</button>`).join("");
   const sidoOpts = (data?.sido || []).map(([c, n]) => `<option value="${c}">${esc(n)}</option>`).join("");
@@ -155,7 +155,7 @@ export default async function buildAptmap(h) {
 ${crumbHtml(items)}
 <article class="tool am-page">
   <header class="page-head am-head">
-    <span class="eyebrow">내 집 마련</span>
+    <span class="eyebrow">${esc(h.cat.name)}</span>
     <h1>${esc(tool.h1)} ${favBtn(tool, "fav-title")}</h1>
     <p class="lead">${esc(tool.desc)}</p>
   </header>
@@ -299,7 +299,7 @@ async function buildRegions(h) {
 ${crumbHtml(items)}
 <article class="amr" data-sido="${R.code}" data-total="${total}" data-w10="${w10}">
   <header class="page-head">
-    <span class="eyebrow">내 집 마련</span>
+    <span class="eyebrow">${esc(h.cat.name)}</span>
     <h1>${esc(title)}</h1>
     <p class="lead">${esc(desc)}</p>
   </header>

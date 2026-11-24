@@ -80,6 +80,7 @@ h3{font-size:17px;margin:1.4em 0 .4em}
 .hero{display:grid;gap:28px;align-items:center;padding:26px 0 36px}
 @media(min-width:880px){.hero{grid-template-columns:1.05fr 1fr;padding:48px 0 56px}}
 .hero-kicker{font-weight:800;font-size:14px;margin:0 0 6px;color:var(--jeok)}
+.hero-kicker.hero-for{display:inline-block;font-size:clamp(15px,2.2vw,18px);padding:4px 12px;margin:0 0 10px;border-radius:999px;background:color-mix(in srgb,var(--jeok) 12%,transparent);letter-spacing:0} /* P2-78 h1 바로 위 「직장인을 위한」 부제(눈에 띄게) */
 .hero h1{font-size:clamp(36px,7.4vw,62px);line-height:1.12;margin:0 0 16px}
 .hero .lead{font-size:18px;max-width:30em}
 .hero-actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px;margin-top:22px}

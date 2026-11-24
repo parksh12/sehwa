@@ -178,17 +178,17 @@ const LIFE_SLUG = { adventure: "adventurer", love: "warm-heart", stable: "steady
 // 기존 콘텐츠(CATS: me·love·luck·story·arcade)는 주소를 그대로 두고 「펭귄 오락실」(/play/)로 묶습니다.
 const PLAY = { name: "펭귄 오락실", tagline: "RPG·생존 게임·순발력 게임, 잠깐 쉬어 가는 한 판", path: "/play/", desc: "펭귄 RPG, 지옥에서 살아남기, 헬조선에서 살아남기, Life Game, 지뢰찾기, 블록 쌓기, 반응속도 게임처럼 잠깐 쉬어 가는 게임을 모았어요." }; // P2-49 게임만
 const UCATS = {
-  pdf: { name: "PDF·문서", desc: "PDF를 합치고 나누고, 이미지·워드(DOCX)·한글(HWP·HWPX) 문서를 열어 보고 PDF로 바꾸는 툴이에요." }, // P2-64 desc, P2-64d HWP
-  image: { name: "이미지", desc: "사진 용량을 줄이고, 아이폰 HEIC 사진을 JPG로 바꾸고, 여러 장을 한 장으로 이어 붙이거나 PDF로 묶고, 큰 그림을 A4 여러 장으로 나눠 인쇄하고, QR코드를 만드는 이미지 툴이에요." }, // P2-46 desc, P2-47 HEIC, P2-48 QR, P2-73 분할 인쇄
-  text: { name: "글쓰기", desc: "자기소개서, 리포트, 블로그 글을 쓸 때 필요한 글쓰기 툴이에요. 글자수 세기, PDF에서 복사한 글의 줄바꿈·공백 정리, 읽기·발표 시간과 원고지 매수 계산, 이모지·특수문자 복사를 브라우저 안에서 바로 해요." }, // P2-57 desc
-  calc: { name: "생활 계산", desc: "D-day, 연봉 실수령액, 퇴직금처럼 생활에서 자주 찾는 계산을 바로 해 주는 툴이에요." }, // P2-45 desc
-  time: { name: "시간", desc: "타이머와 스톱워치처럼 시간을 재고 알려 주는 툴이에요." },
+  pdf: { name: "서류 낼 때", h1: "서류 낼 때 쓰는 툴", seo: "서류 낼 때 쓰는 툴 — PDF 합치기·나누기, JPG PDF 변환, HWP·DOCX 문서 열기, 분할 인쇄", desc: "지원서·증빙 서류를 PDF 한 파일로 합치고, 필요한 쪽만 떼어 내고, 사진·스캔을 PDF로 바꾸고, HWP·DOCX 문서를 프로그램 없이 열어 PDF로 저장하고, 큰 도면·포스터를 A4 여러 장으로 나눠 인쇄하는 툴이에요." }, // P2-64 desc, P2-64d HWP // P2-78 상황별 묶음 ① 「서류 낼 때」(주소 /pdf/ 그대로, 분할 인쇄 합류)
+  image: { name: "사진 올릴 때", h1: "사진 올릴 때 쓰는 툴", seo: "사진 올릴 때 쓰는 툴 — 이미지 용량 줄이기, HEIC JPG 변환, 배경 지우기, 사진 이어붙이기, QR코드", desc: "업로드 용량 제한에 맞춰 사진을 줄이고, 아이폰 HEIC 사진을 JPG로 바꾸고, 증명·상품 사진 배경을 지우고, 캡처 여러 장을 한 장으로 붙이고, 안내문에 붙일 QR코드를 만드는 툴이에요." }, // P2-46 desc, P2-47 HEIC, P2-48 QR // P2-78 묶음 ② 「사진 올릴 때」(주소 /image/ 그대로)
+  text: { name: "글 쓸 때", h1: "글 쓸 때 쓰는 툴", seo: "글 쓸 때 쓰는 툴 — 글자수 세기, 줄바꿈 제거, 읽기·발표 시간, 이모지·특수문자, 인스타 폰트", desc: "보고서·자기소개서·공지 글을 쓸 때 글자수를 세고, PDF에서 복사한 글의 줄바꿈·공백을 정리하고, 발표 시간과 원고지 매수를 계산하고, 이모지·특수문자를 복사하는 툴이에요. 입력한 글은 브라우저 안에서만 계산해요." }, // P2-57 desc // P2-78 묶음 ③ 「글 쓸 때」(주소 /text/ 그대로)
+  calc: { name: "월급·퇴사 계산", h1: "월급·퇴사 계산 툴", seo: "월급·퇴사 계산 툴 — 연봉 실수령액, 주휴수당, 퇴직금, 실업급여 계산기", desc: "연봉 실수령액, 주휴수당, 퇴직금, 실업급여처럼 월급을 받고 회사를 옮길 때 필요한 돈 계산을 해 주는 툴이에요. 결과는 기준일의 공개 요율로 낸 참고용 추정치예요." }, // P2-45 desc // P2-78 묶음 ④ 「월급·퇴사 계산」(주소 /calc/ 그대로, 기준일·참고용)
+  time: { name: "날짜·시간·생활", h1: "날짜·시간·생활 툴", seo: "날짜·시간·생활 툴 — 디데이 계산기, 만 나이 계산기, 타이머, 스톱워치, 평수 계산기, 역세권 아파트 지도", desc: "마감일까지 남은 날, 공고 기준일의 만 나이, 회의·발표 타이머와 스톱워치, ㎡↔평 환산, 역세권 아파트 실거래 지도처럼 날짜·시간과 생활에서 자주 찾는 계산을 바로 하는 툴이에요." }, // P2-78 묶음 ⑤ 「날짜·시간·생활」(주소 /time/ 그대로, 디데이·만 나이·평수·아파트 지도 합류)
   fun: { name: "운세·재미", seo: "운세·재미 — 무료 타로·무료 사주·띠별 운세·성격 테스트·사다리타기", desc: "오늘의 띠별 운세, 무료 타로, 무료 사주팔자, 16유형 성격 테스트, 생일로 보는 나, 이름 궁합, 사다리타기·돌림판처럼 재미로 보고 가볍게 정하는 툴이에요." }, // P2-49 옛 오락실 운세·테스트·사다리 // P2-58 타로
   invest: { name: "투자", seo: "투자 툴 — 손절·익절·포지션 계산기, 복리 계산기·배당 계산기, RSI 백테스트, 해외주식 양도세 계산기, 적립식 백테스트, 물타기 계산기, SOXL·TQQQ·KORU 주가 예측", desc: "손절가·익절가와 감당할 손실로 몇 주를 사야 하는지와 손익비를 계산하는 손절·익절·포지션 계산기, 적립식 복리로 몇 년 뒤 얼마가 되는지, 월 배당 100만 원을 받으려면 얼마가 필요한지 계산하는 복리·배당 계산기, 미국주식 양도소득세 계산, SOXL·TQQQ·KORU를 매달 샀다면 지금 얼마인지 보는 적립식 백테스트, RSI 30에 사고 70에 팔았다면 얼마인지 보는 RSI 매매 백테스트, 물타기 평단가 계산처럼 주식 투자에서 자주 하는 계산과, 레버리지 ETF의 실제 과거 차트로 오를까 내릴까를 맞혀 보는 투자 툴이에요. 투자 권유가 아니에요." }, // P2-50 새 툴 카테고리(앞으로 주식투자 툴을 여기에 모음) // P2-51 seo·desc에 물타기 계산기 // P2-52 적립식 백테스트 // P2-53 해외주식 양도세 // P2-54 RSI 백테스트 // P2-55 복리·배당 계산기 // P2-56 손절·익절·포지션 계산기
-  house: { name: "내 집 마련", seo: "내 집 마련 — 역세권 아파트 지도, 20평대 실거래 가격대별", desc: "국토교통부 실거래가로 역세권 20평대(전용 40~60㎡) 아파트를 가격대별로 지도에서 보는 툴이에요. 사회초년생이 첫 집을 알아볼 때 어느 동네에서 얼마쯤인지 한눈에 볼 수 있어요. 투자 권유가 아니에요." }, // P2-63b 새 서랍(홈에서는 툴 서랍 맨 뒤, 오락실 앞)
+  house: { name: "내 집 마련", sub: "time", ids: ["aptmap", "pyeong"], seo: "내 집 마련 — 역세권 아파트 지도, 20평대 실거래 가격대별", desc: "국토교통부 실거래가로 역세권 20평대(전용 40~60㎡) 아파트를 가격대별로 지도에서 보는 툴이에요. 사회초년생이 첫 집을 알아볼 때 어느 동네에서 얼마쯤인지 한눈에 볼 수 있어요. 투자 권유가 아니에요." }, // P2-63b 새 서랍(홈에서는 툴 서랍 맨 뒤, 오락실 앞) // P2-78 묶음이 아님: 「날짜·시간·생활」 안의 주제 쪽(주소 /house/ 그대로, 메뉴·홈·푸터에는 없음)
 };
 // P2-77 메뉴: 본 사이트는 툴 분류만(+ 가이드), 오락실은 게임·운세·투자만
-const MAIN_CATS = Object.keys(UCATS).filter((k) => !isPlayPath(`/${k}/`)); // pdf·image·text·calc·time·house
+const MAIN_CATS = Object.keys(UCATS).filter((k) => !isPlayPath(`/${k}/`) && !UCATS[k].sub); // P2-78 상황별 5묶음 pdf·image·text·calc·time (house는 time 안의 주제 쪽)
 const PLAY_CATS = Object.keys(UCATS).filter((k) => isPlayPath(`/${k}/`)); // fun·invest
 const NAV = [...MAIN_CATS.map((k) => [UCATS[k].name, `/${k}/`]), ["가이드", "/guide/"]];
 const PLAY_NAV = [["게임", PLAY.path], ...PLAY_CATS.map((k) => [UCATS[k].name, `/${k}/`])];
@@ -204,15 +204,15 @@ const PLAY_BANNER = () => `<section class="arcade play-banner" aria-labelledby="
 const UTILS = [
   { id: "pdfmerge", cat: "pdf", path: "/pdf/merge/", title: "PDF 합치기", seo: "PDF 합치기 — 무료", h1: "PDF 합치기 — 여러 PDF를 순서대로 한 파일로", desc: "여러 개의 PDF를 원하는 순서대로 한 파일로 합쳐요. 파일은 서버로 전송하지 않고 브라우저 안에서 처리합니다.", hook: "PDF 여러 개를 순서 정해서 한 파일로.", meta: "PDF 30개까지", kw: "pdf 병합 합치기 묶기 merge 하나로" },
   { id: "pdfsplit", cat: "pdf", path: "/pdf/split/", title: "PDF 나누기", seo: "PDF 나누기 — 무료, 페이지 추출", h1: "PDF 나누기 — 페이지 추출, 한 쪽씩 나누기", desc: "PDF에서 원하는 페이지만 뽑거나 한 쪽씩 나눠 zip으로 받아요. 파일은 서버로 전송하지 않고 브라우저 안에서 처리합니다.", hook: "필요한 쪽만 뽑거나 한 쪽씩 쪼개기.", meta: "범위 추출 · zip", kw: "pdf 분할 자르기 추출 페이지 split 쪼개기" },
-  { id: "img2pdf", cat: "pdf", also: ["image"], path: "/pdf/image-to-pdf/", title: "JPG PDF 변환", seo: "JPG PDF 변환 — 무료, 이미지 여러 장을 PDF로", h1: "JPG PDF 변환 — 이미지 여러 장을 PDF 한 파일로", desc: "JPG·PNG 이미지 여러 장을 순서대로 PDF 한 파일로 만들어요. A4 또는 원본 크기를 고를 수 있고, 파일은 서버로 전송하지 않습니다.", hook: "사진·스캔 이미지 여러 장을 PDF 하나로.", meta: "JPG·PNG · A4", kw: "이미지 pdf 사진 png jpeg 변환 스캔 영수증" },
+  { id: "img2pdf", cat: "pdf", path: "/pdf/image-to-pdf/", title: "JPG PDF 변환", seo: "JPG PDF 변환 — 무료, 이미지 여러 장을 PDF로", h1: "JPG PDF 변환 — 이미지 여러 장을 PDF 한 파일로", desc: "JPG·PNG 이미지 여러 장을 순서대로 PDF 한 파일로 만들어요. A4 또는 원본 크기를 고를 수 있고, 파일은 서버로 전송하지 않습니다.", hook: "사진·스캔 이미지 여러 장을 PDF 하나로.", meta: "JPG·PNG · A4", kw: "이미지 pdf 사진 png jpeg 변환 스캔 영수증" },
   { id: "docx2pdf", cat: "pdf", beta: true, path: "/docx-to-pdf/", title: "워드 파일 뷰어·PDF 변환 (DOCX)", seo: "워드 파일 뷰어·PDF 변환 — DOCX 열어 보기와 PDF 저장, 워드 없이 무료", h1: "워드 파일 뷰어·PDF 변환 — DOCX 문서를 열어 보고 PDF로 저장", desc: "워드(DOCX) 문서를 워드 프로그램 없이 브라우저에서 열어 보고, A4 인쇄 모양으로 맞춘 뒤 인쇄 창의 「PDF로 저장」으로 글자가 선택되는 PDF를 만들어요. 글자 모양, 목록 번호, 표, 그림을 보여 줘요. 파일은 서버로 전송하지 않습니다.", hook: "DOCX를 열어 보고 PDF로 저장. 표·그림·목록까지.", meta: "DOCX 보기·PDF · 베타", kw: "워드 pdf 변환 docx pdf 변환 word pdf 변환 워드 파일 pdf 워드 뷰어 docx 뷰어 docx 열기 워드 열기 word to pdf docx to pdf docs to pdf 문서 pdf 변환 ms워드" }, // P2-65 (P2-64d 이름: 뷰어·PDF 변환)
   { id: "hwpview", cat: "pdf", beta: true, path: "/hwp-viewer/", title: "한글 파일 뷰어·PDF 변환 (HWP·HWPX)", seo: "한글 파일 뷰어·HWP PDF 변환 — HWP·HWPX 열기와 PDF 저장, 무료·설치 없이", h1: "한글 파일 뷰어·PDF 변환 — HWP·HWPX 문서를 열어 보고 PDF로 저장", desc: "한글(한컴오피스) HWP·HWPX 문서를 한글 프로그램 없이 브라우저에서 열어 보고, 인쇄 창의 「PDF로 저장」으로 글자가 선택되는 PDF로 바꿔요(HWP PDF 변환). 글자 모양, 표, 그림을 A4 쪽으로 보여 줘요. 파일은 서버로 전송하지 않습니다.", hook: "HWP·HWPX를 설치 없이 열어 보고 PDF로 저장.", meta: "HWP·HWPX 보기·PDF · 베타", kw: "한글 파일 뷰어 한글 뷰어 hwp 뷰어 hwpx 뷰어 hwp 열기 hwpx 열기 한글 문서 열기 hwp pdf 변환 hwpx pdf 변환 한글 pdf 변환 한글 파일 pdf 한글 문서 pdf hwp to pdf hwpx to pdf 한컴 한컴오피스 아래아한글 hwp hwpx viewer 한글파일 보기 한컴 pdf 아래아한글 pdf 저장" }, // P2-64, P2-64d HWP 지원 + 「한글 PDF 변환」(/hwp-to-pdf/) 통합
   { id: "imgcompress", cat: "image", path: "/image/compress/", title: "이미지 용량 줄이기", seo: "이미지 용량 줄이기 — 무료, 사진 압축", h1: "이미지 용량 줄이기 — 품질과 크기를 골라 사진 압축", desc: "JPG·PNG·WEBP 사진의 품질과 최대 너비를 조절해 용량을 줄이고, 얼마나 줄었는지 보여 드려요. 파일은 서버로 전송하지 않습니다.", hook: "품질·너비 조절해서 사진 용량 줄이기.", meta: "JPG·WEBP 저장", kw: "사진 압축 용량 줄이기 리사이즈 크기 jpg png webp 이미지 압축" },
   { id: "charcount", cat: "text", path: "/text/char-count/", title: "글자수 세기", seo: "글자수 세기 — 무료, 공백 포함·제외·바이트", h1: "글자수 세기 — 공백 포함·제외, 바이트까지", desc: "자기소개서와 리포트 글자수를 공백 포함·제외, 바이트(UTF-8·한글 2바이트), 줄·단락 수로 바로 세어 드려요. 입력한 글은 저장하지 않습니다.", hook: "자소서 글자수, 공백 포함·제외, 바이트까지.", meta: "실시간 계산", kw: "글자 수 글자수 자소서 자기소개서 바이트 공백 단어 세기 카운터" },
-  { id: "dday", cat: "calc", also: ["time"], path: "/calc/d-day/", title: "디데이 계산기", seo: "디데이 계산기 (D-day 계산) — 무료", h1: "디데이 계산기 — D-day, 날짜 사이 일수, 기념일", desc: "목표일까지 남은 날(D-day)과 두 날짜 사이의 일수를 계산하고, 100일·1000일 같은 기념일 날짜를 한 번에 보여 드려요.", hook: "시험·전역·기념일까지 며칠? 100일·1000일도.", meta: "날짜 두 개", kw: "d-day 디데이 날짜 계산 기념일 100일 1000일 며칠 남았는지 일수" },
-  { id: "age", cat: "calc", path: "/calc/age/", title: "만 나이 계산기", seo: "만 나이 계산기 — 무료, 연 나이·세는 나이까지", h1: "만 나이 계산기 — 만 나이, 연 나이, 다음 생일까지", desc: "생년월일을 넣으면 오늘 기준 만 나이와 연 나이, 한국식 세는 나이, 다음 생일까지 남은 날을 계산해 드려요. 2023년 만 나이 통일법 안내도 함께 정리했어요.", hook: "생년월일만 넣으면 만 나이·연 나이·세는 나이.", meta: "생년월일", kw: "만나이 만 나이 나이 계산 연나이 세는나이 한국나이 생일 몇살 통일법" },
-  { id: "pyeong", cat: "calc", path: "/calc/pyeong/", title: "평수 계산기", seo: "평수 계산기 — 무료, ㎡ 평 변환", h1: "평수 계산기 — 제곱미터(㎡) ↔ 평 변환", desc: "제곱미터(㎡)와 평을 양방향으로 바꾸고, 59㎡·84㎡처럼 자주 찾는 면적을 표로 보여 드려요. 전용면적과 공급면적의 차이도 정리했어요.", hook: "㎡를 평으로, 평을 ㎡로. 84㎡는 몇 평?", meta: "1평 = 3.3058㎡", kw: "평수 평 제곱미터 m2 ㎡ 면적 변환 아파트 전용면적 공급면적 평형" },
-  { id: "pdf2img", cat: "pdf", also: ["image"], path: "/pdf/pdf-to-jpg/", title: "PDF JPG 변환", seo: "PDF JPG 변환 — 무료, PDF를 이미지로", h1: "PDF JPG 변환 — PDF 페이지를 JPG·PNG 이미지로", desc: "PDF의 각 페이지를 JPG나 PNG 이미지로 바꾸고, 해상도를 고르고, zip으로 한 번에 받을 수 있어요. 파일은 서버로 전송하지 않습니다.", hook: "PDF 한 쪽씩 JPG·PNG 이미지로.", meta: "JPG·PNG · zip", kw: "pdf jpg 변환 pdf 이미지 png 그림 사진 페이지 캡처 pdf를 jpg로" },
+  { id: "dday", cat: "time", path: "/calc/d-day/", title: "디데이 계산기", seo: "디데이 계산기 (D-day 계산) — 무료", h1: "디데이 계산기 — D-day, 날짜 사이 일수, 기념일", desc: "목표일까지 남은 날(D-day)과 두 날짜 사이의 일수를 계산하고, 100일·1000일 같은 기념일 날짜를 한 번에 보여 드려요.", hook: "시험·전역·기념일까지 며칠? 100일·1000일도.", meta: "날짜 두 개", kw: "d-day 디데이 날짜 계산 기념일 100일 1000일 며칠 남았는지 일수" },
+  { id: "age", cat: "time", path: "/calc/age/", title: "만 나이 계산기", seo: "만 나이 계산기 — 무료, 연 나이·세는 나이까지", h1: "만 나이 계산기 — 만 나이, 연 나이, 다음 생일까지", desc: "생년월일을 넣으면 오늘 기준 만 나이와 연 나이, 한국식 세는 나이, 다음 생일까지 남은 날을 계산해 드려요. 2023년 만 나이 통일법 안내도 함께 정리했어요.", hook: "생년월일만 넣으면 만 나이·연 나이·세는 나이.", meta: "생년월일", kw: "만나이 만 나이 나이 계산 연나이 세는나이 한국나이 생일 몇살 통일법" },
+  { id: "pyeong", cat: "time", path: "/calc/pyeong/", title: "평수 계산기", seo: "평수 계산기 — 무료, ㎡ 평 변환", h1: "평수 계산기 — 제곱미터(㎡) ↔ 평 변환", desc: "제곱미터(㎡)와 평을 양방향으로 바꾸고, 59㎡·84㎡처럼 자주 찾는 면적을 표로 보여 드려요. 전용면적과 공급면적의 차이도 정리했어요.", hook: "㎡를 평으로, 평을 ㎡로. 84㎡는 몇 평?", meta: "1평 = 3.3058㎡", kw: "평수 평 제곱미터 m2 ㎡ 면적 변환 아파트 전용면적 공급면적 평형" },
+  { id: "pdf2img", cat: "pdf", path: "/pdf/pdf-to-jpg/", title: "PDF JPG 변환", seo: "PDF JPG 변환 — 무료, PDF를 이미지로", h1: "PDF JPG 변환 — PDF 페이지를 JPG·PNG 이미지로", desc: "PDF의 각 페이지를 JPG나 PNG 이미지로 바꾸고, 해상도를 고르고, zip으로 한 번에 받을 수 있어요. 파일은 서버로 전송하지 않습니다.", hook: "PDF 한 쪽씩 JPG·PNG 이미지로.", meta: "JPG·PNG · zip", kw: "pdf jpg 변환 pdf 이미지 png 그림 사진 페이지 캡처 pdf를 jpg로" },
   { id: "timer", cat: "time", path: "/time/timer/", title: "타이머", seo: "온라인 타이머 — 무료, 알람 소리·전체 화면", h1: "온라인 타이머 — 시간이 되면 소리로 알려 줘요", desc: "시·분·초를 직접 넣거나 1·3·5·10·15·30·60분 버튼으로 맞춰 시작하는 온라인 타이머예요. 끝나면 알림음과 화면 깜빡임으로 알려 주고, 탭 제목에 남은 시간을 보여 줘요.", hook: "라면 3분, 공부 30분. 끝나면 소리로 알려 줘요.", meta: "알림음 · 전체 화면", kw: "타이머 알람 카운트다운 초시계 뽀모도로 라면 3분 15분 30분 1시간 공부 시간 재기 인터벌" },
   { id: "stopwatch", cat: "time", path: "/time/stopwatch/", title: "스톱워치", seo: "온라인 스톱워치 — 무료, 랩 기록·1/100초", h1: "온라인 스톱워치 — 랩 기록과 1/100초 표시", desc: "시작·정지·랩·초기화를 지원하는 온라인 스톱워치예요. 1/100초까지 보여 주고, 랩마다 구간·누적 시간과 최고·최저 구간을 표시해요. Space·L·R 단축키도 쓸 수 있어요.", hook: "1/100초까지. 랩마다 구간·누적 기록.", meta: "랩 · 단축키", kw: "스톱워치 초시계 랩 타임 기록 시간 측정 달리기 1/100초" },
   { id: "salary", cat: "calc", path: "/calc/salary/", title: "연봉 실수령액 계산기", seo: `연봉 실수령액 계산기 ${PAY.year} — 4대보험·소득세 공제 후 월급`, h1: `연봉 실수령액 계산기 ${PAY.year} — 세금 떼고 월급 얼마?`, desc: `연봉이나 월급을 넣으면 ${PAY.year}년 국민연금·건강보험·장기요양·고용보험 요율과 국세청 근로소득 간이세액표로 공제액과 월 실수령액을 계산해요. 부양가족·자녀 수와 비과세 식대도 반영해요.`, hook: "연봉 넣으면 4대보험·소득세 떼고 월급이 얼마인지.", meta: `${PAY.year} 요율 · 간이세액표`, kw: "연봉 실수령액 월급 실수령액 연봉 계산기 세후 월급 4대보험 계산 소득세 원천징수 간이세액표 연봉표 월급 계산 세금" }, // P2-45
@@ -223,7 +223,7 @@ const UTILS = [
   { id: "imgmerge", cat: "image", path: "/image/merge/", title: "사진 이어붙이기", seo: "사진 이어붙이기 — 사진 합치기·캡처 합치기·긴 캡처 만들기", h1: "사진 이어붙이기 — 여러 장을 세로·가로·격자로 한 장에", desc: "사진과 휴대폰 캡처 여러 장을 세로·가로·격자로 한 장에 이어 붙여요. 캡처의 상태바·주소창·하단 바를 자동으로 잘라 내고, 연속 캡처는 겹친 부분을 빼서 긴 캡처로 만들어요. 사진은 서버로 전송하지 않습니다.", hook: "캡처 여러 장을 한 장으로, 툴바는 자동으로 잘라요.", meta: "세로·가로·격자 · JPG·PNG", kw: "사진 합치기 사진 이어붙이기 사진 붙이기 이미지 합치기 이미지 붙이기 이미지 이어붙이기 캡처 합치기 캡처 이어붙이기 스크린샷 합치기 긴 캡처 스크롤 캡처 긴 스크린샷 사진 연결 콜라주 격자 사진 세로로 붙이기 가로로 붙이기" }, // P2-46
   { id: "heic", cat: "image", path: "/image/heic-to-jpg/", title: "HEIC JPG 변환", seo: "HEIC JPG 변환 — 아이폰 사진 JPG로, 여러 장 한꺼번에", h1: "HEIC JPG 변환 — 아이폰 사진을 여러 장 한꺼번에 JPG로", desc: "아이폰 HEIC·HEIF 사진을 여러 장 한꺼번에 JPG로 바꿔요. 화질과 크기를 고르고, 하나씩 또는 zip으로 받아요. 위치 정보(GPS)는 기본으로 지워요. 사진은 서버로 전송하지 않습니다.", hook: "아이폰 사진(HEIC)을 JPG로, 여러 장 한꺼번에.", meta: "HEIC·HEIF → JPG · zip", kw: "heic jpg 변환 heic jpg heic 변환 heic to jpg heic 파일 열기 heic 열기 heif 변환 heif jpg 아이폰 사진 jpg 아이폰 사진 변환 아이폰 사진 안 열림 아이폰 사진 윈도우 아이폰 사진 컴퓨터 heic 뷰어 사진 확장자 변환 jpg 변환 위치 정보 지우기 gps 삭제" }, // P2-47
   { id: "qr", cat: "image", path: "/image/qr-code/", title: "QR코드 생성기", seo: "QR코드 생성기 — 무료 QR코드 만들기, 와이파이·링크·명함 QR", h1: "QR코드 생성기 — 링크·와이파이·명함 QR코드 무료로 만들기", desc: "링크, 글, 와이파이, 연락처(명함), 문자를 QR코드로 만들어요. 색과 여백을 바꾸고 가운데에 로고를 넣고, PNG·SVG로 저장해요. 와이파이 안내 카드는 A6로 바로 인쇄해요. 입력한 내용은 서버로 보내지 않습니다.", hook: "링크·와이파이·명함을 QR코드로, 로고도 넣어요.", meta: "PNG·SVG · 와이파이 카드", kw: "qr코드 만들기 qr코드 생성기 qr 코드 만들기 qr 생성 qr 생성기 qr코드 생성 qr 만들기 큐알코드 만들기 큐알 코드 큐알 만들기 무료 qr 무료 qr코드 와이파이 qr 와이파이 qr코드 wifi qr 와이파이 비밀번호 qr 링크 qr url qr 주소 qr 명함 qr 연락처 qr vcard 문자 qr 로고 qr qr코드 로고 qr 색 qr svg qr png qr 인쇄 qr code generator" }, // P2-48
-  { id: "splitprint", cat: "image", path: "/image/split-print/", title: "이미지 분할 인쇄", seo: "이미지 분할 인쇄 — 포스터 분할 인쇄, 큰 그림을 A4 여러 장으로 나눠 인쇄", h1: "이미지 분할 인쇄 — 큰 그림을 A4·A3 여러 장으로 나눠 포스터처럼", desc: "사진이나 그림 한 장을 A4·A3·B4·레터 용지 여러 장으로 나눠 인쇄할 수 있게 PDF로 만들어요. 가로·세로 장 수, 완성 크기(cm), 총 매수 중 편한 방법으로 정하고, 여백·풀칠 겹침·자르는 선·위치 표시를 고를 수 있어요. 이미지는 서버로 전송하지 않습니다.", hook: "큰 그림을 A4 여러 장으로 나눠 포스터처럼.", meta: "A4·A3·B4·레터 · PDF", kw: "분할 인쇄 분할인쇄 포스터 인쇄 포스터 분할 이미지 분할 사진 분할 큰 그림 인쇄 A4 여러장 인쇄 a4 나눠서 인쇄 크게 인쇄 대형 인쇄 현수막 인쇄 타일 인쇄 poster print 이어 붙이기 인쇄 여백 없이 인쇄" }, // P2-73
+  { id: "splitprint", cat: "pdf", path: "/image/split-print/", title: "이미지 분할 인쇄", seo: "이미지 분할 인쇄 — 포스터 분할 인쇄, 큰 그림을 A4 여러 장으로 나눠 인쇄", h1: "이미지 분할 인쇄 — 큰 그림을 A4·A3 여러 장으로 나눠 포스터처럼", desc: "사진이나 그림 한 장을 A4·A3·B4·레터 용지 여러 장으로 나눠 인쇄할 수 있게 PDF로 만들어요. 가로·세로 장 수, 완성 크기(cm), 총 매수 중 편한 방법으로 정하고, 여백·풀칠 겹침·자르는 선·위치 표시를 고를 수 있어요. 이미지는 서버로 전송하지 않습니다.", hook: "큰 그림을 A4 여러 장으로 나눠 포스터처럼.", meta: "A4·A3·B4·레터 · PDF", kw: "분할 인쇄 분할인쇄 포스터 인쇄 포스터 분할 이미지 분할 사진 분할 큰 그림 인쇄 A4 여러장 인쇄 a4 나눠서 인쇄 크게 인쇄 대형 인쇄 현수막 인쇄 타일 인쇄 poster print 이어 붙이기 인쇄 여백 없이 인쇄" }, // P2-73
   { id: "stockquiz", cat: "invest", path: "/invest/soxl-tqqq-koru/", title: "SOXL·TQQQ·KORU 주가 예측", seo: "SOXL·TQQQ·KORU 주가 예측 — 날짜 가린 실제 차트, 오를까 내릴까", h1: "SOXL·TQQQ·KORU 주가 예측 — 날짜를 가린 실제 차트로 오를까 내릴까", desc: "SOXL·TQQQ·KORU의 상장 이후 실제 일봉 종가에서 날짜를 가린 1개월·3개월·1년 차트를 보여 드려요. 다음 거래일·일주일 뒤·한 달 뒤 종가가 오를지, 기준가 이상일지 맞히면 실제 결과와 날짜를 공개하고, 10문제 뒤 백테스팅 요약을 보여 줘요. 교육·재미용이며 투자 권유가 아니에요.", hook: "날짜를 가린 실제 차트. 내일 종가는 오를까 내릴까?", meta: "10문제 · 3분", kw: "soxl tqqq koru 주가 예측 주식 차트 맞히기 레버리지 etf 3배 반도체 나스닥 한국 백테스팅 투자 연습 오를까 내릴까 미국 주식" }, // P2-50
   { id: "dca", cat: "invest", path: "/invest/dca-backtest/", title: "SOXL·TQQQ·KORU 적립식 백테스트", seo: "SOXL·TQQQ·KORU 적립식 백테스트 — 매달 사면 지금 얼마? 적립식 투자 계산", h1: "SOXL·TQQQ·KORU 적립식 백테스트 — 매달 샀다면 지금 얼마일까", desc: "SOXL·TQQQ·KORU를 시작 연월부터 매달 첫 거래일 종가에 같은 금액씩 샀다면 지금 평가액, 총 투자금, 수익률, 연환산 수익률, 최대 낙폭(MDD)이 얼마인지 실제 과거 가격으로 계산해요. 같은 돈을 처음에 한 번에 넣은 거치식과 비교하고 연도별 표와 자산 곡선을 보여 줘요. 원·달러, 3종목 비교. 투자 권유가 아니에요.", hook: "매달 30만 원씩 TQQQ를 샀다면 지금 얼마?", meta: "실제 가격 · 3종목 비교", kw: "적립식 백테스트 적립식 투자 계산 적립식 계산기 적립식 투자 수익률 tqqq 적립식 soxl 적립식 koru 적립식 레버리지 etf 적립 매달 사면 매달 투자 매월 적립 dca 정액 적립 분할 매수 백테스트 백테스팅 거치식 비교 mdd 최대 낙폭 연환산 수익률 미국 주식 3배 나스닥 반도체 한국" }, // P2-52
   { id: "avgdown", cat: "invest", path: "/invest/average-down/", title: "물타기 계산기", seo: "물타기 계산기 — 평단가 계산, 평균단가·추가매수 수량 역계산", h1: "물타기 계산기 — 주식 평단가 계산과 목표 평단 역계산", desc: "지금 평단과 보유 수량에 추가 매수 가격·수량을 여러 줄 넣으면 새 평단(평균단가), 총 수량, 총 투자금과 현재가 기준 수익률을 계산해요. 「평단을 얼마로 낮추려면 몇 주를 사야 하나」 역계산도 돼요. 원화·달러, 소수점 수량을 지원해요. 투자 권유가 아니에요.", hook: "추가 매수하면 평단이 얼마? 목표 평단까지 몇 주?", meta: "원화·달러 · 역계산", kw: "물타기 계산기 물타기 평단가 계산기 평단가 계산 평균단가 계산 평균 단가 평단 낮추기 평단 계산 추가매수 계산 추가 매수 주식 평단 주식 평균단가 불타기 분할매수 소수점 주식 미국 주식 국내 주식 목표 평단 역계산" }, // P2-51
@@ -235,7 +235,7 @@ const UTILS = [
   { id: "readtime", cat: "text", path: "/text/reading-time/", title: "읽기 시간 계산기", seo: "읽기 시간 계산기 — 읽는 시간·발표 시간, 원고지 매수 계산", h1: "읽기 시간 계산기 — 읽는 시간, 발표 시간, 원고지 매수까지", desc: "글을 붙여 넣으면 예상 읽기 시간과 발표(말하기) 시간, 200자 원고지 매수(공백 포함·제외·칸 채우기), 문장 수와 평균 문장 길이, 60자 넘는 긴 문장, 자주 나온 낱말을 바로 알려 줘요. 기준 속도는 직접 바꿀 수 있어요. 입력한 글은 저장하지 않습니다.", hook: "읽는 시간·발표 시간·원고지 매수를 한 번에.", meta: "읽기·발표 · 원고지 · 긴 문장", kw: "읽기 시간 읽는 시간 읽는데 걸리는 시간 독서 시간 리딩 타임 reading time 발표 시간 발표 시간 계산 말하기 시간 스피치 시간 대본 시간 원고 시간 1분 스피치 3분 스피치 5분 발표 몇 자 원고지 원고지 매수 원고지 계산 200자 원고지 원고지 몇 장 매수 계산 문장 수 문장 길이 평균 문장 길이 긴 문장 가독성 가독성 검사 키워드 빈도 단어 빈도 빈출 단어 키워드 분석 블로그 글 분석 글 분석 단어 수 wpm 분당 글자" }, // P2-57
   { id: "emoji", cat: "text", path: "/text/emoji-special-characters/", title: "이모지 · 특수문자 복사", seo: "이모지 복사 · 특수문자 모음 — 하트 이모지, 주식·인스타 감성 특수문자, 텍스트 이모티콘", h1: "이모지 · 특수문자 복사 — 상황별 이모지, 특수문자 모음, 텍스트 이모티콘까지", desc: "웃는·우는·하트·불·로켓 이모지부터 주식·재테크, 블로그·쇼츠 제목, 인스타·카톡 감성, 업무 공지, 다이어리, 깃허브 README용 이모지, 별·하트 기호·화살표·동그라미 숫자(①)·로마 숫자(Ⅰ) 같은 특수문자, (╥﹏╥) 같은 텍스트 이모티콘까지 한글로 찾아 누르면 바로 복사돼요. 누른 이모지의 뜻도 보여 주고, 목록 번호 매기기와 블로그·공지 템플릿도 있어요.", hook: "상황별 이모지·특수문자, 누르면 바로 복사.", meta: "1,800여 개 · 뜻 풀이 · 템플릿", kw: "이모지 이모지 복사 이모티콘 이모티콘 복사 특수문자 특수문자 복사 특수기호 기호 모음 특수문자 모음 특수문자표 하트 특수문자 하트 이모지 하트 기호 하트 복사 ♥ ♡ 별 특수문자 별 기호 ★ ☆ 화살표 특수문자 화살표 기호 → 당구장 표시 ※ 체크 표시 체크 이모지 ✔ ✅ 동그라미 숫자 원문자 원숫자 ① 괄호 숫자 낫표 겹낫표 「」 『』 꺾쇠 말머리 기호 글머리 기호 블로그 꾸미기 인스타 꾸미기 목록 꾸미기 번호 이모지 1\uFE0F⃣ 숫자 이모지 일괄 삽입 줄 앞에 이모지 구분선 emoji copy special characters symbols 웃는 이모지 우는 이모지 웃는 얼굴 이모지 하트 이모지 종류 불 이모지 불 이모지 의미 로켓 이모지 로켓 이모지 의미 박수 이모지 엄지척 이모지 반짝이 이모지 주식 이모지 주식 상승 이모지 상승 차트 이모지 돈 이모지 돈 이모지 복사 재테크 이모지 공모주 이모지 과녁 이모지 트로피 이모지 확성기 이모지 공지 이모지 압정 이모지 업무 이모지 인스타 특수문자 인스타 감성 특수문자 인스타 스토리 이모지 카톡 상태메시지 이모지 카톡 이모지 블로그 제목 특수문자 네이버 블로그 꾸미기 쇼츠 제목 특수문자 유튜브 설명란 이모지 다이어리 이모지 감성 다이어리 깃허브 이모지 README 이모지 github emoji shortcode 텍스트 이모티콘 카오모지 kaomoji 오마이갓 이모티콘 디스코드 이모티콘 로마 숫자 특수문자 Ⅰ Ⅱ Ⅲ 십자가 특수문자 꽃 특수문자 깃발 이모지 구분선 특수문자 이모지 의미 이모지 뜻 윈도우 이모지 단축키 윈도우 마침표 맥 이모지 단축키 아이폰 이모지 갤럭시 이모지" }, // P2-57, P2-68 상황별 탭·특수문자·텍스트 이모티콘·의미
   { id: "instafont", cat: "text", path: "/text/insta-font/", title: "인스타 폰트 변환기", seo: "인스타 폰트 변환기 — 인스타그램 글씨체 바꾸기, 굵게·필기체·이중선 영문 특수문자", h1: "인스타 폰트 변환기 — 영문·숫자를 𝐁𝐨𝐥𝐝 𝓢𝓬𝓻𝓲𝓹𝓽 Ⓒⓘⓡⓒⓛⓔ로", desc: "영문과 숫자를 넣으면 굵게(𝐁𝐨𝐥𝐝), 기울임(𝘐𝘵𝘢𝘭𝘪𝘤), 필기체(𝓢𝓬𝓻𝓲𝓹𝓽), 고딕(𝔉𝔯𝔞𝔨𝔱𝔲𝔯), 이중선(𝔻𝕠𝕦𝕓𝕝𝕖), 동그라미(Ⓒⓘⓡⓒⓛⓔ), 타자기(𝚖𝚘𝚗𝚘), 취소선까지 24가지 모양으로 바꿔 하나씩 복사해요. 인스타그램 소개·닉네임, 카톡 프로필에 붙여 넣으면 그대로 보여요. 한글에는 괄호·기호 꾸밈을 붙일 수 있어요.", hook: "인스타 소개글 영문을 𝓢𝓬𝓻𝓲𝓹𝓽·𝐁𝐨𝐥𝐝로.", meta: "24가지 글씨 · 한글 꾸밈", kw: "인스타 폰트 인스타 폰트 변환기 인스타그램 폰트 인스타그램 폰트 변환기 인스타 글씨체 인스타 글꼴 인스타 소개 폰트 인스타 바이오 인스타 닉네임 특수문자 영어 폰트 변환 영어 특수문자 영어 필기체 필기체 변환 굵은 글씨 볼드체 이탤릭 고딕체 이중선 동그라미 영어 네모 영어 취소선 밑줄 텍스트 폰트 생성기 글씨체 변환기 fancy text font generator instagram fonts 카톡 프로필 꾸미기 감성 닉네임" }, // P2-68
-  { id: "aptmap", cat: "house", path: "/apt-map/", title: "역세권 아파트 지도", seo: "역세권 아파트 지도 — 사회초년생 20평대 실거래가, 가격대별 2억대·3억대·4억대", h1: "사회초년생이 살 만한 역세권 아파트 지도", desc: "역에서 직선 1km 안, 300세대 이상, 전용 40~60㎡(20평대) 아파트를 국토교통부 실거래가 중위값으로 2억 미만부터 8억대까지 가격대별로 지도에 보여 줘요. 지역·노선·준공연도로 좁히고 「도보 10분 이내만」(직선 500m)으로 더 가까운 단지만 볼 수 있어요. 거래 완료 기록 기준이라 현재 호가와 다를 수 있고, 투자 권유가 아니에요.", hook: "20평대 역세권 아파트, 가격대별로 지도에서.", meta: "실거래 중위값 · 역 1km · 매달 갱신", kw: "아파트 지도 역세권 아파트 역세권 아파트 지도 역세권 20평대 20평대 아파트 24평 전용 59 전용 49 소형 아파트 싼 아파트 제일 싼 아파트 저렴한 아파트 2억 아파트 3억 아파트 4억 아파트 5억 아파트 2억대 3억대 4억대 아파트 실거래가 실거래가 조회 아파트 시세 아파트 가격 지하철역 근처 아파트 역 근처 아파트 도보 10분 사회초년생 내 집 마련 첫 집 신혼부부 아파트 서울 경기 인천 부산 대구 수도권 아파트 아파트 매매 국토부 실거래" }, // P2-63b
+  { id: "aptmap", cat: "time", path: "/apt-map/", title: "역세권 아파트 지도", seo: "역세권 아파트 지도 — 사회초년생 20평대 실거래가, 가격대별 2억대·3억대·4억대", h1: "사회초년생이 살 만한 역세권 아파트 지도", desc: "역에서 직선 1km 안, 300세대 이상, 전용 40~60㎡(20평대) 아파트를 국토교통부 실거래가 중위값으로 2억 미만부터 8억대까지 가격대별로 지도에 보여 줘요. 지역·노선·준공연도로 좁히고 「도보 10분 이내만」(직선 500m)으로 더 가까운 단지만 볼 수 있어요. 거래 완료 기록 기준이라 현재 호가와 다를 수 있고, 투자 권유가 아니에요.", hook: "20평대 역세권 아파트, 가격대별로 지도에서.", meta: "실거래 중위값 · 역 1km · 매달 갱신", kw: "아파트 지도 역세권 아파트 역세권 아파트 지도 역세권 20평대 20평대 아파트 24평 전용 59 전용 49 소형 아파트 싼 아파트 제일 싼 아파트 저렴한 아파트 2억 아파트 3억 아파트 4억 아파트 5억 아파트 2억대 3억대 4억대 아파트 실거래가 실거래가 조회 아파트 시세 아파트 가격 지하철역 근처 아파트 역 근처 아파트 도보 10분 사회초년생 내 집 마련 첫 집 신혼부부 아파트 서울 경기 인천 부산 대구 수도권 아파트 아파트 매매 국토부 실거래" }, // P2-63b
 ];
 const UTIL_RANK = ["pdfmerge", "img2pdf", "pdf2img", "charcount", "imgcompress", "removebg", "imgmerge", "heic", "qr", "timer", "pdfsplit", "salary", "juhyu", "severance", "unemp", "age", "pyeong", "stopwatch", "docx2pdf", "hwpview", "dday", "stockquiz", "avgdown", "dca", "ostax", "rsibt", "compound", "possize", "linebreak", "readtime", "emoji", "instafont", "aptmap", "splitprint"]; // P2-73 splitprint // P2-68 instafont // P2-63b aptmap // P2-57 linebreak·readtime·emoji // P2-56 possize // P2-55 compound // P2-50 stockquiz(투자) // P2-51 avgdown // P2-52 dca // P2-53 ostax // P2-54 rsibt // P2-45 돈 계산기 4종, P2-46 imgmerge, P2-47 heic, P2-48 qr
 const NEXT = {
@@ -373,7 +373,7 @@ const shareBar = (opts = {}) =>
 // ---------- P2-35 기술 SEO: 검색 결과 제목·설명 보정 + 사이트 전체 구조화 데이터 ----------
 // 짧거나 검색어가 빠진 제목·설명만 여기서 보정(원고는 그대로). 주소 기준이라 호출부를 고치지 않아도 됨
 const SEO_DESC = {
-  "/about/": () => `${cfg.siteName} 소개: PDF·이미지·글쓰기·생활 계산 툴을 어떤 원칙(브라우저 안에서 처리, 한계까지 적는 설명)으로 운영하는지, 운영자 ${cfg.operator} 안내.`,
+  "/about/": () => `${cfg.siteName} 소개: 직장인을 위한 문서·사진·계산 툴(서류 낼 때·사진 올릴 때·글 쓸 때·월급·퇴사 계산·날짜·시간·생활)을 어떤 원칙(브라우저 안에서 처리, 한계까지 적는 설명)으로 운영하는지, 운영자 ${cfg.operator} 안내.`,
   "/privacy/": () => `${cfg.siteName} 개인정보처리방침: 툴에 넣은 파일과 입력값을 서버로 보내지 않는 원칙, Google AdSense 광고 쿠키${cfg.gaId ? "와 Google Analytics 방문 통계" : ""}, 국외 이전, 문의처 안내.`,
   "/terms/": () => `${cfg.siteName} 이용약관: 서비스 내용, 서비스 변경·중단, 이용자의 의무, 저작권, 책임의 제한, 준거법과 분쟁 해결 안내.`,
   "/disclaimer/": () => `${cfg.siteName} 면책고지: 툴 결과물은 원본과 함께 확인해 주세요. 운세·재미 툴의 운세·테스트는 재미로 보는 콘텐츠이며 의학·법률·재정·심리 진단을 대신하지 않아요.`,
@@ -573,7 +573,7 @@ fs.cpSync(path.join(ROOT, "src", "assets"), path.join(DIST, "assets"), { recursi
 // 홈 배치(COO 개편): 툴은 홈에서 대표 서랍 한 곳에만 보임(also가 있으면 also[0]) → 중복 행 없음
 const homeIn = (k) => TOOL_RANK.map((id) => anyById[id]).filter((x) => ((x.also || [])[0] || x.cat) === k); // P2-49 운세·재미 포함
 // 서랍 순서: 툴이 많은 서랍부터(같으면 UCATS 순서). 위 3개는 윗줄, 나머지는 아랫줄
-const HOME_TAIL_CATS = ["house"]; // P2-63b 「내 집 마련」은 툴 수와 상관없이 툴 서랍 맨 뒤(오락실·랜덤채팅 앞), 한 줄 전체 서랍
+const HOME_TAIL_CATS = []; // P2-78 house는 묶음이 아님(날짜·시간·생활 안의 주제 쪽) // P2-63b 「내 집 마련」은 툴 수와 상관없이 툴 서랍 맨 뒤(오락실·랜덤채팅 앞), 한 줄 전체 서랍
 const homeOrder = () => Object.entries(UCATS).filter(([k]) => !HOME_TAIL_CATS.includes(k) && MAIN_CATS.includes(k)).map((e, i) => [e, homeIn(e[0]).length, i]).sort((a, b) => b[1] - a[1] || a[2] - b[2]).map((x) => x[0]);
 // P2-49 데스크톱 줄 배치: 윗줄 3개(넓이 1/3). 아랫줄이 2개면 반씩, 그 밖에는 1/3씩
 const cabCls0 = (i, n) => (n > 6 && i === n - 1 && (n - 3) % 3 === 1 ? "cab-full" : i < 3 || n - 3 !== 2 ? "cab-big" : "cab-wide"); // P2-50 서랍 7개면 마지막에 혼자 남는 서랍은 한 줄 전체
@@ -647,7 +647,11 @@ const PLAY_SEARCH = PLAY_ITEMS.map((x) => ({ t: x.title, p: u(x.path), c: playCa
 const byUtilRank = UTIL_RANK.map((id) => utilById[id]);
 const HOME_CORE = ["pdfmerge", "img2pdf", "pdf2img", "hwpview", "imgcompress", "heic", "charcount", "salary"]; // P2-75 홈 맨 위 실용 툴(검색 수요가 큰 문서·이미지·글쓰기·계산 대표)
 const POP_NAME = { hwpview: "한글 파일 열기", salary: "연봉 실수령액" }; // P2-77 홈 인기 툴 칩의 짧은 이름
-const HOME_CAT_ORDER = ["pdf", "image", "text", "calc", "time", "house"]; // P2-77 홈 격자 순서(문서 → 이미지 → 글쓰기 → 계산 → 시간 → 내 집 마련)
+// P2-78 컨셉(대표님 2안): h1 + 부제(「직장인」은 부제·meta·소개에 명시). 타사 상표(한글·엑셀·워드 등)·「공식」류 문구는 컨셉 문구에 쓰지 않음 → 빌드 점검(CONCEPT_BAN)
+const HOME_H1 = "회사 서류·사진 일, 설치 없이 바로 끝내는 툴";
+const HOME_SUB = cfg.tagline; // 「직장인을 위한 문서·사진·계산 툴 모음」
+const HOME_DESC = `${cfg.tagline}. 서류 낼 때(PDF 합치기·나누기, JPG PDF 변환, HWP·DOCX 문서 열기), 사진 올릴 때(용량 줄이기, HEIC JPG 변환, 배경 지우기), 글 쓸 때(글자수 세기), 월급·퇴사 계산(연봉 실수령액·퇴직금·실업급여), 날짜·시간까지 설치·가입 없이 브라우저에서 바로 써 보세요.`;
+const HOME_CAT_ORDER = ["pdf", "image", "text", "calc", "time"]; // P2-78 상황별 5묶음 순서: 서류 낼 때 → 사진 올릴 때 → 글 쓸 때 → 월급·퇴사 계산 → 날짜·시간·생활 (P2-77 6분류 → 5묶음, 주소 그대로)
 const searchForm = (ph, label) => `<form class="search" role="search" action="${u("/")}">
     <label for="tool-q">${label}</label>
     <div class="search-row"><input id="tool-q" type="search" placeholder="${ph}" autocomplete="off" aria-controls="tool-hits" aria-describedby="tool-hits-n"><span class="search-ico" aria-hidden="true"></span></div>
@@ -665,9 +669,9 @@ const HOME_NEW_IDS = () => newList.filter((x) => !isPlayPath(anyById[x.id].path)
   const body = `
 <section class="hero hero-tools hero-main">
   <div class="hero-text">
-    <p class="hero-kicker">문서 · 이미지 · 글쓰기 · 계산 · 시간 툴 ${MAIN_UTILS.length}개</p>
-    <h1>PDF·이미지·글자수·계산기, <br>필요한 툴을 설치 없이 바로</h1>
-    <p class="lead">PDF 합치기, 한글·워드 파일 열기, 사진 용량 줄이기, 글자수 세기, 연봉 실수령액 계산처럼 일하고 공부할 때 쓰는 툴만 모았어요. 가입 없이 쓰고, 파일은 서버로 전송하지 않습니다.</p>
+    <p class="hero-kicker hero-for">${esc(HOME_SUB)}</p>
+    <h1>${HOME_H1.replace(", ", ",<br>")}</h1>
+    <p class="lead">PDF 합치기, HWP·DOCX 문서 열기, 사진 용량 줄이기, 글자수 세기, 연봉 실수령액 계산처럼 회사에서 서류를 내고, 사진을 올리고, 글을 쓰고, 월급을 따져 볼 때 쓰는 툴 ${MAIN_UTILS.length}개를 상황별로 모았어요. 가입 없이 쓰고, 파일은 서버로 전송하지 않습니다.</p>
   </div>
   ${searchForm("예: pdf 합치기, 글자수, 만 나이", "어떤 툴을 찾으세요?")}
   <p class="pop-tools"><b>많이 쓰는 툴</b>${HOME_CORE.map((id) => `<a class="chip" href="${u(utilById[id].path)}">${esc(POP_NAME[id] || utilById[id].title)}</a>`).join("")}</p>
@@ -675,7 +679,7 @@ const HOME_NEW_IDS = () => newList.filter((x) => !isPlayPath(anyById[x.id].path)
 <script type="application/json" id="tool-index">${JSON.stringify(SEARCH_INDEX).replace(/</g, String.fromCharCode(92) + "u003c")}</script>
 
 <section class="tools-all" aria-labelledby="ta-h">
-  <div class="toolbox-head"><h2 id="ta-h">분류별 툴 <small>${cats.length}개 분류 · 툴 ${MAIN_UTILS.length}개</small></h2><nav class="cab-jump" aria-label="분류 바로 가기">${cats.map((k) => `<a class="chip" href="#cat-${k}"><i class="dot t-${k}" aria-hidden="true"></i>${esc(UCATS[k].name)} <small>${utilsIn(k).length}</small></a>`).join("")}</nav></div>
+  <div class="toolbox-head"><h2 id="ta-h">상황별 툴 <small>${cats.length}가지 상황 · 툴 ${MAIN_UTILS.length}개</small></h2><nav class="cab-jump" aria-label="상황 바로 가기">${cats.map((k) => `<a class="chip" href="#cat-${k}"><i class="dot t-${k}" aria-hidden="true"></i>${esc(UCATS[k].name)} <small>${utilsIn(k).length}</small></a>`).join("")}</nav></div>
   <div class="tgrid">${cats.map((k) => tcatHtml(k, utilsIn(k))).join("")}</div>
 </section>
 ${PLAY_BANNER()}
@@ -690,7 +694,7 @@ ${newTools.length ? `<section class="new-band" aria-labelledby="new-h"><h2 id="n
   <div class="about-body">${fill(pages.home.intro).split(/\n+/).map((p) => `<p>${esc(p)}</p>`).join("")}</div>
 </section>
 ${adSlotFixed("home")}`;
-  write("/", layout({ title: `${cfg.siteName} — ${cfg.tagline}`, fullTitle: true, wide: true, scripts: ["home.js"], desc: "PDF 합치기·나누기, JPG PDF 변환, 한글(HWP) 파일 열기, 이미지 용량 줄이기, HEIC JPG 변환, 글자수 세기, 연봉 실수령액·만 나이·디데이 계산기까지. 자주 쓰는 툴을 설치·가입 없이 브라우저에서 바로 써 보세요.", path: "/", body }));
+  write("/", layout({ title: `${cfg.siteName} — ${HOME_H1}`, fullTitle: true, wide: true, scripts: ["home.js"], desc: HOME_DESC, path: "/", body }));
 }
 
 // P2-77 펭귄 오락실 첫 화면(play.penguintools.kr/). 분리할 때만 만듦(분리 전에는 /play/가 오락실 첫 화면)
@@ -1266,7 +1270,8 @@ function hubGuideHtml(k) {
   for (const [, id] of h.pick || []) if (!anyById[id]) throw new Error(`hubs.${k}: 없는 툴 id ${id}`);
   const len = [h.lead, ...(h.pick || []).flatMap(([a, , c]) => [a, c]), ...(h.sections || []).flatMap((x) => [x.h, x.p || "", ...(x.list || [])])].reduce((n, x) => n + fill(x).trim().length, 0);
   HUB_LEN[k] = len;
-  if (len < 800) warnings.push(`/${k}/ 허브 안내 ${len}자 (<800)`);
+  const hubMin = MAIN_CATS.includes(k) ? 1000 : 800; // P2-78 상황별 묶음 허브는 1,000자 이상(분량 유지)
+  if (len < hubMin) warnings.push(`/${k}/ 허브 안내 ${len}자 (<${hubMin})`);
   // P2-77b 대표님 지시 「홈 디자인 그대로」: 상황별 고르기는 홈 분류 카드와 같은 줄(그림 + 굵은 상황 + 툴 이름·설명) 카드로, 안내 글(lead·근거·자주 겪는 문제)은 카드 아래 prose로
   return {
     pick: (h.pick || []).length ? `<section class="tcat tcat-pick t-${k}" aria-labelledby="hp-${k}"><header class="tcat-h"><h2 id="hp-${k}">상황별로 이렇게 골라 보세요</h2><small>${h.pick.length}가지</small></header><ul class="tlist tlist-pick">${h.pick.map(([sit, id, note]) => `<li><a href="${u(anyById[id].path)}"><span class="ti">${ART[id]}</span><span class="tn"><b>${t(sit)}</b><small><span class="pk-t">${esc(anyById[id].title)} ›</span> ${t(note)}</small></span></a></li>`).join("")}</ul></section>` : "",
@@ -1278,18 +1283,19 @@ ${(h.sections || []).map((x) => `<h2>${t(x.h)}</h2>${x.p ? `<p>${t(x.p)}</p>` : 
 }
 // 실용 툴 카테고리 페이지 (/pdf/ /image/ /text/ /calc/)
 for (const [k, c] of Object.entries(UCATS)) {
-  const list = utilsIn(k); // P2-49 운세·재미 포함
-  const items = [["홈", "/"], [c.name, `/${k}/`]];
+  const list = c.ids ? c.ids.map((id) => utilById[id]) : utilsIn(k); // P2-49 운세·재미 포함 // P2-78 주제 쪽(house)은 정해 둔 툴만
+  const items = c.sub ? [["홈", "/"], [UCATS[c.sub].name, `/${c.sub}/`], [c.name, `/${k}/`]] : [["홈", "/"], [c.name, `/${k}/`]]; // P2-78 house = 홈 › 날짜·시간·생활 › 내 집 마련
+  const hubH1 = c.h1 || `${c.name} 툴`;
   const inv = k === "invest"; // P2-50 투자: 파일 안내 대신 교육·재미용·투자 권유 아님 안내
   const house = k === "house"; // P2-63b 내 집 마련: 파일 안내 대신 필터·내 위치 안내
   const fun = k === "fun"; // P2-49 운세·재미: 파일 안내 대신 입력값 안내 + 띠·별자리·16유형·띠별 운세 바로가기
   const body = `${crumbHtml(items)}
-<header class="page-head"><span class="eyebrow">${isPlayPath(`/${k}/`) && SPLIT ? esc(cfg.playName) /* P2-77b */ : "펭귄 공구함"}</span><h1>${esc(c.name)} 툴</h1><p class="lead">${esc(c.desc)} ${esc(house ? "고른 필터는 주소에만 남고, 내 위치는 이 기기 안에서 지도를 옮길 때만 써요." : fun ? "입력한 생년월일과 이름은 브라우저 안에서만 계산하고 저장하지 않아요." : inv ? "넣은 숫자와 고른 답은 브라우저 안에서만 계산하고 저장하지 않아요." /* P2-51 계산기 추가로 문구 일반화 */ : SAFE)}</p>${fun ? '<p class="fun-badge">운세와 테스트는 재미로 보는 콘텐츠예요</p>' : ""}${inv ? `<p class="sq-warn">${esc(STOCK_WARN)}</p>` : ""}</header>
-${(() => { const g = hubGuideHtml(k); return `<div class="hub-cards">${tcatHtml(k, list, { tag: "h2", id: "hub-list", cls: "tcat-wide", more: false, name: `${c.name} 툴` })}${g.pick}</div>
+<header class="page-head"><span class="eyebrow">${isPlayPath(`/${k}/`) && SPLIT ? esc(cfg.playName) /* P2-77b */ : c.sub ? esc(UCATS[c.sub].name) /* P2-78 */ : "상황별 툴"}</span><h1>${esc(hubH1)}</h1><p class="lead">${esc(c.desc)} ${esc(house ? "고른 필터는 주소에만 남고, 내 위치는 이 기기 안에서 지도를 옮길 때만 써요." : fun ? "입력한 생년월일과 이름은 브라우저 안에서만 계산하고 저장하지 않아요." : inv ? "넣은 숫자와 고른 답은 브라우저 안에서만 계산하고 저장하지 않아요." /* P2-51 계산기 추가로 문구 일반화 */ : SAFE)}</p>${fun ? '<p class="fun-badge">운세와 테스트는 재미로 보는 콘텐츠예요</p>' : ""}${inv ? `<p class="sq-warn">${esc(STOCK_WARN)}</p>` : ""}</header>
+${(() => { const g = hubGuideHtml(k); return `<div class="hub-cards">${tcatHtml(k, list, { tag: "h2", id: "hub-list", cls: "tcat-wide", more: false, name: hubH1 })}${g.pick}</div>
 ${fun ? FUN_EXTRA() : ""}
 ${g.prose}`; })() /* P2-77b 홈 분류 카드 디자인: ① 이 분류 툴 카드 ② 상황별 고르기 카드 → 고유 안내 글은 카드 아래 */}
-<section class="reco hub-others"><h2>다른 분류</h2><div class="tgrid">${Object.entries(UCATS).filter(([kk]) => kk !== k && isPlayPath(`/${kk}/`) === isPlayPath(`/${k}/`)).map(([kk]) => tcatHtml(kk, utilsIn(kk))).join("")}${isPlayPath(`/${k}/`) ? tcatHtml("play", HOME_GAMES.map((id) => toolById[id]), { name: "게임", href: PLAY.path }) : ""}</div></section>`; // P2-77 같은 사이트 분류만(오락실 쪽은 게임 추가) // P2-77b 서랍 → 홈과 같은 분류 카드 격자
-  write(`/${k}/`, layout({ title: c.seo || `${c.name} 툴 — 무료` /* P2-49 seo */, desc: `${c.name} 툴 모음: ${list.map((x) => x.title).join(", ")}. ${c.desc}`, path: `/${k}/`, body, wide: true /* P2-77b 홈과 같은 넓이 */, jsonld: [crumbs(items)] }));
+<section class="reco hub-others"><h2>${isPlayPath(`/${k}/`) ? "다른 분류" : "다른 상황"}</h2><div class="tgrid">${Object.entries(UCATS).filter(([kk, cc]) => kk !== k && !cc.sub && isPlayPath(`/${kk}/`) === isPlayPath(`/${k}/`)).map(([kk]) => tcatHtml(kk, utilsIn(kk))).join("")}${isPlayPath(`/${k}/`) ? tcatHtml("play", HOME_GAMES.map((id) => toolById[id]), { name: "게임", href: PLAY.path }) : ""}</div></section>`; // P2-77 같은 사이트 분류만(오락실 쪽은 게임 추가) // P2-77b 서랍 → 홈과 같은 분류 카드 격자
+  write(`/${k}/`, layout({ title: c.seo || `${c.name} 툴 — 무료` /* P2-49 seo */, desc: `${hubH1} 모음: ${list.map((x) => x.title).join(", ")}. ${c.desc}`, path: `/${k}/`, body, wide: true /* P2-77b 홈과 같은 넓이 */, jsonld: [crumbs(items)] }));
 }
 
 // 파일 넣는 칸(공통). input이 칸 전체를 덮어서 누르거나 끌어다 놓으면 파일이 들어감
@@ -2975,7 +2981,7 @@ utilPage(utilById.stopwatch, `<button type="button" class="tm-fs-close" data-fs-
   const tool = utilById.aptmap, g = toolText.aptmap;
   if (!g) throw new Error("tools.aptmap 원고 없음");
   const next = recoIds(tool); // P2-77 같은 분류 → 다음 툴 → 나머지(본 사이트 툴만)
-  const r = await (await import("./content/aptmap.mjs")).default({ root: ROOT, dist: DIST, write, layout, crumbHtml, crumbs, faqHtml, faqLd, adSlotFixed, recoRows, favBtn, esc, t, u, abs, warnings, tool, guide: g, csp: CSP, buildV: BUILD_V, next });
+  const r = await (await import("./content/aptmap.mjs")).default({ root: ROOT, dist: DIST, write, layout, crumbHtml, crumbs, faqHtml, faqLd, adSlotFixed, recoRows, favBtn, esc, t, u, abs, warnings, tool, guide: g, csp: CSP, buildV: BUILD_V, next, cat: { name: UCATS[tool.cat].name, path: `/${tool.cat}/` } }); // P2-78 이동 경로·머리 표시 = 상황별 묶음
   console.log(`  아파트 지도: 단지 ${r.n}곳, 데이터 ${Math.round(r.raw / 1024)}KB (gzip ${Math.round(r.gz / 1024)}KB), 화면 계산 대조 ${r.checks}건 통과, 카카오 JS 키 ${r.key ? "있음" : "없음"}`);
   console.log(`  아파트 지도 시·도 요약(P2-63c): ${r.regions.length}쪽(${r.regions.map((x) => `${x.name} ${x.n}${x.noindex ? "(noindex)" : ""}`).join(", ")}), 원본 대조 ${r.regionChecks}건 통과${r.regionsEmpty?.length ? `, 단지 0곳이라 안 만든 시·도: ${r.regionsEmpty.join("·")}` : ""}`); // P2-63c
 }
@@ -3207,5 +3213,34 @@ if (AUDIT.adOnNoindex) warnings.push(`noindex 쪽에 광고 스크립트 ${AUDIT
 if (AUDIT.playLinks.length) warnings.push(`본 사이트 색인 쪽에 오락실·랜덤채팅 링크: ${AUDIT.playLinks.join(", ")}`);
 console.log(`✔ P2-77 점검: 색인 ${AUDIT.indexPages}쪽(1,000자 미만 ${AUDIT.short.length}) · noindex ${AUDIT.noindexPages}쪽(광고 스크립트 ${AUDIT.adOnNoindex}) · 본 사이트 오락 링크(머리글 알약·홈 배너 외) 어긋난 쪽 ${AUDIT.playLinks.length}`);
 if (SPLIT) console.log(`✔ P2-77 분리: 오락실 파일 ${SPLIT_REPORT.moved}개 → dist-play/ (색인 ${playMap.length + 1}쪽, ${cfg.playUrl}) · 본 사이트 이동 쪽 ${SPLIT_REPORT.stubs}개 + /go-play/ · 링크 고친 본 사이트 쪽 ${SPLIT_REPORT.mainRewritten}개`);
+// P2-78 점검: ① 상황별 5묶음 = 허브 1:1 — 본 사이트 툴마다 홈 카드·허브 목록·이동 경로·머리 표시·추천 첫 칸이 같은 묶음 ② 컨셉 문구(홈 h1·부제·title·meta·소개)에 타사 상표·사칭 문구 0
+{
+  const bad = [];
+  const hubOf = (id) => MAIN_CATS.filter((k) => utilsIn(k).some((x) => x.id === id));
+  const home = pageHtml.get("/") || "";
+  for (const x of MAIN_UTILS) {
+    const hubs = hubOf(x.id), want = UCATS[x.cat].name;
+    if (hubs.length !== 1 || hubs[0] !== x.cat) bad.push(`${x.id}: 허브 ${hubs.join("+") || "없음"}`);
+    const homeCat = (home.match(/<section class="tcat t-(\w+)" id="cat-\w+"[^]*?<\/section>/g) || []).filter((sec) => sec.includes(`href="${u(x.path)}"`)).map((sec) => sec.match(/t-(\w+)/)[1]);
+    if (homeCat.length !== 1 || homeCat[0] !== x.cat) bad.push(`${x.id}: 홈 카드 ${homeCat.join("+") || "없음"}`);
+    const h = pageHtml.get(x.path) || "";
+    const crumb = (h.match(/<nav class="crumbs"[^>]*>([\s\S]*?)<\/nav>/) || [])[1] || "";
+    if (!crumb.includes(`href="${u(`/${x.cat}/`)}">${esc(want)}</a>`)) bad.push(`${x.id}: 이동 경로`);
+    if (!h.includes(`<span class="eyebrow">${esc(want)}</span>`)) bad.push(`${x.id}: 머리 표시`);
+    const r0 = x.id === "aptmap" ? null : recoIds(x)[0];
+    if (r0 && utilById[r0].cat !== x.cat && utilsIn(x.cat).length > 1) bad.push(`${x.id}: 추천 첫 칸 ${r0}`);
+  }
+  const navNames = NAV.map((n) => n[0]);
+  for (const k of MAIN_CATS) if (!navNames.includes(UCATS[k].name)) bad.push(`메뉴에 ${UCATS[k].name} 없음`);
+  if (MAIN_CATS.join() !== HOME_CAT_ORDER.join()) bad.push(`묶음 순서 ${MAIN_CATS.join()} ≠ 홈 ${HOME_CAT_ORDER.join()}`);
+  if (bad.length) warnings.push(`P2-78 묶음 불일치: ${bad.join(", ")}`);
+  const CONCEPT_BAN = /한글|한컴|엑셀|워드|파워포인트|오피스|Excel|Word|Hancom|공식|정부 인증|인증받은|정확 보장|100% 정확|보장/;
+  const about = (pages.about.body[0] || {}).p || "";
+  const concept = [["홈 h1", HOME_H1], ["부제", HOME_SUB], ["홈 title", `${cfg.siteName} — ${HOME_H1}`], ["홈 meta", HOME_DESC.split(". ")[0]], ["소개 첫 문단", fill(about).split(". ")[0]], ["사이트 이름", cfg.siteName]];
+  const ban = concept.filter(([, s]) => CONCEPT_BAN.test(s)).map(([n, s]) => `${n}(${s.match(CONCEPT_BAN)[0]})`);
+  if (ban.length) warnings.push(`P2-78 컨셉 문구 금지어: ${ban.join(", ")}`);
+  if (!/직장인/.test(HOME_SUB) || !/직장인/.test(HOME_DESC) || !/직장인/.test(fill(about))) warnings.push("P2-78 「직장인」이 부제·meta·소개 중 빠짐");
+  console.log(`✔ P2-78 점검: 상황별 ${MAIN_CATS.length}묶음(${MAIN_CATS.map((k) => `${UCATS[k].name} ${utilsIn(k).length}`).join(" · ")}) = 허브 1:1, 툴 ${MAIN_UTILS.length}개 홈·허브·이동 경로·머리 표시·추천 어긋남 ${bad.length} · 컨셉 문구 금지어 ${ban.length}`);
+}
 console.log(`✔ 빌드 완료: ${mainMap.length}개 색인 페이지 → dist/  (SITE_URL=${cfg.siteUrl})`);
 if (warnings.length) console.log("⚠ 확인 필요:\n  " + warnings.join("\n  "));

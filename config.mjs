@@ -9,7 +9,7 @@ const playUrl = (playEnv === "off" ? "" : playEnv).replace(/\/$/, "");
 
 export default {
   siteName: process.env.SITE_NAME || "펭귄 툴즈",
-  tagline: "PDF·이미지·글자수·D-day, 자주 쓰는 툴 모음",
+  tagline: "직장인을 위한 문서·사진·계산 툴 모음", // P2-78 컨셉 부제(대표님 2안)
   siteUrl,
   playUrl, // P2-77
   playName: "펭귄 오락실", // P2-77 play 사이트 이름
