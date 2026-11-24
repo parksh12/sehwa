@@ -2661,6 +2661,9 @@ html:not([data-theme="dark"]) :is(.sq-lg.is-lo,.dca-lg.is-koru,.rsb-lg.is-buy) i
 .nav-play.nav-tools{background:#dfe7ff;color:#141414}
 :where([data-theme="dark"]) .nav-play.nav-tools{background:#c9d6ff;color:#141414}
 @media(max-width:1060px) and (min-width:621px){.nav-play .np-full{display:none}}
+/* P2-78 6묶음 + 가이드 + 강조 단추가 1280px에서도 한 줄에 들어가게(메뉴 간격만 줄임) */
+@media(min-width:621px){.nav{gap:0}.nav a{padding:6px 7px;font-size:14.5px}.header-inner:has(.nav-play){justify-content:flex-start}.header-inner .nav-play{margin-left:auto}} /* P2-78 추가 I: 두 사이트 모두 「로고 → 메뉴 | 강조 단추 → ★ → 모드」(오른쪽 묶음 간격 12px 같게) */
+@media(max-width:1240px) and (min-width:621px){.nav-play .np-full{display:none}}
 @media(max-width:620px){.header-inner:has(.nav-play)::after{content:"";order:2;flex-basis:100%;height:0}.header-inner .nav-play{order:3;font-size:13px;padding:4px 10px;margin:0 0 2px}.header-inner .nav-play .np-full{display:none}.header-inner:has(.nav-play) .nav{order:4;width:auto;flex:1 1 0;min-width:0;margin:0 -6px 0 -4px}}
 /* P2-77b 본 사이트 홈 오락실 배너 카드(오락실의 검은 띠 디자인 그대로, 링크는 버튼 1개) */
 .play-banner{display:grid;gap:14px 24px;align-items:center;margin:26px 0}

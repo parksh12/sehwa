@@ -688,7 +688,7 @@ const HOME_NEW_IDS = () => newList.filter((x) => !isPlayPath(anyById[x.id].path)
 <section class="hero hero-tools hero-main">
   <div class="hero-text">
     <p class="hero-kicker hero-for">${esc(HOME_SUB)}</p>
-    <h1>${HOME_H1.replace(", ", ",<br>")}</h1>
+    <h1>${HOME_H1.replace(", ", ", <br>")}</h1>
     <p class="lead">PDF 합치기, HWP·DOCX 문서 열기, 사진 용량 줄이기, 글자수 세기, 연봉 실수령액 계산처럼 회사에서 서류를 내고, 사진을 올리고, 글을 쓰고, 월급을 따져 볼 때 쓰는 툴 ${MAIN_UTILS.length}개를 상황별로 모았어요. 가입 없이 쓰고, 파일은 서버로 전송하지 않습니다.</p>
   </div>
   ${searchForm("예: pdf 합치기, 글자수, 만 나이", "어떤 툴을 찾으세요?")}
