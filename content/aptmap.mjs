@@ -214,10 +214,12 @@ ${crumbHtml(items)}
     <h2>알아 두세요 (한계)</h2>
     <p>${t(g.limits)}</p>
   </section>
+  ${h.common || ""}
   ${faqHtml(g.faq)}
   ${regions.length ? `<section class="amr-more" aria-labelledby="amr-more-h"><h2 id="amr-more-h">시·도별 가격대 정리</h2><p class="hint">시·도마다 가격대별 단지 수와 최저가 TOP10을 표로 정리했어요(${esc(thr)}).</p>${regionLinks(0)}</section>` : ""}
   ${recoRows(h.next, "다른 툴도 써 보세요")}
-</article>`;
+  ${h.guides || ""}
+</article>`; // P2-78 공통 틀(사용 예시·공식 출처·관련 가이드)
   // CSP: 툴 페이지 CSP + 카카오맵 SDK(dapi.kakao.com이 t1.daumcdn.net의 지도 코드를 불러옴). 지도 타일은 이미지(img-src https:)
   // 주소에 scheme을 붙이지 않음: SDK가 페이지와 같은 scheme으로 지도 코드를 불러와서(로컬 http 시험 / 배포 https). https 페이지에서는 https만 허용됨
   const KAKAO = "dapi.kakao.com t1.daumcdn.net t1.kakaocdn.net";

@@ -27,7 +27,7 @@
   const setVal = (name, v) => { const el = box.querySelector(`[name="${name}"]`); if (el && v != null && v !== "") el.value = v; };
   const res = $(".pay-result");
   let line = "";
-  const NOTE = `<p class="pay-note">참고용 추정치예요. 회사 급여 규정, 비과세 항목, 연말정산, 기관 판정에 따라 실제 금액은 달라질 수 있어요. ${R.year}년 요율 기준(확인일 ${R.checked}).</p>`;
+  const NOTE = `<p class="pay-note">참고용 추정치예요. 회사 급여 규정, 비과세 항목, 연말정산, 기관 판정에 따라 실제 금액은 달라질 수 있어요. ${R.basisNote || `${R.year}년 요율 기준(확인일 ${R.checked}).`}</p>`; // P2-78 기준일·자동 전환 안내(build.mjs payFor)
   const row = (k, v, cls = "") => `<tr${cls ? ` class="${cls}"` : ""}><th scope="row">${k}</th><td>${v}</td></tr>`;
   const link = (path, params, text) => `<a class="chip" href="${base}${path}?${new URLSearchParams(params)}">${text}</a>`;
   const today = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; };
@@ -182,7 +182,7 @@ ${row("월 환산 (× 4.345주)", won(r.month), "on")}
 ${row("월 환산 시간", `${+r.monthHours.toFixed(1)}시간`)}
 </tbody></table></div>
 ${r.over40 ? '<p class="hint">주 40시간을 넘는 시간은 연장근로라서 5명 이상 사업장이면 50%를 더 받아요. 이 계산에는 넣지 않았어요.</p>' : ""}
-${nextW ? `<p class="hint">${nextY}년 1월 1일부터 최저임금은 시급 ${won(nextW)}로 오를 예정이에요(고시 예고).</p>` : ""}
+${nextW ? `<p class="hint">${nextY}년 1월 1일부터 최저임금은 시급 ${won(nextW)}로 올라요(2026년 8월 고시 확정).</p>` : ""}
 <nav class="pay-links" aria-label="이어서 계산하기">${link("/calc/salary/", { annual: Math.round(r.month * 12) }, "이 월급의 실수령액 계산 ›")}</nav>
 ${NOTE}`;
       line = `시급 ${won(wage)} · 주 ${hours}시간 → 주휴수당 주 ${won(r.holiday)}, 월급 약 ${won(r.month)}(세전, 4.345주) · ${R.year}년 기준 참고용 추정치`;
