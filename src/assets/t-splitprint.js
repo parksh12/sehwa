@@ -23,14 +23,7 @@
   let pdfCache = { key: "", blob: null, pages: 0, note: "" };
 
   // ---------- 그림 넣기: 선택 · 끌어 놓기 · 붙여 넣기 ----------
-  PT.dropzone(box, (files) => add(files));
-  document.addEventListener("paste", (e) => {
-    const fs = [...((e.clipboardData && e.clipboardData.files) || [])].filter((x) => /^image\//.test(x.type));
-    if (!fs.length || box.classList.contains("is-busy") || (e.target && /INPUT|TEXTAREA/.test(e.target.tagName) && !fs.length)) return;
-    e.preventDefault();
-    const x = fs[0];
-    add([new File([x], `붙여넣기.${(x.type.split("/")[1] || "png").replace("jpeg", "jpg")}`, { type: x.type })]);
-  });
+  PT.dropzone(box, (files) => add(files), { paste: true }); // P2-82 붙여넣기는 공통 부품(PT.paste: 글자 입력칸에서는 손대지 않음)
   ["pointerdown", "dragenter", "focusin"].forEach((t) => box.querySelector(".drop").addEventListener(t, () => PT.needPdf().catch(() => {}), { once: true }));
 
   // JPEG EXIF 방향(1~8). 읽지 못하면 1

@@ -152,8 +152,28 @@
     return { ok, errs: [...new Set(errs)] };
   };
 
-  // 파일 넣는 칸: 끌어다 놓기 + 클릭/키보드로 선택
-  PT.dropzone = (box, onFiles) => {
+  // P2-82 Ctrl+V 붙여넣기: 클립보드 그림을 파일 넣기와 같은 흐름(onFiles)으로 넘김.
+  // 글자 입력칸·선택 칸에 커서가 있으면 손대지 않음(글자 붙여넣기는 브라우저가 그대로 처리). 클립보드에 그림이 없어도 손대지 않음
+  let pasteN = 0;
+  const EDIT = 'input:not([type=file]):not([type=radio]):not([type=checkbox]):not([type=button]):not([type=submit]):not([type=range]), textarea, select, [contenteditable]:not([contenteditable="false"])';
+  PT.paste = (box, onFiles) => {
+    document.addEventListener("paste", (e) => {
+      const t = e.target;
+      if (t && t.closest && t.closest(EDIT)) return;
+      if (box.classList.contains("is-busy") || !box.isConnected) return;
+      const fs = [...((e.clipboardData && e.clipboardData.files) || [])].filter((x) => /^image\//.test(x.type));
+      if (!fs.length) return;
+      e.preventDefault();
+      onFiles(fs.map((x) => {
+        if (x.name && !/^image\.\w+$/i.test(x.name)) return x; // 탐색기에서 복사한 파일은 원래 이름 그대로
+        const ext = (x.type.split("/")[1] || "png").replace("jpeg", "jpg").replace(/\+.*$/, "");
+        return new File([x], `붙여넣기-${++pasteN}.${ext}`, { type: x.type, lastModified: Date.now() });
+      }));
+    });
+  };
+
+  // 파일 넣는 칸: 끌어다 놓기 + 클릭/키보드로 선택 (+ paste: true면 Ctrl+V 붙여넣기)
+  PT.dropzone = (box, onFiles, { paste = false } = {}) => {
     const zone = box.querySelector(".drop");
     const input = zone.querySelector("input[type=file]");
     const pick = (list) => { if (list && list.length && !box.classList.contains("is-busy")) onFiles([...list]); };
@@ -165,6 +185,7 @@
     // 칸 밖에 떨어뜨렸을 때 브라우저가 파일을 열어 버리지 않게
     window.addEventListener("dragover", (e) => e.preventDefault());
     window.addEventListener("drop", (e) => { if (!zone.contains(e.target)) e.preventDefault(); });
+    if (paste) PT.paste(box, (files) => { if (!box.classList.contains("is-busy")) onFiles(files); });
   };
 
   // 순서 바꾸기가 되는 파일 목록
@@ -283,7 +304,7 @@
   };
   // 미리보기 띠(.pv). set(items)로 결과 쪽 목록을 넣으면 번호 칸(쪽수·순서)을 바로 만들고, 그림은 화면에 보이는 칸만 하나씩 그린다.
   // items: [{ key, w, h(쪽 비율), label, note, draw(width) → Promise<canvas> }]. 같은 key 그림은 다시 그리지 않음(설정만 바뀐 경우)
-  // 합치기·나누기(2단계)도 이 부품을 그대로 씀: 파일별·범위별로 items만 만들면 됨
+  // 파일이 여럿인 결과(합치기·나누기): g(파일 번호, 칸 바탕 번갈아), start(파일 첫 쪽 = 경계선), head(첫 쪽 위 파일 이름표)
   PT.preview = (box) => {
     const el = box.querySelector(".pv");
     if (!el) return null;
@@ -351,7 +372,8 @@
         gen++; list = items; heavy = big;
         strip.innerHTML = items.map((it, i) => {
           const f = fit(it.w, it.h);
-          return `<li data-i="${i}"><span class="pv-paper" style="width:${f.tw}px;height:${f.th}px"></span><span class="pv-no">${esc(it.label || i + 1 + "쪽")}</span>${it.note != null ? `<small class="pv-note">${esc(it.note)}</small>` : ""}</li>`;
+          const cls = (it.g != null ? (it.g % 2 ? " pv-gb" : " pv-ga") : "") + (it.start ? " pv-start" : "");
+          return `<li data-i="${i}"${cls ? ` class="${cls.trim()}"` : ""}>${it.head ? `<span class="pv-head" title="${esc(it.head)}">${esc(it.head)}</span>` : ""}<span class="pv-paper" style="width:${f.tw}px;height:${f.th}px"></span><span class="pv-no">${esc(it.label || i + 1 + "쪽")}</span>${it.note != null ? `<small class="pv-note">${esc(it.note)}</small>` : ""}</li>`;
         }).join("");
         strip.hidden = !items.length;
         sumEl.textContent = sum;

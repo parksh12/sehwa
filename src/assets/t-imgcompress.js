@@ -13,7 +13,7 @@
     PT.msg(box, errs.join(" "));
     PT.hideResult(box);
     list.add(ok);
-  });
+  }, { paste: true }); // P2-82 Ctrl+V로 붙인 그림도 같은 흐름
   // WEBP 저장을 못 하는 브라우저(옛 사파리 등)면 선택지에서 숨김
   (function () {
     const c = document.createElement("canvas"); c.width = c.height = 1;

@@ -1317,7 +1317,7 @@ ${g.prose}`; })() /* P2-77b 홈 분류 카드 디자인: ① 이 분류 툴 카�
 }
 
 // 파일 넣는 칸(공통). input이 칸 전체를 덮어서 누르거나 끌어다 놓으면 파일이 들어감
-const dropHtml = ({ accept, multiple = false, label, limit }) => `
+const dropHtml = ({ accept, multiple = false, label, limit, safe = true }) => `
 <div class="drop">
   <input type="file" accept="${accept}"${multiple ? " multiple" : ""} aria-label="${esc(label)} — 파일 선택" aria-describedby="drop-limit">
   <span class="drop-art" aria-hidden="true">${sv(`<path d="M60 84V34M40 52l20-20 20 20" fill="none" stroke="${K}" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 80v16a6 6 0 0 0 6 6h64a6 6 0 0 0 6-6V80" fill="none" stroke="${K}" stroke-width="8" stroke-linecap="round"/>`)}</span>
@@ -1325,7 +1325,7 @@ const dropHtml = ({ accept, multiple = false, label, limit }) => `
   <span class="drop-or">여기로 끌어다 놓거나 <span class="btn ghost drop-btn">파일 선택</span></span>
   <small id="drop-limit">${esc(limit)}</small>
 </div>
-<p class="safe">${esc(SAFE)}</p>`;
+${safe ? `<p class="safe">${esc(SAFE)}</p>` : ""}`; // P2-82 미리보기 띠가 있는 툴은 서버 문구를 미리보기 옆 한 곳(pvSafe)에만 둠(safe: false)
 const tkTail = (runLabel, { disabled = true } = {}) => `
 <div class="tk-msg" role="alert" hidden></div>
 ${runLabel ? `<button class="btn big tk-run" type="button" data-run${disabled ? " disabled" : ""}>${esc(runLabel)}</button>` : ""}
@@ -1339,7 +1339,7 @@ const pvSafe = (limit) => `<p class="pv-safe">${esc(PV_SAFE)} · ${esc(limit)}</
 const pvLost = (lost) => `<p class="pv-lost">${esc(lost)}</p>`;
 const stepsHtml = () => `<ol class="tk-steps" aria-label="진행 단계"><li aria-current="step"><span>올리기</span></li><li><span>미리보기</span></li><li><span>받기</span></li></ol>`;
 const pvHtml = (id, { limit, lost }) => {
-  PV[id] = { limit, lost };
+  PV[id] = { limit, lost, strip: true };
   return `<section class="pv" hidden aria-labelledby="pv-h">
   <div class="pv-top"><h2 class="pv-h" id="pv-h">저장될 모양 미리보기</h2><p class="pv-sum" aria-live="polite"></p></div>
   ${pvSafe(limit)}
@@ -1444,24 +1444,26 @@ ${crumbHtml(items)}
 }
 
 // PDF 합치기
-utilPage(utilById.pdfmerge, `${dropHtml({ accept: ".pdf,application/pdf", multiple: true, label: "합칠 PDF 파일을 넣어 주세요", limit: "PDF · 파일당 50MB · 30개 · 합계 200MB까지" })}
+utilPage(utilById.pdfmerge, `${stepsHtml()}${dropHtml({ accept: ".pdf,application/pdf", multiple: true, label: "합칠 PDF 파일을 넣어 주세요", limit: "PDF · 파일당 50MB · 30개 · 합계 200MB까지", safe: false })}
 <ul class="flist" hidden></ul>
 <p class="hint tk-hint-two" hidden>PDF를 하나 더 넣어 주세요. 두 개 이상이어야 합칠 수 있어요.</p>
+${pvHtml("pdfmerge", { limit: "파일 하나 50MB, 한 번에 30개·합계 200MB까지", lost: "책갈피(목차), 양식 입력 칸, 일부 링크는 합친 파일에서 빠질 수 있어요." })}
 ${tkTail("PDF 합치기")}`, { scripts: ["t-pdfmerge.js"] }); // P2-69 pdf-lib는 페이지를 열 때 받지 않음(tool-kit.js PT.needPdf: 파일을 넣거나 처리할 때)
 
 // PDF 나누기
-utilPage(utilById.pdfsplit, `${dropHtml({ accept: ".pdf,application/pdf", label: "나눌 PDF 파일을 넣어 주세요", limit: "PDF 1개 · 100MB까지 · 한 쪽씩 나누기는 500쪽까지" })}
+utilPage(utilById.pdfsplit, `${stepsHtml()}${dropHtml({ accept: ".pdf,application/pdf", label: "나눌 PDF 파일을 넣어 주세요", limit: "PDF 1개 · 100MB까지 · 한 쪽씩 나누기는 500쪽까지", safe: false })}
 <div class="tk-opts" hidden>
   <p class="tk-info"></p>
   <fieldset class="seg"><legend>나누는 방식</legend>
     <label><input type="radio" name="mode" value="range" checked><span>페이지 범위 추출</span></label><label><input type="radio" name="mode" value="each"><span>한 쪽씩 나누기</span></label>
   </fieldset>
-  <label class="range-row">뽑을 페이지<input name="range" inputmode="text" autocomplete="off" placeholder="예: 1-3, 5"></label>
+  <div class="range-row"><label>뽑을 페이지<input name="range" inputmode="text" autocomplete="off" placeholder="예: 1-3, 5" aria-describedby="range-err"></label><p class="field-err range-err" id="range-err" role="alert" hidden></p></div>
 </div>
+${pvHtml("pdfsplit", { limit: "파일 하나 100MB, 한 쪽씩 나누기는 500쪽까지", lost: "책갈피와 양식 입력 칸은 나눈 파일에 남지 않을 수 있어요." })}
 ${tkTail("범위 추출하기")}`, { vendor: ["fflate.min.js"], scripts: ["t-pdfsplit.js"] }); // P2-69 pdf-lib 늦게 받기
 
 // JPG PDF 변환
-utilPage(utilById.img2pdf, `${stepsHtml()}${dropHtml({ accept: ".jpg,.jpeg,.png,image/jpeg,image/png", multiple: true, label: "PDF로 만들 이미지를 넣어 주세요", limit: "JPG·PNG · 장당 20MB · 50장 · 합계 200MB까지" })}
+utilPage(utilById.img2pdf, `${stepsHtml()}${dropHtml({ accept: ".jpg,.jpeg,.png,image/jpeg,image/png", multiple: true, label: "PDF로 만들 이미지를 넣어 주세요", limit: "JPG·PNG · 장당 20MB · 50장 · 합계 200MB까지 · Ctrl+V로 붙여 넣기", safe: false })}
 <ul class="flist thumbs" hidden></ul>
 <div class="tk-opts" hidden>
   <fieldset class="seg"><legend>용지</legend>
@@ -1560,7 +1562,7 @@ utilPage(utilById.docx2pdf, docViewerHtml({
 }), { vendor: ["fflate.min.js"], scripts: ["hwp-doc.js", "docx-doc.js", "hwp-render.js", "t-hwp.js"] });
 
 // 이미지 용량 줄이기
-utilPage(utilById.imgcompress, `${dropHtml({ accept: ".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp", multiple: true, label: "용량을 줄일 이미지를 넣어 주세요", limit: "JPG·PNG·WEBP · 장당 30MB · 30장까지" })}
+utilPage(utilById.imgcompress, `${dropHtml({ accept: ".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp", multiple: true, label: "용량을 줄일 이미지를 넣어 주세요", limit: "JPG·PNG·WEBP · 장당 30MB · 30장까지 · Ctrl+V로 붙여 넣기" })}
 <ul class="flist thumbs" hidden></ul>
 <div class="tk-opts" hidden>
   <label>품질 <output class="q-out">75</output><input type="range" name="quality" min="10" max="95" step="5" value="75"></label>
@@ -2995,7 +2997,7 @@ ${srcHtml(["unemp", "wage"])}`
 }
 
 // PDF JPG 변환 (pdf.js + worker 직접 호스팅)
-utilPage(utilById.pdf2img, `${stepsHtml()}${dropHtml({ accept: ".pdf,application/pdf", label: "이미지로 바꿀 PDF 파일을 넣어 주세요", limit: "PDF 1개 · 100MB까지 · 한 번에 300쪽까지" })}
+utilPage(utilById.pdf2img, `${stepsHtml()}${dropHtml({ accept: ".pdf,application/pdf", label: "이미지로 바꿀 PDF 파일을 넣어 주세요", limit: "PDF 1개 · 100MB까지 · 한 번에 300쪽까지", safe: false })}
 <div class="tk-opts" hidden>
   <p class="tk-info"></p>
   <div class="row2">
@@ -3356,9 +3358,11 @@ if (SPLIT) console.log(`✔ P2-77 분리: 오락실 파일 ${SPLIT_REPORT.moved}
     let boxHtml = "";
     if (st >= 0) { const re = /<section\b|<\/section>/g; re.lastIndex = st; let d = 0, m; while ((m = re.exec(h))) { d += m[0] === "</section>" ? -1 : 1; if (!d) { boxHtml = h.slice(st, re.lastIndex); break; } } }
     if (!boxHtml || boxHtml.includes("adsbygoogle")) bad.push(`${id}: 툴 상자 안 광고 또는 상자 못 찾음`);
+    const safeN = (boxHtml.match(/서버로 (올라가지|전송하지)/g) || []).length; // P2-82 2단계: 미리보기 띠가 있는 툴은 서버 문구 한 번만
+    if (v.strip && safeN !== 1) bad.push(`${id}: 툴 상자 안 서버 문구 ${safeN}번`);
   }
   if (bad.length) warnings.push(`P2-82 미리보기: ${bad.join(", ")}`);
-  console.log(`✔ P2-82 결과 미리보기: 문서 툴 ${Object.keys(PV).length}개(${Object.keys(PV).join("·")}) 제목·문구·한도(원고와 같음)·툴 상자 안 광고 0 점검, 어긋남 ${bad.length}`);
+  console.log(`✔ P2-82 결과 미리보기: 문서 툴 ${Object.keys(PV).length}개(${Object.keys(PV).join("·")}) 제목·문구·한도(원고와 같음)·툴 상자 안 광고 0·서버 문구 한 번(미리보기 띠 ${Object.values(PV).filter((v) => v.strip).length}개 툴) 점검, 어긋남 ${bad.length}`);
 }
 console.log(`✔ 빌드 완료: ${mainMap.length}개 색인 페이지 → dist/  (SITE_URL=${cfg.siteUrl})`);
 if (warnings.length) console.log("⚠ 확인 필요:\n  " + warnings.join("\n  "));

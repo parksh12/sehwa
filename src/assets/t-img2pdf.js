@@ -13,7 +13,7 @@
     PT.hideResult(box);
     list.add(ok);
     if (ok.length) PT.needPdf().catch(() => {}); // 미리 받아 두기(실패하면 「PDF 만들기」 때 다시 시도·안내)
-  });
+  }, { paste: true }); // P2-82 Ctrl+V로 붙인 그림도 같은 흐름
 
   // 쪽 배치(미리보기와 PDF 만들기가 같은 계산을 씀). iw·ih = 사진 화소(회전 반영), 단위 pt
   const A4 = [595.28, 841.89];

@@ -17,13 +17,7 @@
   let items = [], seq = 0, manual = null, trimTouched = false, mainRef = null, ovCache = { key: "", r: null };
 
   // ---------- 파일 넣기: 선택 · 끌어 놓기 · 붙여 넣기 ----------
-  PT.dropzone(box, (files) => add(files));
-  document.addEventListener("paste", (e) => {
-    const fs = [...((e.clipboardData && e.clipboardData.files) || [])].filter((x) => /^image\//.test(x.type));
-    if (!fs.length || box.classList.contains("is-busy")) return;
-    e.preventDefault();
-    add(fs.map((x, i) => new File([x], `붙여넣기-${seq + i + 1}.${(x.type.split("/")[1] || "png").replace("jpeg", "jpg")}`, { type: x.type })));
-  });
+  PT.dropzone(box, (files) => add(files), { paste: true }); // P2-82 붙여넣기는 공통 부품(PT.paste: 글자 입력칸에서는 손대지 않음)
 
   async function add(files) {
     const { ok, errs } = PT.check(files, OPT, items.map((x) => x.file));
