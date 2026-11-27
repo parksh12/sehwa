@@ -69,26 +69,26 @@ const pageHtml = new Map();
 // ---------- 사이트 구조 ----------
 // P2-49 펭귄 오락실 = 게임만. 옛 오락실 카테고리 me(나의 성격)·love(나의 관계)·luck(나의 운)은 툴 카테고리 「운세·재미」(UCATS.fun, /fun/)로 합침
 const CATS = {
-  story: { name: "이야기 게임", icon: "", desc: "생각은 짧게, 여운은 길게. 한 판이면 끝나는 짧은 이야기 게임이에요." },
+  story: { name: "이야기 게임", icon: "", desc: "고르는 길에 따라 이야기와 엔딩이 달라져요. 몇 분이면 끝나는 것도 있고, 며칠에 나눠 하는 RPG도 있어요." },
   arcade: { name: "순발력 게임", icon: "", desc: "머리보다 손이 먼저 움직이는 짧은 게임이에요." },
 };
 // hook: 홈·추천 카드에 쓰는 짧은 한 줄 / meta: 소요 시간·분량
 // 노출 순위(RANK): 홈 오락실 띠와 오락실 순서 참고값. 지금은 운영진 추정치이고, GA4·서치콘솔 데이터가 쌓이면 실측 노출 순으로 바꿉니다.
 const TOOLS = [
-  { id: "birthday", cat: "fun", path: "/fun/birthday/", icon: "🎂", title: "생일로 보는 나", h1: "생일로 보는 나 — 만 나이·띠·별자리 한 번에", desc: "생년월일만 넣으면 만 나이, 띠, 별자리가 나와요. 다음 생일까지 며칠 남았는지(D-day)도 세 줘요.", hook: "만 나이, 띠, 별자리, 다음 생일까지 며칠 남았는지. 생일만 넣으면 끝.", meta: "10초" },
+  { id: "birthday", cat: "fun", path: "/fun/birthday/", icon: "🎂", title: "생일로 보는 나", h1: "생일로 보는 나 — 만 나이·띠·별자리 한 번에", desc: "생년월일만 넣으면 만 나이, 띠, 별자리가 나와요. 다음 생일까지 며칠 남았는지(D-day)도 세 줘요.", hook: "생일만 넣으면 만 나이와 띠, 별자리가 바로 나와요.", meta: "10초" },
   { id: "personality", cat: "fun", path: "/fun/personality/", icon: "🧩", title: "16유형 성격 테스트", h1: "16유형 성격 테스트 — 20문항으로 보는 나의 성향", desc: "20개 문항에 답하면 16유형 중 나와 가까운 유형이 나와요. 4가지 축이 몇 대 몇인지도 보여요.", hook: "20문항이면 네 가지 축이 몇 대 몇인지까지 나와요.", meta: "20문항 · 3분" },
-  { id: "namematch", cat: "fun", path: "/fun/name-match/", icon: "💌", title: "이름 궁합 테스트", h1: "이름 궁합 테스트 — 획수로 보는 두 사람의 케미", desc: "두 사람의 이름 획수를 더해 가며 궁합 점수를 계산하는 추억의 이름 궁합 놀이예요.", hook: "공책 귀퉁이에 획수 적어 가며 하던 그 궁합, 기억나요?", meta: "이름 두 개" },
-  { id: "today", cat: "fun", path: "/fun/today/", icon: "", title: "오늘의 띠별 운세", h1: "오늘의 띠별 운세 — 매일 자정에 바뀌는 12띠 하루 운세", desc: "열두 띠의 오늘 하루 흐름과 일·관계 팁, 행운의 색·숫자를 매일 새로 정리해요.", hook: "매일 자정에 바뀌어요. 내 띠의 오늘 하루는?", meta: "매일 업데이트" },
-  { id: "saju", cat: "fun", path: "/fun/saju/", icon: "", title: "무료 사주팔자", h1: "무료 사주팔자 — 만세력부터 올해 운세까지", desc: "생년월일시로 사주 여덟 글자를 계산해요. 오행·십신·대운에 연애운·재물운·직업운 등 6가지 운, 올해 운세까지 풀이가 나와요.", hook: "절기·출생지 경도까지 반영한 만세력. 연애운·재물운·취업운까지.", meta: "생년월일시 · 1분" }, // P2-22
-  { id: "tarot", cat: "fun", path: "/fun/tarot/", icon: "", title: "무료 타로", seo: "무료 타로 — 오늘의 타로, 연애 타로, 3장 타로 카드 점", h1: "무료 타로 — 오늘의 카드부터 과거·현재·미래 3장까지", desc: "질문을 고르고 카드를 섞은 뒤, 엎어 둔 메이저 아르카나 22장 중에서 직접 골라 뒤집어요. 정방향·역방향 해석과 연애·재물·일·학업·오늘 하루 질문별 풀이를 바로 보고, 결과를 이미지와 링크로 나눌 수 있어요.", hook: "질문 고르고, 섞고, 직접 골라 뒤집는 22장 타로.", meta: "1장 · 3장", kw: "타로 타로 카드 타로카드 무료 타로 무료 타로점 타로점 타로 점 오늘의 타로 오늘의 타로 카드 오늘의 카드 연애 타로 연애운 타로 재물 타로 금전운 직장 타로 학업 타로 타로 운세 3장 타로 쓰리카드 과거 현재 미래 메이저 아르카나 정방향 역방향 타로 카드 의미 타로 해석 카드 점 tarot" }, // P2-58
-  { id: "reaction", cat: "arcade", path: "/arcade/reaction/", icon: "⚡", title: "반응속도 게임", h1: "반응속도 게임 — 초록색이 되는 순간 터치!", desc: "빨간 화면이 초록색으로 바뀌는 순간을 다섯 번 잡아 보세요. 평균 기록과 등급이 나오고, 내 최고 기록은 이 기기에 남아요.", hook: "초록색 되는 순간 누르기. 다섯 번 평균으로 등급이 매겨져요.", meta: "터치 5번" },
-  { id: "rpg", cat: "story", path: "/story/penguin-rpg/", icon: "", title: "펭귄 RPG 뽀득이와 오색 연", h1: "펭귄 RPG — 뽀득이와 오색 연", desc: "색을 잃은 얼음 군도에서 펭귄 뽀득이가 오색 실 네 가닥을 찾아 떠나는 약 1시간짜리 턴제 RPG. 지역 4곳과 보스 5마리, 동료 2명, 자동 저장.", hook: "색을 잃은 얼음 군도, 오색 실을 찾아 떠나는 1시간 모험.", meta: "턴제 RPG · 약 1시간 · 자동 저장" },
-  { id: "stack", cat: "arcade", path: "/arcade/stack/", icon: "", title: "블록 쌓기 게임", h1: "블록 쌓기 게임 — 탭 한 번으로 높이 쌓기", desc: "좌우로 움직이는 블록을 탭해서 멈추고, 아래 블록과 겹친 만큼만 남겨 높이 쌓는 게임이에요. 딱 맞추면 PERFECT, 이 기기의 최고 기록을 남겨 다시 도전할 수 있어요.", hook: "탭 한 번에 한 층. 딱 맞추면 PERFECT.", meta: "탭 · Space" },
+  { id: "namematch", cat: "fun", path: "/fun/name-match/", icon: "💌", title: "이름 궁합 테스트", h1: "이름 궁합 테스트 — 획수로 보는 두 사람의 케미", desc: "두 사람 이름의 획수를 차례로 더해 가며 궁합 점수를 내요. 예전에 종이에 써 가며 하던 그 이름 궁합 놀이예요.", hook: "공책 귀퉁이에 획수 적어 가며 하던 그 궁합이에요.", meta: "이름 두 개" },
+  { id: "today", cat: "fun", path: "/fun/today/", icon: "", title: "오늘의 띠별 운세", h1: "오늘의 띠별 운세 — 매일 자정에 바뀌는 12띠 하루 운세", desc: "열두 띠마다 오늘 하루 운세와 일·관계 팁이 나와요. 행운의 색과 숫자도 날마다 바뀌고요.", hook: "자정마다 새로 바뀌는 열두 띠 하루 운세.", meta: "매일 업데이트" },
+  { id: "saju", cat: "fun", path: "/fun/saju/", icon: "", title: "무료 사주팔자", h1: "무료 사주팔자 — 만세력부터 올해 운세까지", desc: "생년월일시로 사주 여덟 글자를 계산해요. 오행·십신·대운에 연애운·재물운·직업운 등 6가지 운, 올해 운세까지 풀이가 나와요.", hook: "절기와 태어난 곳 경도까지 따지는 만세력. 연애운·재물운·취업운도 풀어 줘요.", meta: "생년월일시 · 1분" }, // P2-22
+  { id: "tarot", cat: "fun", path: "/fun/tarot/", icon: "", title: "무료 타로", seo: "무료 타로 — 오늘의 타로, 연애 타로, 3장 타로 카드 점", h1: "무료 타로 — 오늘의 카드부터 과거·현재·미래 3장까지", desc: "질문을 고르고 카드를 섞은 다음, 엎어 둔 메이저 아르카나 22장 가운데서 골라 뒤집어요. 연애나 일처럼 고른 질문에 맞춘 풀이가 정방향·역방향별로 나오고, 결과는 이미지나 링크로 보낼 수 있어요.", hook: "질문 고르고 섞은 뒤, 22장 중에서 내 손으로 뒤집는 타로.", meta: "1장 · 3장", kw: "타로 타로 카드 타로카드 무료 타로 무료 타로점 타로점 타로 점 오늘의 타로 오늘의 타로 카드 오늘의 카드 연애 타로 연애운 타로 재물 타로 금전운 직장 타로 학업 타로 타로 운세 3장 타로 쓰리카드 과거 현재 미래 메이저 아르카나 정방향 역방향 타로 카드 의미 타로 해석 카드 점 tarot" }, // P2-58
+  { id: "reaction", cat: "arcade", path: "/arcade/reaction/", icon: "⚡", title: "반응속도 게임", h1: "반응속도 게임 — 초록색이 되는 순간 터치!", desc: "빨간 화면이 초록색으로 바뀌는 순간을 다섯 번 잡아 보세요. 평균 기록과 등급이 나오고, 내 최고 기록은 이 기기에 남아요.", hook: "초록색이 되는 순간 누르기. 다섯 번 평균으로 등급이 나와요.", meta: "터치 5번" },
+  { id: "rpg", cat: "story", path: "/story/penguin-rpg/", icon: "", title: "펭귄 RPG 뽀득이와 오색 연", h1: "펭귄 RPG — 뽀득이와 오색 연", desc: "색을 잃은 얼음 군도에서 펭귄 뽀득이가 오색 실 네 가닥을 찾아 떠나는 턴제 RPG예요. 지역 4곳에 보스 5마리, 동료는 2명이고 끝까지 약 1시간 걸려요. 진행은 자동 저장돼요.", hook: "색을 잃은 얼음 군도, 오색 실을 찾아 떠나는 1시간 모험.", meta: "턴제 RPG · 약 1시간 · 자동 저장" },
+  { id: "stack", cat: "arcade", path: "/arcade/stack/", icon: "", title: "블록 쌓기 게임", h1: "블록 쌓기 게임 — 탭 한 번으로 높이 쌓기", desc: "좌우로 움직이는 블록을 탭해서 멈춰 쌓아요. 아래 블록과 겹친 만큼만 남으니, 어긋날수록 블록이 좁아지죠. 딱 맞추면 PERFECT가 뜨고, 최고 기록은 이 기기에 남아요.", hook: "탭 한 번에 한 층. 딱 맞추면 PERFECT.", meta: "탭 · Space" },
   { id: "mines", cat: "arcade", path: "/arcade/minesweeper/", icon: "", title: "지뢰찾기", seo: "지뢰찾기 — 무료 온라인 지뢰 찾기 게임 (초급·중급·고급)", h1: "지뢰찾기 — 첫 칸은 언제나 안전한 무료 지뢰 찾기", desc: "숫자를 단서로 지뢰를 피해 모든 칸을 여는 퍼즐 게임이에요. 초급 9×9, 중급 16×16, 고급 16×30에 사용자 지정 판도 있고, 첫 칸은 언제나 안전해요. 휴대폰에서는 깃발 모드나 길게 누르기로 깃발을 꽂아요. 난이도별 최고 기록은 이 기기에 남아요.", hook: "숫자 보고 지뢰 피하기. 첫 칸은 언제나 안전해요.", meta: "초급 · 중급 · 고급", kw: "지뢰찾기 지뢰 찾기 지뢰 찾기 게임 지뢰찾기 게임 무료 지뢰찾기 온라인 지뢰찾기 지뢰찾기 하기 지뢰찾기 초급 중급 고급 지뢰 게임 퍼즐 게임 minesweeper mine sweeper" }, // P2-60
   { id: "life", cat: "story", path: "/story/life/", icon: "", title: "Life Game", seo: "Life Game — 인생 시뮬레이션 게임, 진학·결혼·직업을 직접 고르기", h1: "Life Game — 진학·결혼·직업, 갈림길을 직접 고르는 인생 게임", desc: "한 사람이 되어 일생을 살아 보는 도트 이야기 게임이에요. 진학이나 결혼, 이직 같은 갈림길을 시간 제한 없이 직접 골라요. 고른 길에 맞는 장면과 엔딩, 내 인생 연표가 나와요.", hook: "결혼할까, 창업할까? 터닝포인트를 직접 고르는 인생.", meta: "5~10분 · 터닝포인트 9번" },
-  { id: "hell", cat: "arcade", path: "/arcade/hell-31/", icon: "", title: "지옥에서 살아남기", h1: "지옥에서 살아남기 — Hell Survival 31", desc: "A와 B 중 하나는 살고 하나는 죽는 31단계 병맛 선택 게임. 슬랩스틱 사망 31종을 모으는 사망 도감과 「가장 억울한 죽음」 공유 카드까지, 3~5분이면 한 판.", hook: "A/B 중 하나는 즉사. 상식대로 고르면 대개 죽는 31단계.", meta: "31단계 · 3~5분" }, // P2-27
-  { id: "hellchosun", cat: "story", path: "/story/hell-chosun/", icon: "", title: "헬조선에서 살아남기", h1: "헬조선에서 살아남기 — 0세부터 80세까지 40단계", desc: "자산·체력·멘탈·눈치를 지키며 0세부터 80세까지 40단계를 버티는 병맛 인생 생존 게임. 사망 도감 44장, 엔딩 4종, 다음 생 유산 보너스.", hook: "자산·체력·멘탈·눈치 중 하나라도 바닥나면 끝. 80세까지 버티기.", meta: "40단계 · 15~30분" }, // P2-28
-  { id: "draw", cat: "fun", path: "/fun/ladder/", icon: "", title: "사다리타기 · 돌림판 · 제비뽑기", seo: "사다리타기 · 돌림판 · 제비뽑기 — 무료 온라인 뽑기", h1: "사다리타기 · 돌림판 · 제비뽑기 — 커피 내기, 점심 메뉴 정하기", desc: "참가자와 결과 항목을 넣고 사다리타기, 돌림판, 제비뽑기 중 하나로 정해요. 공정성 링크를 열면 같은 결과가 그대로 다시 재생되고, 결과는 이미지로 저장할 수 있어요.", hook: "커피 내기·점심 메뉴·청소 당번. 공정성 링크로 같은 결과 재생.", meta: "사다리 · 돌림판 · 제비", kw: "사다리타기 사다리 게임 돌림판 룰렛 돌리기 제비뽑기 랜덤 뽑기 추첨 커피 내기 점심 메뉴 정하기 청소 당번 발표 순서 복불복" }, // P2-44
+  { id: "hell", cat: "arcade", path: "/arcade/hell-31/", icon: "", title: "지옥에서 살아남기", h1: "지옥에서 살아남기 — Hell Survival 31", desc: "A와 B 중 하나는 살고 하나는 죽는 31단계 병맛 선택 게임. 죽는 장면 31종이 사망 도감에 모이고, 제일 어이없던 죽음은 「가장 억울한 죽음」 카드로 남길 수 있어요. 한 판은 3~5분이면 끝나요.", hook: "A/B 중 하나는 즉사. 상식대로 고르면 대개 죽는 31단계.", meta: "31단계 · 3~5분" }, // P2-27
+  { id: "hellchosun", cat: "story", path: "/story/hell-chosun/", icon: "", title: "헬조선에서 살아남기", h1: "헬조선에서 살아남기 — 0세부터 80세까지 40단계", desc: "자산·체력·멘탈·눈치를 지키면서 0세부터 80세까지 40단계를 버텨야 해요. 상식대로 고르면 대개 망하는 병맛 인생 생존 게임이고, 사망 도감은 44장, 엔딩은 4종이에요. 다음 생으로 넘어가면 유산 보너스도 붙고요.", hook: "자산·체력·멘탈·눈치 중 하나라도 바닥나면 끝. 80세까지 버티기.", meta: "40단계 · 15~30분" }, // P2-28
+  { id: "draw", cat: "fun", path: "/fun/ladder/", icon: "", title: "사다리타기 · 돌림판 · 제비뽑기", seo: "사다리타기 · 돌림판 · 제비뽑기 — 무료 온라인 뽑기", h1: "사다리타기 · 돌림판 · 제비뽑기 — 커피 내기, 점심 메뉴 정하기", desc: "참가자와 결과 항목을 넣고 사다리타기, 돌림판, 제비뽑기 중 하나로 정해요. 공정성 링크를 열면 같은 결과가 그대로 다시 재생되고, 결과는 이미지로 저장할 수 있어요.", hook: "커피 내기나 점심 메뉴 정할 때. 공정성 링크를 열면 같은 결과가 다시 나와요.", meta: "사다리 · 돌림판 · 제비", kw: "사다리타기 사다리 게임 돌림판 룰렛 돌리기 제비뽑기 랜덤 뽑기 추첨 커피 내기 점심 메뉴 정하기 청소 당번 발표 순서 복불복" }, // P2-44
   { id: EXAMCAT_PAGE.id, cat: "arcade", path: EXAMCAT_PAGE.path, icon: "", title: EXAMCAT_PAGE.title, seo: EXAMCAT_PAGE.seo, h1: EXAMCAT_PAGE.h1, desc: EXAMCAT_PAGE.desc, hook: EXAMCAT_PAGE.hook, meta: EXAMCAT_PAGE.meta, kw: "AI 부정행위 게임 AI 치팅 게임 커닝 게임 시험 게임 감독관 피하기 눈치 게임 고양이 게임 풍자 게임 무료 브라우저 게임" }, // P2-74 원고·검사는 content/examcat.mjs
 ];
 // 카드 그림(인라인 SVG). 이모지 대신 사이트 고유 그림을 씁니다.
@@ -798,7 +798,7 @@ ${(() => {
   <p class="arc-moved"><span class="dot t-fun" aria-hidden="true"></span>오늘의 운세·사주·성격 테스트·이름 궁합·사다리타기는 「운세·재미」에 있어요. <a href="${u("/fun/")}">운세·재미 보기 ›</a></p>
 </section>`; // P2-61 랜덤7942 「같이」 배너 삭제
 })()}
-<section class="prose"><h2>이렇게 즐겨 보세요</h2><p>시간이 넉넉하면 자동 저장되는 펭귄 RPG(약 1시간)나 헬조선에서 살아남기(한 판 15~30분)를 이어서 해 보세요. 잠깐 쉬는 시간에는 한 판 3분인 커닝냥이, 반응속도 게임, 블록 쌓기, 지뢰찾기가 알맞아요. 게임 기록과 저장은 이 기기의 브라우저에만 남고, 순위표에 이름을 올릴 때만 닉네임과 점수가 저장돼요.</p></section>
+<section class="prose"><h2>이렇게 즐겨 보세요</h2><p>점심시간이 넉넉하면 펭귄 RPG(약 1시간)나 헬조선에서 살아남기(한 판 15~30분)가 좋아요. RPG는 자동 저장이라 끊어서 해도 되거든요. 커피 한 잔 마실 틈이라면 한 판 3분인 커닝냥이나 지뢰찾기 정도가 맞고요. 기록은 이 기기의 브라우저에만 남아요. 순위표에 이름을 올릴 때만 닉네임과 점수가 저장돼요.</p></section>
 ${recoRows(["charcount", "dday", "pdfmerge"], "쉬었다면, 일하러 갈 때 쓰는 툴")}
 ${adSlot("play")}`;
   write(PLAY.path, layout({ title: `${PLAY.name} — 무료 RPG·생존 게임·짧은 게임`, wide: true, scripts: ["home.js"], desc: `${PLAY.desc} 가입 없이 브라우저에서 바로 한 판.`, path: PLAY.path, body, noindex: SPLIT /* P2-77 분리 후에는 오락실 첫 화면(/)이 같은 역할 → 색인 제외 */, jsonld: [crumbs(items)] }));
@@ -838,7 +838,7 @@ ${recoRows(GAMES.filter((x) => x.cat !== k).map((x) => x.id), "오락실의 다�
     <label><span class="sr">일</span><select name="d" required><option value="">일</option>${Array.from({ length: 31 }, (_, i) => `<option>${i + 1}</option>`).join("")}</select></label>
   </fieldset>
   <button class="btn big" type="submit">나 알아보기</button>
-  <p class="hint">입력한 생년월일은 이 브라우저 안에서만 계산되고 어디에도 저장·전송되지 않아요.</p>
+  <p class="hint">생년월일은 이 브라우저 안에서만 계산해요. 저장하거나 서버로 보내지 않아요.</p>
 </form>
 <div class="result" id="birthday-result" hidden aria-live="polite"></div>`;
   toolPage(toolById.birthday, html, {
@@ -884,7 +884,7 @@ TTI_KEYS.forEach((k) => {
   <div class="chips">${TTI_KEYS.filter((x) => x !== k).map((x) => `<a class="chip" href="${u(FUN_PATH.tti(x))}">${TTI_EMOJI[x]} ${esc(tti[x].name)}</a>`).join("")}</div>
   ${recoHtml(["birthday", "today", "personality"])}
 </article>`;
-  write(p, layout({ title: `${d.name} 성격과 특징`, desc: `${d.name} 성격: ${fill(d.summary)} ${d.name} 출생연도와 오늘의 운세까지 함께 확인해 보세요.`, path: p, body, ogType: "article", noindex: true /* P2-75 틀로 찍은 해설 12쪽: 색인 제외(페이지·링크는 그대로, follow) */, jsonld: [crumbs(items)] }));
+  write(p, layout({ title: `${d.name} 성격과 특징`, desc: `${d.name} 성격: ${fill(d.summary)} ${d.name} 출생연도와 오늘의 운세도 같이 볼 수 있어요.`, path: p, body, ogType: "article", noindex: true /* P2-75 틀로 찍은 해설 12쪽: 색인 제외(페이지·링크는 그대로, follow) */, jsonld: [crumbs(items)] }));
 });
 
 // 별자리 페이지
@@ -916,7 +916,7 @@ ZODIAC_KEYS.forEach((k, i) => {
   const html = `
 <div id="quiz" class="quiz">
   <div class="quiz-start">
-    <p>총 <strong>${questions.length}문항</strong>, 2~3분이면 끝나요. 너무 오래 고민하지 말고 평소의 나에 가깝게 골라 주세요.</p>
+    <p>총 <strong>${questions.length}문항</strong>, 2~3분이면 끝나요. 오래 고민하지 말고 평소 모습에 가까운 쪽을 고르세요.</p>
     <button class="btn big" type="button" data-act="start">테스트 시작하기</button>
   </div>
 </div>`;
@@ -951,7 +951,7 @@ ZODIAC_KEYS.forEach((k, i) => {
   ${recoHtml(["birthday", "namematch", "reaction"])}
   <p class="legal">이 테스트는 칼 융의 심리 유형론에서 출발한 대중적인 4축 모델을 참고해 ${esc(cfg.siteName)}가 자체 제작한 간이 테스트입니다. 공식 성격유형 검사가 아니며, 해당 검사의 상표 권리자 및 국내 판권사와 관련이 없습니다.</p>
 </article>`;
-    write(p, layout({ title: `${d.name}(${k}) 성격 특징·장단점`, desc: `16유형 ${k} ${d.name}: ${fill(d.summary)} 일·관계·스트레스 상황에서의 모습과 성장 팁을 정리했어요.`, path: p, body, scripts: ["personality-result.js"], ogType: "article", noindex: true /* P2-75 16유형 해설 16쪽 색인 제외 */, jsonld: [crumbs(items)] }));
+    write(p, layout({ title: `${d.name}(${k}) 성격 특징·장단점`, desc: `16유형 ${k} ${d.name}: ${fill(d.summary)} 일할 때와 사람 사이에서 어떤 모습인지, 스트레스를 받으면 어떤지 적었어요.`, path: p, body, scripts: ["personality-result.js"], ogType: "article", noindex: true /* P2-75 16유형 해설 16쪽 색인 제외 */, jsonld: [crumbs(items)] }));
   });
 }
 
@@ -970,7 +970,7 @@ ZODIAC_KEYS.forEach((k, i) => {
     </div>
   </details>
   <button class="btn big" type="submit">궁합 보기</button>
-  <p class="hint">이름은 완성된 한글 1~5글자로 넣어 주세요. 입력값은 이 브라우저 안에서만 계산되고 저장·전송되지 않아요.</p>
+  <p class="hint">이름은 완성된 한글 1~5글자로 넣어 주세요. 계산은 이 브라우저 안에서만 하고, 저장하거나 보내지 않아요.</p>
 </form>
 <div class="result" id="name-result" hidden aria-live="polite"></div>`;
   toolPage(toolById.namematch, html, {
@@ -1156,7 +1156,7 @@ ZODIAC_KEYS.forEach((k, i) => {
   const ROMAN = TD.ROMAN;
   const gallery = `<section class="prose tr-all" id="cards">
   <h2>타로 카드 22장의 뜻</h2>
-  <p>이 사이트의 타로는 메이저 아르카나 22장을 써요. 카드 그림은 ${esc(cfg.siteName)}가 이름의 뜻을 단순한 도형으로 나타내 직접 그렸고, 해석도 직접 썼어요. 카드마다 정방향과 역방향의 키워드 세 개를 모았어요.</p>
+  <p>여기 타로는 메이저 아르카나 22장만 써요. 카드 그림은 ${esc(cfg.siteName)}가 카드 이름의 뜻을 단순한 도형으로 옮겨 그렸고, 해석 글도 따로 썼어요. 아래에 카드마다 정방향·역방향 키워드를 세 개씩 적어 뒀어요.</p>
   <ul class="tr-grid">${TD.CARDS.map((c) => `<li><span class="tr-thumb" data-tarot-art="${c.n}"></span><div><b>${ROMAN[c.n]}. ${esc(c.name)}</b> <small>${esc(c.en)}</small><p><em class="up">정</em>${c.up.k.map(esc).join(" · ")}</p><p><em class="rv">역</em>${c.rev.k.map(esc).join(" · ")}</p><details><summary>해석 보기</summary><p><b>정방향</b> ${esc(c.up.t)}</p><p><b>역방향</b> ${esc(c.rev.t)}</p></details></div></li>`).join("")}<li class="tr-backli"><span class="tr-thumb" data-tarot-art="back"></span><div><b>카드 뒷면</b><p>위아래를 뒤집어도 같은 모양이라, 엎어 둔 상태에서는 정방향인지 역방향인지 알 수 없어요.</p></div></li></ul>
 </section>`;
   toolPage(toolById.tarot, html, { scripts: ["tarot-data.js", "tarot-art.js", "tarot.js"], extraBelow: gallery });
@@ -1215,8 +1215,8 @@ function checkLife() {
   <div class="life-start">
     <canvas class="life-pix" id="life-intro" width="96" height="60" role="img" aria-label="태어날 사람 미리보기"></canvas>
     <p class="hint center">그림을 누르면 머리 모양과 옷이 바뀌어요.</p>
-    <p>한 사람이 태어나요. 그 사람이 되어 일생을 살아 보세요. <strong>시간 제한은 없어요.</strong> 장면은 「다음」을 눌러야 넘어가요.</p>
-    <p>진학, 첫 직업, 결혼, 자녀, 이직, 이사, 위기, 은퇴 같은 <strong>인생의 터닝포인트를 직접 고르면</strong> 그 뒤의 사건과 그림, 함께 사는 사람, 엔딩이 고른 대로 바뀌어요. 한 판은 5~10분쯤 걸려요.</p>
+    <p>한 사람이 태어나요. 이제부터 그 사람으로 일생을 살게 돼요. <strong>시간 제한은 없어요.</strong> 장면은 「다음」을 눌러야 넘어가요.</p>
+    <p>진학이나 결혼 같은 <strong>인생의 터닝포인트를 직접 고르면</strong> 그 뒤에 일어나는 일과 곁에 있는 사람, 엔딩이 고른 대로 달라져요. 한 판은 5~10분쯤 걸려요.</p>
     <form class="life-setup" id="life-setup" autocomplete="off">
       <fieldset class="seg"><legend>성별</legend>
         <label><input type="radio" name="look" value="m"><span>남</span></label><label><input type="radio" name="look" value="f"><span>여</span></label><label><input type="radio" name="look" value="n" checked><span>선택 안 함</span></label>
@@ -1228,7 +1228,7 @@ function checkLife() {
         <label>띠<select name="tti">${TTI_KEYS.map((k, i) => `<option value="${i}">${esc(tti[k].name)}</option>`).join("")}</select></label>
         <label>이름 (선택)<input name="name" maxlength="8" placeholder="비워 둬도 돼요"></label>
       </div>
-      <p class="hint">성별은 그림의 옷차림에만 쓰여요. 이름은 결과 화면에만 보이고 저장하거나 보내지 않으며, 결과 이미지와 공유 문구에도 들어가지 않아요. 고른 길도 저장하지 않아요.</p>
+      <p class="hint">성별은 그림 속 옷차림에만 써요. 이름은 결과 화면에만 나오고, 결과 이미지나 공유 문구에는 들어가지 않아요. 이름도 고른 길도 저장하거나 보내지 않아요.</p>
       <div class="life-start-btns"><button type="button" class="btn ghost" data-act="random">랜덤 탄생</button><button class="btn big" type="submit">태어나기</button></div>
       <p class="hint life-done" id="life-done" hidden></p>
     </form>
