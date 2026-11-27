@@ -46,11 +46,14 @@
     res.hidden = false;
     const next = box.querySelector(".tk-next");
     if (next) next.hidden = false;
+    PT.flow(box, 3); // P2-82 단계 표시
     res.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "nearest" });
   };
   PT.hideResult = (box) => {
     const res = box.querySelector(".tk-result");
     if (res) { res.hidden = true; res.querySelector(".tk-result-body").innerHTML = ""; }
+    const pv = box.querySelector(".pv");
+    PT.flow(box, pv && !pv.hidden ? 2 : 1);
     PT.revokeAll();
   };
 
@@ -212,4 +215,161 @@
     return doc;
   };
   PT.pdfBlob = async (doc) => new Blob([await doc.save()], { type: "application/pdf" });
+
+  // ---------- P2-82 결과 미리보기(공통): 올리기 → 미리보기 → 받기 ----------
+  // pdf.js(vendor/pdfjs, 직접 호스팅·CDN 없음)는 PDF를 넣을 때 처음 한 번만 받는다. 주소에 사이트 빌드 번호 대신 라이브러리 버전을 붙여
+  // 사이트를 다시 빌드해도 주소가 같음 → 브라우저 캐시를 그대로 씀(라이브러리를 올릴 때만 바뀜).
+  const PDFJS_V = "6.4.299";
+  PT.pdfjsBase = () => {
+    const me = document.querySelector('script[src*="/tool-kit.js"]');
+    return new URL("vendor/pdfjs/", me ? me.src : location.href).href;
+  };
+  let pdfjsP = null;
+  PT.pdfjs = () => pdfjsP || (pdfjsP = import(PT.pdfjsBase() + "pdf.min.js?v=" + PDFJS_V).then((L) => {
+    L.GlobalWorkerOptions.workerSrc = PT.pdfjsBase() + "pdf.worker.min.js?v=" + PDFJS_V;
+    return L;
+  }).catch(() => { pdfjsP = null; throw new Error("PDF 그림 엔진을 받지 못했어요. 인터넷 연결을 확인하고 다시 넣어 주세요."); }));
+  // 파일 하나를 pdf.js로 열기(같은 파일은 한 번만 엶). 다 쓰면 PT.pdfClose(file)
+  const opened = new WeakMap();
+  PT.pdfOpen = (file) => {
+    if (opened.has(file)) return opened.get(file).promise;
+    const entry = {};
+    opened.set(file, entry);
+    entry.promise = (async () => {
+      const L = await PT.pdfjs(), base = PT.pdfjsBase();
+      const data = new Uint8Array(await PT.readBuf(file));
+      entry.task = L.getDocument({ data, isEvalSupported: false, enableXfa: false, useSystemFonts: true, cMapUrl: base + "cmaps/", cMapPacked: true, wasmUrl: base + "wasm/", iccUrl: base + "iccs/" });
+      try { return await entry.task.promise; }
+      catch (e) {
+        throw new Error((e && e.name) === "PasswordException" ? `「${file.name}」은(는) 암호가 걸린 PDF라서 열 수 없어요. 원래 프로그램에서 암호를 풀고 다시 저장한 뒤 넣어 주세요.` : `「${file.name}」은(는) 깨졌거나 올바른 PDF가 아니어서 열 수 없어요.`);
+      }
+    })();
+    entry.promise.catch(() => { if (opened.get(file) === entry) opened.delete(file); if (entry.task) entry.task.destroy().catch(() => {}); });
+    return entry.promise;
+  };
+  PT.pdfClose = async (file) => {
+    const e = file && opened.get(file);
+    if (!e) return;
+    opened.delete(file);
+    try { await e.promise; } catch (x) {}
+    try { if (e.task) await e.task.destroy(); } catch (x) {}
+  };
+  // PDF 한 쪽을 폭 width(CSS px)의 캔버스로. src는 File 또는 PT.pdfOpen이 돌려준 문서. 받기(PDF→JPG)와 같은 그리기 호출을 씀
+  PT.pdfThumb = async (src, n = 1, width = PT.PV_W) => {
+    const doc = src && src.numPages ? src : await PT.pdfOpen(src);
+    const page = await doc.getPage(n);
+    const w1 = page.getViewport({ scale: 1 }).width;
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const vp = page.getViewport({ scale: (width * dpr) / w1 });
+    const c = document.createElement("canvas");
+    c.width = Math.max(1, Math.round(vp.width)); c.height = Math.max(1, Math.round(vp.height));
+    const ctx = c.getContext("2d");
+    ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, c.width, c.height);
+    try { await page.render({ canvas: c, canvasContext: ctx, viewport: vp }).promise; }
+    finally { page.cleanup(); }
+    return c;
+  };
+
+  // 화면 폭 760px 초과 = PC: 쪽 그림을 모두 자동으로. 휴대폰은 첫 쪽만 자동, 나머지는 「쪽 그림 모두 보기」
+  PT.wide = () => matchMedia("(min-width: 761px)").matches;
+  PT.PV_W = 120; // 쪽 그림 폭(px)
+  PT.PV_HEAVY = 30 * 1048576; // 이보다 큰 파일은 휴대폰에서 첫 쪽도 단추를 눌러야 그림
+  // 단계 표시(.tk-steps): 1 올리기 · 2 미리보기 · 3 받기
+  PT.flow = (box, n) => {
+    box.querySelectorAll(".tk-steps li").forEach((li, i) => {
+      li.classList.toggle("is-done", i + 1 < n);
+      if (i + 1 === n) li.setAttribute("aria-current", "step"); else li.removeAttribute("aria-current");
+    });
+  };
+  // 미리보기 띠(.pv). set(items)로 결과 쪽 목록을 넣으면 번호 칸(쪽수·순서)을 바로 만들고, 그림은 화면에 보이는 칸만 하나씩 그린다.
+  // items: [{ key, w, h(쪽 비율), label, note, draw(width) → Promise<canvas> }]. 같은 key 그림은 다시 그리지 않음(설정만 바뀐 경우)
+  // 합치기·나누기(2단계)도 이 부품을 그대로 씀: 파일별·범위별로 items만 만들면 됨
+  PT.preview = (box) => {
+    const el = box.querySelector(".pv");
+    if (!el) return null;
+    const strip = el.querySelector(".pv-strip"), sumEl = el.querySelector(".pv-sum"), allBtn = el.querySelector(".pv-all");
+    const cache = new Map(); // key → 그림 주소(JPEG 객체 URL)
+    let list = [], gen = 0, all = false, heavy = false, io = null, queue = Promise.resolve();
+    const fit = (w, h) => {
+      const W = PT.PV_W, H = Math.round(PT.PV_W * 1.5);
+      let tw = W, th = Math.round((W * h) / w);
+      if (!(th > 0)) th = Math.round(W * 1.414);
+      if (th > H) { th = H; tw = Math.max(24, Math.round((H * w) / h)); }
+      return { tw, th };
+    };
+    const allowed = (i) => PT.wide() || all || (i === 0 && !heavy);
+    const showImg = (li, url) => {
+      const paper = li.querySelector(".pv-paper");
+      const img = new Image();
+      img.alt = ""; img.decoding = "async";
+      img.onload = () => { // 실제 그림 비율로 칸을 맞춤(쪽마다 크기가 다른 PDF)
+        const f = fit(img.naturalWidth, img.naturalHeight);
+        paper.style.width = f.tw + "px"; paper.style.height = f.th + "px";
+      };
+      img.src = url;
+      paper.replaceChildren(img);
+      li.classList.add("is-drawn");
+    };
+    const drawOne = (li) => {
+      const i = Number(li.dataset.i), it = list[i], g = gen;
+      if (!it || li.classList.contains("is-drawn") || li.classList.contains("is-wait")) return;
+      if (cache.has(it.key)) { showImg(li, cache.get(it.key)); return; }
+      li.classList.add("is-wait");
+      queue = queue.then(async () => {
+        if (g !== gen) return;
+        try {
+          const c = await it.draw(fit(it.w, it.h).tw);
+          const blob = await new Promise((r) => c.toBlob(r, "image/jpeg", 0.85));
+          c.width = c.height = 0;
+          if (!blob) throw new Error("thumb");
+          const url = URL.createObjectURL(blob);
+          cache.set(it.key, url);
+          if (g === gen && li.isConnected) showImg(li, url);
+        } catch (e) {
+          if (g === gen) li.querySelector(".pv-paper").textContent = "그림 없음";
+        } finally { li.classList.remove("is-wait"); }
+      });
+    };
+    const watch = () => {
+      if (io) io.disconnect();
+      const lis = [...strip.children];
+      if (!("IntersectionObserver" in window)) { lis.forEach((li, i) => allowed(i) && drawOne(li)); return; }
+      io = new IntersectionObserver((ents) => {
+        for (const e of ents) if (e.isIntersecting && allowed(Number(e.target.dataset.i))) drawOne(e.target);
+      }, { root: strip, rootMargin: "0px 240px" });
+      lis.forEach((li) => io.observe(li));
+    };
+    const syncBtn = () => {
+      const off = all || PT.wide() || (list.length < 2 && !heavy);
+      allBtn.hidden = off;
+      if (!off) allBtn.textContent = list.length > 1 ? `쪽 그림 모두 보기 (${list.length}쪽)` : "쪽 그림 보기";
+    };
+    allBtn.addEventListener("click", () => { all = true; syncBtn(); watch(); });
+    matchMedia("(min-width: 761px)").addEventListener("change", () => { if (list.length) { syncBtn(); watch(); } });
+    return {
+      set(items, { sum = "", big = false } = {}) {
+        gen++; list = items; heavy = big;
+        strip.innerHTML = items.map((it, i) => {
+          const f = fit(it.w, it.h);
+          return `<li data-i="${i}"><span class="pv-paper" style="width:${f.tw}px;height:${f.th}px"></span><span class="pv-no">${esc(it.label || i + 1 + "쪽")}</span>${it.note != null ? `<small class="pv-note">${esc(it.note)}</small>` : ""}</li>`;
+        }).join("");
+        strip.hidden = !items.length;
+        sumEl.textContent = sum;
+        el.hidden = !items.length && !sum;
+        PT.flow(box, el.hidden ? 1 : 2);
+        syncBtn(); watch();
+      },
+      sum(text) { sumEl.textContent = text; },
+      note(i, text) { const n = strip.children[i] && strip.children[i].querySelector(".pv-note"); if (n) n.textContent = text; },
+      clear() {
+        gen++; list = []; all = false; heavy = false;
+        if (io) io.disconnect();
+        strip.textContent = ""; sumEl.textContent = "";
+        cache.forEach((u) => URL.revokeObjectURL(u)); cache.clear();
+        el.hidden = true; allBtn.hidden = true;
+        PT.flow(box, 1);
+      },
+      get open() { return !el.hidden; },
+    };
+  };
 })();

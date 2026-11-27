@@ -2,10 +2,11 @@
 (function () {
   const box = document.querySelector('[data-tool="img2pdf"]');
   if (!box) return;
-  const OPT = { exts: ["jpg", "jpeg", "png"], maxSize: 20 * PT.MB, maxCount: 50, maxTotal: 200 * PT.MB, reject: { heic: "HEIC(아이폰 사진) 파일은 아직 지원하지 않아요. 사진 앱에서 JPG로 내보낸 뒤 넣어 주세요.", heif: "HEIF 파일은 아직 지원하지 않아요. JPG로 바꾼 뒤 넣어 주세요.", webp: "WEBP는 아직 지원하지 않아요. JPG나 PNG로 바꾼 뒤 넣어 주세요." } };
+  const OPT = { exts: ["jpg", "jpeg", "png"], maxSize: 20 * PT.MB, maxCount: 50, maxTotal: 200 * PT.MB, reject: { heic: "HEIC(아이폰 사진) 파일은 아직 지원하지 않아요. 이 사이트의 「HEIC JPG 변환」으로 먼저 JPG로 바꾸거나, 사진 앱에서 JPG로 내보낸 뒤 넣어 주세요.", heif: "HEIF 파일은 아직 지원하지 않아요. JPG로 바꾼 뒤 넣어 주세요.", webp: "WEBP는 아직 지원하지 않아요. JPG나 PNG로 바꾼 뒤 넣어 주세요." } };
   const run = box.querySelector("[data-run]");
   ["pointerdown", "dragenter", "focusin"].forEach((t) => box.querySelector(".drop").addEventListener(t, () => PT.needPdf().catch(() => {}), { once: true })); // P2-69 파일을 고르는 동안 PDF 엔진을 미리 받음
-  const list = PT.fileList(box, { thumbs: true, onChange: (items) => { run.disabled = !items.length; box.querySelector(".tk-opts").hidden = !items.length; } });
+  const pv = PT.preview(box);
+  const list = PT.fileList(box, { thumbs: true, onChange: (items) => { run.disabled = !items.length; box.querySelector(".tk-opts").hidden = !items.length; showPreview(); } });
   PT.dropzone(box, (files) => {
     const { ok, errs } = PT.check(files, OPT, list.files());
     PT.msg(box, errs.join(" "));
@@ -13,6 +14,84 @@
     list.add(ok);
     if (ok.length) PT.needPdf().catch(() => {}); // 미리 받아 두기(실패하면 「PDF 만들기」 때 다시 시도·안내)
   });
+
+  // 쪽 배치(미리보기와 PDF 만들기가 같은 계산을 씀). iw·ih = 사진 화소(회전 반영), 단위 pt
+  const A4 = [595.28, 841.89];
+  function place(iw, ih, paper, margin) {
+    if (paper === "fit") return { pw: iw, ph: ih, x: 0, y: 0, w: iw, h: ih };
+    const [pw, ph] = iw > ih ? [A4[1], A4[0]] : A4;
+    const s = Math.min((pw - margin * 2) / iw, (ph - margin * 2) / ih);
+    const w = iw * s, h = ih * s;
+    return { pw, ph, x: (pw - w) / 2, y: (ph - h) / 2, w, h };
+  }
+  const opt = () => ({ paper: box.querySelector('[name="paper"]:checked').value, margin: Number(box.querySelector('[name="margin"]').value) });
+
+  // P2-82 사진 크기는 파일 앞부분(머리)만 읽어서 알아냄(사진 전체를 풀지 않음). JPG는 회전값 5~8이면 가로·세로를 바꿈
+  const dimCache = new WeakMap();
+  async function dims(file) {
+    if (dimCache.has(file)) return dimCache.get(file);
+    let d = null;
+    try {
+      const buf = await PT.readBuf(file.slice(0, 262144));
+      const v = new DataView(buf);
+      if (v.getUint32(0) === 0x89504e47) d = { w: v.getUint32(16), h: v.getUint32(20) };
+      else if (v.getUint16(0) === 0xffd8) {
+        let off = 2;
+        while (off + 9 < v.byteLength) {
+          const m = v.getUint16(off);
+          if ((m & 0xff00) !== 0xff00) break;
+          if (m >= 0xffc0 && m <= 0xffcf && m !== 0xffc4 && m !== 0xffc8 && m !== 0xffcc) { d = { w: v.getUint16(off + 7), h: v.getUint16(off + 5) }; break; }
+          off += 2 + v.getUint16(off + 2);
+        }
+        if (d && orientation(buf) >= 5) d = { w: d.h, h: d.w };
+      }
+    } catch (e) { d = null; }
+    if (!d || !d.w || !d.h) { // 머리에서 못 찾으면 브라우저로 풀어서 잼
+      const url = URL.createObjectURL(file);
+      try { const img = new Image(); img.src = url; await img.decode(); d = { w: img.naturalWidth, h: img.naturalHeight }; }
+      catch (e) { d = { w: 1, h: 1.414 }; }
+      finally { URL.revokeObjectURL(url); }
+    }
+    dimCache.set(file, d);
+    return d;
+  }
+  // 쪽 그림: 흰 종이 + PDF와 같은 자리·크기로 사진(브라우저가 회전을 반영해 그림)
+  async function drawPage(file, d, o, width) {
+    const p = place(d.w, d.h, o.paper, o.margin);
+    const dpr = Math.min(2, window.devicePixelRatio || 1), k = (width * dpr) / p.pw;
+    const c = document.createElement("canvas");
+    c.width = Math.max(1, Math.round(p.pw * k)); c.height = Math.max(1, Math.round(p.ph * k));
+    const ctx = c.getContext("2d");
+    ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, c.width, c.height);
+    const url = URL.createObjectURL(file);
+    try {
+      const img = new Image(); img.src = url; await img.decode();
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(img, p.x * k, p.y * k, p.w * k, p.h * k);
+    } finally { URL.revokeObjectURL(url); }
+    return c;
+  }
+  const ids = new WeakMap(); let idN = 0;
+  const fid = (f) => { if (!ids.has(f)) ids.set(f, ++idN); return ids.get(f); };
+  let pvGen = 0;
+  async function showPreview() {
+    if (!pv) return;
+    const files = list.files(), g = ++pvGen;
+    if (!files.length) { pv.clear(); return; }
+    const o = opt();
+    const ds = await Promise.all(files.map(dims));
+    if (g !== pvGen) return;
+    let land = 0;
+    const items = files.map((f, i) => {
+      const d = ds[i], p = place(d.w, d.h, o.paper, o.margin);
+      if (p.pw > p.ph) land++;
+      return { key: `${fid(f)}|${o.paper}|${o.margin}`, w: p.pw, h: p.ph, label: `${i + 1}쪽`, draw: (w) => drawPage(f, d, o, w) };
+    });
+    const n = files.length;
+    const sum = o.paper === "fit" ? `PDF ${n}쪽 · 쪽마다 사진 크기 그대로` : `PDF ${n}쪽 · A4 ${land && land < n ? `세로 ${n - land}쪽, 가로 ${land}쪽` : land ? "가로" : "세로"}${o.margin ? "" : " · 여백 없음"}`;
+    pv.set(items, { sum });
+  }
+  box.querySelectorAll('[name="paper"],[name="margin"]').forEach((x) => x.addEventListener("change", () => { PT.hideResult(box); showPreview(); }));
 
   // JPEG의 EXIF 회전값(1~8). 읽지 못하면 1
   function orientation(buf) {
@@ -72,8 +151,7 @@
   run.addEventListener("click", async () => {
     const files = list.files();
     if (!files.length) return;
-    const paper = box.querySelector('[name="paper"]:checked').value;
-    const margin = Number(box.querySelector('[name="margin"]').value);
+    const { paper, margin } = opt();
     PT.msg(box, ""); PT.hideResult(box); PT.busy(box, true, "PDF를 만드는 중…");
     capped = 0;
     try {
@@ -82,17 +160,9 @@
       for (let i = 0; i < files.length; i++) {
         PT.step(box, `${i + 1} / ${files.length}장 넣는 중…`, i / files.length); await PT.tick();
         const { img, width: iw, height: ih } = await embed(doc, files[i]);
-        if (paper === "fit") {
-          const page = doc.addPage([iw, ih]);
-          page.drawImage(img, { x: 0, y: 0, width: iw, height: ih });
-        } else {
-          const land = iw > ih;
-          const [pw, ph] = land ? [841.89, 595.28] : [595.28, 841.89];
-          const s = Math.min((pw - margin * 2) / iw, (ph - margin * 2) / ih);
-          const w = iw * s, h = ih * s;
-          const page = doc.addPage([pw, ph]);
-          page.drawImage(img, { x: (pw - w) / 2, y: (ph - h) / 2, width: w, height: h });
-        }
+        const p = place(iw, ih, paper, margin); // P2-82 미리보기와 같은 계산
+        const page = doc.addPage([p.pw, p.ph]);
+        page.drawImage(img, { x: p.x, y: p.y, width: p.w, height: p.h });
       }
       PT.step(box, "파일로 저장하는 중…", 1); await PT.tick();
       doc.setTitle("이미지 PDF"); doc.setProducer("펭귄 툴즈"); doc.setCreator("펭귄 툴즈");

@@ -127,6 +127,7 @@
       if (!side.hidden && getComputedStyle(side).display !== "none") { // 미리보기 패널 안에서만 스크롤(창은 움직이지 않음)
         const sr = side.getBoundingClientRect(), tr = t.getBoundingClientRect();
         if (tr.top < sr.top || tr.bottom > sr.bottom) side.scrollTop += tr.top - sr.top - (sr.height - tr.height) / 2;
+        if (tr.left < sr.left || tr.right > sr.right) side.scrollLeft += tr.left - sr.left - (sr.width - tr.width) / 2; // 휴대폰 가로 띠
       }
     }
   }
@@ -154,12 +155,13 @@
   }
 
   // ---------- 쪽 미리보기(썸네일): 보일 때만 쪽을 복제해 작게 그림 ----------
-  const TW = 112;
-  let io = null;
+  // P2-82 휴대폰(760px 이하)에서도 숨기지 않고 위쪽 가로 띠로 보여 줌(작게)
+  const TW = () => (narrow() ? 64 : 112);
+  let io = null, thumbW = 0;
   function buildThumbs() {
     if (io) io.disconnect();
     thumbs.textContent = "";
-    const b = baseSize();
+    const b = baseSize(), tw = (thumbW = TW());
     papers().forEach((p, i) => {
       const li = document.createElement("li");
       const btn = document.createElement("button");
@@ -168,7 +170,7 @@
       const paper = document.createElement("span");
       paper.className = "hv-th-paper";
       const w = parseFloat(p.style.width) * 4 / 3, h = parseFloat(p.style.height) * 4 / 3;
-      const s = TW / b.w;
+      const s = tw / b.w;
       paper.style.width = Math.round(w * s) + "px"; paper.style.height = Math.round(h * s) + "px";
       paper.dataset.s = s;
       const no = document.createElement("span"); no.className = "hv-th-no"; no.textContent = i + 1;
@@ -186,11 +188,18 @@
         c.style.transform = `scale(${paper.dataset.s})`;
         paper.appendChild(c);
       }
-    }, { root: side, rootMargin: "300px 0px" }) : null;
+    }, { root: side, rootMargin: "300px" }) : null;
     if (io) thumbs.querySelectorAll(".hv-th-paper").forEach((x) => io.observe(x));
   }
   function thumbsScale() { /* 썸네일 크기는 배율과 무관(고정 폭) */ }
   thumbs.addEventListener("click", (e) => { const b = e.target.closest(".hv-th"); if (b) go(Number(b.dataset.i)); });
+  // P2-82 휴대폰: 도구 막대가 좁아 「쪽 미리보기」 접기·펴기 단추는 제목 옆에 둠(막대의 단추를 대신 누름)
+  const sideM = box.querySelector(".hv-side-m"), sideB = $(".hv-side-btn");
+  if (sideM && sideB) sideM.addEventListener("click", () => {
+    sideB.click();
+    const on = sideB.getAttribute("aria-pressed") === "true";
+    sideM.setAttribute("aria-pressed", String(on)); sideM.textContent = on ? "쪽 미리보기 접기" : "쪽 미리보기 펴기";
+  });
 
   // ---------- 문서 열기·바꾸기 ----------
   function setNames() {
@@ -231,6 +240,7 @@
     setPrintPage(d);
     setHdr();
     empty.hidden = true; app.hidden = false; hint.hidden = false;
+    box.querySelectorAll(".hv-pvx").forEach((x) => { x.hidden = false; }); // P2-82 「저장될 모양 미리보기」 제목·문구
     if (next) next.hidden = false;
     setNames();
     ptot.textContent = `/ ${d.pages.length}`;
@@ -256,6 +266,7 @@
   function toEmpty() {
     hv.dataset.state = "empty";
     app.hidden = true; empty.hidden = false; hint.hidden = true;
+    box.querySelectorAll(".hv-pvx").forEach((x) => { x.hidden = true; });
   }
 
   // P2-69 T15: 안드로이드 파일 선택 창은 accept의 확장자를 MIME으로 바꿔 거르는데, 한글·워드 파일이 「알 수 없는 형식」(octet-stream)·zip으로
@@ -430,7 +441,7 @@
   work.addEventListener("touchcancel", endPinch);
 
   let rt = 0;
-  addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => { if (cur >= 0 && !app.hidden) { setHdr(); setNames(); if (zoom.mode !== "num") applyZoom(zoom.mode); } }, 120); });
+  addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => { if (cur >= 0 && !app.hidden) { setHdr(); setNames(); if (zoom.mode !== "num") applyZoom(zoom.mode); if (thumbW !== TW()) { buildThumbs(); setPage(page); } } }, 120); });
 
   // ---------- PDF 저장 = 인쇄 창. 화면의 쪽 = 인쇄의 쪽 ----------
   // P2-66: 휴대폰은 print()가 기다리지 않고 바로 돌아오고 인쇄 창이 늦게 떠서, 인쇄 뒤 되돌리는 방식이면 사이트 화면이 섞였음.

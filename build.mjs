@@ -1331,6 +1331,23 @@ const tkTail = (runLabel, { disabled = true } = {}) => `
 ${runLabel ? `<button class="btn big tk-run" type="button" data-run${disabled ? " disabled" : ""}>${esc(runLabel)}</button>` : ""}
 <div class="tk-progress" role="status" hidden><span class="spin" aria-hidden="true"></span><span class="tk-progress-text">처리 중…</span><span class="tk-bar" aria-hidden="true"><i></i></span></div>
 <div class="tk-result" hidden><div class="tk-result-body" aria-live="polite"></div></div>`;
+// P2-82 결과 미리보기 공통 틀: 단계 표시(올리기 → 미리보기 → 받기) + 미리보기 상자. 화면 코드는 tool-kit.js PT.preview·PT.flow
+// limit: 툴 원고(tools.mjs limits)에 있는 한도 숫자만 씀(빌드 때 대조). lost: 결과에서 빠질 수 있는 것(limits와 같은 내용, 짧게)
+const PV = {}; // 툴 id → { limit, lost } (빌드 점검용)
+const PV_SAFE = "파일은 서버로 올라가지 않습니다 · 횟수 제한 없음";
+const pvSafe = (limit) => `<p class="pv-safe">${esc(PV_SAFE)} · ${esc(limit)}</p>`;
+const pvLost = (lost) => `<p class="pv-lost">${esc(lost)}</p>`;
+const stepsHtml = () => `<ol class="tk-steps" aria-label="진행 단계"><li aria-current="step"><span>올리기</span></li><li><span>미리보기</span></li><li><span>받기</span></li></ol>`;
+const pvHtml = (id, { limit, lost }) => {
+  PV[id] = { limit, lost };
+  return `<section class="pv" hidden aria-labelledby="pv-h">
+  <div class="pv-top"><h2 class="pv-h" id="pv-h">저장될 모양 미리보기</h2><p class="pv-sum" aria-live="polite"></p></div>
+  ${pvSafe(limit)}
+  <ol class="pv-strip" aria-label="결과 쪽 순서"></ol>
+  <button type="button" class="btn ghost pv-all" hidden>쪽 그림 모두 보기</button>
+  ${pvLost(lost)}
+</section>`;
+};
 // 툴 페이지에 항상 보이는 「잠깐 쉬어 가기」 게임 카드: 체류시간 긴 게임으로 안내(대표님 지시)
 const REST_GAMES = ["rpg", "hellchosun", "hell", "life", "mines"]; // P2-60 지뢰찾기 후보 추가
 const restCard = (id) => {
@@ -1444,7 +1461,7 @@ utilPage(utilById.pdfsplit, `${dropHtml({ accept: ".pdf,application/pdf", label:
 ${tkTail("범위 추출하기")}`, { vendor: ["fflate.min.js"], scripts: ["t-pdfsplit.js"] }); // P2-69 pdf-lib 늦게 받기
 
 // JPG PDF 변환
-utilPage(utilById.img2pdf, `${dropHtml({ accept: ".jpg,.jpeg,.png,image/jpeg,image/png", multiple: true, label: "PDF로 만들 이미지를 넣어 주세요", limit: "JPG·PNG · 장당 20MB · 50장 · 합계 200MB까지" })}
+utilPage(utilById.img2pdf, `${stepsHtml()}${dropHtml({ accept: ".jpg,.jpeg,.png,image/jpeg,image/png", multiple: true, label: "PDF로 만들 이미지를 넣어 주세요", limit: "JPG·PNG · 장당 20MB · 50장 · 합계 200MB까지" })}
 <ul class="flist thumbs" hidden></ul>
 <div class="tk-opts" hidden>
   <fieldset class="seg"><legend>용지</legend>
@@ -1452,6 +1469,7 @@ utilPage(utilById.img2pdf, `${dropHtml({ accept: ".jpg,.jpeg,.png,image/jpeg,ima
   </fieldset>
   <label>A4 여백<select name="margin"><option value="0">없음</option><option value="24" selected>좁게</option><option value="48">보통</option></select></label>
 </div>
+${pvHtml("img2pdf", { limit: "한 장 20MB, 한 번에 50장·합계 200MB까지", lost: "사진은 원본 화질 그대로 들어가요. 그래서 사진이 많으면 PDF 용량도 커져요." })}
 ${tkTail("PDF 만들기")}`, { scripts: ["t-img2pdf.js"] }); // P2-69 pdf-lib 늦게 받기
 
 // P2-65 옛 「워드 PDF 변환(간단)」(mammoth)은 폐지 → /pdf/word-to-pdf/는 /docx-to-pdf/로 이동(아래 moved)
@@ -1475,14 +1493,15 @@ const HV_I = { // 도구 막대 아이콘(선 그림, 이름은 옆 글자나 �
 };
 const HV_ZOOMS = [50, 75, 90, 100, 125, 150, 200];
 const hvZoomSel = `<select class="hv-zsel" aria-label="배율"><option value="width">폭 맞춤</option><option value="page">쪽 맞춤</option>${HV_ZOOMS.map((z) => `<option value="${z}">${z}%</option>`).join("")}<option value="custom" hidden>100%</option></select>`;
-const docViewerHtml = ({ drop, warn, help, hint }) => `${tkTail("")}
+const docViewerHtml = ({ drop, warn, help, hint, pv }) => `${tkTail("")}
 ${help}
+<div class="pv-cap hv-pvx" hidden><div class="pv-top"><h2 class="pv-h">저장될 모양 미리보기</h2><button type="button" class="btn ghost hv-side-m" aria-pressed="true">쪽 미리보기 접기</button></div><p class="pv-sum">「PDF로 저장」을 누르면 아래 쪽 모양 그대로 저장돼요.</p>${pvSafe(pv.limit)}</div>
 <div class="hv" id="hwpv" data-state="empty">
   <div class="hv-empty">${drop}</div>
   <div class="hv-app" hidden>
     <div class="hv-bar" role="toolbar" aria-label="문서 보기 도구">
       <div class="hv-g hv-g-file">
-        <button type="button" class="hv-b hv-only-wide" data-act="side" aria-pressed="true" title="쪽 미리보기 열기·닫기">${HV_I.side}<span class="sr">쪽 미리보기</span></button>
+        <button type="button" class="hv-b hv-side-btn hv-only-wide" data-act="side" aria-pressed="true" title="쪽 미리보기 열기·닫기">${HV_I.side}<span class="hv-t">쪽 미리보기</span></button>
         <span class="hv-name"></span>
         <select class="hv-files hv-only-wide" aria-label="연 파일" hidden></select>
       </div>
@@ -1512,13 +1531,14 @@ ${help}
     </div>
     <div class="hv-info" id="hv-info" role="dialog" aria-label="문서 정보" hidden><div class="hv-info-body"></div><button type="button" class="hv-b hv-info-x" data-act="info"><span class="hv-t">닫기</span></button></div>
     <div class="hv-body">
-      <nav class="hv-side" aria-label="쪽 미리보기"><ol class="hv-thumbs"></ol></nav>
+      <nav class="hv-side" aria-label="쪽 미리보기"><p class="hv-side-h">저장될 모양</p><ol class="hv-thumbs"></ol></nav>
       <div class="hv-work" tabindex="0" aria-label="문서 쪽"><div class="hwpv-stage hv-pages"></div></div>
     </div>
     <input class="hv-file2" type="file" accept="${drop.match(/accept="([^"]*)"/)[1]}" multiple tabindex="-1" aria-hidden="true">
   </div>
 </div>
 <p class="hv-hint" hidden>${esc(hint)}</p>
+<div class="hv-pvx" hidden>${pvLost(pv.lost)}</div>
 ${warn}`;
 const HV_HINT = "「PDF로 저장」을 누르면 인쇄 창이 열려요. 대상(프린터)을 「PDF로 저장」 또는 「Microsoft Print to PDF」로 고르면 글자가 선택되는 PDF가 만들어져요. 휴대폰은 「PDF로 저장」을 누르면 문서만 담긴 인쇄용 화면이 열리고, 거기서 「인쇄·PDF 저장」을 누르면 돼요.";
 const HWP_SPEC_NOTE = "본 제품은 한컴의 HWP 문서 파일(.hwp) 공개 문서를 참고하여 개발하였습니다."; // P2-64d 한컴 공개 문서 이용 조건의 필수 문구(store.hancom.com/etc/hwpDownload.do)
@@ -1527,6 +1547,7 @@ const hwpToolHtml = () => docViewerHtml({
   help: `<div class="hwpv-help" hidden><p>열지 못한 파일은 <a href="${HWP_OFFICIAL}" target="_blank" rel="noopener">한컴 공식 뷰어(한컴 다운로드 센터) ↗<span class="sr"> (새 창, 외부 사이트)</span></a>를 이용해 주세요. 암호·배포용 문서와 한글 97 이전 형식은 여기서 열 수 없어요.</p></div>`,
   warn: `<p class="tk-warn" role="note"><b>원본과 모양이 다를 수 있어요.</b> 줄 바꿈·쪽 나눔·글꼴은 한글 프로그램과 다를 수 있으니 중요한 문서는 원본과 함께 확인하세요. 암호가 걸린 문서와 배포용 문서는 열 수 없어요.</p>`,
   hint: HV_HINT,
+  pv: (PV.hwpview = { limit: "파일 하나 50MB까지", lost: "머리말·꼬리말, 쪽 번호, 도형, 차트는 PDF에 안 들어가거나 글자로만 나와요. 줄 바꿈과 쪽 나눔은 한글 프로그램과 다를 수 있어요." }),
 });
 utilPage(utilById.hwpview, hwpToolHtml(), { vendor: ["fflate.min.js"], scripts: ["hwp-doc.js", "hwp5-doc.js", "hwp-render.js", "t-hwp.js"], after: `<p class="hint hv-spec">${HWP_SPEC_NOTE} · <a href="${u("/licenses/")}#hwp-spec">고지 보기</a></p>` });
 // P2-65 워드 PDF 변환(DOCX): 같은 화면 코드, 해석기만 docx-doc.js
@@ -1535,6 +1556,7 @@ utilPage(utilById.docx2pdf, docViewerHtml({
   help: `<div class="hwpv-help" hidden><p>열지 못한 파일은 워드 프로그램의 「다른 이름으로 저장 → PDF」를 이용해 주세요. 예전 형식(.doc)은 워드에서 「다른 이름으로 저장 → Word 문서(*.docx)」로 저장하면 여기서 열 수 있어요.</p></div>`,
   warn: `<p class="tk-warn" role="note"><b>원본과 모양이 다를 수 있어요.</b> 줄 바꿈·쪽 나눔·글꼴은 워드와 다를 수 있으니 중요한 문서는 원본과 함께 확인하세요. 예전 형식(.doc)은 열 수 없어요.</p>`,
   hint: HV_HINT,
+  pv: (PV.docx2pdf = { limit: "파일 하나 50MB까지", lost: "머리글·바닥글, 쪽 번호, 도형, 차트, 메모는 PDF에 들어가지 않아요. 수식은 글자로만 나와요." }),
 }), { vendor: ["fflate.min.js"], scripts: ["hwp-doc.js", "docx-doc.js", "hwp-render.js", "t-hwp.js"] });
 
 // 이미지 용량 줄이기
@@ -1744,6 +1766,8 @@ ${tkTail("")}
       </div>
     </div>
     <div class="sp-view">
+      <h2 class="sp-h pv-h">저장될 모양 미리보기</h2>
+      ${pvSafe((PV.splitprint = { limit: "가로·세로 10장씩, 총 100장까지", lost: "가정용 프린터는 종이 가장자리 3~5mm를 못 찍어요. 인쇄 창에서 「실제 크기」(100%)를 골라야 이음매가 맞아요." }).limit)}
       <div class="sp-head">
         <p class="sp-big" aria-live="polite"><span class="sp-k">완성 크기</span><b class="sp-cm"></b><span class="sp-line"></span></p>
         <canvas class="sp-scale" role="img" aria-label="크기 비교" width="1" height="1"></canvas>
@@ -1766,6 +1790,7 @@ ${tkTail("")}
       <label class="check sp-edge"><input type="checkbox" name="edge"> 프린터가 못 찍는 가장자리(약 4mm) 회색으로 보기</label>
       <p class="sp-sum hint"></p>
       <p class="hint sp-legend"><span class="sp-lg-h" aria-hidden="true"></span> 빗금 = 이웃 장과 겹쳐 찍히는 띠 · 점선 = 이음선·인쇄 칸 · 장을 누르면 크게 보여요.</p>
+      ${pvLost(PV.splitprint.lost)}
     </div>
   </div>
   <section class="sp-final" aria-labelledby="sp-final-h">
@@ -2970,7 +2995,7 @@ ${srcHtml(["unemp", "wage"])}`
 }
 
 // PDF JPG 변환 (pdf.js + worker 직접 호스팅)
-utilPage(utilById.pdf2img, `${dropHtml({ accept: ".pdf,application/pdf", label: "이미지로 바꿀 PDF 파일을 넣어 주세요", limit: "PDF 1개 · 100MB까지 · 한 번에 300쪽까지" })}
+utilPage(utilById.pdf2img, `${stepsHtml()}${dropHtml({ accept: ".pdf,application/pdf", label: "이미지로 바꿀 PDF 파일을 넣어 주세요", limit: "PDF 1개 · 100MB까지 · 한 번에 300쪽까지" })}
 <div class="tk-opts" hidden>
   <p class="tk-info"></p>
   <div class="row2">
@@ -2979,6 +3004,7 @@ utilPage(utilById.pdf2img, `${dropHtml({ accept: ".pdf,application/pdf", label: 
   </div>
   <label>바꿀 페이지 (선택)<input name="range" inputmode="text" autocomplete="off" placeholder="비워 두면 전체"></label>
 </div>
+${pvHtml("pdf2img", { limit: "파일 하나 100MB, 한 번에 300쪽까지", lost: "양식 칸에 적은 값, 주석, 동영상은 이미지에 안 나올 수 있어요. 글꼴이 안 든 문서는 비슷한 글꼴로 그려져요." })}
 ${tkTail("이미지로 바꾸기")}`, { vendor: ["fflate.min.js"], scripts: ["t-pdf2img.js"] });
 
 // 타이머
@@ -3314,6 +3340,25 @@ if (SPLIT) console.log(`✔ P2-77 분리: 오락실 파일 ${SPLIT_REPORT.moved}
   if (ban.length) warnings.push(`P2-78 컨셉 문구 금지어: ${ban.join(", ")}`);
   if (!/직장인/.test(HOME_SUB) || !/직장인/.test(HOME_DESC) || !/직장인/.test(fill(about))) warnings.push("P2-78 「직장인」이 부제·meta·소개 중 빠짐");
   console.log(`✔ P2-78 점검: 상황별 ${MAIN_CATS.length}묶음(${MAIN_CATS.map((k) => `${UCATS[k].name} ${utilsIn(k).length}`).join(" · ")}) = 허브 1:1, 툴 ${MAIN_UTILS.length}개 홈·허브·이동 경로·머리 표시·추천 어긋남 ${bad.length} · 컨셉 문구 금지어 ${ban.length}`);
+}
+// P2-82 결과 미리보기 점검: 문서 툴마다 미리보기 제목·문구가 있는지, 문구의 한도 숫자가 툴 원고(limits)와 같은지, 툴 상자 안에 광고가 없는지
+{
+  const bad = [];
+  for (const [id, v] of Object.entries(PV)) {
+    const tool = utilById[id], h = pageHtml.get(tool.path) || "";
+    const lim = fill(toolText[id].limits).replace(/,/g, "");
+    const nums = (v.limit.match(/\d[\d,]*\s*(MB|장|쪽|개)/g) || []).map((x) => x.replace(/[,\s]/g, ""));
+    const miss = nums.filter((x) => !lim.replace(/\s/g, "").includes(x));
+    if (miss.length) bad.push(`${id}: 한도 ${miss.join("·")}가 원고에 없음`);
+    if (!h.includes("저장될 모양 미리보기")) bad.push(`${id}: 제목 없음`);
+    if (!h.includes(esc(`${PV_SAFE} · ${v.limit}`))) bad.push(`${id}: 문구 없음`);
+    const st = h.indexOf('<section class="tool-box');
+    let boxHtml = "";
+    if (st >= 0) { const re = /<section\b|<\/section>/g; re.lastIndex = st; let d = 0, m; while ((m = re.exec(h))) { d += m[0] === "</section>" ? -1 : 1; if (!d) { boxHtml = h.slice(st, re.lastIndex); break; } } }
+    if (!boxHtml || boxHtml.includes("adsbygoogle")) bad.push(`${id}: 툴 상자 안 광고 또는 상자 못 찾음`);
+  }
+  if (bad.length) warnings.push(`P2-82 미리보기: ${bad.join(", ")}`);
+  console.log(`✔ P2-82 결과 미리보기: 문서 툴 ${Object.keys(PV).length}개(${Object.keys(PV).join("·")}) 제목·문구·한도(원고와 같음)·툴 상자 안 광고 0 점검, 어긋남 ${bad.length}`);
 }
 console.log(`✔ 빌드 완료: ${mainMap.length}개 색인 페이지 → dist/  (SITE_URL=${cfg.siteUrl})`);
 if (warnings.length) console.log("⚠ 확인 필요:\n  " + warnings.join("\n  "));
